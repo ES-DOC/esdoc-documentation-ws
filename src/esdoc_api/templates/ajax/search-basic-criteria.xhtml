@@ -1,0 +1,61 @@
+<form action="">
+    <fieldset>
+        <legend>Basic Search Criteria</legend>
+        <div class="mf-form-row-label">
+            <span class="mf-form-cell-w1_5" style="padding-right: 25px;">
+                <label for="projectID" title="Project" class="mf-w150">Project</label>
+            </span>
+            <span class="mf-form-cell-w225" style="padding-right: 25px;">
+                <label for="documentType" title="Document Type" class="mf-w2">Document Type</label>
+            </span>
+            <span class="mf-form-cell-w1_5" style="padding-right: 25px;">
+                <label for="documentVersionFilter" title="Document Version" class="mf-w150">Document Version</label>
+            </span>
+            <span class="mf-form-cell-w1_5" style="padding-right: 25px;">
+                <label for="languageID" title="Document Language" class="mf-w150">Document Language</label>
+            </span>
+        </div>
+        <div class="mf-form-row-last">
+            <span class="mf-form-cell-w1_5" style="padding-right: 25px;">
+                <select id="projectID"
+                        name="projectID"
+                        title="Projects"
+                        class="mf-w150">
+                    <option value="*" selected="true">All</option>
+                    <option value="1">CMIP5</option>
+                    <option value="2">DCMIP-2012</option>
+                </select>
+            </span>
+            <span class="mf-form-cell-w225" style="padding-right: 25px;">
+                <select id="documentType" name="documentType" title="Document Types" class="mf-w225">
+                    <option value="*" selected="true">All</option>
+                    <option value="dataObject">Data</option>
+                    <option value="ensemble">Ensemble</option>
+                    <option value="numericalExperiment">Experiment</option>
+                    <option value="gridSpec">Grid</option>
+                    <option value="modelComponent">Model</option>
+                    <option value="platform">Platform</option>
+                    <option value="cimQuality">Quality</option>
+                    <option value="simulationRun">Simulation</option>
+                </select>
+            </span>
+            <span class="mf-form-cell-w1_5" style="padding-right: 25px;">
+                <select id="documentVersionFilter" 
+                        name="documentVersionFilter"
+                        title="Document Version"
+                        class="mf-w150">
+                    <option value="latest">Latest</option>
+                    <option value="*">All</option>
+                </select>
+            </span>
+            <span class="mf-form-cell-w1_5" style="padding-right: 25px;">
+                <select id="languageID"
+                        name="languageID"
+                        title="Document Language"
+                        class="mf-w150">
+                    <option value="25" selected="true">English</option>
+                </select>
+            </span>
+        </div>
+    </fieldset>
+</form>

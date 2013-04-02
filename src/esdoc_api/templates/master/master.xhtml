@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<!--*************************************************-->
+<!-- Mako function extensions                        -->
+<!--*************************************************-->
+<%namespace file="/master/master.mako" import="*"/>
+
+<%def name="renderSiteMenuItemClass(section)" filter="trim">
+    % if section.is_current == True:
+        current
+    % endif
+</%def>
+
+<%def name="renderSiteMenu()" filter="trim" >
+    % for section in c.site.nodes:
+                                        <a title="${section.short_title}"
+                                           href="${section.href}"
+                                           class="${renderSiteMenuItemClass(section)}">${section.short_title.lower().strip()}</a>
+    % endfor
+</%def>
+
+<%def name="renderPagePartitions()">
+                            % for page_partition in c.page.get_page_partitions():
+                                    <a id="${page_partition.key}"
+                                       title="${page_partition.title}"
+                                       class="partition"
+                                       href="#${page_partition.title.lower()}">
+                                        ${page_partition.title}
+                                    </a>
+                            % endfor
+</%def>
+
+<%def name="renderPageActions()">
+                            % for page_action in c.page.get_page_actions():
+                                    <button id="${page_action.key}"
+                                            name="${page_action.key}"
+                                            class="action"
+                                           title="${page_action.title}"/>
+                                        ${page_action.title}
+                                    </button>
+                            % endfor
+</%def>
+
+
+<!--*************************************************-->
+<!-- HTML                                            -->
+<!--*************************************************-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <!--*************************************************-->
+    <!-- HTML Head                                       -->
+    <!--*************************************************-->
+    <head>
+        <!--*************************************************-->
+        <!-- Standard header declarations                    -->
+        <!--*************************************************-->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>${c.site.title} - v${c.site.version}</title>
+        <link rel="shortcut icon" href="/esdoc/img/site-favicon-esdoc.png" type="image/x-icon"/>
+        <!--*************************************************-->
+        <!-- CSS Declaration                                 -->
+        <!--*************************************************-->
+        <!-- Standard -->
+        ${h.stylesheet_link('/esdoc/css/std-html-all.css')}
+        <!-- JQuery -->
+        ${h.stylesheet_link('/ext/jquery/css/ui/redmond/jquery-ui-1.8.6.custom.css')}
+        <!-- JQuery - Data-tables-->
+        ${h.stylesheet_link('/ext/jquery/css/datatables/data_table_jui.css')}
+        <!-- Metafor -->
+        ${h.stylesheet_link('/esdoc/css/mf-site-all.css')}
+        <!--*************************************************-->
+        <!-- JS Declaration                                  -->
+        <!--*************************************************-->
+        <!-- JQuery -->
+        ${h.javascript_link('/ext/json2.js')}
+        ${h.javascript_link('/ext/underscore-min.js')}
+        ${h.javascript_link('/ext/jquery/js/jquery-1.4.4.min.js')}
+        ${h.javascript_link('/ext/jquery/js/jquery-ui-1.8.6.custom.min.js')}
+        ${h.javascript_link('/ext/jquery/js/jquery.ext.dataTables-1.7.5.min.js')}
+        ${h.javascript_link('/ext/jquery/js/jquery.ext.validate-.min.js')}
+        ${h.javascript_link('/ext/jquery/js/jquery.ext.validate.additional-methods.min.js')}
+        ${h.javascript_link('/ext/jquery/js/jquery.ext.constantfooter.js')}
+        ${h.javascript_link('/ext/jquery/js/jquery.ext.loupe.min.js')}
+        ${h.javascript_link('/ext/jquery/js/jquery.ext.metafor.js')}
+        <!-- Metafor -->
+        ${h.javascript_link('/esdoc/js/lib/mf-lib.js')}
+        ${h.javascript_link('/esdoc/js/lib/core/mf-lib-core-AjaxHelper.js')}
+        ${h.javascript_link('/esdoc/js/lib/core/mf-lib-core-DataLoader.js')}
+        ${h.javascript_link('/esdoc/js/lib/core/mf-lib-core-Repository.js')}
+        ${h.javascript_link('/esdoc/js/lib/core/mf-lib-core-EntityManager.js')}
+        ${h.javascript_link('/esdoc/js/lib/core/mf-lib-core-SearchEngine.js')}
+        ${h.javascript_link('/esdoc/js/lib/ui/mf-lib-ui-Grid.js')}
+        ${h.javascript_link('/esdoc/js/lib/ui/mf-lib-ui-Utils.js')}
+        ${h.javascript_link('/esdoc/js/lib/ui/mf-lib-ui-Feedback.js')}
+        ${h.javascript_link('/esdoc/js/lib/ui/mf-lib-ui-Toolbar.js')}
+        ${h.javascript_link('/esdoc/js/lib/ui/mf-lib-ui-Validator.js')}
+        <script>
+            $(document).ready(function() {
+                $(".mf-site-footer").constantfooter();
+            });
+        </script>
+    </head>
+
+    <!--*************************************************-->
+    <!-- HTML Body                                       -->
+    <!--*************************************************-->
+    <body>
+        <!--*************************************************-->
+        <!-- Site Header                                     -->
+        <!--*************************************************-->
+        <div class="mf-site-header">
+            <div class="inner">
+                <div class="caption">
+                    <span>
+                        <img class="logo"
+                             src="/esdoc/img/site-logo-esdoc.png"
+                             alt="ES-DOC."
+                             title="ES-DOC."
+                             lang="EN" />
+                    </span>
+                    <span class="title">API</span>
+                    <span class="version">v${c.site.version}</span>
+                </div>
+                <div class="menu">
+                    <div class="primary">
+${renderSiteMenu()}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--*************************************************-->
+        <!-- Page                                            -->
+        <!--*************************************************-->
+        <div class="mf-page">
+            <div class="inner">
+                <!-- Page Content -->
+                <div class="content">
+                    ## Inject child content
+                    ${next.body()}
+                </div>
+            </div>
+        </div>
+
+        <!--*************************************************-->
+        <!-- Site Footer                                     -->
+        <!--*************************************************-->
+        <div class="mf-site-footer">
+            <div class="inner">
+                <a href="http://metaforclimate.eu/"
+                   alt="Metafor - European Union"
+                   title="Metafor - European Union"
+                   rel="external">
+                    <img class="logo"
+                         src="/esdoc/img/site-logo-metafor.png"
+                         alt="Metafor - European Union"
+                         title="Metafor - European Union"
+                         lang="EN" />
+                </a>
+                <a href="http://www.earthsystemcurator.org"
+                   alt="Earth System Curator"
+                   title="The Curator project collaboratively develops software infrastructure to support end-to-end modeling in the Earth sciences."
+                   rel="external">
+                    <img class="logo"
+                         src="/esdoc/img/site-logo-esc.gif"
+                         alt="The Curator project collaboratively develops software infrastructure to support end-to-end modeling in the Earth sciences."
+                         title="The Curator project collaboratively develops software infrastructure to support end-to-end modeling in the Earth sciences."
+                         lang="EN" />
+                </a>
+                <a href="http://www.ipsl.fr/"
+                   alt="Institut Pierre Simon Laplace"
+                   title="Institut Pierre Simon Laplace"
+                   rel="external">
+                    <img class="logo"
+                         src="/esdoc/img/site-logo-ipsl.png"
+                         alt="Institut Pierre Simon Laplace"
+                         title="Institut Pierre Simon Laplace"
+                         lang="EN" />
+                </a>
+                <a href="http://badc.nerc.ac.uk"
+                   alt="British Atmospheric Data Centre (BADC)"
+                   title="The British Atmospheric Data Centre (BADC) is the Natural Environment Research Council's (NERC) Designated Data Centre for the Atmospheric Sciences."
+                   rel="external">
+                    <img class="logo"
+                         src="/esdoc/img/site-logo-badc.png"
+                         alt="The British Atmospheric Data Centre (BADC) is the Natural Environment Research Council's (NERC) Designated Data Centre for the Atmospheric Sciences."
+                         title="The British Atmospheric Data Centre (BADC) is the Natural Environment Research Council's (NERC) Designated Data Centre for the Atmospheric Sciences."
+                         lang="EN" />
+                </a>
+                <a href="http://www.dkrz.de/"
+                   alt="Deutsche Klimarechenzentrum (DKRZ)"
+                   title="The German Climate Computing Center is a national facility and a major partner for climate research."
+                   rel="external">
+                    <img class="logo"
+                         src="/esdoc/img/site-logo-dkrz.png"
+                         alt="The German Climate Computing Center is a national facility and a major partner for climate research."
+                         title="The German Climate Computing Center is a national facility and a major partner for climate research."
+                         lang="EN" />
+                </a>
+                <a href="https://is.enes.org/"
+                   alt="IS-ENES"
+                   title="InfraStructure for the European Network for the Earth System Modelling"
+                   rel="external">
+                    <img class="logo"
+                         src="/esdoc/img/site-logo-eu-isenes.png"
+                         alt="InfraStructure for the European Network for the Earth System Modelling "
+                         title="InfraStructure for the European Network for the Earth System Modelling "
+                         lang="EN" />
+                </a>
+                <a href="http://cordis.europa.eu/fp7/home_en.html"
+                   alt="FP7"
+                   title="European Commission"
+                   rel="external">
+                    <img class="logo"
+                         src="/esdoc/img/site-logo-ec.jpg"
+                         alt="FP7"
+                         title="European Commission"
+                         lang="EN" />
+                </a>
+            </div>
+        </div>
+
+        <!--*************************************************-->
+        <!-- Site Widgets                                    -->
+        <!--*************************************************-->
+        <div>
+            <div id="mfSiteProgress">
+                <div class="message ui-state-highlight ui-corner-all"></div>
+            </div>
+            <div id="mfSiteFeedback" class="ui-helper-hidden">
+                <div id="mfSiteFeedbackIcon" class="feedback-icon">Icon to go here</div>
+                <div id="mfSiteFeedbackText" class="feedback-text">Message text to go here</div>
+            </div>
+        </div>
+
+    </body>
+</html>

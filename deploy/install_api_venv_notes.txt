@@ -1,0 +1,10 @@
+0.  Decide upon target deployment:
+
+    0.1 ENV = test | prod
+
+    0.2 APP_ID = 1 | 2
+
+    0.3 APP_NAME = ENV + "_api" + APP_ID, e.g. prod_api4
+
+
+

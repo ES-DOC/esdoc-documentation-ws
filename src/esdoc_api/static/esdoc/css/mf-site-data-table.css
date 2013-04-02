@@ -1,0 +1,124 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * DataTables widget classes
+ */
+.dataTables_info {
+    width: 50%;
+    float: left;
+    padding: 5px 0px 0px 0px;
+}
+
+.dataTables_filter {
+    width: 50%;
+    float: right;
+    text-align: right;
+    padding: 0px 0px 0px 0px;
+}
+
+.dataTables_length {
+    width: 40%;
+    float: left;
+    padding: 4px 0px 0px 0px;
+}
+
+.dataTables_paginate {
+    width: auto;
+    float: right;
+    text-align: right;
+    padding: 8px 0px 0px 0px;
+}
+
+.dataTables_empty {
+    text-align: center;
+    
+    padding: 100px 0px 0px 0px;
+}
+
+.sorting_asc {
+    padding: 0px 0px 0px 0px;
+}
+
+.sorting_desc {
+    padding: 0px 0px 0px 0px;
+}
+
+.sorting {
+    padding: 0px 0px 0px 0px;
+}
+
+.css_right {
+    float: right;
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * DataTables table level classes
+ */
+table.mf-datatable thead th {
+    padding: 3px 0px 3px 0px;
+    cursor: pointer;
+}
+
+table.mf-datatable {
+    margin: 0 auto;
+    width: 100%;
+    clear: both;
+}
+
+table.mf-datatable tfoot th {
+    padding: 3px 10px;
+    border-top: 1px solid black;
+    font-weight: bold;
+}
+
+table.mf-datatable td {
+    padding: 3px 5px;
+}
+
+table.mf-datatable td.center {
+    text-align: center;
+}
+
+table.mf-datatable td.right {
+    text-align: right;
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * DataTables row level classes
+ */
+table.mf-datatable tr.even.row_selected td {
+	background-color: #B0BED9;
+}
+
+table.mf-datatable tr.odd.row_selected td {
+	background-color: #9FAFD1;
+}
+
+table.mf-datatable tbody tr.even:hover {
+	background-color: #fbec88;
+        cursor: pointer;
+}
+
+table.mf-datatable tbody tr.odd:hover {
+	background-color: #fbec88;
+        cursor: pointer;
+}
+
+table.mf-datatable tr.even:hover {
+	background-color: #fbec88;
+        cursor: pointer;
+}
+
+table.mf-datatable tr.odd:hover {
+	background-color: #fbec88;
+        cursor: pointer;
+}
+
+table.mf-datatable tr.selected {
+    background-color: #fbec88;
+}
+
+table.mf-datatable td.selected-details {
+    background-color: #fbec88;
+}
+

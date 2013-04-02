@@ -1,0 +1,35 @@
+/* ************************** */
+/*  Feedback specific           */
+/* ************************** */
+
+.feedback-text {
+    margin-top: 17px;
+}
+
+.feedback-text-information {
+    font-style: italic;
+}
+
+.feedback-text-help {
+    font-style: italic;
+}
+
+.feedback-text-confirmation {
+    font-style: italic;
+}
+
+.feedback-text-warning {
+    font-style: bold;
+}
+
+.feedback-text-error {
+    font-style: bold;
+}
+
+.feedback-icon {
+    width:32px;
+    height:32px;
+    margin-right: 10px;
+    margin-top: 10px;
+    float: left;
+}

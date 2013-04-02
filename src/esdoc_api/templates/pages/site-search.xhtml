@@ -1,0 +1,55 @@
+<!--*************************************************-->
+<!-- Page Mako function extensions                   -->
+<!--*************************************************-->
+
+<!--*************************************************-->
+<!-- Master template                                 -->
+<!--*************************************************-->
+<%inherit file="/master/master.xhtml"/>
+
+<!--*************************************************-->
+<!-- Page CSS Declaration                            -->
+<!--*************************************************-->
+<style>
+    .mf-search-criteria-toolbar_Basic {
+        margin-top: 7px;
+    }
+</style>
+
+<!--*************************************************-->
+<!-- Page JS Declaration                             -->
+<!--*************************************************-->
+${h.javascript_link('/esdoc/js/site/esdoc-site-repository-search.js')}
+
+<!--*************************************************-->
+<!-- Page XHTML Declaration                          -->
+<!--*************************************************-->
+<!-- Basic search-->
+<div id="mfSearch_Basic" class="ui-helper-hidden">
+    <div class="mf-search-criteria ui-state-highlight ui-corner-all">
+        <div class="mf-search-criteria-form mf-utilFloatLeft">
+            <!-- Ajax loaded on demand -->
+        </div>
+        <div class="mf-search-criteria-toolbar mf-search-criteria-toolbar_Basic">
+            <button title="Search" class="mf-search-button">Search</button>
+            <button title="Reset" class="mf-search-reset-button">Reset</button>
+        </div>
+    </div>
+    <div id="mfSearch_BasicTabs" class="mf-search-results-tabs">
+        <ul>
+            <li><a href="#mfSearch_BasicResults" id="mfSearchResultTabData">Data</a></li>
+            <li><a href="#mfSearch_BasicResults" id="mfSearchResultTabEnsembles">Ensembles</a></li>
+            <li><a href="#mfSearch_BasicResults" id="mfSearchResultTabExperiments">Experiments</a></li>
+            <li><a href="#mfSearch_BasicResults" id="mfSearchResultTabGrids">Grids</a></li>
+            <li><a href="#mfSearch_BasicResults" id="mfSearchResultTabModels">Models</a></li>
+            <li><a href="#mfSearch_BasicResults" id="mfSearchResultTabPlatforms">Platforms</a></li>
+            <li><a href="#mfSearch_BasicResults" id="mfSearchResultTabQuality">Data</a></li>
+            <li><a href="#mfSearch_BasicResults" id="mfSearchResultTabSimulations">Simulations</a></li>
+        </ul>
+    </div>
+    <span id="mfSearch_BasicResults">
+        <div class="mf-search-results ui-corner-all">
+            <!-- Ajax loaded on demand -->
+        </div>
+    </span>
+</div><!--end Basic search-->
