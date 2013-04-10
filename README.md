@@ -4,7 +4,7 @@ esdoc-api - ES-DOC Application Programming Interface (API).
 What is ES-DOC ?
 --------------------------------------
 
-ES-DOC stands for Earth Science - Documentation.  It's goal is to provide software tools and services in order to support the distribution of earth science documentation.
+ES-DOC stands for Earth System - Documentation.  It's goal is to provide software tools and services in order to support the distribution of earth system documentation.
 
 
 What is esdoc-api ?
