@@ -18,6 +18,8 @@ from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.models.daos.document_representation import load as load_representation
+
 
 
 class QueryController(BaseAPIController):
@@ -59,6 +61,7 @@ class QueryController(BaseAPIController):
         if code is None:
             self.__abort(HTTP_RESPONSE_BAD_REQUEST, 'Project code is unspecified')
 
+        # Load from cache.
         project = c.get_project(code)
 
         # 406 if not found.
@@ -82,6 +85,7 @@ class QueryController(BaseAPIController):
         if code is None:
             self.__abort(HTTP_RESPONSE_BAD_REQUEST, 'Institute code is unspecified')
 
+        # Load from cache.
         institute = c.get_institute(code)
 
         # 406 if not found.
@@ -101,12 +105,10 @@ class QueryController(BaseAPIController):
         :rtype: string
 
         """
-        representation = DocumentRepresentation.retrieve(document,
-                                                         self.cim_schema,
-                                                         self.cim_encoding,
-                                                         self.cim_language)
-
-        return None if representation is None else representation.Representation
+        return load_representation(document,
+                                   self.cim_schema,
+                                   self.cim_encoding,
+                                   self.cim_language)
 
 
     def __load_representation_set(self, document_set):
@@ -120,11 +122,9 @@ class QueryController(BaseAPIController):
 
         """
         representation_set = []
-
         if document_set is not None:
-            for document in document_set:
-                representation_set.append(self.__load_representation(document))
-
+            representation_set = [self.__load_representation(d) for d in document_set]
+            
         return [r for r in representation_set if r is not None]
 
 

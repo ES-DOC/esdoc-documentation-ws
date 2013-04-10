@@ -1,9 +1,6 @@
 """Connects to the database so that data-access operations can be executed.
 
 """
-"""Connect to CIM postgres database for use in scripting sessions.
-
-"""
 
 # Module imports.
 import logging

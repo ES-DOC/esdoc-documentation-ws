@@ -48,7 +48,7 @@ def render_body(context,**pageargs):
         # SOURCE LINE 17
         __M_writer(u'\n\n<!--*************************************************-->\n<!-- Page CSS Declaration                            -->\n<!--*************************************************-->\n\n<!--*************************************************-->\n<!-- Page JS Declaration                             -->\n<!--*************************************************-->\n')
         # SOURCE LINE 26
-        __M_writer(escape(h.javascript_link('/esdoc/js/site/esdoc-site-ingestion-history.js')))
+        __M_writer(escape(h.javascript_link('/js/site/esdoc-site-ingestion-history.js')))
         __M_writer(u'\n\n<!--*************************************************-->\n<!-- Page XHTML Declaration                          -->\n<!--*************************************************-->\n<!-- Ingest History -->\n<div class="ui-corner-all">\n    <table cellpadding="0" cellspacing="0" border="0"  style="width: 100%;" class="mf-datatable">\n        <thead>\n            <tr>\n                <!-- Data Columns -->\n                <th title="Institute">Institute</th>\n                <th title="Ingest Source">Source</th>\n                <th title="Ingest Feed URL">Feed URL</th>\n                <th title="Ingest Date">Date</th>\n                <th title="Ingest Count">Count</th>\n                <th title="Ingest Status">Status</th>\n            </tr>\n        </thead>\n        <tbody>\n')
         # SOURCE LINE 46
         for item in c.ingest_history:

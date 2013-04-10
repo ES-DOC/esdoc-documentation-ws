@@ -72,13 +72,6 @@ def cmip5_dataset_id_query(project, id):
                                  id.experiment,
                                  id.ensemble))
 
-    print(str(len(result)))
-    if len(result) > 0:
-        print('ZZZ')
-        print result[0]
-    else:
-        print('XXX')
-
     # Source 2 : From model, experiment (if DRS returned nothing).
     if len(result) == 0:
         get = Document.retrieve_by_name
