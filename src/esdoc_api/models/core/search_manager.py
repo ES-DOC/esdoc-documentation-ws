@@ -4,7 +4,7 @@
 
 # Module imports.
 from esdoc_api.lib.utils.cim_exception import CIMException
-from esdoc_api.models.core.search_base import CIMSearchBase
+from esdoc_api.models.core.search_base import ESDOCSearchBase
 
 
 # Module exports.
@@ -25,15 +25,15 @@ class SearchManager(object):
         :param type: Type of search being executed.
         :param params: Search criteria.
 
-        :type type: subclass of models.core.CIMSearchBase
+        :type type: subclass of models.core.ESDOCSearchBase
         :type params: dict
 
         """
         # Defensive programming.
         if type is None:
             raise CIMException("Search type is unspecified.")
-        if issubclass(type, CIMSearchBase) == False:
-            raise CIMException("Search type must derive from models.core.CIMSearchBase.")
+        if issubclass(type, ESDOCSearchBase) == False:
+            raise CIMException("Search type must derive from models.core.ESDOCSearchBase.")
 
         # Initialise.
         self.handler = type()

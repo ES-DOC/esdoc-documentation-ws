@@ -6,27 +6,21 @@
 from esdoc_api.models.search.s1 import S1Search
 
 
-# Module exports.
-__all__ = [
-    'get_type'
-]
-
-
 # Managed collection of types being exposed to http.
 _types = {}
 
 
 def _register_type(type):
-    """Registers an entity type.
+    """Registers a type to be exposed to http.
 
     :param type: Type being registered.
-    :type type: subclass of either models.core.CIMEntity or models.core.CIMSearch
+    :type type: subclass of either models.core.ESDOCEntity or models.core.CIMSearch
 
     """
     _types[type.__name__.upper()] = type
 
 
-# Register set of search types.
+# Register search types.
 _register_type(S1Search)
 
 
@@ -35,6 +29,9 @@ def get_type(type_name):
 
     :param type_name: Name of a registered type.
     :type type_name: str
+
+    :returns: A registered type.
+    :rtype: 
 
     """
     try:

@@ -7,7 +7,7 @@ from elixir import *
 from esdoc_api.models.core.entity_base import *
 
 
-class Institute(CIMEntity):
+class Institute(ESDOCEntity):
     """
     An institute leveraging the Metafor infrastructure.
     """

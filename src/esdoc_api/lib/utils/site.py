@@ -5,8 +5,8 @@ Encapsulates site level meta-info typicallly used in the master page.
 # Module imports.
 from datetime import datetime
 
-from esdoc_api.lib.site.site_node import SiteNode
-from esdoc_api.lib.site.site_node import NODE_TYPE_SITE
+from esdoc_api.lib.utils.site_node import SiteNode
+from esdoc_api.lib.utils.site_node import NODE_TYPE_SITE
 
 
 class Site(SiteNode):

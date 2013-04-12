@@ -3,7 +3,7 @@ from elixir import *
 
 from esdoc_api.models import meta
 from esdoc_api.lib.controllers.cache_data import *
-from esdoc_api.lib.site import *
+
 
 Session = elixir.session = meta.Session
 metadata = elixir.metadata

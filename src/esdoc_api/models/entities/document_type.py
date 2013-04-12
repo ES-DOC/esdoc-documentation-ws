@@ -15,7 +15,7 @@ __all__ = ['DocumentType']
 
 
 
-class DocumentType(CIMEntity):
+class DocumentType(ESDOCEntity):
     """CIM document type information.
     
     """

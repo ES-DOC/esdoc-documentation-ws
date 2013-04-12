@@ -13,7 +13,7 @@ from esdoc_api.lib.pycim.cim_constants import *
 __all__ = ['DocumentSubDocument']
 
 
-class DocumentSubDocument(CIMEntity):
+class DocumentSubDocument(ESDOCEntity):
     """
     A cim document.
     """

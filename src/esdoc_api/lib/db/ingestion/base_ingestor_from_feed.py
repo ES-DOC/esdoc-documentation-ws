@@ -16,11 +16,11 @@ import feedparser
 from lxml import etree as et
 
 from esdoc_api.lib.db.ingestion.base_ingestor import IngestorBase
-from esdoc_api.models.entities import *
 from esdoc_api.lib.pycim.cim_constants import *
 from esdoc_api.lib.pycim.cim_serializer import decode as pycim_decoder
 from esdoc_api.lib.pycim.cim_serializer import encode as pycim_encoder
-
+from esdoc_api.models.entities import *
+from esdoc_api.models.daos.document_representation import assign as assign_representation
 
 
 
@@ -268,18 +268,18 @@ class FeedIngestorBase(IngestorBase):
         :type representation: unicode
         
         """
-        # Encode pycim object (if necessary).
+        # Encode (if necessary).
         if representation is None:
             representation = pycim_encoder(document.pycim_doc,
                                            self.cim_schema.Version,
                                            encoding)
 
-        # Either update or insert into db as appropriate.
-        DocumentRepresentation.assign(document,
-                                      self.cim_schema,
-                                      self.get_cim_encoding(encoding),
-                                      self.cim_language,
-                                      representation)
+        # Assign representation to document.
+        assign_representation(document,
+                              self.cim_schema,
+                              self.get_cim_encoding(encoding),
+                              self.cim_language,
+                              representation)
 
 
     def set_document_indexes(self, document):

@@ -17,7 +17,7 @@ class SearchContext(object):
         """Constructor.
 
         :param criteria: Search criteria.
-        :type criteria: A subclass of models.core.CIMSearchCriteriaBase
+        :type criteria: A subclass of models.core.ESDOCSearchCriteriaBase
 
         """
         self.c = criteria

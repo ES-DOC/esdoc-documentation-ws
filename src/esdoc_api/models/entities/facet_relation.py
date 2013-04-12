@@ -10,7 +10,7 @@ from esdoc_api.models.core.entity_base import *
 
 
 
-class FacetRelation(CIMEntity):
+class FacetRelation(ESDOCEntity):
     """CIM document facet relation information.
 
     """

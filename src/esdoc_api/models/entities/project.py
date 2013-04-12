@@ -7,7 +7,7 @@ from elixir import *
 from esdoc_api.models.core.entity_base import *
 
 
-class Project(CIMEntity):
+class Project(ESDOCEntity):
     """A project leveraging the Metafor infrastructure.
     
     """

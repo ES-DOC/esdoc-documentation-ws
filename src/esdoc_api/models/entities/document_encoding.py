@@ -9,7 +9,7 @@ from esdoc_api.models.core.entity_base import *
 from esdoc_api.lib.pycim.cim_constants import *
 
 
-class DocumentEncoding(CIMEntity):
+class DocumentEncoding(ESDOCEntity):
     """
     A type of supported document encoding.
     """

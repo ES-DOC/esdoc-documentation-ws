@@ -5,7 +5,7 @@ Encapsulates entity conversion functions available to all Metafor entities.
 # Module imports.
 import unittest
 from esdoc_api.lib.db.pgres.connect import *
-from esdoc_api.models.entities.base_entity import CIMEntity
+from esdoc_api.models.entities.base_entity import ESDOCEntity
 from esdoc_api.models.entities.entity_convertor import EntityConvertor
 from cim_components_test.entity.entity_factory import EntityFactory
 
@@ -29,7 +29,7 @@ class EntityTester(object):
             # Create instance.
             x = entity_cls()
             assert x is not None
-            assert isinstance(x, CIMEntity) == True
+            assert isinstance(x, ESDOCEntity) == True
             assert isinstance(x, entity_cls) == True
 
             # Create test instance.

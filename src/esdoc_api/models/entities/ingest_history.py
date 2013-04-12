@@ -9,7 +9,7 @@ from esdoc_api.models.core.entity_base import *
 from esdoc_api.models.entities.ingest_state import IngestState
 
 
-class IngestHistory(CIMEntity):
+class IngestHistory(ESDOCEntity):
     """
     An ingest history record.
     """

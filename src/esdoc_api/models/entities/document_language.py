@@ -11,7 +11,7 @@ from esdoc_api.lib.pycim.cim_constants import *
 
 
 
-class DocumentLanguage(CIMEntity):
+class DocumentLanguage(ESDOCEntity):
     """
     A language under which a document is published.
     """

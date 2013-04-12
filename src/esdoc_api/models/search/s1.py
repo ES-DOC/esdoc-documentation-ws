@@ -5,8 +5,8 @@
 # Module imports.
 from datetime import datetime as dt
 
-from esdoc_api.models.core.search_base import CIMSearchBase
-from esdoc_api.models.core.search_base import CIMSearchCriteriaBase
+from esdoc_api.models.core.search_base import ESDOCSearchBase
+from esdoc_api.models.core.search_base import ESDOCSearchCriteriaBase
 from esdoc_api.models.entities.document import Document
 from esdoc_api.models.entities.document_language import DocumentLanguage
 from esdoc_api.models.entities.document_summary import DocumentSummary
@@ -15,15 +15,9 @@ from esdoc_api.models.entities.project import Project
 from esdoc_api.lib.pycim.cim_constants import *
 
 
-# Module exports.
-__all__ = [
-    'S1Search',
-    'S1SearchCriteria'
-]
 
 
-
-class S1Search(CIMSearchBase):
+class S1Search(ESDOCSearchBase):
     """Encapsulates a basic search over cim repository.
 
     """
@@ -143,7 +137,7 @@ class S1Search(CIMSearchBase):
 
 
 
-class S1SearchCriteria(CIMSearchCriteriaBase):
+class S1SearchCriteria(ESDOCSearchCriteriaBase):
     """Search criteria.
 
     """

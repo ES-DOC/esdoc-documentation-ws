@@ -21,7 +21,7 @@ __all__ = ['Document']
 
 
 
-class Document(CIMEntity):
+class Document(ESDOCEntity):
     """
     A cim document.
     """

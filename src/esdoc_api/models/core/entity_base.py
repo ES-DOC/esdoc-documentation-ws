@@ -17,7 +17,7 @@ DB_SCHEMA_VOCAB = 'vocab'
 DB_SCHEMA_FACETS = 'facets'
 
 
-class CIMEntity(Entity):
+class ESDOCEntity(Entity):
     """
     A base entity encapsulating common aspects of CIM related entities.
     """

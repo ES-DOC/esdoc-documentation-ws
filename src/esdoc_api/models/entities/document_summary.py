@@ -15,7 +15,7 @@ __all__ = ['DocumentSummary']
 
 
 
-class DocumentSummary(CIMEntity):
+class DocumentSummary(ESDOCEntity):
     """
     Summary information pertaining to a cim document.
     """

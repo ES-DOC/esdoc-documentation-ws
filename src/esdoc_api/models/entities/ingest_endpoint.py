@@ -10,7 +10,7 @@ from elixir import *
 from esdoc_api.models.core.entity_base import *
 
 
-class IngestEndpoint(CIMEntity):
+class IngestEndpoint(ESDOCEntity):
     """
     Encapsulates required information in support of an ingestion process.
     """

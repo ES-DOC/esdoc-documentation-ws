@@ -14,7 +14,7 @@ EXECUTION_STATE_COMPLETE = u"COMPLETE"
 EXECUTION_STATE_ERROR = u"ERROR"
 
 
-class IngestState(CIMEntity):
+class IngestState(ESDOCEntity):
     """
     The state that a ingest process may be in, i.e. InProgress, Queued, Error...etc.
     """

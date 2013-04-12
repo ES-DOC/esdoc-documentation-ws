@@ -64,7 +64,7 @@ ID_OF_FACET_RELATION_FROM_PROPERTY_2_PROPERTY = 7
 ID_OF_FACET_RELATION_FROM_PROPERTY_2_VALUE = 8
 
 
-class FacetRelationType(CIMEntity):
+class FacetRelationType(ESDOCEntity):
     """CIM document facet relation type information.
 
     """

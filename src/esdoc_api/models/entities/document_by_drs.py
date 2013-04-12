@@ -18,7 +18,7 @@ __all__ = ['DocumentByDRS']
 _DRS_SPLIT = '/'
 
 
-class DocumentByDRS(CIMEntity):
+class DocumentByDRS(ESDOCEntity):
     """A cim document drs indexing table.
     
     """

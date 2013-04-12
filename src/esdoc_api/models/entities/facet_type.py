@@ -68,7 +68,7 @@ ID_OF_FACET_PROPERTY = 4
 ID_OF_FACET_VALUE = 5
 
 
-class FacetType(CIMEntity):
+class FacetType(ESDOCEntity):
     """CIM document facet type information.
 
     """

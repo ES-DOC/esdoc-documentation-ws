@@ -9,7 +9,7 @@ from sqlalchemy import UniqueConstraint
 from esdoc_api.models.core.entity_base import *
 
 
-class DocumentRepresentation(CIMEntity):
+class DocumentRepresentation(ESDOCEntity):
     """
     A document representation in a supported encoding.
     """

@@ -11,7 +11,7 @@ from esdoc_api.models.core.entity_base import *
 
 
 
-class IngestURL(CIMEntity):
+class IngestURL(ESDOCEntity):
     """
     A url that has already been ingested.
     """

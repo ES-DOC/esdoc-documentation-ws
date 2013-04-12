@@ -13,7 +13,7 @@ from esdoc_api.models.core.entity_base import *
 __all__ = ['Facet']
 
 
-class Facet(CIMEntity):
+class Facet(ESDOCEntity):
     """CIM document facet information.
 
     """

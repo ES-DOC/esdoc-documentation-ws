@@ -1,13 +1,13 @@
 """
 Creates & returns set of node supported across the site.
 """
-from esdoc_api.lib.site.site_node import NODE_TYPE_PAGE_ACTION
+from esdoc_api.lib.utils.site_node import NODE_TYPE_PAGE_ACTION
 import site
 
 # Module imports.
 import string
-from esdoc_api.lib.site.site import Site
-from esdoc_api.lib.site.site_node import *
+from esdoc_api.lib.utils.site import Site
+from esdoc_api.lib.utils.site_node import *
 
 
 def _create_section_for_about(site):

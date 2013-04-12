@@ -9,7 +9,6 @@
 """
 
 # Module imports.
-from esdoc_api.models.entities.document_representation import DocumentRepresentation
 from esdoc_api.lib.utils.http_utils import HTTP_RESPONSE_NOT_ACCEPTABLE
 from pylons.decorators import rest
 
@@ -19,6 +18,9 @@ from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.pycim.cim_constants import *
 from esdoc_api.lib.pycim.cim_serializer import decode as decode_cim
 from esdoc_api.lib.pycim.cim_serializer import encode as encode_cim
+from esdoc_api.models.daos.document_representation import assign as assign_representation
+from esdoc_api.models.daos.document_representation import load as load_representation
+from esdoc_api.models.daos.document_representation import remove_all as delete_representations
 
 
 
@@ -118,13 +120,13 @@ class PublishController(BaseAPIController):
             representation = encode_cim(doc_obj,
                                         self.cim_schema.Version,
                                         encoding)
-                                        
-        # Either update or insert into db as appropriate.
-        DocumentRepresentation.assign(doc,
-                                      self.cim_schema,
-                                      c.get_cim_encoding(encoding),
-                                      self.cim_language,
-                                      representation)
+
+        # Assign representation to document.
+        assign_representation(doc,
+                              self.cim_schema,
+                              c.get_cim_encoding(encoding),
+                              self.cim_language,
+                              representation)
 
     
     def _instance_retrieve(self, project, uid, version):
@@ -158,11 +160,11 @@ class PublishController(BaseAPIController):
         if doc is None:
             abort(HTTP_RESPONSE_NOT_FOUND, 'CIM Document Not Found')
 
-        # Load document representation.
-        representation = DocumentRepresentation.load(doc,
-                                                     self.cim_schema,
-                                                     self.cim_encoding,
-                                                     self.cim_language)
+        # Load representation.
+        representation = load_representation(doc,
+                                             self.cim_schema,
+                                             self.cim_encoding,
+                                             self.cim_language)
 
         # Set response content type.
         response.content_type = self.get_response_content_type()
@@ -204,7 +206,7 @@ class PublishController(BaseAPIController):
 
         # Delete relations.
         DocumentSetDocument.remove_all(doc)
-        DocumentRepresentation.remove_all(doc)
+        delete_representations(doc)
         DocumentSummary.remove_all(doc)
 
         # Delete instance.

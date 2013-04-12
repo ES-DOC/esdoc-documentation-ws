@@ -13,7 +13,7 @@ __all__ = ['DocumentByExternalID']
 
 
 
-class DocumentByExternalID(CIMEntity):
+class DocumentByExternalID(ESDOCEntity):
     """The external id of a cim document.
     
     """

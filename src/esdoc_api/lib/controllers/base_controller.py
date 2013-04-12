@@ -50,7 +50,6 @@ from lxml import etree as et
 from esdoc_api.lib.utils.helpers import *
 import esdoc_api.lib.utils.helpers as h
 from esdoc_api.lib.controllers.cache_data import CacheData
-from esdoc_api.lib.site import *
 from esdoc_api.models import *
 from esdoc_api.models.entities import *
 from esdoc_api.models.search import *

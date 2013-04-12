@@ -3,7 +3,6 @@
 """
 
 # Module imports.
-import abc
 from abc import ABCMeta
 from abc import abstractmethod
 from abc import abstractproperty
@@ -11,15 +10,9 @@ from abc import abstractproperty
 from esdoc_api.models.core.search_context import SearchContext
 
 
-# Module exports.
-__all__ = [
-    'CIMSearchBase',
-    'CIMSearchCriteriaBase'
-]
 
 
-
-class CIMSearchBase(object):
+class ESDOCSearchBase(object):
     """Base class for all search handlers.
 
     """
@@ -113,7 +106,7 @@ class CIMSearchBase(object):
         return ctx.r
 
 
-class CIMSearchCriteriaBase(object):
+class ESDOCSearchCriteriaBase(object):
     """Encapsulates behaviours common to all search criteria.
 
     """

@@ -15,7 +15,7 @@ __all__ = ['DocumentSchema']
 
 
 
-class DocumentSchema(CIMEntity):
+class DocumentSchema(ESDOCEntity):
     """CIM document schema information.
     
     """
