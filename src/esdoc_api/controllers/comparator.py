@@ -111,6 +111,7 @@ class ComparatorController(BaseAPIController):
 
     @rest.restrict('GET')
     @jsonify
+    @beaker_cache(type='memory', query_args=True, expire=86400)
     def get_setup_data(self, project_code, comparator_type):
         """Returns document matched by project, type, version and language.
 

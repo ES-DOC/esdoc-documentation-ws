@@ -16,11 +16,4 @@ class Globals(object):
 
         """
         self.cache = CacheManager(**parse_cache_config_options(config))
-        
 
-    @property
-    def site_version(self):
-        """Gets site version number.
-
-        """
-        return '0.8.6.3'

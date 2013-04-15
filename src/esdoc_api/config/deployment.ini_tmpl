@@ -18,7 +18,6 @@ port = 8080
 use = egg:esdoc_api
 full_stack = true
 static_files = true
-site_version=1.0b1
 
 cache_dir = %(here)s/data
 beaker.session.key = esdoc_api

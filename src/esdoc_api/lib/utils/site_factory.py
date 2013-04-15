@@ -24,7 +24,7 @@ def create_site_map(path, role='public'):
     """Factory method to return a virtual model of the CIM web-site.
 
     """
-    site = Site("ES-DOC API", '0.8.6.3', role)
+    site = Site("ES-DOC API", '0.8.7.0', role)
     
     _create_section_for_about(site)
     _create_section_for_ingestion(site)
