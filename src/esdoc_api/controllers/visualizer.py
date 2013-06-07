@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.controllers.visualizer
+.. module:: esdoc_api.controllers.visualizer
    :platform: Unix, Windows
    :synopsis: Encapsulates visualizer setup operations.
 
@@ -15,7 +15,7 @@ from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.db.facets.utils import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 from esdoc_api.models.entities.facet_type import (
     MODEL,
     MODEL_COMPONENT,
@@ -62,7 +62,7 @@ class VisualizerController(BaseAPIController):
 
     """
     @property
-    def validate_cim_info(self):
+    def validate_doc_request_info(self):
         """Gets flag indicating whether cim http request information should be validated or not.
         
         """

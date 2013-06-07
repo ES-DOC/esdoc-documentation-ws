@@ -16,9 +16,11 @@ import feedparser
 from lxml import etree as et
 
 from esdoc_api.lib.db.ingestion.base_ingestor import IngestorBase
-from esdoc_api.lib.pycim.cim_constants import *
-from esdoc_api.lib.pycim.cim_serializer import decode as pycim_decoder
-from esdoc_api.lib.pycim.cim_serializer import encode as pycim_encoder
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc import (
+    decode as pyesdoc_decoder,
+    encode as pyesdoc_encoder
+    )
 from esdoc_api.models.entities import *
 from esdoc_api.models.daos.document_representation import assign as assign_representation
 
@@ -196,8 +198,11 @@ class FeedIngestorBase(IngestorBase):
         self.max_ingest_count = fr.entry_count
 
         # Read feed.
-        while (self.can_ingest() and fr.can_read()):
+        while self.can_ingest() and fr.can_read():
             fr.read(self.on_ingest_callback, session)
+
+        # Invoke feed parsed callback.
+        self.on_feed_ingested()
             
 
     def on_ingest_callback(self, url, content):
@@ -226,6 +231,14 @@ class FeedIngestorBase(IngestorBase):
         """
         pass
     
+
+    @abstractmethod
+    def on_feed_ingested(self):
+        """Callback invoked when a feed has been ingested.
+
+        """
+        pass
+
 
     def get_cim_encoding(self, encoding):
         """Returns cim encoding entity from cached collection.
@@ -270,9 +283,9 @@ class FeedIngestorBase(IngestorBase):
         """
         # Encode (if necessary).
         if representation is None:
-            representation = pycim_encoder(document.pycim_doc,
-                                           self.cim_schema.Version,
-                                           encoding)
+            representation = pyesdoc_encoder(document.as_obj,
+                                             self.cim_schema.Version,
+                                             encoding)
 
         # Assign representation to document.
         assign_representation(document,
@@ -292,19 +305,21 @@ class FeedIngestorBase(IngestorBase):
         DocumentByExternalID.create(document, first_only=True)
                                       
 
-    def create_document(self, etree, nsmap, pycim_doc):
+    def create_document(self, etree, nsmap, as_obj):
         """Creates a cim document.
 
         :param etree: Document xml etree.
-        :param nsmap: Document xml namespace map.
-        :param pycim_doc: pycim document representation.
         :type etree: lxml.etree
+        
+        :param nsmap: Document xml namespace map.
         :type nsmap: dict
-        :type pycim_doc: pycim.object
+
+        :param as_obj: pyesdoc document representation.
+        :type as_obj: pyesdoc.object
         
         """
         # Create document, representations, summary.
-        document = Document.create(self.cim_project, self.endpoint, pycim_doc)
+        document = Document.create(self.cim_project, self.endpoint, as_obj)
         self.set_document_representations(document, etree)
         document.Summaries.append(DocumentSummary.create(document, self.cim_language))
 
@@ -330,20 +345,20 @@ class FeedIngestorBase(IngestorBase):
 
         """
         # Deserialize.
-        pycim_doc = pycim_decoder(etree, CIM_SCHEMA_1_5, CIM_ENCODING_XML)
+        as_obj = pyesdoc_decoder(etree, CIM_SCHEMA_1_5, CIM_ENCODING_XML)
     
-        # Assign cim info attributes.
-        pycim_doc.cim_info.project = self.cim_project.Name
-        pycim_doc.cim_info.source = self.endpoint.MetadataSource
+        # Assign doc info attributes.
+        as_obj.cim_info.project = self.cim_project.Name
+        as_obj.cim_info.source = self.endpoint.MetadataSource
 
         # Call post deserialization callback.
         if on_deserialize is not None:
-            on_deserialize(pycim_doc, etree, nsmap)
+            on_deserialize(as_obj, etree, nsmap)
 
         # Retrieve / create as appropriate.
-        document = Document.retrieve(self.cim_project, pycim_doc)
+        document = Document.retrieve(self.cim_project, as_obj)
         if document is None:
-            document = self.create_document(etree, nsmap, pycim_doc)
+            document = self.create_document(etree, nsmap, as_obj)
 
         return document
     

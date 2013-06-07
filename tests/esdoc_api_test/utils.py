@@ -8,9 +8,9 @@ import sys
 
 from lxml import etree as et
 
-from esdoc_api.lib.pycim.cim_constants import CIM_DEFAULT_ENCODING
-from esdoc_api.lib.pycim.cim_constants import CIM_DEFAULT_LANGUAGE
-from esdoc_api.lib.pycim.cim_constants import CIM_DEFAULT_SCHEMA
+from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_DEFAULT_ENCODING
+from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_DEFAULT_LANGUAGE
+from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_DEFAULT_SCHEMA
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
 

@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.controllers.publish
+.. module:: esdoc_api.controllers.publish
    :platform: Unix, Windows
    :synopsis: Encapsulates document instance publishing operations.
 
@@ -15,12 +15,16 @@ from pylons.decorators import rest
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
-from esdoc_api.lib.pycim.cim_constants import *
-from esdoc_api.lib.pycim.cim_serializer import decode as decode_cim
-from esdoc_api.lib.pycim.cim_serializer import encode as encode_cim
-from esdoc_api.models.daos.document_representation import assign as assign_representation
-from esdoc_api.models.daos.document_representation import load as load_representation
-from esdoc_api.models.daos.document_representation import remove_all as delete_representations
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.serialization import (
+    decode as decode_cim,
+    encode as encode_cim
+    )
+from esdoc_api.models.daos.document_representation import (
+    assign as assign_representation,
+    load as load_representation,
+    remove_all as delete_representations
+    )
 
 
 
@@ -29,7 +33,7 @@ class PublishController(BaseAPIController):
 
     """
     @property
-    def validate_cim_info(self):
+    def validate_doc_request_info(self):
         """Gets flag indicating whether cim http request information should be validated or not.
         
         """
@@ -102,22 +106,25 @@ class PublishController(BaseAPIController):
                                   representation=doc_xml)
 
 
-    def __set_representation(self, doc, doc_obj, encoding, representation=None):
+    def __set_representation(self, doc, as_obj, encoding, representation=None):
         """Sets a document representation.
 
         :param doc: Document.
-        :param doc_obj: Document as an object.
-        :param encoding: Document encoding.
-        :param representation: Document representation.
         :type doc: esdoc_api.models.Document
-        :type doc_obj: object
+
+        :param as_obj: Document as a pyesdoc object.
+        :type as_obj: object
+
+        :param encoding: Document encoding.
         :type encoding: esdoc_api.models.DocumentEncoding
+
+        :param representation: Document representation.
         :type representation: Document representation (e.g. xml | json).
 
         """
-        # Deserialze pycim object (if necessary).
+        # Deserialze pyesdoc object (if necessary).
         if representation is None:
-            representation = encode_cim(doc_obj,
+            representation = encode_cim(as_obj,
                                         self.cim_schema.Version,
                                         encoding)
 

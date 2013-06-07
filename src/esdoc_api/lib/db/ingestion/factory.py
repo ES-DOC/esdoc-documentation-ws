@@ -9,7 +9,7 @@
 """
 
 # Module imports.
-from esdoc_api.lib.utils.cim_exception import CIMException
+from esdoc_api.lib.utils.exception import ESDOCAPIException
 from esdoc_api.lib.db.ingestion.ingestors.from_cmip5_quality_control import FromCMIP5QualityControlIngestor
 from esdoc_api.lib.db.ingestion.ingestors.from_cmip5_questionnaire import FromCMIP5QuestionnaireIngestor
 from esdoc_api.lib.db.ingestion.ingestors.from_dcmip2012 import FromDCMIP2012Ingestor
@@ -32,7 +32,8 @@ def create_ingestor(endpoint):
     
     """
     if endpoint.IngestorType not in _ingestor_types:
-        raise CIMException(u"Unsupported ingestor :: {0}.".format(type))
+        raise ESDOCAPIException(u"Unsupported ingestor :: {0}.".format(type))
 
     print "Creating ingestor :: {0} (endpoint = {1}).".format(endpoint.IngestorType, endpoint.IngestURL)
     return _ingestor_types[endpoint.IngestorType](endpoint)
+

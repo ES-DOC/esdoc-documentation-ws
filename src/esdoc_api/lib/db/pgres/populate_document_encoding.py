@@ -5,7 +5,7 @@
 
 # Module imports.
 from esdoc_api.models.entities.document_encoding import DocumentEncoding
-from esdoc_api.lib.pycim.cim_constants import CIM_ENCODINGS
+from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_ENCODINGS
 
 
 # Module exports.

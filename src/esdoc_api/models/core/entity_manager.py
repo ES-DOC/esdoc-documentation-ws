@@ -7,7 +7,7 @@ import simplejson
 from StringIO import StringIO
 
 from esdoc_api.models.core.entity_base import ESDOCEntity
-from esdoc_api.lib.utils.cim_exception import CIMException
+from esdoc_api.lib.utils.exception import ESDOCAPIException
 
 
 
@@ -29,9 +29,9 @@ class EntityManager(object):
 
         # Validate type info.
         if self.__type is None:
-            raise CIMException("Entity type is unspecified.")
+            raise ESDOCAPIException("Entity type is unspecified.")
         if issubclass(self.__type, ESDOCEntity) == False:
-            raise CIMException("Entity type must derive from CIMException.")
+            raise ESDOCAPIException("Entity type must derive from ESDOCAPIException.")
 
         # Load instance.
         if load_instance == True:

@@ -12,7 +12,7 @@ def _component_predicate(c):
     """Determines whether a component is in scope or not.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: A flag indicating whether the component is in scope or not for further processing.
     :rtype: bool
@@ -25,7 +25,7 @@ def _property_predicate(p):
     """Determines whether a component property is in scope or not.
 
     :param p: A model component property.
-    :type p: pycim.v1.software.ComponentProperty
+    :type p: pyesdoc.ontologies.cim.v1.software.ComponentProperty
 
     :returns: A flag indicating whether the component property is in scope or not for further processing.
     :rtype: bool
@@ -58,13 +58,13 @@ def _reduce_properties(memo, c, p_tree, parent=None):
     :type memo: list
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
     
     :param p_tree: Set of component properties.
     :type p_tree: list
 
     :param parent: The parent property.
-    :type parent: pycim.v1.software.ComponentProperty
+    :type parent: pyesdoc.ontologies.cim.v1.software.ComponentProperty
 
     :returns: A set of component properties.
     :rtype: list
@@ -90,7 +90,7 @@ def _reduce_components(memo, c_tree, parent=None):
     :type c_tree: list
 
     :param parent: The parent component.
-    :type parent: pycim.v1.software.ModelComponent
+    :type parent: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: A set of components.
     :rtype: list
@@ -110,7 +110,7 @@ def reduce(m):
     """Performs a reduce (fold) over a model in readiness for later processing.
 
     :param m: A model component.
-    :type m: pycim.v1.software.ModelComponent
+    :type m: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: A tuple containing the model and it's reduced components.
     :rtype: tuple

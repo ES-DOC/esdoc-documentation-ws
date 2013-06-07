@@ -67,12 +67,20 @@ class ESDOCEntity(Entity):
 
 
     @classmethod
+    def get_by_name(cls, name):
+        """Gets entity instance by name.
+        
+        """
+        return cls.get_by(Name=name)
+
+
+    @classmethod
     def get_sorted(cls, collection, sort_key=None):
         """
         Gets sorted collection of instances.
         """
         if sort_key is None:
-            sort_key=cls.get_default_sort_key()
+            sort_key = cls.get_default_sort_key()
         return sorted(collection, key=sort_key, reverse=True)
 
 

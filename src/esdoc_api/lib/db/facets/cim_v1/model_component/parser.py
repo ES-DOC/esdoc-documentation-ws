@@ -11,7 +11,7 @@
 # Module imports.
 import types
 
-from esdoc_api.lib.pycim.v1_5.types.software.component_property import ComponentProperty
+from esdoc_api.lib.pyesdoc.ontologies.cim.v1_5.types.software.component_property import ComponentProperty
 
 
 
@@ -31,7 +31,7 @@ def _set_core_property(p_tree, values, name, description):
     :type description: str
 
     :returns: A property.
-    :rtype: pycim.v1.software.ComponentProperty
+    :rtype: pyesdoc.ontologies.cim.v1.software.ComponentProperty
 
     """
     def append_value(p, v):
@@ -54,7 +54,7 @@ def _set_core_properties_defaults(c, p_tree):
     """Sets default core properties.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
     
     :param p_tree: A set of component properties.
     :type p_tree: list
@@ -78,7 +78,7 @@ def _set_core_properties_citations(c, p_tree):
     """Sets citation core properties.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :param p_tree: A set of component properties.
     :type p_tree: list
@@ -112,7 +112,7 @@ def _set_core_properties_pi(c, p_tree):
     """Sets principal investigator core properties.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :param p_tree: A set of component properties.
     :type p_tree: list
@@ -142,7 +142,7 @@ def _set_core_properties(c):
     """Set component core properties.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     """
     # Create core property group.
@@ -179,10 +179,10 @@ def parse(m):
     """Performs a parse over a model in readiness for later processing.
 
     :param m: A model component.
-    :type m: pycim.v1.software.ModelComponent
+    :type m: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: A model component.
-    :rtype: pycim.v1.software.ModelComponent
+    :rtype: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     """
     # Parse set of child components.

@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.controllers.ajax
+.. module:: esdoc_api.controllers.ajax
    :platform: Unix, Windows
    :synopsis: Encapsulates front-end ajax operations.
 
@@ -20,7 +20,7 @@ from esdoc_api.models.entities.types import *
 
 
 class AjaxController(BaseSiteAjaxController):
-    """CIM portal ajax controller.
+    """ESDOC API ajax controller.
 
     """
 

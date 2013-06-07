@@ -28,7 +28,7 @@ def map(e):
     """Maps a cim v1 numerical experiment object instance to a set of facets.
 
     :param e: A numerical experiment document.
-    :type e: pycim.v1.activity.NumericalExperiment
+    :type e: pyesdoc.ontologies.cim.v1.activity.NumericalExperiment
 
     """
     _map(_reduce(e))
@@ -38,10 +38,10 @@ def _reduce(e):
     """Performs a reduce (fold) over a model in readiness for later processing.
 
     :param e: A numerical experiment document.
-    :type e: pycim.v1.activity.NumericalExperiment
+    :type e: pyesdoc.ontologies.cim.v1.activity.NumericalExperiment
 
     :returns: A numerical experiment document.
-    :rtype: pycim.v1.activity.NumericalExperiment
+    :rtype: pyesdoc.ontologies.cim.v1.activity.NumericalExperiment
 
     """
     return e
@@ -82,7 +82,7 @@ def _map(e_reduced):
     """Maps a reduced numerical experiment to a set of facets.
 
     :param e_reduced: A reduced numerical experiment document.
-    :type e_reduced: pycim.v1.activity.NumericalExperiment
+    :type e_reduced: pyesdoc.ontologies.cim.v1.activity.NumericalExperiment
 
     """
     def get_key_of_experiment_facet(e):

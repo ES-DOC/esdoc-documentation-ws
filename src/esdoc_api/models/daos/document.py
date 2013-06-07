@@ -70,7 +70,7 @@ def retrieve(project, as_obj):
 
     # Assign.
     if instance is not None:
-        instance.pycim_doc = as_obj
+        instance.as_obj = as_obj
 
     return instance
 
@@ -287,7 +287,7 @@ def create(project, endpoint, as_obj):
 
     # Instantiate & assign attributes.
     instance = Document()
-    instance.pycim_doc = as_obj
+    instance.as_obj = as_obj
     instance.Project_ID = project.ID
     instance.IngestEndpoint_ID = endpoint.ID
     instance.UID = str(as_obj.cim_info.id)

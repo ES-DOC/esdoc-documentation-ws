@@ -6,7 +6,7 @@
 import lxml
 from lxml import etree as et
 
-from esdoc_api.lib.utils.cim_exception import CIMException
+from esdoc_api.lib.utils.exception import ESDOCAPIException
 
 # Module exports.
 __all__ = ['as_xml', 
@@ -139,7 +139,7 @@ def deserialize_cim_xml(xml, return_nsmap=False):
     """
     # Defensive programming.
     if xml is None:
-        raise CIMException("CIM instance as xml is undefined.")
+        raise ESDOCAPIException("CIM instance as xml is undefined.")
     
     nsmap = None
     
@@ -165,9 +165,9 @@ def deserialize_cim_xml(xml, return_nsmap=False):
                     xml = et.fromstring(xml)
                     nsmap = xml.nsmap
                 except Exception:
-                    raise CIMException("Invalid cim instance xml string.")
+                    raise ESDOCAPIException("Invalid cim instance xml string.")
             else:
-                raise CIMException("Unsupported cim_instance xml type, must be either a string, file, url or etree.")
+                raise ESDOCAPIException("Unsupported cim_instance xml type, must be either a string, file, url or etree.")
 
     # Guarantees that cim is default namespace.
     if nsmap is not None:

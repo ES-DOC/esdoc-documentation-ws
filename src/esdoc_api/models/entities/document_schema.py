@@ -3,11 +3,11 @@
 """
 
 # Module imports.
-from esdoc_api.lib.pycim.cim_constants import CIM_DEFAULT_SCHEMA
+from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_DEFAULT_SCHEMA
 from elixir import *
 
 from esdoc_api.models.core.entity_base import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 
 # Module exports.

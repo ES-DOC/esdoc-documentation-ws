@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.controllers.repository
+.. module:: esdoc_api.controllers.repository
    :platform: Unix, Windows
    :synopsis: Encapsulates common repository operations.
 
@@ -23,7 +23,7 @@ class RepositoryController(BaseAPIController):
 
     """
     @property
-    def validate_cim_info(self):
+    def validate_doc_request_info(self):
         """Gets flag indicating whether cim http request information should be validated or not.
         
         """

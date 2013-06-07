@@ -104,21 +104,6 @@ class FacetType(ESDOCEntity):
 
 
     @classmethod
-    def get_by_name(cls, name):
-        """Gets an instance of the entity by name.
-
-        Keyword Arguments:
-        name - name of facet type.
-
-        """
-        # Defensive programming.
-        if name is None:
-            raise ValueError('name')
-
-        return cls.get_by(Name=name)
-
-
-    @classmethod
     def get_values(cls, name):
         """Gets set of associated values.
 
@@ -131,7 +116,7 @@ class FacetType(ESDOCEntity):
             raise ValueError('name')
 
         result = []
-        for v in cls.get_by(Name=name).Values:
+        for v in cls.get_by_name(name).Values:
             item = {
                 'id' : v.ID,
                 'key' : v.Key,

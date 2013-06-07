@@ -100,11 +100,11 @@ class DocumentByExternalID(ESDOCEntity):
         # Defensive programming.
         if isinstance(document, Document) == False:
             raise TypeError('document')
-        if document.pycim_doc is None:
-            raise ValueError('document.pycim_doc')
+        if document.as_obj is None:
+            raise ValueError('document.as_obj')
 
         collection = []
-        for id in document.pycim_doc.cim_info.external_ids:
+        for id in document.as_obj.cim_info.external_ids:
             instance = cls.retrieve_duplicate(document, id.value)
             if instance is None:
                 instance = cls()

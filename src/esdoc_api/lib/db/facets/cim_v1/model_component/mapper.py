@@ -81,7 +81,7 @@ def map(m):
     """Maps a cim v1 model component object instance to a set of facets.
 
     :param m: A model component.
-    :type m: pycim.v1.software.ModelComponent
+    :type m: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     """
     _map(reduce(parse(m)))
@@ -91,7 +91,7 @@ def _convert_to_spaced_case(value):
     """Helper function to convert a value from camel case to spaced case.
 
     :param m: A model component.
-    :type m: pycim.v1.software.ModelComponent
+    :type m: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     """
     if value.find(" ") == -1:
@@ -149,7 +149,7 @@ def _get_model_facet_set(m):
     """Returns set of model facets.
 
     :param m: A model component.
-    :type m: pycim.v1.software.ModelComponent
+    :type m: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: Set of model facets.
     :rtype: tuple
@@ -164,7 +164,7 @@ def _get_model_facet_key(m):
     """Returns a model facet key.
 
     :param m: A model component.
-    :type m: pycim.v1.software.ModelComponent
+    :type m: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: Key to be assigned to the model facet.
     :rtype: str
@@ -177,7 +177,7 @@ def _get_model_facet_value(m):
     """Returns a model facet value.
 
     :param m: A model component.
-    :type m: pycim.v1.software.ModelComponent
+    :type m: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: Value to be assigned to the model facet.
     :rtype: str
@@ -190,7 +190,7 @@ def _get_component_facet_set(c):
     """Returns set of component facets.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: Set of component facets.
     :rtype: tuple
@@ -209,7 +209,7 @@ def _get_component_facet_key(c):
     """Returns a component facet key.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: Key to be assigned to the component facet.
     :rtype: str
@@ -227,7 +227,7 @@ def _get_component_facet_value(c):
     """Returns a component facet value.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: Value to be assigned to the component facet.
     :rtype: str
@@ -240,7 +240,7 @@ def _get_component_facet_display_value(c):
     """Returns a component facet display value.
 
     :param c: A model component.
-    :type c: pycim.v1.software.ModelComponent
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     :returns: Display value to be assigned to the component facet.
     :rtype: str
@@ -272,7 +272,7 @@ def _get_property_facet_set(p):
     """Returns set of component property facets.
 
     :param p: A component property.
-    :type p: pycim.v1.software.ComponentProperty
+    :type p: pyesdoc.ontologies.cim.v1.software.ComponentProperty
 
     :returns: Set of component property facets.
     :rtype: tuple
@@ -292,7 +292,7 @@ def _get_property_facet_key(p, include_component_key):
     """Returns a component property facet key.
 
     :param p: A component property.
-    :type p: pycim.v1.software.ComponentProperty
+    :type p: pyesdoc.ontologies.cim.v1.software.ComponentProperty
 
     :param include_component_key: Flag indicating whether component key is to be pre-prended.
     :type include_component_key: bool
@@ -316,7 +316,7 @@ def _get_property_facet_sort_key(p):
     """Returns a component property facet sort key.
 
     :param p: A component property.
-    :type p: pycim.v1.software.ComponentProperty
+    :type p: pyesdoc.ontologies.cim.v1.software.ComponentProperty
 
     :returns: Sort key to be assigned to the component property facet.
     :rtype: str
@@ -338,7 +338,7 @@ def _get_property_facet_value(p):
     """Returns a component property facet value.
 
     :param p: A component property.
-    :type p: pycim.v1.software.ComponentProperty
+    :type p: pyesdoc.ontologies.cim.v1.software.ComponentProperty
 
     :returns: Value to be assigned to the component property facet.
     :rtype: str
@@ -351,7 +351,7 @@ def _get_property_facet_display_value(p):
     """Returns a component property facet display value.
 
     :param p: A component property.
-    :type p: pycim.v1.software.ComponentProperty
+    :type p: pyesdoc.ontologies.cim.v1.software.ComponentProperty
 
     :returns: Display value to be assigned to the component property facet.
     :rtype: str

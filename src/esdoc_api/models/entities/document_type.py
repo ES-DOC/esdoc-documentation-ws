@@ -7,7 +7,7 @@ from elixir import *
 from sqlalchemy import UniqueConstraint
 
 from esdoc_api.models.core.entity_base import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 
 # Module exports.

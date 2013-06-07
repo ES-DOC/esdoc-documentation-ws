@@ -1,6 +1,6 @@
 from esdoc_api.lib.controllers.base_controller import *
 from esdoc_api.lib.utils.http_utils import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 
 class BaseAPIController(BaseController):
@@ -33,9 +33,9 @@ class BaseAPIController(BaseController):
 
 
     @abstractproperty
-    def validate_cim_info(self):
+    def validate_doc_request_info(self):
         """
-        Gets flag indicating whether cim http request information should be validated or not.
+        Gets flag indicating whether http request information should be validated or not.
         """
         pass
 

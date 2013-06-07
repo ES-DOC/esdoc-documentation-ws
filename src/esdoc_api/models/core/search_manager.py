@@ -3,7 +3,7 @@
 """
 
 # Module imports.
-from esdoc_api.lib.utils.cim_exception import CIMException
+from esdoc_api.lib.utils.exception import ESDOCAPIException
 from esdoc_api.models.core.search_base import ESDOCSearchBase
 
 
@@ -31,9 +31,9 @@ class SearchManager(object):
         """
         # Defensive programming.
         if type is None:
-            raise CIMException("Search type is unspecified.")
+            raise ESDOCAPIException("Search type is unspecified.")
         if issubclass(type, ESDOCSearchBase) == False:
-            raise CIMException("Search type must derive from models.core.ESDOCSearchBase.")
+            raise ESDOCAPIException("Search type must derive from models.core.ESDOCSearchBase.")
 
         # Initialise.
         self.handler = type()

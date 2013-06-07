@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.controllers.error
+.. module:: esdoc_api.controllers.error
    :platform: Unix, Windows
    :synopsis: Encapsulates error operations.
 

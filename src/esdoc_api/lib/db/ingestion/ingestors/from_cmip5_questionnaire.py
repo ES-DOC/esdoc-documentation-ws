@@ -11,11 +11,12 @@
 # Module imports.
 from lxml import etree as et
 
+from esdoc_api.lib.api.comparator_setup import write_comparator_json
 from esdoc_api.lib.db.facets.cim_v1.model_component.mapper import map as map_facets_for_model_component
 from esdoc_api.lib.db.facets.cim_v1.numerical_experiment.mapper import map as map_facets_for_numerical_experiment
 from esdoc_api.lib.db.ingestion.base_ingestor_from_feed import FeedIngestorBase
-from esdoc_api.lib.pycim.cim_constants import *
-from esdoc_api.lib.pycim.core.cim_exception import CIMException
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.exception import ESDOCAPIException
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.models.entities import *
 from esdoc_api.models.entities.facet_relation_type import *
@@ -48,6 +49,9 @@ _facet_mappers = {
 _MODEL_OVERRIDES = {
     'BCC_CSM1.1' : 'BCC-CSM1.1'
 }
+
+# Set of comparators associated with CMIP5.
+_COMPARATOR_CODES = [ 'c1' ]
 
 
 
@@ -82,34 +86,35 @@ class FromCMIP5QuestionnaireIngestor(FeedIngestorBase):
         return content.replace(CIM_XML_1_5_XSD, CIM_XML_1_5_SCHEMA)
 
 
-    def parse_document(self, document, etree, nsmap):
-        """Parser over deserialized pycim document.
+    def parse_document(self, as_obj, etree, nsmap):
+        """Parser over deserialized pyesdoc document.
 
-        :param document: Deserialized pycim document representation.
+        :param as_obj: Deserialized pyesdoc document representation.
+        :type as_obj: python object
+
         :param etree: Document XML.
-        :param nsmap: Document XML namespaces.
-
-        :type document: python object
         :type etree: lxml.etree
+
+        :param nsmap: Document XML namespaces.
         :type nsmap: dict
 
         """
         # Workaround :: Set numerical experiment document version.
-        if document.cim_info.type_info.type == CIM_TAG_NUMERICAL_EXPERIMENT and \
-           document.cim_info.version is None:
+        if as_obj.cim_info.type_info.type == CIM_TAG_NUMERICAL_EXPERIMENT and \
+           as_obj.cim_info.version is None:
             version = etree.xpath(_XPATH_DOC_VERSION_FOR_NUM_EXP, namespaces=nsmap)
             if version is not None and len(version) > 0:
-                document.cim_info.version = str(version[0])
+                as_obj.cim_info.version = str(version[0])
 
         # Workaround :: Suppress root model component properties.
-        if document.cim_info.type_info.type == CIM_TAG_MODEL_COMPONENT:
-            document.properties = []
-            document.property_tree = []
+        if as_obj.cim_info.type_info.type == CIM_TAG_MODEL_COMPONENT:
+            as_obj.properties = []
+            as_obj.property_tree = []
 
         # Workaround :: Override invalid model names.
-        if document.cim_info.type_info.type == CIM_TAG_MODEL_COMPONENT and \
-           document.short_name in _MODEL_OVERRIDES:
-            document.short_name = _MODEL_OVERRIDES[document.short_name]
+        if as_obj.cim_info.type_info.type == CIM_TAG_MODEL_COMPONENT and \
+           as_obj.short_name in _MODEL_OVERRIDES:
+            as_obj.short_name = _MODEL_OVERRIDES[as_obj.short_name]
             
 
     def set_institute(self, document, document_by_drs=None):
@@ -152,13 +157,13 @@ class FromCMIP5QuestionnaireIngestor(FeedIngestorBase):
                 code = document_by_drs.Key_01
 
         # Set institute code from responsibile parties for models and platforms.
-        elif document.pycim_doc is not None and \
+        elif document.as_obj is not None and \
              document.Type in [CIM_TAG_MODEL_COMPONENT.upper(), CIM_TAG_PLATFORM.upper()]:
             try:
-                code = get_code(document.pycim_doc.responsible_parties)
+                code = get_code(document.as_obj.responsible_parties)
             except AttributeError:
                 try:
-                    code = get_code(document.pycim_doc.contacts)
+                    code = get_code(document.as_obj.contacts)
                 except AttributeError:
                     pass
 
@@ -179,7 +184,7 @@ class FromCMIP5QuestionnaireIngestor(FeedIngestorBase):
         :type drs: esdoc_api.models.entities.DocumentByDRS
 
         """
-        for ensemble in [d.pycim_doc for d in simulation.children
+        for ensemble in [d.as_obj for d in simulation.children
                          if d.Type == CIM_TAG_ENSEMBLE.upper()]:
             for member in ensemble.members:
                 for id in member.ensemble_ids:
@@ -197,9 +202,9 @@ class FromCMIP5QuestionnaireIngestor(FeedIngestorBase):
 
         """
         if not document.IsIndexed:
-            type = document.pycim_doc.cim_info.type_info.type
+            type = document.as_obj.cim_info.type_info.type
             if type in _facet_mappers:
-                _facet_mappers[type](document.pycim_doc)
+                _facet_mappers[type](document.as_obj)
             document.IsIndexed = True
 
 
@@ -228,7 +233,7 @@ class FromCMIP5QuestionnaireIngestor(FeedIngestorBase):
         :rtype: str
 
         """
-        for id in simulation.pycim_doc.cim_info.external_ids:
+        for id in simulation.as_obj.cim_info.external_ids:
             for standard in id.standards:
                 if standard.name == 'QN_DRS':
                     return id.value.upper()
@@ -258,7 +263,7 @@ class FromCMIP5QuestionnaireIngestor(FeedIngestorBase):
                 simulation = do_ingest(elem)
                 break
         if simulation is None:
-            raise CIMException("CMIP5Q documentset must contain a simulation.")
+            raise ESDOCAPIException("CMIP5Q documentset must contain a simulation.")
 
         # Ingest associated documents.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
@@ -364,3 +369,14 @@ class FromCMIP5QuestionnaireIngestor(FeedIngestorBase):
         # Process single documents.
         else:
             return self.process_document(etree, nsmap)
+
+
+    def on_feed_ingested(self):
+        """Callback invoked when a feed has been ingested.
+
+        """
+        # Write comparator json files.
+        for comparator_code in _COMPARATOR_CODES:
+            write_comparator_json(_PROJECT, comparator_code)
+
+

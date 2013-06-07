@@ -32,13 +32,11 @@ class EntityConvertor(object):
 
     @staticmethod
     def to_dict(target):
+        """Returns a dictionary representation.
+        
         """
-        Returns a dictionary representation.
-        """
-        result = None
-        iterator = None
-
         # Determine if target is a sequence.
+        iterator = None
         try:
             iterator = iter(target)
         except TypeError:
@@ -46,13 +44,9 @@ class EntityConvertor(object):
 
         # Convert.
         if iterator is None:
-            result = target.as_dict()
+            return target.as_dict()
         else:
-            result = []
-            for item in iterator:
-                result.append(item.as_dict())
-
-        return result
+            return [i.as_dict() for i in iterator]
 
 
     @staticmethod

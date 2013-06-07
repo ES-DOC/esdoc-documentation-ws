@@ -13,11 +13,7 @@ from sqlalchemy import UniqueConstraint
 import uuid
 
 from esdoc_api.models.core.entity_base import *
-from esdoc_api.lib.pycim.cim_constants import *
-from esdoc_api.lib.pycim.cim_serializer import encode as encode_cim
-
-# Module exports.
-__all__ = ['Document']
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 
 
@@ -56,7 +52,7 @@ class Document(ESDOCEntity):
         """
         super(Document, self).__init__()
         self.children = []
-        self.pycim_doc = None
+        self.as_obj = None
         
 
     @property
@@ -134,12 +130,12 @@ class Document(ESDOCEntity):
 
 
     @classmethod
-    def retrieve(cls, project, pycim_doc):
+    def retrieve(cls, project, as_obj):
         """Retrieves a single document.
 
         Keyword Arguments:
         project - a project instance.
-        pycim_doc - pycim object representation of document.
+        as_obj - pyesdoc object representation of document.
 
         """
         from esdoc_api.models.entities.project import Project
@@ -147,17 +143,17 @@ class Document(ESDOCEntity):
         # Defensive programming.
         if isinstance(project, Project) == False:
             raise TypeError('project')
-        if pycim_doc is None:
-            raise ValueError('pycim_doc')
+        if as_obj is None:
+            raise ValueError('as_obj')
 
         # Retrieve.
         instance = cls.retrieve_by_id(project,
-                                      pycim_doc.cim_info.id,
-                                      pycim_doc.cim_info.version)
+                                      as_obj.cim_info.id,
+                                      as_obj.cim_info.version)
 
         # Assign.
         if instance is not None:
-            instance.pycim_doc = pycim_doc
+            instance.as_obj = as_obj
 
         return instance
 
@@ -342,20 +338,20 @@ class Document(ESDOCEntity):
 
         """
         def _default():
-            return document.pycim_doc.short_name
+            return document.as_obj.short_name
 
         def _for_1_5_data_object():
-            return document.pycim_doc.acronym
+            return document.as_obj.acronym
 
         def _for_1_5_grid_spec():
-            if len(document.pycim_doc.esm_model_grids) > 0:
-                return document.pycim_doc.esm_model_grids[0].short_name
+            if len(document.as_obj.esm_model_grids) > 0:
+                return document.as_obj.esm_model_grids[0].short_name
             return None
 
         def _for_1_5_quality():
-            if len(document.pycim_doc.reports) > 0 and \
-               document.pycim_doc.reports[0].measure is not None:
-                return document.pycim_doc.reports[0].measure.name
+            if len(document.as_obj.reports) > 0 and \
+               document.as_obj.reports[0].measure is not None:
+                return document.as_obj.reports[0].measure.name
             return None
 
         # Collection of setter functions organised by document type.
@@ -375,8 +371,8 @@ class Document(ESDOCEntity):
         name = None
 
         # Derive name from setter function.
-        schema = document.pycim_doc.cim_info.type_info.schema
-        type = document.pycim_doc.cim_info.type_info.type
+        schema = document.as_obj.cim_info.type_info.schema
+        type = document.as_obj.cim_info.type_info.type
         if schema in setters and type in setters[schema]:
             name = setters[schema][type]()
             if name is not None:
@@ -386,14 +382,14 @@ class Document(ESDOCEntity):
 
 
     @classmethod
-    def create(cls, project, endpoint, pycim_doc):
+    def create(cls, project, endpoint, as_obj):
         """Factory method to create and return an instance.
 
         Keyword Arguments:
 
         project - project with which document is associated.
         endpoint - endpoint with which document is associated.
-        pycim_doc - pycim object representation of document.
+        as_obj - pyesdoc object representation of document.
 
         """
         from esdoc_api.models.entities.project import Project
@@ -404,17 +400,17 @@ class Document(ESDOCEntity):
             raise TypeError('project')
         if isinstance(endpoint, IngestEndpoint) == False:
             raise TypeError('endpoint')
-        if pycim_doc is None:
-            raise ValueError('pycim_doc')
+        if as_obj is None:
+            raise ValueError('as_obj')
 
         # Instantiate & assign attributes.
         instance = cls()
-        instance.pycim_doc = pycim_doc
+        instance.as_obj = as_obj
         instance.Project_ID = project.ID
         instance.IngestEndpoint_ID = endpoint.ID
-        instance.UID = str(pycim_doc.cim_info.id)
-        instance.Version = int(pycim_doc.cim_info.version)
-        instance.Type = pycim_doc.cim_info.type_info.type.upper()
+        instance.UID = str(as_obj.cim_info.id)
+        instance.Version = int(as_obj.cim_info.version)
+        instance.Type = as_obj.cim_info.type_info.type.upper()
         instance.Name = cls.get_name(instance)
         cls.set_is_latest(instance, project)
 

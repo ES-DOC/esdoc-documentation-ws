@@ -13,7 +13,7 @@ from lxml import etree as et
 
 from esdoc_api.lib.db.ingestion.base_ingestor_from_feed import FeedIngestorBase
 from esdoc_api.models.entities import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 
 # Project identifier.
@@ -50,11 +50,11 @@ class FromCMIP5QualityControlIngestor(FeedIngestorBase):
 
         """
         # Escape if no external id has been defined.
-        if len(document.pycim_doc.cim_info.external_ids) == 0:
+        if len(document.as_obj.cim_info.external_ids) == 0:
             return
 
         # Derive drs.
-        drs = document.pycim_doc.cim_info.external_ids[0].value
+        drs = document.as_obj.cim_info.external_ids[0].value
         drs = drs.split('.')[2:]
 
         # Derive institute.
@@ -86,3 +86,10 @@ class FromCMIP5QualityControlIngestor(FeedIngestorBase):
         self.set_institute(document)
 
         return document
+
+
+    def on_feed_ingested(self):
+        """Callback invoked when a feed has been ingested.
+
+        """
+        pass

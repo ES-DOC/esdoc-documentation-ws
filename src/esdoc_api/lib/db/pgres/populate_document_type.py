@@ -5,7 +5,7 @@
 
 # Module imports.
 from esdoc_api.lib.db.pgres.utils import get_rows
-from esdoc_api.lib.pycim.cim_constants import CIM_SCHEMAS
+from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_SCHEMAS
 from esdoc_api.models.entities.document_schema import DocumentSchema
 from esdoc_api.models.entities.document_type import DocumentType
 

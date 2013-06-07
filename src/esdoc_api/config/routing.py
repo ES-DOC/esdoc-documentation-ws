@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.config.routing
+.. module:: esdoc_api.config.routing
    :platform: Unix, Windows
    :synopsis: Encapsulates setting up URL to controller routing patterns.
 
@@ -90,7 +90,7 @@ def _make_map_for_api(map, config):
         
         """
         # Setup data.
-        map.connect('/1/compare/setupData/{comparator_type}/{project_code}',
+        map.connect('/1/compare/setupData/{project_code}/{comparator_type}',
                     controller='comparator', action='get_setup_data')
 
 

@@ -11,7 +11,7 @@
 # Module imports.
 from esdoc_api_test.utils import *
 from esdoc_api_test.base_test_query import BaseTestQuery
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 
 # Urls to local / remote esdoc api.

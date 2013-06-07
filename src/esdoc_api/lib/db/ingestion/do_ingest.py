@@ -12,7 +12,7 @@
 import datetime
 
 from esdoc_api.lib.db.pgres.connect import *
-from esdoc_api.lib.utils.cim_exception import CIMException
+from esdoc_api.lib.utils.exception import ESDOCAPIException
 from esdoc_api.lib.db.ingestion.factory import create_ingestor
 
 
@@ -60,7 +60,7 @@ def execute_ingestion():
             # Update ingestion history.
             if ingestor is not None:
                 try:
-                    ingestor.close(CIMException(str(e)))
+                    ingestor.close(ESDOCAPIException(str(e)))
                     session.commit()
                 except:
                     pass

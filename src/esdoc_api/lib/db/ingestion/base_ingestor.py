@@ -14,8 +14,8 @@ from abc import abstractmethod
 
 import datetime
 
-from esdoc_api.lib.utils.cim_exception import CIMException
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.utils.exception import ESDOCAPIException
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 from esdoc_api.models.entities.document_encoding import DocumentEncoding
 from esdoc_api.models.entities.document_language import DocumentLanguage
 from esdoc_api.models.entities.document_schema import DocumentSchema
@@ -92,7 +92,7 @@ class IngestorBase(object):
         """The maximum allowed ingest count."""
         # Defensive progamming.
         if value < 0:
-            raise CIMException(u"Max ingest count must be greater than or equal to zero.")
+            raise ESDOCAPIException(u"Max ingest count must be greater than or equal to zero.")
         # Assign max ingest count once - this supports unit test scenarios.
         if self.__max_ingest_count == 0:
             self.__max_ingest_count = value
@@ -117,7 +117,7 @@ class IngestorBase(object):
         """
         # Defensive programming.
         if self.can_ingest() == False:
-            raise CIMException(u"Ingest limits have been reached")
+            raise ESDOCAPIException(u"Ingest limits have been reached")
 
         self.ingested_count = self.ingested_count + 1
 

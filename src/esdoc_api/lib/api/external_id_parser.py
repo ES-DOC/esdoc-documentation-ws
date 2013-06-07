@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.lib.ajax.external_id_parser
+.. module:: esdoc_api.lib.ajax.external_id_parser
    :platform: Unix, Windows
    :synopsis: Encapsulates parsing of project specific external document id's.
 

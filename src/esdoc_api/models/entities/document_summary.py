@@ -8,7 +8,7 @@ from operator import add
 from sqlalchemy import UniqueConstraint
 
 from esdoc_api.models.core.entity_base import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 # Module exports.
 __all__ = ['DocumentSummary']
@@ -220,7 +220,7 @@ class DocumentSummary(ESDOCEntity):
             instance = DocumentSummary()
             instance.Document_ID = document.ID
             instance.Language_ID = language.ID
-            instance.set_fields(document.pycim_doc)
+            instance.set_fields(document.as_obj)
             
         return instance
 

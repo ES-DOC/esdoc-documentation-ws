@@ -5,10 +5,10 @@
 import requests
 import unittest
 
-from esdoc_api.lib.pycim.cim_constants import CIM_DEFAULT_SCHEMA
+from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_DEFAULT_SCHEMA
 from esdoc_api.lib.utils.http_utils import HTTP_REQUEST_HEADER_ACCEPT_LANGUAGE
 from esdoc_api_test.utils import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 
 # Urls to local / remote esdoc api.

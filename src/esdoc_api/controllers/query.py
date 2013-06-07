@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.controllers.query
+.. module:: esdoc_api.controllers.query
    :platform: Unix, Windows
    :synopsis: Encapsulates repository query operations.
 
@@ -17,7 +17,7 @@ from esdoc_api.lib.api.external_id import get_handler as get_external_id_handler
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 from esdoc_api.models.daos.document_representation import load as load_representation
 
 
@@ -27,7 +27,7 @@ class QueryController(BaseAPIController):
 
     """
     @property
-    def validate_cim_info(self):
+    def validate_doc_request_info(self):
         """Gets flag indicating whether http request should be validated to ensure that cim information is specified correctly.
 
         """

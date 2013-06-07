@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.controllers.frontend
+.. module:: esdoc_api.controllers.frontend
    :platform: Unix, Windows
    :synopsis: Encapsulates api front-end operations.
 

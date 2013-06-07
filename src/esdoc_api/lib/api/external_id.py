@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.lib.ajax.external_id
+.. module:: esdoc_api.lib.ajax.external_id
    :platform: Unix, Windows
    :synopsis: Encapsulates querying of repository by project specific external id's.
 

@@ -1,5 +1,5 @@
 """
-.. module:: pyesdoc_api.lib.ajax.external_id_validator
+.. module:: esdoc_api.lib.ajax.external_id_validator
    :platform: Unix, Windows
    :synopsis: Validates incoming document external ids.
 

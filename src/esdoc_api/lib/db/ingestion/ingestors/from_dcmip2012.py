@@ -14,7 +14,7 @@ from lxml import etree as et
 from esdoc_api.lib.db.ingestion.base_ingestor_from_feed import FeedIngestorBase
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.models.entities import *
-from esdoc_api.lib.pycim.cim_constants import *
+from esdoc_api.lib.pyesdoc.ontologies.constants import *
 
 
 # Project identifier.
@@ -90,3 +90,9 @@ class FromDCMIP2012Ingestor(FeedIngestorBase):
         if cim_tag(etree) == CIM_TAG_MODEL_COMPONENT:
             self.ingest_document(etree, nsmap)
 
+
+    def on_feed_ingested(self):
+        """Callback invoked when a feed has been ingested.
+
+        """
+        pass
