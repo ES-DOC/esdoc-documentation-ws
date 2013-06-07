@@ -23,7 +23,7 @@ from esdoc_api.models.entities.facet_relation_type import *
 from esdoc_api.models.entities.facet_type import *
 
 
-# Project identifier.
+# Project code.
 _PROJECT = 'CMIP5'
 
 # Schema identifier.

@@ -129,8 +129,8 @@ def get_setup_data(project_code, comparator_type):
     }
 
 
-def write_comparator_jsonp(project_code, comparator_type):
-    """Writes comparator setup data (in jsonp format) to the file systems.
+def write_comparator_json(project_code, comparator_type):
+    """Writes comparator setup data (in both json and jsonp format) to the file system.
 
     :param project_code: The project code, e.g. CMIP5.
     :type project_code: str
@@ -162,5 +162,5 @@ def write_comparator_jsonp(project_code, comparator_type):
 if __name__ == "__main__":
     from esdoc_api.lib.db.pgres.connect import *
     
-    write_comparator_jsonp("cmip5", "c1")
+    write_comparator_json("cmip5", "c1")
     
