@@ -3,7 +3,7 @@
 """
 
 # Module imports.
-from esdoc_api.lib.utils.exception import ESDOCAPIException
+from esdoc_api.lib.utils.exception import ESDOC_API_Exception
 from esdoc_api.models.core.search_base import ESDOCSearchBase
 
 
@@ -31,9 +31,9 @@ class SearchManager(object):
         """
         # Defensive programming.
         if type is None:
-            raise ESDOCAPIException("Search type is unspecified.")
+            raise ESDOC_API_Exception("Search type is unspecified.")
         if issubclass(type, ESDOCSearchBase) == False:
-            raise ESDOCAPIException("Search type must derive from models.core.ESDOCSearchBase.")
+            raise ESDOC_API_Exception("Search type must derive from models.core.ESDOCSearchBase.")
 
         # Initialise.
         self.handler = type()

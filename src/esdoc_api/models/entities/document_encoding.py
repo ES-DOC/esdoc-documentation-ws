@@ -6,7 +6,7 @@ An entity within the Metafor CIM system.
 from elixir import *
 
 from esdoc_api.models.core.entity_base import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
 class DocumentEncoding(ESDOCEntity):

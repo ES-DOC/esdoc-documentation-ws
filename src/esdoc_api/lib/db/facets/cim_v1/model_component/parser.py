@@ -11,12 +11,12 @@
 # Module imports.
 import types
 
-from esdoc_api.lib.pyesdoc.ontologies.cim.v1_5.types.software.component_property import ComponentProperty
+from esdoc_api.lib.pyesdoc.ontologies.cim.v1.types.software.component_property import ComponentProperty
 
 
 
-def _set_core_property(p_tree, values, name, description):
-    """Sets & returns a component core property.
+def _set_standard_property(p_tree, values, name, description):
+    """Sets & returns a component standard property.
 
     :param p_tree: A set of component properties.
     :type p_tree: list
@@ -50,8 +50,8 @@ def _set_core_property(p_tree, values, name, description):
     return p
 
 
-def _set_core_properties_defaults(c, p_tree):
-    """Sets default core properties.
+def _set_standard_properties_defaults(c, p_tree):
+    """Sets default standard properties.
 
     :param c: A model component.
     :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
@@ -60,22 +60,22 @@ def _set_core_properties_defaults(c, p_tree):
     :type p_tree: list
 
     """
-    _set_core_property(p_tree,
-                       c.description,
-                       'Description',
-                       'High-level scientific description of component')
-    _set_core_property(p_tree,
-                       c.short_name,
-                       'Short Name',
-                       'Abbreviated component name')
-    _set_core_property(p_tree,
-                       c.long_name,
-                       'Long Name',
-                       'Full component name')
+    _set_standard_property(p_tree,
+                           c.description,
+                           'Description',
+                           'High-level component description')
+    _set_standard_property(p_tree,
+                           c.short_name,
+                           'Short Name',
+                           'Abbreviated component name')
+    _set_standard_property(p_tree,
+                           c.long_name,
+                           'Long Name',
+                           'Full component name')
 
                        
-def _set_core_properties_citations(c, p_tree):
-    """Sets citation core properties.
+def _set_standard_properties_citations(c, p_tree):
+    """Sets citation standard properties.
 
     :param c: A model component.
     :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
@@ -93,23 +93,23 @@ def _set_core_properties_citations(c, p_tree):
         else:
             return citation.location.strip()
 
-    p = _set_core_property(p_tree,
-                           None,
-                           'Citations',
-                           'Set of component citations')
+    p = _set_standard_property(p_tree,
+                               None,
+                               'Citations',
+                               'Set of component citations')
 
-    _set_core_property(p.children,
-                       [get_citation_title(i) for i in c.citation_list if i.title is not None],
-                       'Title',
-                       'Title')
-    _set_core_property(p.children,
-                       [get_citation_url(i) for i in c.citation_list if i.title is not None],
-                       'Location',
-                       'Location')
+    _set_standard_property(p.children,
+                           [get_citation_title(i) for i in c.citation_list if i.title is not None],
+                           'Title',
+                           'Title')
+    _set_standard_property(p.children,
+                           [get_citation_url(i) for i in c.citation_list if i.title is not None],
+                           'Location',
+                           'Location')
 
 
-def _set_core_properties_pi(c, p_tree):
-    """Sets principal investigator core properties.
+def _set_standard_properties_pi(c, p_tree):
+    """Sets principal investigator standard properties.
 
     :param c: A model component.
     :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
@@ -127,40 +127,51 @@ def _set_core_properties_pi(c, p_tree):
             
     # Set PI properties.
     if pi:
-        _set_core_property(p_tree,
-                           pi.individual_name,
-                           'PI Name',
-                           'PI Name')
+        _set_standard_property(p_tree,
+                               pi.individual_name,
+                               'PI Name',
+                               'PI Name')
         if pi.contact_info:
-            _set_core_property(p_tree,
-                               pi.contact_info.email,
-                               'PI Email Address',
-                               'PI Email Address')
+            _set_standard_property(p_tree,
+                                   pi.contact_info.email,
+                                   'PI Email Address',
+                                   'PI Email Address')
 
 
-def _set_core_properties(c):
-    """Set component core properties.
+def _set_standard_properties(c):
+    """Set component standard properties.
 
     :param c: A model component.
     :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
 
     """
-    # Create core property group.
-    p = _set_core_property(c.properties,
-                           None,
-                           'Core Properties',
-                           'Set of properties common to all components')
+    # Create property group.
+    p = _set_standard_property(c.properties,
+                               None,
+                               'Standard Properties',
+                               'Set of properties common to all components')
 
-    # Define sub-group factories.
+    # Define sub-property group factories.
     subgroups = [
-        _set_core_properties_defaults,
-        _set_core_properties_pi,
-        _set_core_properties_citations
+        _set_standard_properties_defaults,
+        _set_standard_properties_pi,
+        _set_standard_properties_citations
     ]
 
     # Create sub-groups.
     for subgroup in subgroups:
         subgroup(c, p.children)
+
+
+def _set_scientific_properties(c):
+    """Set component scientific properties.
+
+    :param c: A model component.
+    :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
+
+    """
+    # TODO group existing properties under this umbrella
+    pass
 
 
 def _parse_components(c_tree):
@@ -170,8 +181,9 @@ def _parse_components(c_tree):
     :type c_tree: list
     
     """
-    for c in [i for i in c_tree]:
-        _set_core_properties(c)
+    for c in c_tree:
+        _set_scientific_properties(c)
+        _set_standard_properties(c)
         _parse_components(c.children)
 
                       

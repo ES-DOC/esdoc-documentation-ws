@@ -5,11 +5,9 @@
 
 # Module imports.
 from esdoc_api.models.entities.document_encoding import DocumentEncoding
-from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_ENCODINGS
+from esdoc_api.lib.pyesdoc.utils.ontologies import CIM_ENCODINGS
 
 
-# Module exports.
-__all__ = ['populate_document_encoding']
 
 
 def populate_document_encoding():

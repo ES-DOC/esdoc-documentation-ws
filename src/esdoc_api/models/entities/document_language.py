@@ -3,11 +3,11 @@ An entity within the Metafor CIM system.
 """
 
 # Module imports.
-from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_DEFAULT_LANGUAGE
+from esdoc_api.lib.pyesdoc.utils.ontologies import CIM_DEFAULT_LANGUAGE
 from elixir import *
 
 from esdoc_api.models.core.entity_base import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
 

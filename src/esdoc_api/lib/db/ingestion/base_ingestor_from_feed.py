@@ -16,7 +16,7 @@ import feedparser
 from lxml import etree as et
 
 from esdoc_api.lib.db.ingestion.base_ingestor import IngestorBase
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 from esdoc_api.lib.pyesdoc import (
     decode as pyesdoc_decoder,
     encode as pyesdoc_encoder

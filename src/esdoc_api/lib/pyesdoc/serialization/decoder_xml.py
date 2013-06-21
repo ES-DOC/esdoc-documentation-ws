@@ -17,104 +17,141 @@ from esdoc_api.lib.pyesdoc.serialization.decoder_xml_utils import (
     load_xml,
     decode_xml
     )
-from esdoc_api.lib.pyesdoc.utils.exception import PYESDOCException
+from esdoc_api.lib.pyesdoc.utils.exception import PYESDOC_Exception
 
-from esdoc_api.lib.pyesdoc.ontologies.cim.v1_5.types.shared.cim_type_info import CimTypeInfo
-import esdoc_api.lib.pyesdoc.ontologies.cim.v1_5.serialization as v1_5_decoders
+from esdoc_api.lib.pyesdoc.ontologies.cim.v1.types.shared.cim_type_info import CimTypeInfo
 
+# Set of supported decoders.
+_decoders = None
 
-
-# Set of decoders grouped by cim version.
-_decoders = {
-    '1.5' : {
-        'cIM_Quality' : v1_5_decoders.decode_cim_quality,
-        'dataObject' : v1_5_decoders.decode_data_object,
-        'ensemble' : v1_5_decoders.decode_ensemble,
-        'gridSpec' : v1_5_decoders.decode_grid_spec,
-        'modelComponent' : v1_5_decoders.decode_model_component,
-        'numericalExperiment' : v1_5_decoders.decode_numerical_experiment,
-        'platform' : v1_5_decoders.decode_platform,
-        'simulationRun' : v1_5_decoders.decode_simulation_run,
-        'simulationComposite' : v1_5_decoders.decode_simulation_composite,
-    }
-}
-
-# Set of type information injected into decoded objects.
-_type_info = {
-    '1.5' : {
-        'cIM_Quality' : ('quality', 'QC Record'),
-        'dataObject' : ('data', 'Data Object'),
-        'ensemble' : ('activity', 'Ensemble'),
-        'gridSpec' : ('grids', 'Grid'),
-        'modelComponent' : ('software', 'Model'),
-        'numericalExperiment' : ('activity', 'Experiment'),
-        'platform' : ('activity', 'Platform'),
-        'simulationRun' : ('activity', 'Simulation'),
-        'simulationComposite' : ('activity', 'Simulation'),
-    }
-}
+# Type information injected into decoded objects.
+# TODO replace with values from repo.
+_type_info = None
 
 
-def decode(representation, schema):
+def _get_decoder(ctx):
+    """Returns a decoder.
+
+    :param ctx: Serialization context info.
+    :type ctx: namedtuple
+
+    """
+    global _decoders
+
+    def load_decoders():
+        global _decoders
+        
+        import esdoc_api.lib.pyesdoc.ontologies.cim.v1.serialization as v1_decoders
+
+        # Set of supported decoders.
+        _decoders = {
+            'CIM' : {
+                '1' : {
+                    'cIM_Quality' : v1_decoders.decode_cim_quality,
+                    'dataObject' : v1_decoders.decode_data_object,
+                    'ensemble' : v1_decoders.decode_ensemble,
+                    'gridSpec' : v1_decoders.decode_grid_spec,
+                    'modelComponent' : v1_decoders.decode_model_component,
+                    'numericalExperiment' : v1_decoders.decode_numerical_experiment,
+                    'platform' : v1_decoders.decode_platform,
+                    'simulationRun' : v1_decoders.decode_simulation_run,
+                    'simulationComposite' : v1_decoders.decode_simulation_composite,
+                    'statisticalModelComponent' : v1_decoders.decode_statistical_model_component,
+                }
+            },
+        }
+
+    # JIT load.
+    if _decoders is None:
+        load_decoders()
+
+    # Defensive programming.
+    if ctx.schema_name not in _decoders or \
+       ctx.schema_version not in _decoders[ctx.schema_name] or \
+       ctx.type not in _decoders[ctx.schema_name][ctx.schema_version]:
+        err = "{0} v{1} {2} decoder not found."
+        err = err.format(ctx.schema_name, ctx.schema_version, ctx.type)
+        raise PYESDOC_Exception(err)
+
+    return _decoders[ctx.schema_name][ctx.schema_version][ctx.type]
+
+
+def _set_type_info(ctx):
+    """Injects type information into esdoc_api.lib.pyesdoc object.
+
+    :param ctx: Serialization context info.
+    :type ctx: namedtuple
+
+    """
+    global _type_info
+
+    def load_type_info():
+        global _type_info
+        
+        import esdoc_api.lib.pyesdoc.ontologies.cim.v1.serialization as v1_decoders
+
+        # Type information injected into decoded objects.
+        # TODO replace with values from repo.
+        _type_info = {
+            'CIM' : {
+                '1' : {
+                    'cIM_Quality' : ('quality', 'QC Record'),
+                    'dataObject' : ('data', 'Data Object'),
+                    'ensemble' : ('activity', 'Ensemble'),
+                    'gridSpec' : ('grids', 'Grid'),
+                    'modelComponent' : ('software', 'Model'),
+                    'numericalExperiment' : ('activity', 'Experiment'),
+                    'platform' : ('activity', 'Platform'),
+                    'simulationRun' : ('activity', 'Simulation'),
+                    'simulationComposite' : ('activity', 'Simulation'),
+                    'statisticalModelComponent' : ('software', 'Statistical Model'),
+                }
+            },
+        }
+
+    # JIT load.
+    if _type_info is None:
+        load_type_info()
+
+    # Defensive programming.
+    if ctx.schema_name in _type_info and \
+       ctx.schema_version in _type_info[ctx.schema_name] and \
+       ctx.type in _type_info[ctx.schema_name][ctx.schema_version]:
+        info = _type_info[ctx.schema_name][ctx.schema_version][ctx.type]
+        ctx.instance.cim_info.type_info = CimTypeInfo()
+        ctx.instance.cim_info.type_info.package = info[0]
+        ctx.instance.cim_info.type_info.schema = ctx.schema_name
+        ctx.instance.cim_info.type_info.type = ctx.type
+        ctx.instance.cim_info.type_info.type_display_name = info[1]
+    else:
+        print "WARNING :: esdoc_api.lib.pyesdoc type information is underivable", ctx.schema_name, ctx.schema_version, ctx.type
+
+
+def decode(ctx):
     """Decodes a esdoc_api.lib.pyesdoc document from an xml representation.
 
-    :param representation: A document xml representation.
-    :type representation: str
-
-    :param schema: A document schema (e.g. CIM 1.5).
-    :type schema: str
-
-    :returns: A esdoc_api.lib.pyesdoc document instance.
-    :rtype: object
+    :param ctx: Serialization context info.
+    :type ctx: namedtuple
 
     """
     # Load xml & associated namespaces.
-    xml, nsmap = load_xml(representation, return_nsmap=True)
+    xml, nsmap = load_xml(ctx.representation, return_nsmap=True)
 
     # Validate xml.
     if _can_decode_from_xml(xml) == False:
-        raise PYESDOCException('Representation failed XML validation.')
+        raise PYESDOC_Exception('Representation failed XML validation.')
 
-    # Get document type.
-    type = xml.tag.split('}')[1]
-    
-    # Get decoder.
-    if type not in _decoders[schema]:
-        raise PYESDOCException('No decoder exists for the following CIM type :: {0}.'.format(type))
-    decoder = _decoders[schema][type]
+    # Set document type.
+    ctx.type = xml.tag.split('}')[1]
+
+    # Set decoder.
+    decoder = _get_decoder(ctx)
 
     # Decode esdoc_api.lib.pyesdoc obj.
-    obj = decode_xml(decoder, xml, nsmap, None)
+    ctx.instance = decode_xml(decoder, xml, nsmap, None)
 
     # Assign type info.
-    _set_cim_type_info(obj, schema, type)
-
-    return obj
-
-
-def _set_cim_type_info(obj, schema, type):
-    """Injects type information into esdoc_api.lib.pyesdoc object.
-
-    :param obj: esdoc_api.lib.pyesdoc document instance.
-    :type obj: object
-
-    :param schema: A document schema (e.g. CIM 1.5).
-    :type schema: str
-
-    :param type: Document type (e.g. 'model').
-    :type schema: str
-
-
-    """
-    if schema in _type_info and type in _type_info[schema]:
-        info = _type_info[schema][type]
-        obj.cim_info.type_info = CimTypeInfo()
-        obj.cim_info.type_info.package = info[0]
-        obj.cim_info.type_info.schema = schema
-        obj.cim_info.type_info.type = type
-        obj.cim_info.type_info.type_display_name = info[1]
-    else:
-        print "WARNING :: object type information is underivable", schema, type
+    _set_type_info(ctx)
 
 
 def _can_decode_from_xml(xml):
@@ -122,7 +159,7 @@ def _can_decode_from_xml(xml):
 
     :param xml: An xml representation (i.e. string, url ...etc.).
     :type xml: str
-    
+
     """
     # Load (if necessary).
     if isinstance(xml, et._Element) == False:

@@ -15,7 +15,7 @@ from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.db.facets.utils import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 from esdoc_api.models.entities.facet_type import (
     MODEL,
     MODEL_COMPONENT,

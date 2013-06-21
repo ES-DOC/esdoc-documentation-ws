@@ -4,7 +4,7 @@ A set of domain entity unit tests.
 
 # Module imports.
 import unittest
-from esdoc_api.lib.utils.exception import ESDOCAPIException
+from esdoc_api.lib.utils.exception import ESDOC_API_Exception
 from esdoc_api.models.search.search_types import *
 from esdoc_api.models.search.search_manager import SearchManager
 

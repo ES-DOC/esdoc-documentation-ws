@@ -13,7 +13,7 @@ from sqlalchemy import UniqueConstraint
 import uuid
 
 from esdoc_api.models.core.entity_base import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
 
@@ -29,7 +29,7 @@ class Document(ESDOCEntity):
     # Relation set.
     Project = ManyToOne('Project', required=True)
     Institute = ManyToOne('Institute')
-    IngestEndpoint = ManyToOne('IngestEndpoint', required=True, lazy=None)
+    IngestEndpoint = ManyToOne('IngestEndpoint', lazy=None)
     ExternalIDs = OneToMany('DocumentByExternalID', lazy=None)
     Summaries = OneToMany('DocumentSummary', lazy=None)
     Representations = OneToMany('DocumentRepresentation', lazy=None)

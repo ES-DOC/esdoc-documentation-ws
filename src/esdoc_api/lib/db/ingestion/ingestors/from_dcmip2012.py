@@ -14,7 +14,7 @@ from lxml import etree as et
 from esdoc_api.lib.db.ingestion.base_ingestor_from_feed import FeedIngestorBase
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.models.entities import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
 # Project identifier.

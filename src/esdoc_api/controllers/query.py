@@ -17,7 +17,7 @@ from esdoc_api.lib.api.external_id import get_handler as get_external_id_handler
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 from esdoc_api.models.daos.document_representation import load as load_representation
 
 

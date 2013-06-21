@@ -4,7 +4,7 @@
 
 
 
-class ESDOCAPIException(Exception):
+class ESDOC_API_Exception(Exception):
     """Library exception class.
 
     """

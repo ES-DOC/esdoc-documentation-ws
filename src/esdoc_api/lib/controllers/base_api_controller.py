@@ -1,6 +1,6 @@
 from esdoc_api.lib.controllers.base_controller import *
 from esdoc_api.lib.utils.http_utils import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
 class BaseAPIController(BaseController):

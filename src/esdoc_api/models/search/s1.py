@@ -12,7 +12,7 @@ from esdoc_api.models.entities.document_language import DocumentLanguage
 from esdoc_api.models.entities.document_summary import DocumentSummary
 from esdoc_api.models.entities.institute import Institute
 from esdoc_api.models.entities.project import Project
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
 

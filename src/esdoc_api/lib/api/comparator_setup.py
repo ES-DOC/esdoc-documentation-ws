@@ -34,7 +34,7 @@ from esdoc_api.models.entities.facet_relation_type import (
     PROPERTY_2_PROPERTY,
     PROPERTY_2_VALUE
     )
-from esdoc_api.lib.utils.exception import ESDOCAPIException
+from esdoc_api.lib.utils.exception import ESDOC_API_Exception
 
 
 
@@ -78,13 +78,13 @@ def _validate_project_code(code):
     """
     # Error if unspecified.
     if code is None:
-        raise ESDOCAPIException("Project code must be specified.")
+        raise ESDOC_API_Exception("Project code must be specified.")
 
     # Error if not found.
     if c.get_project(code) is None:
         msg = 'Project code ({0}) is unsupported.'
         msg = msg.format(code)
-        raise ESDOCAPIException(msg)
+        raise ESDOC_API_Exception(msg)
 
 
 def get_setup_data(project_code, comparator_type):
@@ -104,17 +104,17 @@ def get_setup_data(project_code, comparator_type):
     # ... unspecified project code.
     if project_code is None:
         msg = 'Project code is unspecified.'
-        raise ESDOCAPIException(msg)
+        raise ESDOC_API_Exception(msg)
 
     # ... unspecified comparator type.
     if comparator_type is None:
         msg = 'Comparator is unspecified.'
-        raise ESDOCAPIException(msg)
+        raise ESDOC_API_Exception(msg)
 
     # ... unsupported comparator type.
     if comparator_type.lower() not in _comparators:
         msg = 'Comparator ({0}) is unsupported.'.format(comparator_type)
-        raise ESDOCAPIException(msg)
+        raise ESDOC_API_Exception(msg)
 
     # Format input params.
     project_code = project_code.upper()

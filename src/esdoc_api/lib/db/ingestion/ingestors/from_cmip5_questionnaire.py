@@ -15,12 +15,13 @@ from esdoc_api.lib.api.comparator_setup import write_comparator_json
 from esdoc_api.lib.db.facets.cim_v1.model_component.mapper import map as map_facets_for_model_component
 from esdoc_api.lib.db.facets.cim_v1.numerical_experiment.mapper import map as map_facets_for_numerical_experiment
 from esdoc_api.lib.db.ingestion.base_ingestor_from_feed import FeedIngestorBase
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
-from esdoc_api.lib.pyesdoc.utils.exception import ESDOCAPIException
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
+from esdoc_api.lib.utils.exception import ESDOC_API_Exception
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.models.entities import *
 from esdoc_api.models.entities.facet_relation_type import *
 from esdoc_api.models.entities.facet_type import *
+
 
 
 # Project code.
@@ -263,7 +264,7 @@ class FromCMIP5QuestionnaireIngestor(FeedIngestorBase):
                 simulation = do_ingest(elem)
                 break
         if simulation is None:
-            raise ESDOCAPIException("CMIP5Q documentset must contain a simulation.")
+            raise ESDOC_API_Exception("CMIP5Q documentset must contain a simulation.")
 
         # Ingest associated documents.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):

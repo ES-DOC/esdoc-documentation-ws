@@ -15,7 +15,7 @@ from pylons.decorators import rest
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 from esdoc_api.lib.pyesdoc.serialization import (
     decode as decode_cim,
     encode as encode_cim

@@ -12,7 +12,7 @@
 import unittest
 
 from esdoc_api_test.utils import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
 # Urls to local / remote esdoc api.

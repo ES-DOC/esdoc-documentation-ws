@@ -5,10 +5,8 @@
 
 # Module imports.
 from esdoc_api.models.entities.document_schema import DocumentSchema
-from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_SCHEMAS
+from esdoc_api.lib.pyesdoc.utils.ontologies import CIM_SCHEMAS
 
-# Module exports.
-__all__ = ['populate_document_schema']
 
 
 def populate_document_schema():

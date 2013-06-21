@@ -8,7 +8,7 @@ from operator import add
 from sqlalchemy import UniqueConstraint
 
 from esdoc_api.models.core.entity_base import *
-from esdoc_api.lib.pyesdoc.ontologies.constants import *
+from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 # Module exports.
 __all__ = ['DocumentSummary']

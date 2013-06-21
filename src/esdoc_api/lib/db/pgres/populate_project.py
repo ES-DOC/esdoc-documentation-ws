@@ -6,9 +6,6 @@
 # Module imports.
 from esdoc_api.models.entities.project import Project
 
-# Module exports.
-__all__ = ['populate_project']
-
 
 
 def populate_project():
@@ -29,3 +26,11 @@ def populate_project():
     p.Name = "DCMIP-2012"
     p.Description = "2012 Dynamical Core Model Intercomparison Project"
     p.URL = "http://earthsystemcog.org/projects/dcmip-2012/"
+
+    # QED-2013
+    p = Project()
+    p.Name = "QED-2013"
+    p.Description = "2013 Statistical Downscaling Dynamical Core Model Intercomparison Project"
+    p.URL = "http://earthsystemcog.org/projects/downscaling-2013/"
+
+

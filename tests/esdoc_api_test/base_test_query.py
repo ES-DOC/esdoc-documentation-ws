@@ -12,8 +12,8 @@
 import abc
 import unittest
 
-from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_ENCODING_XML
-from esdoc_api.lib.pyesdoc.ontologies.constants import CIM_ENCODING_JSON
+from esdoc_api.lib.pyesdoc.utils.ontologies import CIM_ENCODING_XML
+from esdoc_api.lib.pyesdoc.utils.ontologies import CIM_ENCODING_JSON
 from esdoc_api.lib.utils.http_utils import HTTP_RESPONSE_NOT_ACCEPTABLE
 
 
