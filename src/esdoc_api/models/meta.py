@@ -2,6 +2,7 @@
 from sqlalchemy import MetaData
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+
 __all__ = ['Session', 'engine', 'metadata']
 
 
@@ -16,7 +17,6 @@ Session = scoped_session(sessionmaker())
 # each database
 metadata = MetaData()
 
-
-# This imports all metafor entities.
-from esdoc_api.models.entities import *
-from esdoc_api.models.search import *
+# IMPORTANT :: This imports all ES-DOC API types into the application scope.
+from esdoc_api.lib.repo.models import *
+from esdoc_api.lib.search import *

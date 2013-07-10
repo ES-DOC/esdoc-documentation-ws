@@ -3,7 +3,8 @@
 """
 
 # Module imports.
-from esdoc_api.models.search.s1 import S1Search
+from esdoc_api.lib.repo.models import *
+from esdoc_api.lib.search import *
 
 
 # Managed collection of types being exposed to http.

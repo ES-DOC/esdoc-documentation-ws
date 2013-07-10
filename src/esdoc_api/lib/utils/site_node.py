@@ -57,9 +57,6 @@ class SiteNode(object):
         self.__icon = self.__key + '.png'
         self.__template = '/pages/' + self.__key + '.xhtml'
 
-        print 'ZZZ', self.__href
-
-
 
     @property
     def key(self):

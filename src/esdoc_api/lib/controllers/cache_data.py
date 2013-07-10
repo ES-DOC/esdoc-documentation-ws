@@ -2,6 +2,8 @@
 Data structure representing site level cache data.
 """
 
+
+
 class CacheData():
     """
     Encapsulates site level cache data.
@@ -11,6 +13,19 @@ class CacheData():
         Constructor.
         """
         self._collections = {}
+
+
+    def _get(self,
+             collection_key,
+             item_attribute,
+             item_code,
+             item_key_formatter):
+        if item_code is None:
+            return self.get(collection_key)
+        elif isinstance(item_code, int):
+            return self.get(collection_key, item_code)
+        else:
+            return self.get(collection_key, item_key_formatter(item_code), item_attribute)
     
 
     def register(self, collection_key, collection):
@@ -20,7 +35,7 @@ class CacheData():
         self._collections[collection_key] = collection
 
 
-    def get(self, collection_key, item_key=None, item_attribute=None):
+    def get(self, collection_key, item_key=None, item_attribute='Name'):
         """
         Gets either a collection or an item from the cache.
         """
@@ -31,10 +46,6 @@ class CacheData():
             if isinstance(item_key, int):
                 for item in collection:
                     if item.ID == item_key:
-                        return item
-            elif item_attribute is None:
-                for item in collection:
-                    if item.Name == item_key:
                         return item
             else:
                 for item in collection:
@@ -47,57 +58,37 @@ class CacheData():
         """
         Returns either all projects or first project with matching code.
         """
-        if code is None:
-            return self.get('Project')
-        elif isinstance(code, int):
-            return self.get('Project', code)
-        else:
-            return self.get('Project', code.upper())
+        return self._get('Project', 'Name', code, lambda key: key.upper())
 
 
     def get_institute(self, code=None):
         """
         Returns either all institutea or first institute with matching code.
         """
-        if code is None:
-            return self.get('Institute')
-        elif isinstance(code, int):
-            return self.get('Institute', code)
-        else:
-            return self.get('Institute', code.upper())
+        return self._get('Institute', 'Name', code, lambda key: key.upper())
+        
+
+    def get_encoding(self, code=None):
+        """Returns either all encodings or first encoding with matching code.
+        
+        """
+        return self._get('DocumentEncoding', 'Encoding', code, lambda key: key.lower())
 
 
-    def get_cim_encoding(self, code=None):
+    def get_ontology(self, name, version):
+        """Returns either all ontologies or first ontology with matching name/version.
+        
         """
-        Returns either all encodings or first encoding with matching code.
-        """
-        if code is None:
-            return self.get('DocumentEncoding')
-        elif isinstance(code, int):
-            return self.get('DocumentEncoding', code)
-        else:
-            return self.get('DocumentEncoding', code.lower(), 'Encoding')
+        for ontology in self.get('DocumentOntology'):
+            if ontology.Name.upper() == name.upper() and \
+               ontology.Version.upper() == version.upper() :
+               return ontology
+        return None
 
 
-    def get_cim_schema(self, code=None):
+    def get_language(self, code=None):
+        """Returns either all languages or first language with matching code.
+        
         """
-        Returns either all schemas or first schema with matching code.
-        """
-        if code is None:
-            return self.get('DocumentSchema')
-        elif isinstance(code, int):
-            return self.get('DocumentSchema', code)
-        else:
-            return self.get('DocumentSchema', code.upper(), 'Version')
+        return self._get('DocumentLanguage', 'Code', code, lambda key: key.lower())
 
-
-    def get_cim_language(self, code=None):
-        """
-        Returns either all languages or first language with matching code.
-        """
-        if code is None:
-            return self.get('DocumentLanguage')
-        elif isinstance(code, int):
-            return self.get('DocumentLanguage', code)
-        else:
-            return self.get('DocumentLanguage', code.lower(), 'Code')

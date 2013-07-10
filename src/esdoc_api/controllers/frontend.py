@@ -10,7 +10,7 @@
 
 # Module imports.
 from esdoc_api.lib.controllers import *
-
+import esdoc_api.lib.repo.dao as dao
 
 
 class FrontendController(BaseSitePageController):
@@ -36,6 +36,6 @@ class FrontendController(BaseSitePageController):
 
         """
         # Set context and render.
-        c.ingest_history = IngestHistory.get_all()
+        c.ingest_history = dao.get_all(IngestHistory)
         return render("/pages/site-ingestion-history.xhtml")
     

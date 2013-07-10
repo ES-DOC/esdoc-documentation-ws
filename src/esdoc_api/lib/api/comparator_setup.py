@@ -13,29 +13,9 @@
 import json
 import os
 
-from esdoc_api.lib.db.facets.utils import (
-    get_facet_values,
-    get_facet_relations
-    )
-from esdoc_api.models.entities.facet_type import (
-    MODEL,
-    MODEL_COMPONENT,
-    MODEL_COMPONENT_PROPERTY,
-    MODEL_COMPONENT_PROPERTY_VALUE
-    )
-from esdoc_api.models.entities.facet_relation_type import (
-    MODEL_2_EXPERIMENT,
-    MODEL_2_INSTITUTE,
-    MODEL_2_COMPONENT,
-    MODEL_2_PROPERTY,
-    MODEL_2_VALUE,
-    COMPONENT_2_COMPONENT,
-    COMPONENT_2_PROPERTY,
-    PROPERTY_2_PROPERTY,
-    PROPERTY_2_VALUE
-    )
-from esdoc_api.lib.utils.exception import ESDOC_API_Exception
-
+import esdoc_api.lib.repo.models as models
+import esdoc_api.lib.repo.utils as utils
+import esdoc_api.lib.utils.runtime as rt
 
 
 def _get_c1_setup_data():
@@ -44,19 +24,19 @@ def _get_c1_setup_data():
     """
     return {
         'facetSet' : {
-            'component' : get_facet_values(MODEL_COMPONENT),
-            'model' : get_facet_values(MODEL),
-            'property' : get_facet_values(MODEL_COMPONENT_PROPERTY),
-            'value' : get_facet_values(MODEL_COMPONENT_PROPERTY_VALUE),
+            'component' : utils.get_facets(models.MODEL_COMPONENT),
+            'model' : utils.get_facets(models.MODEL),
+            'property' : utils.get_facets(models.MODEL_COMPONENT_PROPERTY),
+            'value' : utils.get_facets(models.MODEL_COMPONENT_PROPERTY_VALUE),
         },
         'relationSet' : {
-            'componentToComponent' : get_facet_relations(COMPONENT_2_COMPONENT),
-            'componentToProperty' : get_facet_relations(COMPONENT_2_PROPERTY),
-            'modelToComponent' : get_facet_relations(MODEL_2_COMPONENT),
-            'modelToProperty' : get_facet_relations(MODEL_2_PROPERTY),
-            'modelToValue' : get_facet_relations(MODEL_2_VALUE),
-            'propertyToProperty' : get_facet_relations(PROPERTY_2_PROPERTY),
-            'propertyToValue' : get_facet_relations(PROPERTY_2_VALUE),
+            'componentToComponent' : utils.get_facet_relations(models.COMPONENT_2_COMPONENT),
+            'componentToProperty' : utils.get_facet_relations(models.COMPONENT_2_PROPERTY),
+            'modelToComponent' : utils.get_facet_relations(models.MODEL_2_COMPONENT),
+            'modelToProperty' : utils.get_facet_relations(models.MODEL_2_PROPERTY),
+            'modelToValue' : utils.get_facet_relations(models.MODEL_2_VALUE),
+            'propertyToProperty' : utils.get_facet_relations(models.PROPERTY_2_PROPERTY),
+            'propertyToValue' : utils.get_facet_relations(models.PROPERTY_2_VALUE),
         }
     }
 
@@ -78,13 +58,13 @@ def _validate_project_code(code):
     """
     # Error if unspecified.
     if code is None:
-        raise ESDOC_API_Exception("Project code must be specified.")
+        raise rt.ESDOC_API_Error("Project code must be specified.")
 
     # Error if not found.
     if c.get_project(code) is None:
         msg = 'Project code ({0}) is unsupported.'
         msg = msg.format(code)
-        raise ESDOC_API_Exception(msg)
+        raise rt.ESDOC_API_Error(msg)
 
 
 def get_setup_data(project_code, comparator_type):
@@ -100,21 +80,21 @@ def get_setup_data(project_code, comparator_type):
     :rtype: dict
 
     """
-    # Validate input params.
+    # Defensive programming.
     # ... unspecified project code.
     if project_code is None:
         msg = 'Project code is unspecified.'
-        raise ESDOC_API_Exception(msg)
+        raise rt.ESDOC_API_Error(msg)
 
     # ... unspecified comparator type.
     if comparator_type is None:
         msg = 'Comparator is unspecified.'
-        raise ESDOC_API_Exception(msg)
+        raise rt.ESDOC_API_Error(msg)
 
     # ... unsupported comparator type.
     if comparator_type.lower() not in _comparators:
         msg = 'Comparator ({0}) is unsupported.'.format(comparator_type)
-        raise ESDOC_API_Exception(msg)
+        raise rt.ESDOC_API_Error(msg)
 
     # Format input params.
     project_code = project_code.upper()
@@ -156,11 +136,4 @@ def write_comparator_json(project_code, comparator_type):
         f.write('onESDOC_JSONPLoad(')
         json.dump(data, f, encoding="ISO-8859-1")
         f.write(');')
-
-
-
-if __name__ == "__main__":
-    from esdoc_api.lib.db.pgres.connect import *
-    
-    write_comparator_json("cmip5", "c1")
     

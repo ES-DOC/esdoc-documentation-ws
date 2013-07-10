@@ -42,57 +42,23 @@ def _make_map_for_api(map, config):
         if 'publishing_enabled' in config and bool(config['publishing_enabled']):
             map.connect('/1/publish/{project}',
                         controller='publish', action='collection')
-            map.connect('/1/publish/{project}/{uid}/{version:\d+|latest}{.format:xml|json}',
+            map.connect('/1/publish/{project}/{uid}/{version:\d+|latest|all}{.format:xml|json}',
                         controller='publish', action='instance')
 
-    def query():
-        """Query API routes.
+    def search():
+        """Search API routes.
 
         """
-        # Document - by id.
-        map.connect('/1/query/id/{project_code}/{id}{.format:xml|json}',
-                    controller='query', action='document_by_id')
-        map.connect('/1/query/id/{project_code}/{id}/{version:\d+|latest}{.format:xml|json}',
-                    controller='query', action='document_by_id')
-
-        # Document - by name.
-        map.connect('/1/query/name/{project_code}/{type}/{name}{.format:xml|json}',
-                    controller='query', action='document_by_name')
-        map.connect('/1/query/name/{project_code}/{type}/{name}/{institute_code}{.format:xml|json}',
-                    controller='query', action='document_by_name')
-
-        # Document - by external id.
-        map.connect('/1/query/externalID/{project_code}/{type}/{external_id}{.format:xml|json}',
-                    controller='query', action='document_by_external_id')
-
-        # Document - by drs.
-        path = '{project_code}'
-        for i in range(9):
-            if i > 0:
-                path += '/{key_0' + str(i) + '}'
-            map.connect('/1/query/drs/{0}{1}'.format(path, '{.format:xml|json}'),
-                        controller='query', action='document_by_drs_keys')
-
-    def repository():
-        """Repository API routes.
-
-        """
-        # Setup data.
-        map.connect('/1/repository/search/{search_type}/setupData',
-                    controller='repository', action='get_search_setup_data')
-
-        # Results.
-        map.connect('/1/repository/search/{search_type}/results',
-                    controller='repository', action='get_search_results')
-
+        map.connect('/1/search', controller='search', action='do')
+        map.connect('/1/search/setup', controller='search', action='setup')
+        
     def compare():
         """Compare API routes.
         
         """
         # Setup data.
         map.connect('/1/compare/setupData/{project_code}/{comparator_type}',
-                    controller='comparator', action='get_setup_data')
-
+                    controller='compare', action='get_setup_data')
 
     def visualize():
         """Visualize API routes.
@@ -100,10 +66,9 @@ def _make_map_for_api(map, config):
         """
         # Setup data.
         map.connect('/1/visualize/setupData/{visualizer_type}/{project_code}',
-                    controller='visualizer', action='get_setup_data')
+                    controller='visualize', action='get_setup_data')
 
-
-    for f in [publish, query, repository, compare, visualize]:
+    for f in [publish, search, compare, visualize]:
         f()
 
 

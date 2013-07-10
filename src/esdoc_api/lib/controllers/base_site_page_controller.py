@@ -3,8 +3,8 @@ from esdoc_api.lib.utils.site_factory import create_site_map
 
 
 class BaseSitePageController(BaseSiteController):
-    """
-    Base class for all Metafor page controllers.
+    """Base front end page controller.
+    
     """
 
     def __init__(self):

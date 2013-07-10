@@ -2,8 +2,8 @@ from esdoc_api.lib.controllers.base_site_controller import *
 
 
 class BaseSiteAjaxController(BaseSiteController):
-    """
-    Base class for all Metafor ajax controllers.
+    """Base ajax controller.
+
     """
 
     def __init__(self):

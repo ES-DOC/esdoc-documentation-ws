@@ -30,7 +30,7 @@ from esdoc_api.lib.api.external_id_validator import (
     dcmip2012_dataset_id_validator,
     dcmip2012_file_id_validator
     )
-from esdoc_api.models.entities.project import Project
+from esdoc_api.lib.repo.models import Project
 
 
 class ExternalIDHandler():
@@ -96,10 +96,10 @@ def get_handler(project, type):
         raise TypeError('project')
 
     project = project.Name.lower()
+    type = type.lower()
+    
     if project not in _handlers:
         return None
-
-    type = type.lower()
     if type not in _handlers[project]:
         return None
 

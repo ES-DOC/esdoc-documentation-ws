@@ -9,22 +9,14 @@
 """
 
 # Module imports.
-from esdoc_api.lib.utils.http_utils import HTTP_RESPONSE_NOT_ACCEPTABLE
 from pylons.decorators import rest
 
+import esdoc_api.lib.repo.dao as dao
+import esdoc_api.lib.repo.utils as utils
+import esdoc_api.lib.pyesdoc as pyesdoc
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
-from esdoc_api.lib.pyesdoc.utils.ontologies import *
-from esdoc_api.lib.pyesdoc.serialization import (
-    decode as decode_cim,
-    encode as encode_cim
-    )
-from esdoc_api.models.daos.document_representation import (
-    assign as assign_representation,
-    load as load_representation,
-    remove_all as delete_representations
-    )
 
 
 
@@ -32,14 +24,6 @@ class PublishController(BaseAPIController):
     """Exposes document publishing operations.
 
     """
-    @property
-    def validate_doc_request_info(self):
-        """Gets flag indicating whether cim http request information should be validated or not.
-        
-        """
-        return True
-
-
     def __load(self, project, uid, version):
         """Loads data in readiness for subsequent actions.
 
@@ -68,7 +52,7 @@ class PublishController(BaseAPIController):
         result[1] = project
 
         # Load document.
-        result[0] = Document.retrieve_by_id(project, uid, version)
+        result[0] = dao.get_document(project_id, uid, version)
 
         # Returned loaded data.
         return result
@@ -83,10 +67,10 @@ class PublishController(BaseAPIController):
         """
         doc_xml = request.body.decode('UTF-8','strict')
         doc_et = et.fromstring(doc_xml)
-        doc_uid = cim_element(doc_et, 'documentID').text
-        doc_version = int(cim_element(doc_et, 'documentVersion').text)
-        doc_type = cim_tag(doc_et)
-        doc_obj = decode_cim(doc_xml, CIM_SCHEMA_1_5, CIM_ENCODING_XML)
+        doc_uid = get_element(doc_et, 'documentID').text
+        doc_version = int(get_element(doc_et, 'documentVersion').text)
+        doc_type = get_tag_name(doc_et)
+        doc_obj = pyesdoc.decode(doc_xml, 'cim', '1', pyesdoc.ESDOC_ENCODING_XML)
         return [doc_xml, doc_uid, doc_version, doc_type, doc_obj]
 
 
@@ -101,16 +85,16 @@ class PublishController(BaseAPIController):
         :type doc_obj: object
 
         """
-        self.__set_representation(doc, doc_obj, CIM_ENCODING_JSON)
-        self.__set_representation(doc, doc_obj, CIM_ENCODING_XML,
+        self.__set_representation(doc, doc_obj, pyesdoc.ESDOC_ENCODING_JSON)
+        self.__set_representation(doc, doc_obj, pyesdoc.ESDOC_ENCODING_XML,
                                   representation=doc_xml)
 
 
-    def __set_representation(self, doc, as_obj, encoding, representation=None):
+    def __set_representation(self, document, as_obj, encoding, representation=None):
         """Sets a document representation.
 
-        :param doc: Document.
-        :type doc: esdoc_api.models.Document
+        :param document: Document.
+        :type document: esdoc_api.models.Document
 
         :param as_obj: Document as a pyesdoc object.
         :type as_obj: object
@@ -124,16 +108,17 @@ class PublishController(BaseAPIController):
         """
         # Deserialze pyesdoc object (if necessary).
         if representation is None:
-            representation = encode_cim(as_obj,
-                                        self.cim_schema.Version,
-                                        encoding)
+            representation = pyesdoc.encode(as_obj,
+                                            self.ontology.Name,
+                                            self.ontology.Version,
+                                            encoding)
 
         # Assign representation to document.
-        assign_representation(doc,
-                              self.cim_schema,
-                              c.get_cim_encoding(encoding),
-                              self.cim_language,
-                              representation)
+        utils.create_document_representation(document,
+                                             self.ontology,
+                                             c.get_encoding(encoding),
+                                             self.language,
+                                             representation)
 
     
     def _instance_retrieve(self, project, uid, version):
@@ -152,7 +137,7 @@ class PublishController(BaseAPIController):
         """
         def guard():
             # Abort if cim info is invalid.
-            if self.is_cim_info_valid == False:
+            if self.is_doc_metainfo_valid == False:
                 abort(HTTP_RESPONSE_NOT_ACCEPTABLE)
 
         # Defensive programming.
@@ -168,18 +153,18 @@ class PublishController(BaseAPIController):
             abort(HTTP_RESPONSE_NOT_FOUND, 'CIM Document Not Found')
 
         # Load representation.
-        representation = load_representation(doc,
-                                             self.cim_schema,
-                                             self.cim_encoding,
-                                             self.cim_language)
+        representation = utils.get_document_representation(doc,
+                                                           self.ontology,
+                                                           self.encoding,
+                                                           self.language)
 
         # Set response content type.
         response.content_type = self.get_response_content_type()
 
         # Log.
         print 'CIM Document retrieved :: {0} {1} {2} {3} {4} {5}'.format(
-            project, self.cim_schema.Version, self.cim_language.Code,
-            self.cim_encoding.Encoding, uid, version)
+            project, self.ontology.Version, self.language.Code,
+            self.encoding.Encoding, uid, version)
 
         # Return representation.
         return representation
@@ -203,24 +188,19 @@ class PublishController(BaseAPIController):
         guard()
 
         # Load from repository.
-        doc, doc_project = self.__load(project, uid, version)
+        document, project = self.__load(project, uid, version)
 
         # Escape if either project or document is not found.
-        if doc_project is None:
+        if project is None:
             abort(HTTP_RESPONSE_NOT_ACCEPTABLE, 'Unsupported project')
-        if doc is None:
+        if document is None:
             abort(HTTP_RESPONSE_BAD_REQUEST, 'No matching CIM document.')
 
         # Delete relations.
-        DocumentSetDocument.remove_all(doc)
-        delete_representations(doc)
-        DocumentSummary.remove_all(doc)
-
-        # Delete instance.
-        doc.delete()
-
-        # Persist to db.
-        session.commit()
+        DocumentSetDocument.remove_all(document)
+        dao.delete_document_representations(document.ID)
+        dao.delete_document_summaries(document.id)
+        dao.delete(document)
 
         # Log.
         print 'CIM Document deleted :: {0} {1} {2}'.format(
@@ -240,12 +220,12 @@ class PublishController(BaseAPIController):
         """
         def guard():
             # Abort if cim info is invalid.
-            if self.is_cim_info_valid == False:
+            if self.is_doc_metainfo_valid == False:
                 abort(HTTP_RESPONSE_NOT_ACCEPTABLE)
 
             # Abort if cim encoding is unacceptable.
             # TODO support other encodings.
-            if self.cim_encoding.Encoding != CIM_ENCODING_XML:
+            if self.encoding.Encoding != ESDOC_ENCODING_XML:
                 abort(HTTP_RESPONSE_NOT_ACCEPTABLE)
 
         # Defensive programming.
@@ -267,21 +247,21 @@ class PublishController(BaseAPIController):
         doc.Type = doc_type
 
         # Update document summary.
-        doc.set_summary(doc_obj, self.cim_language)
+        doc.set_summary(doc_obj, self.language)
 
         # Update document representations.
         self.__set_representations(doc, doc_xml, doc_obj)
         
         # Update document is latest flag.
-        Document.set_is_latest(doc, doc_project)
+        utils.set_document_is_latest_flag(doc, doc_project)
 
         # Persist to db.
         session.commit()
 
         # Log.
         print 'CIM Document updated :: {0} {1} {2} {3} {4} {5} {6}'.format(
-            project, self.cim_schema.Version, self.cim_language.Code,
-            self.cim_encoding.Encoding, doc_type, uid, version)
+            project, self.ontology.Version, self.language.Code,
+            self.encoding.Encoding, doc_type, uid, version)
 
         # Return.
         response.content_type = 'text/xml'
@@ -295,23 +275,17 @@ class PublishController(BaseAPIController):
         :type project: str
         
         """
-        def guard():
-            # Abort if cim info is invalid.
-            if self.is_cim_info_valid == False:
-                abort(HTTP_RESPONSE_NOT_ACCEPTABLE)
+        # Abort if document meta-info is invalid.
+        if self.is_doc_metainfo_valid == False:
+            abort(HTTP_RESPONSE_NOT_ACCEPTABLE, "Invalid document meta-inforation")
 
-            # Abort if cim schema is unacceptable.
-            # TODO support other schemas.
-            if self.cim_schema.Version != CIM_SCHEMA_1_5:
-                abort(HTTP_RESPONSE_NOT_ACCEPTABLE)
+        # Abort if document ontology is unacceptable.
+        if self.ontology.Version != ontology_1_5:
+            abort(HTTP_RESPONSE_NOT_ACCEPTABLE, "Invalid document ontology")
 
-            # Abort if cim encoding is unacceptable.
-            # TODO support other encodings.
-            if self.cim_encoding.Encoding != CIM_ENCODING_XML:
-                abort(HTTP_RESPONSE_NOT_ACCEPTABLE)
-
-        # Defensive programming.
-        guard()
+        # Abort if document encoding is unacceptable.
+        if self.encoding.Encoding != ESDOC_ENCODING_XML:
+            abort(HTTP_RESPONSE_NOT_ACCEPTABLE, "Invalid document encoding")
 
         # Parse request content.
         doc_xml, doc_uid, doc_version, doc_type, doc_obj = self.__parse_xml()
@@ -323,7 +297,7 @@ class PublishController(BaseAPIController):
         if doc_project is None:
             abort(HTTP_RESPONSE_NOT_ACCEPTABLE, 'Unsupported project')
         if doc is not None:
-            abort(HTTP_RESPONSE_NOT_ALLOWED)
+            abort(HTTP_RESPONSE_NOT_ALLOWED, "Duplicate document")
 
         # Set document core attributes.
         doc = Document()
@@ -332,22 +306,18 @@ class PublishController(BaseAPIController):
         doc.Version = doc_version
         doc.Type = doc_type
 
-        # Set document summary.
-        doc.set_summary(doc_obj, self.cim_language)
-
-        # Set document representations.
+        # Set associated attributes.
+        doc.set_summary(doc_obj, self.language)
         self.__set_representations(doc, doc_xml, doc_obj)
-
-        # Set document is latest flag.
-        Document.set_is_latest(doc, doc_project)
+        utils.set_document_is_latest_flag(doc, doc_project)
 
         # Persist to db.
         session.commit()
 
         # Log.
         print 'CIM Document uploaded :: {0} {1} {2} {3} {4} {5} {6}'.format(
-            project, self.cim_schema.Version, self.cim_language.Code,
-            self.cim_encoding.Encoding, doc_type, doc_uid, doc_version)
+            project, self.ontology.Version, self.language.Code,
+            self.encoding.Encoding, doc_type, doc_uid, doc_version)
 
         # Return.
         response.content_type = 'text/xml'

@@ -1,22 +1,24 @@
 from esdoc_api.lib.controllers.base_controller import *
+import esdoc_api.lib.repo.dao as dao
 
 
 class BaseSiteController(BaseController):
-    """
-    Base class for all Metafor application controllers.
+    """Base front end controller.
+
     """    
     # Abstract Base Class module - see http://docs.python.org/library/abc.html
     __metaclass__ = ABCMeta
-
-    def __init__(self):
-        """
-        Initialises controller state.
-        """
-        super(BaseSiteController,self).__init__()
+    
         
+    def __before__(self, action, **kwargs):
+        """Pre action invocation handler.
+
+        """
+        super(BaseSiteController,self).__before__(action, **kwargs)
+
         # Set common context info.
         self.__set_cache_state()
-  
+
 
     def __set_cache_state(self):
         """
@@ -28,19 +30,13 @@ class BaseSiteController(BaseController):
             Loads static cache data.
             """
             cache_data = CacheData()
-            cache_data.register('Institute', Institute.get_all())
-            cache_data.register('DocumentLanguage', DocumentLanguage.get_all())
-            cache_data.register('DocumentSchema', DocumentSchema.get_all())
-            cache_data.register('Project', Project.get_all())
+            cache_data.register('Institute', dao.get_all(Institute))
+            cache_data.register('DocumentEncoding', dao.get_all(DocumentEncoding))
+            cache_data.register('DocumentLanguage', dao.get_all(DocumentLanguage))
+            cache_data.register('DocumentOntology', dao.get_all(DocumentOntology))
+            cache_data.register('Project', dao.get_all(Project))
             return cache_data
-
-        def load_static_data_level1():
-            """
-            Append non-static but frequently used data.
-            """
-            pass
-        
 
         # Load cache data & append to context.
         c.cache = load_cache_data_level0()
-        load_static_data_level1()
+

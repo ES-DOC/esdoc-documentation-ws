@@ -9,13 +9,14 @@
 """
 
 # Module imports.
-from esdoc_api.models.core.entity_manager import EntityManager
-from esdoc_api.models.core.entity_convertor import EntityConvertor
-from esdoc_api.models.core.search_manager import SearchManager
+from esdoc_api.models.manager import (
+    EntityManager,
+    SearchManager
+    )
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.controllers.decorators import jsonify
-from esdoc_api.models.entities.types import *
+from esdoc_api.lib.repo.models import *
 
 
 
