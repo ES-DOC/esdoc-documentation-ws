@@ -15,9 +15,10 @@ from abc import abstractmethod
 import datetime
 
 import esdoc_api.lib.repo.dao as dao
+import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.utils.runtime as rt
 from esdoc_api.lib.pyesdoc.utils.ontologies import *
-from esdoc_api.lib.repo.models import (
+from esdoc_api.models import (
     DocumentEncoding,
     INGEST_STATE_COMPLETE_ID,
     INGEST_STATE_ERROR_ID,
@@ -50,7 +51,7 @@ class IngestorBase(object):
         """Constructor.
 
         :param endpoint: Ingest endpoint.
-        :type endpoint: esdoc_api.lib.repo.models.IngestEndpoint
+        :type endpoint: esdoc_api.models.IngestEndpoint
 
         :param project: Project with which endpoint is associated.
         :type project: str
@@ -70,7 +71,8 @@ class IngestorBase(object):
         self.language = dao.get_document_language(language)
         self.encodings = dao.get_all(DocumentEncoding)
                 
-        self.history = IngestHistory()
+        self.history = utils.create(IngestHistory)
+        self.history.StartDateTime = datetime.datetime.now()
         self.history.Endpoint_ID = endpoint.ID
         self.history.State_ID = INGEST_STATE_RUNNING_ID
         self.ingested_count = 0
@@ -149,7 +151,7 @@ class IngestorBase(object):
         self.history.Count = self.ingested_count
         self.history.EndDateTime = datetime.datetime.now()
         self.history.TimeInMS = self.history.EndDateTime.microsecond - \
-                                 self.history.StartDateTime.microsecond
+                                self.history.StartDateTime.microsecond
 
 
     @abstractmethod

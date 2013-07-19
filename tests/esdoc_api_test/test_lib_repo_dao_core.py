@@ -14,8 +14,8 @@
 import nose.tools 
 
 import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.models as models
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
+import esdoc_api.models as models
 import esdoc_api.lib.utils.runtime as rt
 import esdoc_api_test.utils as tu
 
@@ -23,22 +23,41 @@ import esdoc_api_test.utils as tu
 
 
 def test_assert_type_01():
-    dao.assert_type(models.Project)
+    # Test valid types assertion.
+    for type in models.supported_types:
+        dao.assert_type(type)
     
 
 @nose.tools.raises(rt.ESDOC_API_Error)
 def test_assert_type_02():
+    # Test invalid type assertion.
     class TestModelA(object):
         pass
     dao.assert_type(TestModelA)
 
 
+def test_assert_instance_01():
+    # Test valid instance assertion.
+    for type in models.supported_types:
+        dao.assert_instance(type())
+
+
+@nose.tools.raises(rt.ESDOC_API_Error)
+def test_assert_instance_02():
+    # Test invalid instance assertion.
+    class TestModelA(object):
+        pass
+    dao.assert_instance(TestModelA())
+
+
 def test_assert_collection_01():
+    # Test valid collection assertion.
     dao.assert_collection(map(lambda st : st(), models.supported_types))
 
 
 @nose.tools.raises(rt.ESDOC_API_Error)
 def test_assert_collection_02():
+    # Test invalid collection assertion.
     class TestModelA(object):
         pass
     class TestModelB(object):
@@ -46,28 +65,64 @@ def test_assert_collection_02():
     dao.assert_collection([TestModelA(), TestModelB()])
 
 
-def test_delete():
-    instance = tu.get_test_model(models.Project)
+def test_delete_01():
+    # Test instance deletion.
+    type = models.Project
+    instance = tu.get_test_model(type)
     dao.insert(instance)
-    count = dao.get_count(models.Project)
+    count = dao.get_count(type)
     dao.delete(instance)
-    tu.assert_integer(count - 1, dao.get_count(models.Project))
+    tu.assert_integer(count - 1, dao.get_count(type))
 
 
-def test_delete_all():
-    count = dao.get_count(models.IngestEndpoint)
+def test_delete_02():
+    # Test collection deletion.
+    type = models.IngestEndpoint
+    count = dao.get_count(type)
     collection = [
-        tu.get_test_model(models.IngestEndpoint),
-        tu.get_test_model(models.IngestEndpoint),
-        tu.get_test_model(models.IngestEndpoint)
+        tu.get_test_model(type),
+        tu.get_test_model(type),
+        tu.get_test_model(type)
     ]
-    dao.insert_all(collection)
-    tu.assert_integer(count + len(collection), dao.get_count(models.IngestEndpoint))
-    dao.delete_all(collection)
-    tu.assert_integer(count, dao.get_count(models.IngestEndpoint))
+    dao.insert(collection)
+    tu.assert_integer(count + len(collection), dao.get_count(type))
+    dao.delete(collection)
+    tu.assert_integer(count, dao.get_count(type))
+
+
+def test_delete_by_type_01():
+    # Test deletion of all instances by type.
+    count = dao.get_count(models.IngestURL)
+    collection = [
+        tu.get_test_model(models.IngestURL),
+        tu.get_test_model(models.IngestURL),
+        tu.get_test_model(models.IngestURL)
+    ]
+    dao.insert(collection)
+    tu.assert_integer(count + len(collection), dao.get_count(models.IngestURL))
+    dao.delete_by_type(models.IngestURL)
+    tu.assert_integer(count, dao.get_count(models.IngestURL))
+
+
+def test_delete_by_type_02():
+    # Test deletion of all instances by type (with deletion callback).
+    def delete_callback(id):
+        dao.delete_by_id(models.IngestURL, id)
+    
+    count = dao.get_count(models.IngestURL)
+    collection = [
+        tu.get_test_model(models.IngestURL),
+        tu.get_test_model(models.IngestURL),
+        tu.get_test_model(models.IngestURL)
+    ]
+    dao.insert(collection)
+    tu.assert_integer(count + len(collection), dao.get_count(models.IngestURL))
+    dao.delete_by_type(models.IngestURL, delete_callback)
+    tu.assert_integer(count, dao.get_count(models.IngestURL))
 
 
 def test_delete_by_id():
+    # Test deletion an instance by type & id.
     instance = tu.get_test_model(models.Project)
     dao.insert(instance)
     count = dao.get_count(models.Project)
@@ -76,6 +131,7 @@ def test_delete_by_id():
 
 
 def test_delete_by_name():
+    # Test deletion an instance by type & name.
     instance = tu.get_test_model(models.Project)
     dao.insert(instance)
     count = dao.get_count(models.Project)
@@ -84,30 +140,106 @@ def test_delete_by_name():
 
 
 def test_get_active():
+    # Test retrieving all active instances of a specified type.
     tu.assert_collection(dao.get_active(models.IngestEndpoint), 8)
 
 
 def test_get_all():
+    # Test retrieving all instances of a specified type.
     tu.assert_collection(dao.get_all(models.DocumentEncoding), 3)
 
 
+def test_get_by_facet_01():
+    # Test retrieving an instance by facet.
+    # Insert test instance.
+    type = models.DocumentSummary
+    instance1 = tu.get_test_model(type)
+
+    # Retrieve instance.
+    instance2 = dao.get_by_facet(type, type.ID==instance1.ID)
+    tu.assert_object(instance2, type)
+    tu.assert_entity(instance1, instance2)
+
+
+def test_get_by_facet_02():
+    # Test retrieving an instance by facet.
+    # Insert test instance.
+    type = models.DocumentSummary
+    instance = tu.get_test_model(type)
+
+    # Retrieve instance via a collection.
+    collection = dao.get_by_facet(type, type.ID==instance.ID, get_iterable=True)
+    tu.assert_collection(collection, length=1, item_type=type)
+    tu.assert_entity(collection[0], instance)
+
+
+def test_get_by_facet_03():
+    # Test retrieving a sorted collection by facet.
+    # Insert test collection.
+    type = models.DocumentSummary
+    dao.delete_by_type(type)
+    collection = [
+        tu.get_test_model(type),
+        tu.get_test_model(type),
+        tu.get_test_model(type)
+    ]
+    dao.insert(collection)
+
+    # Set sort fields.
+    fields = sorted(map(lambda i : i.Field_01, collection))
+
+    # Assert sorted collection.
+    collection = dao.get_by_facet(type, None, get_iterable=True)
+    tu.assert_collection(collection, length=3, item_type=type)
+    for i in range(len(collection)):
+        tu.assert_string(fields[i], collection[i].Field_01)
+
+
+def test_get_by_facet_04():
+    # Test retrieving an ordered collection by facet.
+    # Insert test collection.
+    type = models.DocumentSummary
+    dao.delete_by_type(type)
+    collection = [
+        tu.get_test_model(type),
+        tu.get_test_model(type),
+        tu.get_test_model(type)
+    ]
+    dao.insert(collection)
+    
+    # Set sort fields.
+    fields = sorted(map(lambda i : i.Field_02, collection))
+    
+    # Assert ordered collection.
+    collection = dao.get_by_facet(type, None, get_iterable=True,
+                                  order_by=type.Field_02)
+    tu.assert_collection(collection, length=3, item_type=type)
+    for i in range(len(collection)):
+        tu.assert_string(fields[i], collection[i].Field_02)
+
+
 def test_get_by_id():
+    # Test retrieving an instance by it's id.
     tu.assert_object(dao.get_by_id(models.DocumentEncoding, 1), models.DocumentEncoding)
 
 
 def test_get_by_name():
+    # Test retrieving an instance by it's name.
     tu.assert_object(dao.get_by_name(models.DocumentLanguage, 'Tibetan'), models.DocumentLanguage)
 
 
 def test_get_count():
+    # Test retrieving a count of instances by type.
     tu.assert_integer(dao.get_count(models.DocumentEncoding), 3, tu.COMPARE_GTE)
 
 
 def test_get_inactive():
+    # Test retrieving all active instances of a specified type.
     tu.assert_collection(dao.get_inactive(models.IngestEndpoint), 0, length_compare=tu.COMPARE_EXACT)
 
 
 def test_insert():    
+    # Test inserting an instance.
     count = dao.get_count(models.Project)
     instance = tu.get_test_model(models.Project)
     dao.insert(instance)
@@ -115,11 +247,12 @@ def test_insert():
 
 
 def test_insert_all():
+    # Test inserting a collection of instances.
     count = dao.get_count(models.IngestEndpoint)
     collection = [
         tu.get_test_model(models.IngestEndpoint),
         tu.get_test_model(models.IngestEndpoint),
         tu.get_test_model(models.IngestEndpoint)
     ]
-    dao.insert_all(collection)
+    dao.insert(collection)
     tu.assert_integer(count + len(collection), dao.get_count(models.IngestEndpoint))

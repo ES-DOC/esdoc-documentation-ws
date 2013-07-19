@@ -14,8 +14,6 @@
 import json
 from StringIO import StringIO
 
-from elixir import *
-
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.utils.runtime as rt
 

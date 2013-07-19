@@ -48,6 +48,7 @@ def _reduce_values(memo, v_list):
 
     """
     memo.extend(v_list)
+    
     return memo
 
 
@@ -70,13 +71,17 @@ def _reduce_properties(memo, c, p_tree, parent=None):
     :rtype: list
 
     """
+    # Extend property attributes.
     for p in [i for i in p_tree]:
         p.component = c
         p.parent = parent
+
+    # Reduce property tree.
     for p in [i for i in p_tree if _property_predicate(i)]:
         memo.append((p, _reduce_values([], p.values)))
         if len(p.children) > 0:
             _reduce_properties(memo, c, p.children, p)
+            
     return memo
 
 
@@ -96,13 +101,16 @@ def _reduce_components(memo, c_tree, parent=None):
     :rtype: list
 
     """
-
+    # Extend component attributes.
     for c in [i for i in c_tree]:
         c.parent = parent
+        
+    # Reduce component tree.
     for c in [i for i in c_tree if _component_predicate(i)]:
         memo.append((c, _reduce_properties([], c, c.properties)))
         if len(c.children) > 0:
             _reduce_components(memo, c.children, c)
+            
     return memo
 
 

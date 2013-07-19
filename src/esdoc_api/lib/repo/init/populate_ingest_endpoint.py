@@ -11,7 +11,7 @@
 
 # Module imports.
 import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
 import esdoc_api.lib.repo.session as session
 
 

@@ -7,7 +7,6 @@
 
 
 """
-
 # Module imports.
 import types
 

@@ -9,6 +9,10 @@
 
 
 """
+# Module imports.
+import re
+
+
 
 def _replace_protected_chars(keyword):
     """
@@ -64,3 +68,19 @@ def get_rows(text, split='|'):
         for i in range(len(row)):
             row[i] = row[i].strip()
         yield row
+
+
+def convert_to_spaced_case(value):
+    """Helper function to convert a string value from camel case to spaced case.
+
+    :param value: A string for conversion.
+    :type value: str
+
+    :returns: A string converted to spaced case.
+    :rtype: str
+
+    """
+    if value.find(" ") == -1:
+        return re.sub("([A-Z])"," \g<0>", value).strip()
+    else:
+        return value

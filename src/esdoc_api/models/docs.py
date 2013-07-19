@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.repo.models.docs.py
+.. module:: esdoc_api.models.docs.py
    :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -24,7 +24,7 @@ from sqlalchemy import (
     )
 from sqlalchemy.orm import relationship
 
-from esdoc_api.lib.repo.models.utils import (
+from esdoc_api.models.utils import (
     create_fk,
     Entity
     )
@@ -79,13 +79,13 @@ class Document(Entity):
     # Field set.
     Type =  Column(Unicode(63), nullable=False)
     Name =  Column(Unicode(255), nullable=False)
-    UID = Column(Unicode(63), nullable=False, default=str(uuid.uuid4()))
+    UID = Column(Unicode(63), nullable=False, default=uuid.uuid4())
     Version = Column(Integer, nullable=False, default=1)
     HasChildren = Column(Boolean, nullable=False, default=False)
     IsChild = Column(Boolean, nullable=False, default=False)
     IsLatest = Column(Boolean, nullable=False, default=False)
     IsIndexed = Column(Boolean, nullable=False, default=False)
-    IngestDate =  Column(DateTime, default=datetime.datetime.now)
+    IngestDate =  Column(DateTime, default=datetime.datetime.now())
 
 
     def __init__(self):
@@ -285,4 +285,11 @@ class DocumentSummary(Entity):
 
         return reduce(lambda x, y: x + y, fields, '')
 
-    
+
+    @classmethod
+    def get_default_sort_key(cls):
+        """
+        Gets default sort key.
+        """
+        return lambda instance: instance.Field_01
+

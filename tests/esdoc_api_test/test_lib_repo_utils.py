@@ -16,7 +16,7 @@ from nose.tools import with_setup
 
 import esdoc_api_test.utils as tu
 import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
 import esdoc_api.lib.repo.session as session
 import esdoc_api.lib.repo.utils as utils
 from esdoc_api.lib.pyesdoc.ontologies.cim.v1.types import StandardName
@@ -297,4 +297,10 @@ def test_get_facet_relations():
     tu.assert_integer(relations[0]['from'], from_facet.ID)
     tu.assert_integer(relations[0]['to'], to_facet.ID)
 
-    
+
+def test_get_document_by_obj():
+    # Tests retrieiving a Document instance by it's project and pyesdoc object representation.
+    instance1 = tu.get_test_document()
+    tu.assert_object(instance1.as_obj)
+    instance2 = utils.get_document_by_obj(instance1.Project_ID, instance1.as_obj)
+    tu.assert_entity(instance1, instance2)

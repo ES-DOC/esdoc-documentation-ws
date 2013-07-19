@@ -13,7 +13,7 @@ from lxml import etree as et
 
 from esdoc_api.lib.repo.ingest.base_ingestor_from_feed import FeedIngestorBase
 from esdoc_api.lib.utils.xml_utils import *
-from esdoc_api.lib.repo.models import *
+from esdoc_api.models import *
 from esdoc_api.lib.pyesdoc import CIM_1_TYPE_STATISTICAL_MODEL_COMPONENT
 
 
@@ -38,7 +38,7 @@ class Ingestor(FeedIngestorBase):
         """Constructor.
 
         :param endpoint: Ingestion endpoint being processed (i.e. QED-2013 feed).
-        :type endpoint: esdoc_api.lib.repo.models.IngestEndpoint
+        :type endpoint: esdoc_api.models.IngestEndpoint
         
         """
         super(Ingestor, self).__init__(endpoint,
@@ -54,7 +54,7 @@ class Ingestor(FeedIngestorBase):
         :type content: str
         
         :returns: A deserialized simulation document.
-        :rtype: esdoc_api.lib.repo.models.Document
+        :rtype: esdoc_api.models.Document
 
         """
         # Set etree representation.

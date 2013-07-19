@@ -10,16 +10,28 @@
 
 # Module imports.
 import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
 import esdoc_api.lib.repo.utils as utils
 
 
 
-# Set of facet types.
-_facet_types = dao.get_facet_types()
+class _State(object):
+    """Encpasulates mutable module state.
 
-# Set of facet relation types.
-_facet_relation_types = dao.get_facet_relation_types()
+    """
+    facet_types = None
+    facet_relation_types = None
+
+    @classmethod
+    def load(cls):
+        """Loads state into memory.
+
+        """
+        # Set of facet types.
+        cls.facet_types = dao.get_facet_types()
+
+        # Set of facet relation types.
+        cls.facet_relation_types = dao.get_facet_relation_types()
 
 
 def map(e):
@@ -45,35 +57,65 @@ def _reduce(e):
     return e
 
 
+def _get_facet_type(type_id):
+    """Returns a facet type from loacl cache.
+
+    :param type: Facet type identifier.
+    :type type: int
+
+    """
+    if _State.facet_types is None:
+        _State.load()
+
+    return _State.facet_types[type_id]
+
+
+def _get_facet_relation_type(type_id):
+    """Returns a facet relation type from loacl cache.
+
+    :param type: Facet relation type identifier.
+    :type type: int
+
+    """
+    if _State.facet_relation_types is None:
+        _State.load()
+
+    return _State.facet_relation_types[type_id]
+
+
 def _get_facet(type_id, key, value):
     """Returns a facet (creating it if necessary).
 
     :param type: Facet type identifier.
-    :param key: Facet key.
-    :param value: Facet value.
     :type type: int
+    
     :type key: str
+    :param key: Facet key.
+
     :type value: str
+    :param value: Facet value.
 
     :returns: A facet instance.
-    :rtype: esdoc_api.lib.repo.models.Facet
+    :rtype: esdoc_api.models.Facet
 
     """
-    return utils.create_facet(_facet_types[type_id], key, value)
+    return utils.create_facet(_get_facet_type(type_id), key, value)
 
 
-def _set_facet_relation(type, from_facet, to_facet):
+def _set_facet_relation(type_id, from_facet, to_facet):
     """Creates a facet relation (if necessary).
 
-    :param type: Facet relation type identifier.
+    :param type_id: Facet relation type identifier.
+    :type type_id: int
+    
     :param from_facet: From facet.
-    :param to_facet: To facet.
-    :type type: int
-    :type from_facet: esdoc_api.lib.repo.models.Facet
-    :type to_facet: esdoc_api.lib.repo.models.Facet
+    :type from_facet: esdoc_api.models.Facet
 
-    """
-    utils.create_facet_relation(_facet_relation_types[type], from_facet, to_facet)
+    :param to_facet: To facet.
+    :type to_facet: esdoc_api.models.Facet
+
+    """    
+    utils.create_facet_relation(_get_facet_relation_type(type_id), from_facet, to_facet)
 
 
 def _map(e_reduced):

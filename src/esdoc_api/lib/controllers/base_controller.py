@@ -54,8 +54,8 @@ import esdoc_api.lib.repo.session as repo_session
 import esdoc_api.lib.utils.helpers as h
 from esdoc_api.lib.controllers.cache_data import CacheData
 from esdoc_api.models import *
-from esdoc_api.lib.repo.models import *
-from esdoc_api.lib.search import *
+from esdoc_api.models import *
+from esdoc_api.lib.repo.search import *
 from esdoc_api.lib.utils.helpers import *
 
 

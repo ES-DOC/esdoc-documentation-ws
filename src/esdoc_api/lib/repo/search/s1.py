@@ -5,11 +5,11 @@
 # Module imports.
 from datetime import datetime as dt
 
-from esdoc_api.lib.search.utils import (
+from esdoc_api.lib.repo.search.utils import (
     ESDOCSearchBase,
     ESDOCSearchCriteriaBase
     )
-from esdoc_api.lib.repo.models import (
+from esdoc_api.models import (
     Document,
     DocumentLanguage,
     DocumentSummary,

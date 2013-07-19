@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.repo.models.utils.py
+.. module:: esdoc_api.models.utils.py
    :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows

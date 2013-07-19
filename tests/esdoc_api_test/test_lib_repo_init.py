@@ -12,7 +12,7 @@
 
 # Module imports.
 import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
 import esdoc_api_test.utils as tu
 import esdoc_api.lib.pyesdoc as pyesdoc
 from esdoc_api.lib.pyesdoc import (

@@ -9,21 +9,32 @@
 """
 
 # Module imports.
-import re
-
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.models as models
-import esdoc_api.lib.repo.utils as utils
 from esdoc_api.lib.repo.index.cim_v1.model_component.parser import parse
 from esdoc_api.lib.repo.index.cim_v1.model_component.reducer import reduce
+from esdoc_api.lib.utils.string import convert_to_spaced_case
+import esdoc_api.lib.repo.dao as dao
+import esdoc_api.models as models
+import esdoc_api.lib.repo.utils as utils
 
 
 
-# Set of facet types.
-_facet_types = dao.get_facet_types()
+class _State(object):
+    """Encpasulates mutable module state.
 
-# Set of facet relation types.
-_facet_relation_types = dao.get_facet_relation_types()
+    """
+    facet_types = None
+    facet_relation_types = None
+
+    @classmethod
+    def load(cls):
+        """Loads state into memory.
+
+        """
+        # Set of facet types.
+        cls.facet_types = dao.get_facet_types()
+
+        # Set of facet relation types.
+        cls.facet_relation_types = dao.get_facet_relation_types()
 
 
 # Set of component display name mappings.
@@ -85,17 +96,30 @@ def map(m):
     _map(reduce(parse(m)))
 
 
-def _convert_to_spaced_case(value):
-    """Helper function to convert a value from camel case to spaced case.
+def _get_facet_type(type_id):
+    """Returns a facet type from loacl cache.
 
-    :param m: A model component.
-    :type m: pyesdoc.ontologies.cim.v1.software.ModelComponent
+    :param type: Facet type identifier.
+    :type type: int
 
     """
-    if value.find(" ") == -1:
-        return re.sub("([A-Z])"," \g<0>", value).strip()
-    else:
-        return value
+    if _State.facet_types is None:
+        _State.load()
+        
+    return _State.facet_types[type_id]
+
+
+def _get_facet_relation_type(type_id):
+    """Returns a facet relation type from loacl cache.
+
+    :param type: Facet relation type identifier.
+    :type type: int
+
+    """
+    if _State.facet_relation_types is None:
+        _State.load()
+
+    return _State.facet_relation_types[type_id]
 
 
 def _get_facet(type_id, key, value, value_for_display=None, key_for_sort=None):
@@ -117,30 +141,30 @@ def _get_facet(type_id, key, value, value_for_display=None, key_for_sort=None):
     :type key_for_sort: str
 
     :returns: A facet instance.
-    :rtype: esdoc_api.lib.repo.models.Facet
+    :rtype: esdoc_api.models.Facet
 
     """
-    return utils.create_facet(_facet_types[type_id],
+    return utils.create_facet(_get_facet_type(type_id),
                               key,
                               value,
                               value_for_display=value_for_display,
                               key_for_sort=key_for_sort)
 
 
-def _set_facet_relation(type, from_facet, to_facet):
+def _set_facet_relation(type_id, from_facet, to_facet):
     """Creates a facet relation (if necessary).
 
-    :param type: Facet relation type identifier.
-    :type type: int
+    :param type_id: Facet relation type identifier.
+    :type type_id: int
 
     :param from_facet: From facet.
-    :type from_facet: esdoc_api.lib.repo.models.Facet
+    :type from_facet: esdoc_api.models.Facet
     
     :param to_facet: To facet.
-    :type to_facet: esdoc_api.lib.repo.models.Facet
+    :type to_facet: esdoc_api.models.Facet
 
     """
-    utils.create_facet_relation(_facet_relation_types[type], from_facet, to_facet)
+    utils.create_facet_relation(_get_facet_relation_type(type_id), from_facet, to_facet)
 
 
 def _get_model_facet_set(m):
@@ -231,7 +255,7 @@ def _get_component_facet_value(c):
     :rtype: str
 
     """
-    return _convert_to_spaced_case(c.type)
+    return convert_to_spaced_case(c.type)
 
 
 def _get_component_facet_display_value(c):
@@ -244,7 +268,7 @@ def _get_component_facet_display_value(c):
     :rtype: str
 
     """
-    value = _convert_to_spaced_case(c.type)
+    value = convert_to_spaced_case(c.type)
     return None if value not in _COMPONENT_DISPLAY_NAMES else _COMPONENT_DISPLAY_NAMES[value]
 
 
@@ -252,13 +276,13 @@ def _set_component_facet_relations(mf, cf, pcf):
     """Assigns relationships between a component facet and other facets.
 
     :param mf: A model facet.
-    :type mf: esdoc_api.lib.repo.models.Facet
+    :type mf: esdoc_api.models.Facet
 
     :param cf: A component facet.
-    :type cf: esdoc_api.lib.repo.models.Facet
+    :type cf: esdoc_api.models.Facet
 
     :param cf: A parent component facet.
-    :type cf: esdoc_api.lib.repo.models.Facet
+    :type cf: esdoc_api.models.Facet
 
     """
     _set_facet_relation(models.ID_OF_FACET_RELATION_FROM_MODEL_2_COMPONENT, mf, cf)
@@ -342,7 +366,7 @@ def _get_property_facet_value(p):
     :rtype: str
 
     """
-    return _convert_to_spaced_case(p.short_name)
+    return convert_to_spaced_case(p.short_name)
 
 
 def _get_property_facet_display_value(p):
@@ -356,7 +380,7 @@ def _get_property_facet_display_value(p):
 
     """
     # Remove key properties prefixes.
-    value = _convert_to_spaced_case(p.short_name)
+    value = convert_to_spaced_case(p.short_name)
     if value.find("Key Properties") != -1:
         return "Key Properties"
     else:
@@ -367,16 +391,16 @@ def _set_property_facet_relations(mf, cf, pf, ppf):
     """Assigns relationships between a component property facet and other facets.
 
     :param mf: A model facet.
-    :type mf: esdoc_api.lib.repo.models.Facet
+    :type mf: esdoc_api.models.Facet
 
     :param cf: A component facet.
-    :type cf: esdoc_api.lib.repo.models.Facet
+    :type cf: esdoc_api.models.Facet
 
     :param pf: A component property facet.
-    :type pf: esdoc_api.lib.repo.models.Facet
+    :type pf: esdoc_api.models.Facet
 
     :param ppf: A parent component property facet.
-    :type ppf: esdoc_api.lib.repo.models.Facet
+    :type ppf: esdoc_api.models.Facet
 
     """
     _set_facet_relation(models.ID_OF_FACET_RELATION_FROM_MODEL_2_PROPERTY, mf, pf)
@@ -430,13 +454,13 @@ def _set_value_facet_relations(mf, pf, vf):
     """Assigns relationships between a component property value facet and other facets.
 
     :param mf: A model facet.
-    :type mf: esdoc_api.lib.repo.models.Facet
+    :type mf: esdoc_api.models.Facet
 
     :param pf: A component property facet.
-    :type pf: esdoc_api.lib.repo.models.Facet
+    :type pf: esdoc_api.models.Facet
 
     :param vf: A component property value facet.
-    :type vf: esdoc_api.lib.repo.models.Facet
+    :type vf: esdoc_api.models.Facet
 
     """
     _set_facet_relation(models.ID_OF_FACET_RELATION_FROM_PROPERTY_2_VALUE, pf, vf)

@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.repo.models.facets.py
+.. module:: esdoc_api.models.facets.py
    :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -18,7 +18,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from esdoc_api.lib.repo.models.utils import (
+from esdoc_api.models.utils import (
     create_fk,
     Entity
     )
@@ -125,14 +125,15 @@ PROPERTY_2_PROPERTY = "PROPERTY_2_PROPERTY"
 PROPERTY_2_VALUE = "PROPERTY_2_VALUE"
 
 # Full set of supported relations.
+# N.B. this order is cross-referenced with order ot ID's.
 FACET_RELATION_TYPES = [
-    MODEL_2_EXPERIMENT,
-    MODEL_2_INSTITUTE,
-    MODEL_2_COMPONENT,
-    MODEL_2_PROPERTY,
-    MODEL_2_VALUE,
     COMPONENT_2_COMPONENT,
     COMPONENT_2_PROPERTY,
+    MODEL_2_COMPONENT,
+    MODEL_2_EXPERIMENT,
+    MODEL_2_INSTITUTE,
+    MODEL_2_PROPERTY,
+    MODEL_2_VALUE,
     PROPERTY_2_PROPERTY,
     PROPERTY_2_VALUE
 ]

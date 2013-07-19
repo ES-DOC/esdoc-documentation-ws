@@ -11,7 +11,7 @@
 # Module imports.
 from pylons.decorators import rest
 
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
 import esdoc_api.lib.repo.utils as utils
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *

@@ -16,7 +16,7 @@ from nose.tools import nottest
 
 import esdoc_api.lib.pyesdoc as pyesdoc
 import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
 import esdoc_api.lib.repo.session as session
 import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.pyesdoc.ontologies.cim.v1.types as cim_v1
@@ -69,16 +69,16 @@ def get_test_document(id=None, version=None, project=None):
     """Factory method to instantiate and return a test Document instance.
 
     :returns: A test Document instance.
-    :rtype: esdoc_api.lib.repo.models.Document
+    :rtype: esdoc_api.models.Document
 
     """
+    project = project if project is not None else get_test_model(models.Project)
+    endpoint = get_test_model(models.IngestEndpoint)
     as_obj = get_test_pyesdoc_obj()
     as_obj.cim_info.id = get_uuid() if id is None else id
     as_obj.cim_info.version = 1 if version is None else version
         
-    return utils.create_document(project if project is not None else get_test_model(models.Project),
-                                 get_test_model(models.IngestEndpoint),
-                                 as_obj)
+    return utils.create_document(project, endpoint, as_obj)
 
 
 def _hydrate_docs_document(instance):
@@ -91,7 +91,7 @@ def _hydrate_docs_document(instance):
     instance.Project_ID = get_test_model_id(models.Project)
     instance.Institute_ID = get_test_model_id(models.Institute)
     instance.IngestEndpoint_ID = get_test_model_id(models.IngestEndpoint)
-    instance.Type = get_string(63)
+    instance.Type = get_string(63).upper()
     instance.Name = get_string(255)
     instance.UID = get_string(63)
     instance.Version = get_int()
@@ -102,7 +102,7 @@ def _hydrate_docs_document(instance):
     instance.IngestDate =  get_date()
 
 
-def _hydrate_docs_document_by_drs(instance):
+def _hydrate_docs_document_drs(instance):
     """Hydrates a test instance.
 
     :param instance: Instance being hydrated.
@@ -111,18 +111,18 @@ def _hydrate_docs_document_by_drs(instance):
     """
     instance.Project_ID = get_test_model_id(models.Project)
     instance.Document_ID = get_test_model_id(models.Document)
-    instance.Path = get_string(511)
-    instance.Key_01 = get_string(63)
-    instance.Key_02 = get_string(63)
-    instance.Key_03 = get_string(63)
-    instance.Key_04 = get_string(63)
-    instance.Key_05 = get_string(63)
-    instance.Key_06 = get_string(63)
-    instance.Key_07 = get_string(63)
-    instance.Key_08 = get_string(63)
+    instance.Key_01 = get_string(63).upper()
+    instance.Key_02 = get_string(63).upper()
+    instance.Key_03 = get_string(63).upper()
+    instance.Key_04 = get_string(63).upper()
+    instance.Key_05 = get_string(63).upper()
+    instance.Key_06 = get_string(63).upper()
+    instance.Key_07 = get_string(63).upper()
+    instance.Key_08 = get_string(63).upper()
+    instance.reset_path()
 
 
-def _hydrate_docs_document_by_external_id(instance):
+def _hydrate_docs_document_external_id(instance):
     """Hydrates a test instance.
 
     :param instance: Instance being hydrated.
@@ -131,7 +131,7 @@ def _hydrate_docs_document_by_external_id(instance):
     """
     instance.Project_ID = get_test_model_id(models.Project)
     instance.Document_ID = get_test_model_id(models.Document)
-    instance.ExternalID = get_string(255)
+    instance.ExternalID = get_string(255).upper()
 
 
 def _hydrate_docs_document_representation(instance):
@@ -359,8 +359,8 @@ def _hydrate_vocab_project(instance):
 _hydrators = {
     # ... docs models
     models.Document : _hydrate_docs_document,
-    models.DocumentDRS : _hydrate_docs_document_by_drs,
-    models.DocumentExternalID : _hydrate_docs_document_by_external_id,
+    models.DocumentDRS : _hydrate_docs_document_drs,
+    models.DocumentExternalID : _hydrate_docs_document_external_id,
     models.DocumentRepresentation : _hydrate_docs_document_representation,
     models.DocumentSubDocument : _hydrate_docs_document_sub_document,
     models.DocumentSummary : _hydrate_docs_document_summary,

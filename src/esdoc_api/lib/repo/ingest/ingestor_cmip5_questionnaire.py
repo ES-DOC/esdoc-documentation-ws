@@ -12,16 +12,12 @@
 from esdoc_api.lib.pyesdoc.utils.ontologies import CIM_1_TYPE_PLATFORM
 from lxml import etree as et
 
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.utils as utils
-import esdoc_api.lib.utils.runtime as rt
-from esdoc_api.lib.api.comparator_setup import write_comparator_json
 from esdoc_api.lib.repo.index.cim_v1.model_component.mapper import map as map_facets_for_model_component
 from esdoc_api.lib.repo.index.cim_v1.numerical_experiment.mapper import map as map_facets_for_numerical_experiment
 from esdoc_api.lib.repo.ingest.base_ingestor_from_feed import FeedIngestorBase
 from esdoc_api.lib.pyesdoc.utils.ontologies import *
 from esdoc_api.lib.utils.xml_utils import *
-from esdoc_api.lib.repo.models import *
+from esdoc_api.models import *
 from esdoc_api.lib.pyesdoc import (
     CIM_1_TYPE_ENSEMBLE,
     CIM_1_TYPE_MODEL_COMPONENT,
@@ -29,6 +25,10 @@ from esdoc_api.lib.pyesdoc import (
     CIM_1_TYPE_PLATFORM,
     CIM_1_TYPE_SIMULATION_RUN
     )
+import esdoc_api.lib.repo.dao as dao
+import esdoc_api.lib.repo.utils as utils
+import esdoc_api.lib.utils.runtime as rt
+import esdoc_api.lib.api.comparator_setup as comparator
 
 
 # Project code.
@@ -67,7 +67,7 @@ _MODEL_OVERRIDES = {
 }
 
 # Set of comparators associated with CMIP5.
-_COMPARATOR_CODES = [ 'c1' ]
+_COMPARATOR_TYPES = [ 'c1' ]
 
 
 
@@ -81,7 +81,7 @@ class Ingestor(FeedIngestorBase):
         """Constructor.
 
         :param endpoint: Ingestion endpoint being processed (i.e. CMIP5 Metafor questionnaire feed).
-        :type endpoint: esdoc_api.lib.repo.models.IngestEndpoint
+        :type endpoint: esdoc_api.models.IngestEndpoint
 
         """
         super(Ingestor, self).__init__(endpoint,
@@ -140,8 +140,8 @@ class Ingestor(FeedIngestorBase):
 
         :param document: A document being ingested.
         :param document_by_drs: DRS keys associated with a document.
-        :type document: esdoc_api.lib.repo.models.Document        
-        :type document_by_drs: esdoc_api.lib.repo.models.DocumentDRS
+        :type document: esdoc_api.models.Document        
+        :type document_by_drs: esdoc_api.models.DocumentDRS
 
         """
         # Escape when assigning institute is unnecessary.
@@ -198,8 +198,8 @@ class Ingestor(FeedIngestorBase):
 
         :param simulation: A simulation document being ingested.
         :param drs: DRS keys associated with a simulation document.
-        :type simulation: esdoc_api.lib.repo.models.Document
-        :type drs: esdoc_api.lib.repo.models.DocumentDRS
+        :type simulation: esdoc_api.models.Document
+        :type drs: esdoc_api.models.DocumentDRS
 
         """
         for ensemble in [d.as_obj for d in simulation.children
@@ -216,7 +216,7 @@ class Ingestor(FeedIngestorBase):
         """Assigns facets derived from an ingested document.
 
         :param document: A document being ingested.
-        :type document: esdoc_api.lib.repo.models.Document
+        :type document: esdoc_api.models.Document
 
         """
         if not document.IsIndexed:
@@ -230,7 +230,7 @@ class Ingestor(FeedIngestorBase):
         """Returns a set of simulation drs keys.
 
         :param simulation: A simulation document being ingested.
-        :type simulation: esdoc_api.lib.repo.models.Document
+        :type simulation: esdoc_api.models.Document
         :returns: A set of simulation DRS keys as encoded in XML document.
         :rtype: str
 
@@ -246,7 +246,7 @@ class Ingestor(FeedIngestorBase):
         """Returns a simulation drs path.
 
         :param simulation: A simulation document being ingested.
-        :type simulation: esdoc_api.lib.repo.models.Document
+        :type simulation: esdoc_api.models.Document
         :returns: A simulation DRS path as encoded in XML document.
         :rtype: str
 
@@ -268,7 +268,7 @@ class Ingestor(FeedIngestorBase):
         :type nsmap: dict
 
         :returns: A deserialized simulation document.
-        :rtype: esdoc_api.lib.repo.models.Document
+        :rtype: esdoc_api.models.Document
 
         """
         def do_ingest(xml):
@@ -285,21 +285,21 @@ class Ingestor(FeedIngestorBase):
 
         # Ingest associated documents.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
-            if get_tag_name(elem) != CIM_1_TYPE_SIMULATION_RUN:
-                simulation.append_child(do_ingest(elem))
+            if get_tag_name(elem) != CIM_1_TYPE_SIMULATION_RUN:                
+                utils.create_sub_document(simulation, do_ingest(elem))                
 
         return simulation
 
 
     def process_simulation_document_set(self, etree, nsmap):
-        """Processes a cim simulation document set.
+        """Processes a simulation document set.
 
         :param etree: Document XML.
         :param nsmap: Document XML namespaces.
         :type etree: lxml.etree
         :type nsmap: dict
         :returns: A processsed document set.
-        :rtype: esdoc_api.lib.repo.models.Document
+        :rtype: esdoc_api.models.Document
 
         """
         # Escape if already ingested.
@@ -341,14 +341,14 @@ class Ingestor(FeedIngestorBase):
 
 
     def process_document(self, etree, nsmap):
-        """Processes a cim document.
+        """Processes a document.
 
         :param etree: Document XML.
         :param nsmap: Document XML namespaces.
         :type etree: lxml.etree
         :type nsmap: dict
         :returns: A processsed document.
-        :rtype: esdoc_api.lib.repo.models.Document
+        :rtype: esdoc_api.models.Document
 
         """
         # Ingest.
@@ -367,7 +367,7 @@ class Ingestor(FeedIngestorBase):
         :param content: Feed entry content.
         :type content: str
         :returns: A deserialized simulation document.
-        :rtype: esdoc_api.lib.repo.models.Document
+        :rtype: esdoc_api.models.Document
 
         """
         # Set etree representation.
@@ -394,7 +394,7 @@ class Ingestor(FeedIngestorBase):
 
         """
         # Write comparator json files.
-        for comparator_code in _COMPARATOR_CODES:
-            write_comparator_json(_PROJECT, comparator_code)
+        for type in _COMPARATOR_TYPES:
+            comparator.write_comparator_json(_PROJECT, type)
 
 

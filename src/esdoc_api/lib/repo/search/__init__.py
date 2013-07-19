@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.search.__init__.py
+.. module:: esdoc_api.lib.repo.search.__init__.py
    :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -10,7 +10,7 @@
 
 """
 # Module imports.
-from esdoc_api.lib.search.s1 import S1Search
+from esdoc_api.lib.repo.search.s1 import S1Search
 
 
 # Module exports.

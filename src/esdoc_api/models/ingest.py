@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.repo.models.ingest.py
+.. module:: esdoc_api.models.ingest.py
    :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -21,7 +21,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from esdoc_api.lib.repo.models.utils import (
+from esdoc_api.models.utils import (
     create_fk,
     Entity
     )
@@ -92,7 +92,8 @@ class IngestHistory(Entity):
     State_ID = create_fk('vocab.tblIngestState.ID')
 
     # Field set.
-    StartDateTime =  Column(DateTime, nullable=False, default=datetime.datetime.now)
+    StartDateTime =  Column(DateTime, nullable=False,
+                            default=datetime.datetime.now())
     EndDateTime =  Column(DateTime)
     Count = Column(Integer, default=0)
     TimeInMS = Column(Integer, default=0)

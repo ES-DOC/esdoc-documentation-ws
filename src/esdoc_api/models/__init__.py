@@ -1,23 +1,124 @@
-import elixir
-from elixir import *
+"""
+.. module:: esdoc_api.models.__init__.py
+   :copyright: Copyright "Jun 29, 2013", Earth System Documentation
+   :license: GPL/CeCIL
+   :platform: Unix, Windows
+   :synopsis: Set of models supported by ES-DOC API.
 
-from esdoc_api.models import meta
-from esdoc_api.lib.controllers.cache_data import *
+.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
 
 
-Session = elixir.session = meta.Session
-metadata = elixir.metadata
+"""
+# Module imports.
+from esdoc_api.models.utils import (
+    Entity,
+    EntityConvertor,
+    metadata
+    )
+from esdoc_api.models.docs import (
+    Document,
+    DocumentDRS,
+    DocumentExternalID,
+    DocumentRepresentation,
+    DocumentSubDocument,
+    DocumentSummary,
+    DOCUMENT_VERSION_LATEST,
+    DOCUMENT_VERSION_ALL
+    )
+from esdoc_api.models.facets import (
+    FACET_VALUE_TYPES,
+    FACET_VALUE_TYPE_BOOLEAN,
+    FACET_VALUE_TYPE_DATETIME,
+    FACET_VALUE_TYPE_INTEGER,
+    FACET_VALUE_TYPE_STRING,
+    FACET_TYPES,
+    EXPERIMENT,
+    INSTITUTE,
+    MODEL,
+    MODEL_COMPONENT,
+    MODEL_COMPONENT_PROPERTY,
+    MODEL_COMPONENT_PROPERTY_VALUE,
+    ID_OF_FACET_EXPERIMENT,
+    ID_OF_FACET_INSTITUTE,
+    ID_OF_FACET_MODEL,
+    ID_OF_FACET_COMPONENT,
+    ID_OF_FACET_PROPERTY,
+    ID_OF_FACET_VALUE,
+    FACET_RELATION_TYPES,
+    MODEL_2_EXPERIMENT,
+    MODEL_2_INSTITUTE,
+    MODEL_2_COMPONENT,
+    MODEL_2_PROPERTY,
+    MODEL_2_VALUE,
+    COMPONENT_2_COMPONENT,
+    COMPONENT_2_PROPERTY,
+    PROPERTY_2_PROPERTY,
+    PROPERTY_2_VALUE,
+    ID_OF_FACET_RELATION_FROM_COMPONENT_2_COMPONENT,
+    ID_OF_FACET_RELATION_FROM_COMPONENT_2_PROPERTY,
+    ID_OF_FACET_RELATION_FROM_MODEL_2_COMPONENT,
+    ID_OF_FACET_RELATION_FROM_MODEL_2_EXPERIMENT,
+    ID_OF_FACET_RELATION_FROM_MODEL_2_INSTITUTE,
+    ID_OF_FACET_RELATION_FROM_MODEL_2_PROPERTY,
+    ID_OF_FACET_RELATION_FROM_MODEL_2_VALUE,
+    ID_OF_FACET_RELATION_FROM_PROPERTY_2_PROPERTY,
+    ID_OF_FACET_RELATION_FROM_PROPERTY_2_VALUE,
+    Facet,
+    FacetRelation,
+    FacetRelationType,
+    FacetType
+    )
+from esdoc_api.models.ingest import (
+    IngestEndpoint,
+    IngestHistory,
+    IngestURL
+    )
+from esdoc_api.models.vocab import (
+    DocumentEncoding,
+    DocumentLanguage,
+    DocumentOntology,
+    DocumentType,
+    INGEST_STATES,
+    INGEST_STATE_QUEUED,
+    INGEST_STATE_RUNNING,
+    INGEST_STATE_SUSPENDED,
+    INGEST_STATE_COMPLETE,
+    INGEST_STATE_ERROR,
+    INGEST_STATE_QUEUED_ID,
+    INGEST_STATE_RUNNING_ID,
+    INGEST_STATE_SUSPENDED_ID,
+    INGEST_STATE_COMPLETE_ID,
+    INGEST_STATE_ERROR_ID,
+    IngestState,
+    Institute,
+    Project
+)
 
 
-def init_model(engine):
-    """Call me before using any of the tables or classes in the model"""
-    meta.Session.configure(bind=engine)
-    meta.engine = engine
-
-    elixir.session.configure(bind=engine)
-    metadata.bind = engine
-
-    # Create logical db objects.
-    setup_all()
-
-    
+# Set of supported model types - useful for testing scenarios.
+supported_types = (
+    # ... docs
+    Document,
+    DocumentDRS,
+    DocumentExternalID,
+    DocumentRepresentation,
+    DocumentSubDocument,
+    DocumentSummary,
+    # ... facets
+    Facet,
+    FacetRelation,
+    FacetRelationType,
+    FacetType,
+    # ... ingest
+    IngestEndpoint,
+    IngestHistory,
+    IngestURL,
+    # ... vocab
+    DocumentEncoding,
+    DocumentLanguage,
+    DocumentOntology,
+    DocumentType,
+    IngestState,
+    Institute,
+    Project
+)

@@ -10,7 +10,7 @@
 
 # Module imports.
 import esdoc_api.lib.repo.dao as dao
-from esdoc_api.lib.repo.models import Document
+from esdoc_api.models import Document
 from esdoc_api.lib.pyesdoc import (
     CIM_1_TYPE_MODEL_COMPONENT,
     CIM_1_TYPE_NUMERICAL_EXPERIMENT
@@ -56,8 +56,9 @@ def cmip5_dataset_id_query(project, id):
     """Query handler for returning documents by cmip5 dataset id.
 
     :param project: CMIP5 project identifier.
+    :type project: esdoc_api.models.Proejct
+    
     :param id: CMIP5 dataset identifier
-    :type project: esdoc_api.lib.repo.models.Proejct
     :type id: dict
 
     :returns: List of found documents.
@@ -67,8 +68,8 @@ def cmip5_dataset_id_query(project, id):
     result = []
     
     # Source 1 : From DRS keys.
-    get = Document.retrieve_by_drs_keys
-    result = _concat(result, get(project,
+    get = dao.get_document_by_drs_keys
+    result = _concat(result, get(project.ID,
                                  id.institute,
                                  id.model,
                                  id.experiment,
@@ -76,17 +77,20 @@ def cmip5_dataset_id_query(project, id):
 
     # Source 2 : From model, experiment (if DRS returned nothing).
     if len(result) == 0:
-        get = Document.retrieve_by_name
-        result = _concat(result, get(project,
+        get = dao.get_document_by_name
+        result = _concat(result, get(project.ID,
                                      CIM_1_TYPE_MODEL_COMPONENT,
                                      id.model))
 
-        result = _concat(result, get(project,
+        result = _concat(result, get(project.ID,
                                      CIM_1_TYPE_NUMERICAL_EXPERIMENT,
                                      id.experiment))
 
     # Source 3 : From dataset ID.
-    return _concat(result, dao.get_documents_by_external_id(project.ID, id.id))
+    get = dao.get_documents_by_external_id
+    result =  _concat(result, get(project.ID, id.id))
+
+    return result 
     
 
 def cmip5_file_id_query(project, id):
@@ -94,7 +98,7 @@ def cmip5_file_id_query(project, id):
 
     :param project: CMIP5 project identifier.
     :param id: CMIP5 file identifier
-    :type project: esdoc_api.lib.repo.models.Proejct
+    :type project: esdoc_api.models.Proejct
     :type id: dict
 
     :returns: List of found documents.
@@ -104,8 +108,8 @@ def cmip5_file_id_query(project, id):
     result = []
 
     # Source 1 : From DRS keys.
-    get = Document.retrieve_by_drs_keys
-    result = _concat(result, get(project,
+    get = dao.get_document_by_drs_keys
+    result = _concat(result, get(project.ID,
                                  id.institute,
                                  id.model,
                                  id.experiment,
@@ -113,25 +117,27 @@ def cmip5_file_id_query(project, id):
 
     # Source 2 : From model, experiment (if DRS returned nothing).
     if len(result) == 0:
-        get = Document.retrieve_by_name
-        result = _concat(result, get(project,
+        get = dao.get_document_by_name
+        result = _concat(result, get(project.ID,
                                      CIM_1_TYPE_MODEL_COMPONENT,
                                      id.model))
 
-        result = _concat(result, get(project,
+        result = _concat(result, get(project.ID,
                                      CIM_1_TYPE_NUMERICAL_EXPERIMENT,
                                      id.experiment))    
 
     # Source 3 : From dataset ID.
-    return _concat(result, dao.get_documents_by_external_id(project.ID, id.dataset_id))
+    get = dao.get_documents_by_external_id
+    return _concat(result, get(project.ID, id.dataset_id))
 
 
 def cmip5_simulation_id_query(project, id):
     """Query handler for returning documents by cmip5 simulation id.
 
     :param project: CMIP5 project identifier.
+    :type project: esdoc_api.models.Proejct
+    
     :param id: CMIP5 simulation identifier
-    :type project: esdoc_api.lib.repo.models.Proejct
     :type id: dict
 
     :returns: List of found documents.
@@ -141,8 +147,8 @@ def cmip5_simulation_id_query(project, id):
     result = []
 
     # Source 1 : From DRS keys.
-    get = Document.retrieve_by_drs_keys
-    result = _concat(result, get(project,
+    get = dao.get_document_by_drs_keys
+    result = _concat(result, get(project.ID,
                                  id.institute,
                                  id.model,
                                  id.experiment,
@@ -151,17 +157,18 @@ def cmip5_simulation_id_query(project, id):
 
     # Source 2 : From model, experiment (if DRS returned nothing).
     if len(result) == 0:
-        get = Document.retrieve_by_name
-        result = _concat(result, get(project,
+        get = dao.get_document_by_name
+        result = _concat(result, get(project.ID,
                                      CIM_1_TYPE_MODEL_COMPONENT,
                                      id.model))
 
-        result = _concat(result, get(project,
+        result = _concat(result, get(project.ID,
                                      CIM_1_TYPE_NUMERICAL_EXPERIMENT,
                                      id.experiment))    
 
     # Source 3 : From simulation ID.
-    return _concat(result, dao.get_documents_by_external_id(project.ID, id.simulation_id))
+    get = dao.get_documents_by_external_id
+    return _concat(result, get(project.ID, id.simulation_id))
                                         
 
 def dcmip2012_dataset_id_query(project, id):
@@ -169,15 +176,16 @@ def dcmip2012_dataset_id_query(project, id):
 
     :param project: dcmip2012 project identifier.
     :param id: dcmip2012 dataset identifier
-    :type project: esdoc_api.lib.repo.models.Proejct
+    :type project: esdoc_api.models.Proejct
     :type id: dict
 
     :returns: List of found documents.
     :rtype: list
 
     """
-    get = Document.retrieve_by_name
-    return _concat([], get(project, CIM_1_TYPE_MODEL_COMPONENT, id.model))
+    get = dao.get_document_by_name
+    
+    return _concat([], get(project.ID, CIM_1_TYPE_MODEL_COMPONENT, id.model))
 
 
 def dcmip2012_file_id_query(project, id):
@@ -185,12 +193,13 @@ def dcmip2012_file_id_query(project, id):
 
     :param project: dcmip2012 project identifier.
     :param id: dcmip2012 file identifier
-    :type project: esdoc_api.lib.repo.models.Proejct
+    :type project: esdoc_api.models.Proejct
     :type id: dict
 
     :returns: List of found documents.
     :rtype: list
 
     """
-    get = Document.retrieve_by_name
-    return _concat([], get(project, CIM_1_TYPE_MODEL_COMPONENT, id.model))
+    get = dao.get_document_by_name
+    
+    return _concat([], get(project.ID, CIM_1_TYPE_MODEL_COMPONENT, id.model))

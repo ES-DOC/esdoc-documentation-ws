@@ -8,18 +8,19 @@
 
 """
 # Module imports.
-import esdoc_api.lib.repo.models as models
-import esdoc_api.lib.repo.session as session
+import sqlalchemy as sa
+
 from esdoc_api.lib.repo.dao.core import (
-    delete_all_by_type,
+    delete_by_type,
     delete_by_id,
     delete_by_facet,
-    get_active,
+    get_by_id,
     get_by_facet,
-    get_by_name
+    get_by_name,
+    sort
     )
 from esdoc_api.lib.pyesdoc.utils.ontologies import ESDOC_DEFAULT_LANGUAGE
-from esdoc_api.lib.repo.models import (
+from esdoc_api.models import (
     Document,
     DocumentDRS,
     DocumentExternalID,
@@ -35,6 +36,8 @@ from esdoc_api.lib.repo.models import (
     IngestEndpoint,
     IngestURL
 )
+import esdoc_api.models as models
+import esdoc_api.lib.repo.session as session
 
 
 
@@ -50,13 +53,13 @@ __all__ = [
     'get_document',
     'get_document_by_drs_keys',
     'get_document_by_name',
-    'get_document_by_obj',
     'get_document_drs',
     'get_document_external_id',
     'get_document_external_ids',
     'get_document_language',
     'get_document_ontology',
     'get_document_representation',
+    'get_document_sub_document',
     'get_document_sub_documents',
     'get_document_summary',
     'get_documents_by_external_id',
@@ -64,7 +67,7 @@ __all__ = [
     'get_facet_relation',
     'get_facet_relation_types',
     'get_facet_types',
-    'get_ingest_endpoint_by_active_state',
+    'get_ingest_endpoints',
     'get_ingest_endpoint',
     'get_ingest_url'
 ]
@@ -84,13 +87,15 @@ def get_document(project_id, uid, version):
     :type version: str
 
     :returns: First matching document.
-    :rtype: esdoc_api.lib.repo.models.Document
+    :rtype: esdoc_api.models.Document
 
     """
     q = session.query(Document)
     q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(Document.UID==str(uid))
-    if version is None or version == 'latest' or version == 'all' or len(version) == 0:
+    q = q.filter(Document.UID==unicode(uid))
+    if version is None or \
+       version == 'latest' or \
+       version == 'all':
         q = q.order_by(Document.Version.desc())
     else:
         q = q.filter(Document.Version==int(version))
@@ -98,31 +103,11 @@ def get_document(project_id, uid, version):
     return q.all() if version == 'all' else q.first()
 
 
-def get_document_by_obj(project_id, as_obj):
-    """Returns a Document instance by it's project and pyesdoc object representation.
-
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param as_obj: pyesdoc document object representation.
-    :type as_obj: object
-
-    :returns: First matching document.
-    :rtype: esdoc_api.lib.repo.models.Document
-
-    """
-    # Retrieve.
-    doc_info = as_obj.cim_info
-    instance = get_document(project_id, doc_info.id, doc_info.version)
-
-    # Assign.
-    if instance is not None:
-        instance.as_obj = as_obj
-
-    return instance
-
-
-def get_document_by_name(project_id, type, name, institute_id=None, latest_only=True):
+def get_document_by_name(project_id, 
+                         type,
+                         name,
+                         institute_id=None,
+                         latest_only=True):
     """Retrieves a single document by it's name.
 
     :param project_id: ID of a Project instance.
@@ -141,13 +126,13 @@ def get_document_by_name(project_id, type, name, institute_id=None, latest_only=
     :type latest_only: boolean
 
     :returns: First matching document.
-    :rtype: esdoc_api.lib.repo.models.Document
+    :rtype: esdoc_api.models.Document
 
     """
     q = session.query(Document)
     q = q.filter(Document.Project_ID==project_id)
     q = q.filter(Document.Type==type.upper())
-    q = q.filter(Document.Name==name.upper())
+    q = q.filter(sa.func.upper(Document.Name)==name.upper())    
     if institute_id is not None:
         q = q.filter(Document.Institute_ID==institute_id)
     if latest_only == True:
@@ -199,27 +184,27 @@ def get_document_by_drs_keys(project_id,
     :type latest_only: boolean
 
     :returns: First matching document.
-    :rtype: esdoc_api.lib.repo.models.Document
+    :rtype: esdoc_api.models.Document
 
     """
     q = session.query(Document, DocumentDRS)
     q = q.filter(Document.Project_ID==project_id)
     if key_01 is not None:
-        q = q.filter(DocumentDRS.Key_01==str(key_01).upper())
+        q = q.filter(DocumentDRS.Key_01==key_01.upper())
     if key_02 is not None:
-        q = q.filter(DocumentDRS.Key_02==str(key_02).upper())
+        q = q.filter(DocumentDRS.Key_02==key_02.upper())
     if key_03 is not None:
-        q = q.filter(DocumentDRS.Key_03==str(key_03).upper())
+        q = q.filter(DocumentDRS.Key_03==key_03.upper())
     if key_04 is not None:
-        q = q.filter(DocumentDRS.Key_04==str(key_04).upper())
+        q = q.filter(DocumentDRS.Key_04==key_04.upper())
     if key_05 is not None:
-        q = q.filter(DocumentDRS.Key_05==str(key_05).upper())
+        q = q.filter(DocumentDRS.Key_05==key_05.upper())
     if key_06 is not None:
-        q = q.filter(DocumentDRS.Key_06==str(key_06).upper())
+        q = q.filter(DocumentDRS.Key_06==key_06.upper())
     if key_07 is not None:
-        q = q.filter(DocumentDRS.Key_07==str(key_07).upper())
+        q = q.filter(DocumentDRS.Key_07==key_07.upper())
     if key_08 is not None:
-        q = q.filter(DocumentDRS.Key_08==str(key_08).upper())
+        q = q.filter(DocumentDRS.Key_08==key_08.upper())
     if latest_only == True:
         q = q.filter(Document.IsLatest==True)
 
@@ -246,6 +231,26 @@ def get_documents_by_external_id(project_id, external_id):
     return q.all()
 
 
+def get_document_sub_document(parent_id, child_id):
+    """Retrieves a list of document child documents.
+
+    :param parent_id: ID of parent Document instance.
+    :type parent_id: int
+
+    :param parent_id: ID of parent Document instance.
+    :type parent_id: int
+
+    :returns: A DocumentSubDocument instance.
+    :rtype: DocumentSubDocument or None
+
+    """
+    q = session.query(DocumentSubDocument)
+    q = q.filter(DocumentSubDocument.Document_ID==parent_id)
+    q = q.filter(DocumentSubDocument.SubDocument_ID==child_id)
+
+    return q.first()
+
+
 def get_document_sub_documents(document_id):
     """Retrieves a list of document child documents.
 
@@ -256,10 +261,10 @@ def get_document_sub_documents(document_id):
     :rtype: list
 
     """
-    q = session.query(Document, DocumentSubDocument)
+    q = session.query(DocumentSubDocument)
     q = q.filter(DocumentSubDocument.Document_ID==document_id)
 
-    return q.all()
+    return map(lambda sd: get_by_id(Document, sd.SubDocument_ID), q.all())
 
 
 def get_document_drs(project_id, document_id, path):
@@ -275,13 +280,13 @@ def get_document_drs(project_id, document_id, path):
     :type path: str
 
     :returns: First DocumentDRS instance with matching document & drs path.
-    :rtype: esdoc_api.lib.repo.models.DocumentDRS
+    :rtype: esdoc_api.models.DocumentDRS
 
     """
     q = session.query(DocumentDRS)
     q = q.filter(DocumentDRS.Project_ID==project_id)
     q = q.filter(DocumentDRS.Document_ID==document_id)
-    q = q.filter(DocumentDRS.Path==path)
+    q = q.filter(DocumentDRS.Path==path.upper())
 
     return q.first()
 
@@ -299,7 +304,7 @@ def get_document_external_id(project_id, document_id, external_id):
     :type external_id: str
 
     :returns: First DocumentExternalID instance with matching document & external id.
-    :rtype: esdoc_api.lib.repo.models.DocumentExternalID
+    :rtype: esdoc_api.models.DocumentExternalID
 
     """
     q = session.query(DocumentExternalID)
@@ -323,7 +328,7 @@ def get_document_external_ids(document_id, project_id=None):
     :type external_id: str
 
     :returns: First DocumentExternalID instance with matching document & external id.
-    :rtype: esdoc_api.lib.repo.models.DocumentExternalID
+    :rtype: esdoc_api.models.DocumentExternalID
 
     """
     q = session.query(DocumentExternalID)
@@ -344,7 +349,7 @@ def get_document_summary(document_id, language_id):
     :type language_id: int
 
     :returns: First DocumentSummary instance with matching document & language.
-    :rtype: esdoc_api.lib.repo.models.DocumentSummary
+    :rtype: esdoc_api.models.DocumentSummary
 
     """
     q = session.query(DocumentSummary)
@@ -364,7 +369,7 @@ def get_document_ontology(name, version):
     :type version: str
 
     :returns: First DocumentOntology instance with matching name & version.
-    :rtype: esdoc_api.lib.repo.models.DocumentOntology
+    :rtype: esdoc_api.models.DocumentOntology
 
     """
     q = session.query(DocumentOntology)
@@ -384,10 +389,10 @@ def get_document_language(code=ESDOC_DEFAULT_LANGUAGE):
     :type name: str
 
     :returns: First DocumentLanguage with matching code.
-    :rtype: esdoc_api.lib.repo.models.DocumentLanguage
+    :rtype: esdoc_api.models.DocumentLanguage
 
     """
-    return get_by_facet(DocumentLanguage, filter=DocumentLanguage.Code==code.lower())
+    return get_by_facet(DocumentLanguage, DocumentLanguage.Code==code.lower())
 
 
 def get_ingest_endpoint(url):
@@ -397,20 +402,26 @@ def get_ingest_endpoint(url):
     :type url: str
 
     :returns: First IngestEndpoint instance with matching url.
-    :rtype: esdoc_api.lib.repo.models.IngestEndpoint
+    :rtype: esdoc_api.models.IngestEndpoint
 
     """
-    return get_by_facet(IngestEndpoint, filter=IngestEndpoint.IngestURL==url)
+    return get_by_facet(IngestEndpoint, IngestEndpoint.IngestURL==url)
 
 
-def get_ingest_endpoint_by_active_state():
-    """Returns a list of IngestEndpoint instances by their active state.
+def get_ingest_endpoints():
+    """Returns a list of active IngestEndpoint instances.
 
     :returns: List of active IngestEndpoint instances.
     :rtype: list
 
     """
-    return get_active(IngestEndpoint)
+    q = session.query(IngestEndpoint)
+    q = q.filter(IngestEndpoint.IsActive==True)
+    q = q.order_by(IngestEndpoint.Priority.desc())
+
+    return q.all()
+
+    #return get_active(IngestEndpoint)
 
 
 def get_ingest_url(url):
@@ -420,10 +431,10 @@ def get_ingest_url(url):
     :type url: str
 
     :returns: First IngestURL instance with matching url.
-    :rtype: esdoc_api.lib.repo.models.IngestURL
+    :rtype: esdoc_api.models.IngestURL
 
     """
-    return get_by_facet(IngestURL, filter=IngestURL.URL==url)
+    return get_by_facet(IngestURL, IngestURL.URL==url)
 
 
 def get_facet(type_id, key):
@@ -436,7 +447,7 @@ def get_facet(type_id, key):
     :type key: str
 
     :returns: First Facet instance with matching type & key.
-    :rtype: esdoc_api.lib.repo.models.Facet
+    :rtype: esdoc_api.models.Facet
 
     """
     q = session.query(Facet)
@@ -459,7 +470,7 @@ def get_facet_relation(relation_type_id, from_facet_id, to_facet_id):
     :type to_facet_id: int
 
     :returns: First FacetRelation instance with matching relation type, from / to facets.
-    :rtype: esdoc_api.lib.repo.models.FacetRelation
+    :rtype: esdoc_api.models.FacetRelation
 
     """
     q = session.query(FacetRelation)
@@ -474,14 +485,14 @@ def get_facet_relation_types():
     """Returns tuple of full set of facet relation types.
 
     """
-    return (get_by_name(FacetRelationType, i) for i in models.FACET_RELATION_TYPES)
+    return [get_by_name(FacetRelationType, i) for i in models.FACET_RELATION_TYPES]
 
 
 def get_facet_types():
     """Returns tuple of full set of facet types.
 
     """
-    return (get_by_name(FacetType, i) for i in models.FACET_TYPES)
+    return [get_by_name(FacetType, i) for i in models.FACET_TYPES]
 
 
 def get_document_representation(document_id, ontology_id, encoding_id, language_id):
@@ -500,7 +511,7 @@ def get_document_representation(document_id, ontology_id, encoding_id, language_
     :type language_id: int
 
     :returns: A document representation instance.
-    :rtype: esdoc_api.lib.repo.models.document_representation.DocumentRepresentation
+    :rtype: esdoc_api.models.document_representation.DocumentRepresentation
 
     """
     q = session.query(DocumentRepresentation)
@@ -510,6 +521,7 @@ def get_document_representation(document_id, ontology_id, encoding_id, language_
     q = q.filter(DocumentRepresentation.Language_ID==language_id)
 
     return q.first()
+
 
 def _delete_document_relation(document_id, type):
     """Deletes all document relations of passed type.
@@ -575,14 +587,11 @@ def delete_document_drs(document_id):
     _delete_document_relation(document_id, DocumentDRS)
 
 
-def delete_document(document_id, delete_sub_documents=False):
+def delete_document(document_id):
     """Deletes a document.
 
     :param document_id: ID of a Document instance.
     :type document_id: int
-
-    :param document_id: Flag indicating whether sub documents will be deleted as well.
-    :type document_id: bool
 
     """    
     delete_document_drs(document_id)
@@ -597,4 +606,4 @@ def delete_all_documents():
     """Deletes all documents.
 
     """
-    delete_all_by_type(Document, delete_document)
+    delete_by_type(Document, delete_document)

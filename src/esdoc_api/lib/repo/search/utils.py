@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.search.utils.py
+.. module:: esdoc_api.lib.repo.search.utils.py
    :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -12,7 +12,7 @@
 # Module imports.
 import abc
 
-from esdoc_api.lib.repo.models import (
+from esdoc_api.models import (
     DocumentEncoding,
     DocumentLanguage,
     Project

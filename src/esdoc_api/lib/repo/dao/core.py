@@ -8,17 +8,22 @@
 
 """
 # Module imports.
-import esdoc_api.lib.repo.models as models
+import inspect
+
+import sqlalchemy as sa
+
+import esdoc_api.models as models
 import esdoc_api.lib.repo.session as session
 import esdoc_api.lib.utils.runtime as rt
 
 
 # Module exports.
 __all__ = [
-    'assert_type',
     'assert_collection',
+    'assert_instance',
+    'assert_type',
     'delete',
-    'delete_all',
+    'delete_by_type',
     'delete_by_facet',
     'delete_by_id',
     'delete_by_name',
@@ -30,7 +35,6 @@ __all__ = [
     'get_count',
     'get_inactive',
     'insert',
-    'insert_all',
     'sort'
 ]
 
@@ -105,7 +109,7 @@ def _get_active(type, is_active_state):
     # Defensive programming.
     assert_type(type)
     
-    return get_by_facet(type, filter=type.IsActive==is_active_state, get_iterable=True)
+    return get_by_facet(type, type.IsActive==is_active_state, get_iterable=True)
 
 
 def get_active(type):
@@ -144,10 +148,10 @@ def get_all(type):
     :rtype: list
 
     """
-    return get_by_facet(type, order_by=type.ID, get_iterable=True)
+    return get_by_facet(type, None, get_iterable=True)
 
 
-def get_by_facet(type, filter=None, order_by=None, get_iterable=False):
+def get_by_facet(type, filter, order_by=None, get_iterable=False):
     """Gets entity instance by facet.
 
     :param type: A supported entity type.
@@ -163,7 +167,7 @@ def get_by_facet(type, filter=None, order_by=None, get_iterable=False):
     :type get_iterable: bool
 
     :returns: Entity or entity collection.
-    :rtype: Sub-class of esdoc_api.lib.repo.models.Entity
+    :rtype: Sub-class of esdoc_api.models.Entity
 
     """
     # Defensive programming.
@@ -171,11 +175,26 @@ def get_by_facet(type, filter=None, order_by=None, get_iterable=False):
 
     q = session.query(type)
     if filter is not None:
-        q = q.filter(filter)
+        if inspect.isfunction(filter):
+            filter(q)
+        else:
+            q = q.filter(filter)
     if order_by is not None:
-        q = q.order_by(order_by)
+        if inspect.isfunction(order_by):
+            order_by(q)
+        else:
+            q = q.order_by(order_by)
 
-    return sort(type, q.all()) if get_iterable else q.first()
+    # Return accordingly.
+    # ... first
+    if not get_iterable:
+        return q.first()
+    # ... sorted collection
+    elif order_by is None:
+        return sort(type, q.all())
+    # ... ordered collection
+    else:
+        return q.all()
 
 
 def get_by_id(type, id):
@@ -188,10 +207,10 @@ def get_by_id(type, id):
     :type id: int
 
     :returns: Entity with matching ID.
-    :rtype: Sub-class of esdoc_api.lib.repo.models.Entity
+    :rtype: Sub-class of esdoc_api.models.Entity
 
     """
-    return get_by_facet(type, filter=type.ID==id)
+    return get_by_facet(type, type.ID==id)
 
 
 def get_by_name(type, name):
@@ -204,10 +223,10 @@ def get_by_name(type, name):
     :type name: str
 
     :returns: Entity with matching name.
-    :rtype: Sub-class of esdoc_api.lib.repo.models.Entity
+    :rtype: Sub-class of esdoc_api.models.Entity
 
     """
-    return get_by_facet(type, filter=type.Name==name)
+    return get_by_facet(type, sa.func.upper(type.Name)==name.upper())
 
 
 def get_count(type, filter=None):
@@ -230,61 +249,39 @@ def get_count(type, filter=None):
     return q.count()
 
 
-def insert(instance):
-    """Adds a newly created model to the session.
+def insert(target):
+    """Marks target instance(s) for insertion.
 
-    :param instance: A domain model instance ready for insertion into repository.
-    :type instance: Sub-class of esdoc_api.lib.repo.models.Entity
+    :param target: Target instance(s) for insertion.
+    :type target: Sub-class of esdoc_api.models.Entity or list
 
     """
-    # Defensive programming.
-    assert_instance(instance)
+    if rt.is_iterable(target):
+        assert_collection(target)
+        for target in target:
+            session.insert(target)
+    else:
+        assert_instance(target)
+        session.insert(target)
+
+
+def delete(target):
+    """Marks target instance(s) for deletion.
+
+    :param target: Target instance(s) for deletion.
+    :type target: Sub-class of esdoc_api.models.Entity or list
+
+    """
+    if rt.is_iterable(target):
+        assert_collection(target)
+        for target in target:
+            session.delete(target)
+    else:
+        assert_instance(target)
+        session.delete(target)
     
-    session.insert(instance)
 
-
-def insert_all(collection):
-    """Adds a list of newly created models to the session.
-
-    :param instances: A collection of model instance to be inserted into repo.
-    :type instances: iterable
-
-    """
-    # Defensive programming.
-    assert_collection(collection)
-
-    for instance in collection:
-        session.insert(instance)
-
-
-def delete(instance):
-    """Marks entity instance for deletion.
-
-    :param instance: A domain model instance ready for deletion from repository.
-    :type item: Sub-class of esdoc_api.lib.repo.models.Entity
-
-    """
-    # Defensive programming.
-    assert_instance(instance)
-
-    session.delete(instance)
-
-
-def delete_all(collection):
-    """Deletes all entities within collection.
-
-    :param type: A supported entity type.
-    :type type: class
-
-    """
-    # Defensive programming.
-    assert_collection(collection)
-
-    for instance in collection:
-        delete(instance)
-
-
-def delete_all_by_type(type, callback=None):
+def delete_by_type(type, callback=None):
     """Deletes all entities of passed type.
 
     :param type: A supported entity type.
@@ -304,24 +301,24 @@ def delete_all_by_type(type, callback=None):
             delete(instance)
 
 
-def delete_by_facet(type, expression):
+def delete_by_facet(type, filter):
     """Delete entity instance by id.
 
     :param type: A supported entity type.
     :type type: class
 
-    :param facet: Entity facet.
-    :type facet: expression
-
-    :param facet: Entity facet value.
-    :type facet: object
+    :param filter: Filter to apply.
+    :type filter: expression or functino pointer
 
     """
     # Defensive programming.
     assert_type(type)
 
     q = session.query(type)
-    q = q.filter(expression)
+    if inspect.isfunction(filter):
+        filter(q)
+    else:
+        q = q.filter(filter)
     q.delete()
 
 
@@ -335,9 +332,6 @@ def delete_by_id(type, id):
     :type id: int
 
     """
-    # Defensive programming.
-    assert_type(type)
-
     delete_by_facet(type, type.ID==id)
 
 
@@ -351,8 +345,4 @@ def delete_by_name(type, name):
     :type name: str
 
     """
-    # Defensive programming.
-    assert_type(type)
-    
     delete_by_facet(type, type.Name==name)
-

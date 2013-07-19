@@ -21,7 +21,7 @@ from lxml import etree as et
 from nose.tools import nottest
 
 import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
 import esdoc_api.lib.repo.session as session
 
 
@@ -196,7 +196,9 @@ def assert_collection(collection,
     if length != -1:
         assert_integer(len(collection), length, length_compare)
     if item_type is not None:
-        for instance in collection.values():
+        if isinstance(collection, dict):
+            collection = collection.values()
+        for instance in collection:
             assert_object(instance, item_type)
 
 
@@ -227,10 +229,10 @@ def assert_entity(actual, expected):
     """Asserts a pair of entity instances.
 
     :param actual: An entity.
-    :type actual: esdoc_api.lib.repo.models.Entity
+    :type actual: esdoc_api.models.Entity
 
     :param expected: An entity.
-    :type expected: esdoc_api.lib.repo.models.Entity
+    :type expected: esdoc_api.models.Entity
 
     """
     assert_object(actual, models.Entity)

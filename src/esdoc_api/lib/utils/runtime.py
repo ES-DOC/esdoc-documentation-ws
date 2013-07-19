@@ -39,6 +39,19 @@ class ESDOC_API_Error(Exception):
         return "ES-DOC API ERROR : {0}".format(repr(self.message))
 
 
+def raise_error(msg, type=ESDOC_API_Error):
+    """Helper function to raise a runtime error.
+
+    :param msg: Error message.
+    :type msg: str
+
+    :param type: Error type.
+    :type type: class
+
+    """
+    raise type(msg)
+
+
 def assert_function(f, msg=None):
     """Asserts that a variable is a function.
 
@@ -199,3 +212,21 @@ def assert_pyesdoc_var(name, value):
     
     assert_var(name, value, object, msg=get_msg)
     assert_attr(value, 'cim_info', msg=get_msg)
+
+
+def is_iterable(target):
+    """Returns a flag indicating whether passed variable is iterable.
+
+    :param target: Varaible being tested whether it is iterable or not.
+    :type target: object or iterable
+
+    """
+    is_iterable = True
+    try:
+        iter(target)
+    except TypeError:
+        is_iterable = False
+
+    return is_iterable
+
+

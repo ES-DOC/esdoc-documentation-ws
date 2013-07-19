@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.search.search_document_by_id.py
+.. module:: esdoc_api.lib.repo.search.search_document_by_id.py
    :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -11,11 +11,11 @@
 """
 
 # Module imports.
-from esdoc_api.lib.search.utils import (
+from esdoc_api.lib.repo.search.utils import (
     ESDOCSearchBase,
     BaseDocumentSearchCriteria
     )
-from esdoc_api.lib.repo.models import (
+from esdoc_api.models import (
     Document,
     )
 from esdoc_api.lib.pyesdoc.utils.ontologies import *

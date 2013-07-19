@@ -16,7 +16,7 @@ from esdoc_api.models.manager import (
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.controllers.decorators import jsonify
-from esdoc_api.lib.repo.models import *
+from esdoc_api.models import *
 
 
 

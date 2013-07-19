@@ -151,8 +151,6 @@ class BaseAPIController(BaseController):
         c.get_ontology = c.cache.get_ontology
         c.get_language = c.cache.get_language
 
-        print 'ZZZ', c.get_language
-
 
     def get_response_content_type(self):
         """Returns http reponse content type derived from request content type http header.

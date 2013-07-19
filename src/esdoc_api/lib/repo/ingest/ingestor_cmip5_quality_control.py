@@ -14,7 +14,7 @@ from lxml import etree as et
 import esdoc_api.lib.repo.dao as dao
 
 from esdoc_api.lib.repo.ingest.base_ingestor_from_feed import FeedIngestorBase
-from esdoc_api.lib.repo.models import *
+from esdoc_api.models import *
 from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
@@ -39,7 +39,7 @@ class Ingestor(FeedIngestorBase):
         """Constructor.
 
         :param endpoint: Ingestion endpoint being processed (i.e. CMIP5 quality control feed).
-        :type endpoint: esdoc_api.lib.repo.models.IngestEndpoint
+        :type endpoint: esdoc_api.models.IngestEndpoint
 
         """
         super(Ingestor, self).__init__(endpoint,
@@ -52,7 +52,7 @@ class Ingestor(FeedIngestorBase):
         """Assign institute to qc document.
 
         :param document: A document being ingested.
-        :type document: esdoc_api.lib.repo.models.Document
+        :type document: esdoc_api.models.Document
 
         """
         # Escape if no external id has been defined.
@@ -76,7 +76,7 @@ class Ingestor(FeedIngestorBase):
         :param content: Feed entry content.
         :type content: str
         :returns: A deserialized simulation document.
-        :rtype: esdoc_api.lib.repo.models.Document
+        :rtype: esdoc_api.models.Document
 
         """
         # Set etree representation.

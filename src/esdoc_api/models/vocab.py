@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.repo.models.vocab.py
+.. module:: esdoc_api.models.vocab.py
    :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -17,7 +17,7 @@ from sqlalchemy import (
     UniqueConstraint,
 )
 
-from esdoc_api.lib.repo.models.utils import (
+from esdoc_api.models.utils import (
     create_fk,
     Entity
     )

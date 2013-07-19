@@ -15,7 +15,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import Engine
 
-import esdoc_api.lib.repo.models as models
+import esdoc_api.models as models
 
 
 
@@ -164,7 +164,7 @@ def delete(instance, auto_commit=True):
     """Marks an instance for deletion and optionally commits the session.
 
     :param instance: An instance of an ES-DOC API domain model.
-    :type instance: A sub-class of esdoc_api.lib.repo.models.Entity
+    :type instance: A sub-class of esdoc_api.models.Entity
 
     :param auto_commit: Flag indicating whether to automatically issue a commit.
     :type auto_commit: bool

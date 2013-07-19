@@ -16,7 +16,7 @@ import feedparser
 from lxml import etree as et
 
 from esdoc_api.lib.repo.ingest.base_ingestor import IngestorBase
-from esdoc_api.lib.repo.models import *
+from esdoc_api.models import *
 import esdoc_api.lib.pyesdoc as pyesdoc
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.session as session
@@ -96,45 +96,45 @@ class FeedReader(object):
         :type onread_callback: function 
 
         """
-        try:
-            # Set entry id.
-            self.entry_id += 1
-            self.entry = self.entries[self.entry_id - 1]
+#        try:
+        # Set entry id.
+        self.entry_id += 1
+        self.entry = self.entries[self.entry_id - 1]
 
-            # Set entry url.
-            entry_url = self.entry['links'][0].href
-            if self.entry_url_parser is not None:
-                entry_url = self.entry_url_parser(entry_url)
+        # Set entry url.
+        entry_url = self.entry['links'][0].href
+        if self.entry_url_parser is not None:
+            entry_url = self.entry_url_parser(entry_url)
 
-            # TODO place this on queue rather than processing directly.
-            # Process entry content (if not already processed).
-            if dao.get_ingest_url(entry_url) is None:
-                # Notify.
-                print "****************************************************************"
-                print "[Feed reader ingesting :: {0} of {1}] Target :: {2}".format(self.entry_id, self.entry_count, entry_url)
+        # TODO place this on queue rather than processing directly.
+        # Process entry content (if not already processed).
+        if dao.get_ingest_url(entry_url) is None:
+            # Notify.
+            print "****************************************************************"
+            print "[Feed reader ingesting :: {0} of {1}] Target :: {2}".format(self.entry_id, self.entry_count, entry_url)
 
-                # Download.
-                http_request = urllib2.Request(entry_url)
-                http_response = urllib2.urlopen(http_request)
-                entry_content = http_response.read()
+            # Download.
+            http_request = urllib2.Request(entry_url)
+            http_response = urllib2.urlopen(http_request)
+            entry_content = http_response.read()
 
-                # Process.
-                if self.entry_content_parser is not None:
-                    entry_content = self.entry_content_parser(entry_content)
-                onread_callback(entry_url, entry_content)
+            # Process.
+            if self.entry_content_parser is not None:
+                entry_content = self.entry_content_parser(entry_content)
+            onread_callback(entry_url, entry_content)
 
-                # Remember.
-                session.insert(IngestURL(URL=entry_url), False)
+            # Remember.
+            session.insert(IngestURL(URL=entry_url), False)
 
-                # Persist.
-                session.commit()
+            # Persist.
+            session.commit()
 
-        except Exception as e:
-            try:
-                session.rollback()
-            except:
-                pass
-            print "FEED READER EXCEPTION :: ERR={0}".format(e)
+#        except Exception as e:
+#            try:
+#                session.rollback()
+#            except:
+#                pass
+#            print "FEED READER EXCEPTION :: ERR={0}".format(e)
 
 
     def can_read(self):
@@ -168,7 +168,7 @@ class FeedIngestorBase(IngestorBase):
         """Constructor.
 
         :param endpoint: Feed endpoint.
-        :type endpoint: esdoc_api.lib.repo.models.IngestEndpoint
+        :type endpoint: esdoc_api.models.IngestEndpoint
 
         :param project: Project with which feed is associated.
         :type project: str
@@ -217,7 +217,7 @@ class FeedIngestorBase(IngestorBase):
             fr.read(self.on_ingest_callback)
 
         # Invoke feed parsed callback.
-        if self.on_feed_ingested is not None:
+        if hasattr(self, 'on_feed_ingested'):
             self.on_feed_ingested()
             
 
@@ -254,7 +254,7 @@ class FeedIngestorBase(IngestorBase):
         :param encoding: Feed entry encoding.
         :type encoding: str
         :returns: Encoding type.
-        :rtype: esdoc_api.lib.repo.models.DocumentEncoding
+        :rtype: esdoc_api.models.DocumentEncoding
 
         """
         encoding = encoding.lower()
@@ -269,7 +269,7 @@ class FeedIngestorBase(IngestorBase):
 
         :param document: Document being processed.
         :param etree: Document xml etree.
-        :type document: esdoc_api.lib.repo.models.Document
+        :type document: esdoc_api.models.Document
         :type etree: lxml.etree
 
         """
@@ -285,10 +285,10 @@ class FeedIngestorBase(IngestorBase):
         """Create document representation.
 
         :param document: Document being processed.
-        :type document: esdoc_api.lib.repo.models.Document
+        :type document: esdoc_api.models.Document
 
         :param encoding: Encoding type.
-        :type encoding: esdoc_api.lib.repo.models.DocumentEncoding
+        :type encoding: esdoc_api.models.DocumentEncoding
 
         :param representation: Document representation.
         :type representation: unicode
@@ -366,7 +366,7 @@ class FeedIngestorBase(IngestorBase):
             on_deserialize(as_obj, etree, nsmap)
 
         # Retrieve / create as appropriate.
-        document = dao.get_document_by_obj(self.project.ID, as_obj)
+        document = utils.get_document_by_obj(self.project.ID, as_obj)
         if document is None:
             document = self.create_document(etree, nsmap, as_obj)
 

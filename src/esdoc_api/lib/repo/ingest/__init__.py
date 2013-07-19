@@ -13,13 +13,13 @@ import urllib2
 
 import lxml
 
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.session as session
-import esdoc_api.lib.utils.runtime as rt
 from esdoc_api.lib.repo.ingest.ingestor_cmip5_quality_control import Ingestor as CMIP5QCIngestor
 from esdoc_api.lib.repo.ingest.ingestor_cmip5_questionnaire import Ingestor as CMIP5QuestionnaireIngestor
 from esdoc_api.lib.repo.ingest.ingestor_dcmip2012 import Ingestor as DCMIP2012Ingestor
 from esdoc_api.lib.repo.ingest.ingestor_qed2013 import Ingestor as QED2013Ingestor
+import esdoc_api.lib.repo.dao as dao
+import esdoc_api.lib.repo.session as session
+import esdoc_api.lib.utils.runtime as rt
 
 
 
@@ -44,7 +44,7 @@ def create_ingestor(endpoint):
     """Factory method to instantiate an ingest endpoint ingestor.
 
     :param endpoint: Ingest endpoint.
-    :type endpoint: esdoc_api.lib.repo.models.IngestEndpoint
+    :type endpoint: esdoc_api.models.IngestEndpoint
 
     """
     if endpoint.IngestorType not in _ingestor_types:
@@ -62,8 +62,14 @@ def execute():
     print "   STARTED @ {0}.".format(datetime.datetime.now())
     print "***************** INGESTION START *****************"
 
+    # Repo connection string.
+    _CONNECTION = "postgresql://postgres:Silence107!@localhost:5432/esdoc_api"
+
+    # Start session.
+    session.start(_CONNECTION)
+
     # Get all active ingestions.
-    active = dao.get_ingest_endpoint_by_active_state()
+    active = dao.get_ingest_endpoints()
     print "Active ingestion endpoints = {0}".format(len(active))
 
     # For each pending, create ingestor & ingest.
@@ -71,7 +77,6 @@ def execute():
     for endpoint in active:
         # Create ingestor.
         ingestor = create_ingestor(endpoint)
-        session.commit()
 
         # Inform.
         print '****************************************************************'
@@ -88,6 +93,8 @@ def execute():
             print '****************************************************************'
 
         except Exception as e:
+            raise
+        
             # Rollback inner transaction.
             try:
                 session.rollback()

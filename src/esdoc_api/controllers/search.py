@@ -39,7 +39,7 @@ class SearchController(BaseAPIController):
         """Loads a document representation.
 
         :param document: document being loaded.
-        :type document: esdoc_api.lib.repo.models.Document
+        :type document: esdoc_api.models.Document
 
         :returns: A document representation.
         :rtype: str
@@ -158,7 +158,7 @@ class SearchController(BaseAPIController):
         if not request.params.has_key('name'):
             abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter name is mandatory")
             
-        # Load document set.        
+        # Load document set.
         return self.__load(lambda : dao.get_document_by_name(self.project_id,
                                                              request.params['type'],
                                                              request.params['name'],
