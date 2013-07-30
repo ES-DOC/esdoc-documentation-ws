@@ -14,11 +14,12 @@ from esdoc_api.lib.repo.init.populate_document_ontology import populate_document
 from esdoc_api.lib.repo.init.populate_document_type import populate_document_type
 from esdoc_api.lib.repo.init.populate_facet import populate_facet
 from esdoc_api.lib.repo.init.populate_facet_relation_type import populate_facet_relation_type
-from  esdoc_api.lib.repo.init.populate_facet_type import populate_facet_type
+from esdoc_api.lib.repo.init.populate_facet_type import populate_facet_type
 from esdoc_api.lib.repo.init.populate_ingest_endpoint import populate_ingest_endpoint
-from  esdoc_api.lib.repo.init.populate_ingest_state import populate_ingest_state
+from esdoc_api.lib.repo.init.populate_ingest_state import populate_ingest_state
 from esdoc_api.lib.repo.init.populate_institute import populate_institute
 from esdoc_api.lib.repo.init.populate_project import populate_project
+import esdoc_api.lib.utils.runtime as rt
 
 
 
@@ -50,11 +51,11 @@ def execute():
     """Executes repo setup.
 
     """
-    print "ES-DOC API :: REPOSITORY POPULATION BEGINS"
+    rt.log("REPOSITORY POPULATION BEGINS")
 
     for f in _populators:
-        print "ES-DOC API :: REPOSITORY POPULATION :: {0}".format(f.__name__)
+        rt.log("ES-DOC API :: REPOSITORY POPULATION :: {0}".format(f.__name__))
         f()
 
-    print "ES-DOC API :: REPOSITORY POPULATION ENDS"
+    rt.log("REPOSITORY POPULATION ENDS")
 

@@ -106,7 +106,7 @@ class IngestorBase(object):
         """The maximum allowed ingest count."""
         # Defensive progamming.
         if value < 0:
-            raise rt.ESDOC_API_Error("Max ingest count must be greater than or equal to zero.")
+            rt.throw("Max ingest count must be greater than or equal to zero.")
         # Assign max ingest count once - this supports unit test scenarios.
         if self.__max_ingest_count == 0:
             self.__max_ingest_count = value
@@ -131,7 +131,7 @@ class IngestorBase(object):
         """
         # Defensive programming.
         if self.can_ingest() == False:
-            raise rt.ESDOC_API_Error("Ingest limits have been reached")
+            rt.throw("Ingest limits have been reached")
 
         self.ingested_count = self.ingested_count + 1
 

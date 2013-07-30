@@ -21,6 +21,11 @@ from sqlalchemy import (
     )
 from sqlalchemy.ext.declarative import declarative_base
 
+from esdoc_api.lib.utils.convertors import (
+    convert_dict_keys,
+    convert_to_pascal_case
+    )
+import esdoc_api.lib.utils.runtime as rt
 
 
 # Module exports.
@@ -74,6 +79,7 @@ class BaseEntity(object):
         for column in self.__table__.columns:
             d[column.name] = getattr(self, column.name)
         return d
+    
 
     def as_json(self):
         """Returns a json representation.
@@ -173,11 +179,29 @@ class EntityConvertor(object):
 
 
     @staticmethod
+    def to_dict_for_json(target):
+        """Returns a dictionary ready for json encoding.
+
+        """
+        def convert_keys(i):
+            return convert_dict_keys(i, convert_to_pascal_case)
+            
+        # Get dictionary representation of instance.
+        d = EntityConvertor.to_dict(target)
+
+        # Honour json object attribute naming conventions.
+        if rt.is_iterable(target):
+            return map(convert_keys, d)
+        else:
+            return convert_keys(d)
+
+
+    @staticmethod
     def to_json(target):
         """Returns a json representation.
 
         """
-        return unicode(JSONEncoder().encode(EntityConvertor.to_dict(target)))
+        return unicode(JSONEncoder().encode(EntityConvertor.to_dict_for_json(target)))
 
 
     @staticmethod

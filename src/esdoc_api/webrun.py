@@ -6,12 +6,13 @@ Primary web server entry point.
 import os
 import os.path
 
-
 from paste.script.serve import ServeCommand
+
+import esdoc_api.lib.utils.runtime as rt
 
 
 if __name__ == "__main__":
-    print "ES-DOC API - web server starting.";
+    rt.log("Web server starting.")
 
 
 def _get_user_name():
@@ -24,7 +25,7 @@ def _get_user_name():
         username = pwd.getpwuid(os.getuid()).pw_name
     except ImportError:
         username = os.environ.get("USERNAME")
-    print "ENVIRONMENT :: USER :: {0}.".format(username)
+    rt.log("ENVIRONMENT :: USER :: {0}.".format(username))
     return username
 
 

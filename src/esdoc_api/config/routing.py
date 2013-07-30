@@ -50,7 +50,8 @@ def _make_map_for_api(map, config):
 
         """
         map.connect('/1/search', controller='search', action='do')
-        map.connect('/1/search/setup', controller='search', action='setup')
+        map.connect('/1/search/engine/results', controller='search', action='results')
+        map.connect('/1/search/engine/setup', controller='search', action='setup')
         
     def compare():
         """Compare API routes.
@@ -58,7 +59,7 @@ def _make_map_for_api(map, config):
         """
         # Setup data.
         map.connect('/1/compare/setupData/{project_code}/{comparator_type}',
-                    controller='compare', action='get_setup_data')
+                    controller='compare', action='setup')
 
     def visualize():
         """Visualize API routes.

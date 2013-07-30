@@ -29,10 +29,14 @@ __all__ = [
     'end',
     'insert',
     'query',
+    'QUERY_LIMIT',
     'rollback',
     'start',
 ]
 
+
+# Default query limit to apply.
+QUERY_LIMIT = 250
 
 
 class _State(object):
@@ -183,7 +187,8 @@ def query(*types):
     if len(types) == 0 or _State.sa_session is None:
         return None
 
-    q = None
-    for type in types:
-        q = _State.sa_session.query(type) if q is None else q.join(type)
+    q = _State.sa_session.query(types[0])
+    for type in types[1:]:
+        q = q.join(type)
+        
     return q

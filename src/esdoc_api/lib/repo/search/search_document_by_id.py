@@ -19,6 +19,7 @@ from esdoc_api.models import (
     Document,
     )
 from esdoc_api.lib.pyesdoc.utils.ontologies import *
+import esdoc_api.lib.utils.runtime as rt
 
 
 
@@ -82,44 +83,42 @@ class DocumentByIDSearch(ESDOCSearchBase):
         :type ctx: models.core.SearchContext
 
         """
-        print ctx.c
-
         # institute.
         if ctx.c.institute is not None and \
            ctx.c.institute != '*':
             if isinstance(ctx.c.institute, unicode):
-                print 'DSDSDSDSS'
+                rt.log("DSDSDSDSS")
             else:
-                print 'SEARCHING BY :: institute :: {0}'.format(ctx.c.institute)
+                rt.log("SEARCHING BY :: institute :: {0}".format(ctx.c.institute))
                 ctx.set_filter(Document.Institute_ID==ctx.c.institute)
 
         # language.
         if ctx.c.language is not None and \
            ctx.c.language != '*':
-            print 'SEARCHING BY :: language :: {0}'.format(ctx.c.language)
+            rt.log("SEARCHING BY :: language :: {0}".format(ctx.c.language))
             ctx.set_filter(DocumentSummary.Language_ID==ctx.c.language)
 
         # name.
         if ctx.c.name is not None and \
            ctx.c.name != '*':
-            print 'SEARCHING BY :: name :: {0}'.format(ctx.c.name)
+            rt.log("SEARCHING BY :: name :: {0}".format(ctx.c.name))
             ctx.set_filter(Document.Name==ctx.c.name)
 
         # project.
         if ctx.c.project is not None and \
            ctx.c.project != '*':
-            print 'SEARCHING BY :: project :: {0}'.format(ctx.c.project)
+            rt.log("SEARCHING BY :: project :: {0}".format(ctx.c.project))
             ctx.set_filter(Document.Project_ID==ctx.c.project)
 
         # type.
         if ctx.c.type is not None and \
            ctx.c.type != '*':
-            print 'SEARCHING BY :: type :: {0}'.format(ctx.c.type)
+            rt.log("SEARCHING BY :: type :: {0}".format(ctx.c.type))
             ctx.set_filter(Document.Type==ctx.c.type)
 
         # version.
         if ctx.c.version == ESDOC_VERSION_LATEST:
-            print 'SEARCHING BY :: version :: {0}'.format(ctx.c.version)
+            rt.log("SEARCHING BY :: version :: {0}".format(ctx.c.version))
             ctx.set_filter(Document.IsLatest==True)
 
 

@@ -11,7 +11,7 @@
 # Module imports.
 from esdoc_api.lib.repo.index.cim_v1.model_component.parser import parse
 from esdoc_api.lib.repo.index.cim_v1.model_component.reducer import reduce
-from esdoc_api.lib.utils.string import convert_to_spaced_case
+from esdoc_api.lib.utils.convertors import convert_to_spaced_case
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.models as models
 import esdoc_api.lib.repo.utils as utils

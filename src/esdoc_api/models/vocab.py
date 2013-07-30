@@ -30,6 +30,7 @@ __all__ = [
     'DocumentLanguage',
     'DocumentOntology',
     'DocumentType',
+    'DOCUMENT_TYPE_ALL',
     'INGEST_STATES',
     'INGEST_STATE_QUEUED',
     'INGEST_STATE_RUNNING',
@@ -45,6 +46,11 @@ __all__ = [
     'Institute',
     'Project'
 ]
+
+
+
+# Constants pertaining to document types.
+DOCUMENT_TYPE_ALL = '*'
 
 
 # Constants pertaining to states.

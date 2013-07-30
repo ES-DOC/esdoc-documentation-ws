@@ -6,9 +6,11 @@ from mako.lookup import TemplateLookup
 from pylons.configuration import PylonsConfig
 from pylons.error import handle_mako_error
 
+from esdoc_api.config.routing import make_map
 import esdoc_api.lib.utils.app_globals as app_globals
 import esdoc_api.lib.utils.helpers
-from esdoc_api.config.routing import make_map
+import esdoc_api.lib.utils.runtime as rt
+
 
 
 def load_environment(global_conf, app_conf):
@@ -46,13 +48,13 @@ def load_environment(global_conf, app_conf):
     # any Pylons config options)
 
     # Allow developer to see environment.
-    print "ENVIRONMENT :: PYLONS :: ROOT :: {0}.".format(str(root))
-    print "ENVIRONMENT :: PYLONS :: TEMPLATES :: {0}.".format(str(paths['templates']))
-    print "ENVIRONMENT :: PYLONS :: CONTROLLERS :: {0}.".format(str(paths['controllers']))
-    print "ENVIRONMENT :: PYLONS :: STATIC FILES :: {0}.".format(str(paths['static_files']))
+    rt.log("ENVIRONMENT :: PYLONS :: ROOT :: {0}.".format(str(root)))
+    rt.log("ENVIRONMENT :: PYLONS :: TEMPLATES :: {0}.".format(str(paths['templates'])))
+    rt.log("ENVIRONMENT :: PYLONS :: CONTROLLERS :: {0}.".format(str(paths['controllers'])))
+    rt.log("ENVIRONMENT :: PYLONS :: STATIC FILES :: {0}.".format(str(paths['static_files'])))
     for path in sys.path:
-        print "ENVIRONMENT :: PYTHON PATH :: {0}.".format(path)
+        rt.log("ENVIRONMENT :: PYTHON PATH :: {0}.".format(path))
     for key, value in config.items():
-        print "ENVIRONMENT :: CONFIG ITEM :: {0} :: {1}.".format(key, str(value))
+        rt.log("ENVIRONMENT :: CONFIG ITEM :: {0} :: {1}.".format(key, str(value)))
 
     return config

@@ -58,13 +58,13 @@ def _validate_project_code(code):
     """
     # Error if unspecified.
     if code is None:
-        raise rt.ESDOC_API_Error("Project code must be specified.")
+        rt.throw("Project code must be specified.")
 
     # Error if not found.
     if c.get_project(code) is None:
         msg = 'Project code ({0}) is unsupported.'
         msg = msg.format(code)
-        raise rt.ESDOC_API_Error(msg)
+        rt.throw(msg)
 
 
 def get_setup_data(project_code, comparator_type):
@@ -84,17 +84,17 @@ def get_setup_data(project_code, comparator_type):
     # ... unspecified project code.
     if project_code is None:
         msg = 'Project code is unspecified.'
-        raise rt.ESDOC_API_Error(msg)
+        rt.throw(msg)
 
     # ... unspecified comparator type.
     if comparator_type is None:
         msg = 'Comparator is unspecified.'
-        raise rt.ESDOC_API_Error(msg)
+        rt.throw(msg)
 
     # ... unsupported comparator type.
     if comparator_type.lower() not in _comparators:
         msg = 'Comparator ({0}) is unsupported.'.format(comparator_type)
-        raise rt.ESDOC_API_Error(msg)
+        rt.throw(msg)
 
     # Format input params.
     project_code = project_code.upper()
@@ -125,7 +125,8 @@ def write_comparator_json(project_code, comparator_type):
     # Set file path.
     path = os.path.dirname(os.path.abspath(__file__))
     path = path.replace("lib/api", "static/json")
-    path += "/compare.setup.{0}.{1}.json".format(project_code.lower(), comparator_type.lower())
+    path += "/compare.setup.{0}.{1}.json".format(project_code.lower(),
+                                                 comparator_type.lower())
 
     # Write json file.
     with open(path, 'w') as f:

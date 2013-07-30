@@ -18,8 +18,12 @@ from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.pyesdoc.utils.ontologies import *
+import esdoc_api.lib.api.search_engine as se
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.utils as utils
+import esdoc_api.lib.utils.runtime as rt
+import esdoc_api.models as models
+
 
 
 # Set of supported search types.
@@ -132,11 +136,11 @@ class SearchController(BaseAPIController):
         if not request.params.has_key('version'):
             abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter version is mandatory")
         
-        if request.params['version'] not in ["latest", "all"]:
+        if request.params['version'] not in models.DOCUMENT_VERSIONS:
             try:
                 int(request.params['version'])
             except ValueError:
-                abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter version must be either an integer or one of the string literals 'latest' | 'all'.")
+                abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter version must be either an integer or one of the string literals 'latest' | '*'.")
 
         # Load document set.
         return self.__load(lambda : dao.get_document(self.project_id,
@@ -227,7 +231,7 @@ class SearchController(BaseAPIController):
     @rest.restrict('GET')
     @jsonify
     def do(self):
-        """Executes a search against ES-DOC API repository.
+        """Executes a document set search against ES-DOC API repository.
 
         """
         # Defensive programming.
@@ -240,7 +244,7 @@ class SearchController(BaseAPIController):
         if not request.params['searchType'] in _SEARCH_TYPES:
             abort(HTTP_RESPONSE_BAD_REQUEST, "Search type is unsupported")
 
-        # Set of search handlers.
+        # Set of handlers.
         handlers = {
             'documentByDRS' : self.__document_by_drs,
             'documentByID' : self.__document_by_id,
@@ -252,50 +256,48 @@ class SearchController(BaseAPIController):
         return handlers[request.params['searchType']]()
 
 
+    def _get_se_type(self):
+        """Factory method to return search engine type.
+
+        """
+        type = request.params['searchEngineType'] if request.params.has_key('searchEngineType') else None
+
+        return str(type)
+
+
     @rest.restrict('GET')
     @jsonify
     def setup(self):
         """Returns setup data used to configure a UI for searching against ES-DOC API repository.
 
-        """
-        # Defensive programming.
-        if not request.params.has_key('searchType'):
-            abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter {searchType} is mandatory")
-
-        if not request.params['searchType'] in _SEARCH_TYPES:
-            abort(HTTP_RESPONSE_BAD_REQUEST, "Search type is unsupported")
-
-        # Initialise result.
-        result = {
-            'searchType' : request.params['searchType']
-        }
-
-        if search_type == 's1':
-            result['data'] = {
-                'projects' : self.__to_dict(dao.get_all(Project)),
-                'documentTypes' : self.__to_dict(dao.get_all(DocumentType)),
-                'documentLanguages' : self.__to_dict(dao.get_all(DocumentLanguage)),
-                'results' : []
-            }
-
-        return result
-        
-
-    def __results(self):
-        """Returns search results.
+        :returns: Search engine setup data.
+        :rtype: dict
 
         """
-        # TODO replace do operation with this style of code.
-        # TODO move get search setup data to search manager / handler.
-        # Instantiate search manager.
-        manager =  SearchManager(get_type(search_type + 'Search'), request.params)
+        try:
+            return se.get_setup_data(self._get_se_type())
+        except rt.ESDOC_API_Error as e:
+            abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
 
-        # Execute search.
-        manager.execute()
 
-        # Return.
-        return {
-            'searchType' : search_type,
-            'results' : self.__to_dict(manager.results)
-        }
+    @rest.restrict('GET')
+    @jsonify
+    def results(self):
+        """Returns search engine results.
+
+        """
+        def get_criteria():
+            """Factory method to create criteria to be passed into search engine.
+
+            """
+            criteria = {}
+            for key in [k for k in request.params if k not in ('onJSONPLoad', 'searchEngineType')]:
+                criteria[key] = request.params[key]
+
+            return criteria
+
+        try:
+            return se.get_results_data(self._get_se_type(), get_criteria())
+        except rt.ESDOC_API_Error as e:
+            abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
 

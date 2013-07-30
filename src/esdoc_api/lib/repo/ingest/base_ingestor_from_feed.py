@@ -21,6 +21,7 @@ import esdoc_api.lib.pyesdoc as pyesdoc
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.session as session
 import esdoc_api.lib.repo.utils as utils
+import esdoc_api.lib.utils.runtime as rt
 
 
 
@@ -110,8 +111,8 @@ class FeedReader(object):
         # Process entry content (if not already processed).
         if dao.get_ingest_url(entry_url) is None:
             # Notify.
-            print "****************************************************************"
-            print "[Feed reader ingesting :: {0} of {1}] Target :: {2}".format(self.entry_id, self.entry_count, entry_url)
+            rt.log("****************************************************************")
+            rt.log("[Feed reader ingesting :: {0} of {1}] Target :: {2}".format(self.entry_id, self.entry_count, entry_url))
 
             # Download.
             http_request = urllib2.Request(entry_url)
@@ -134,7 +135,7 @@ class FeedReader(object):
 #                session.rollback()
 #            except:
 #                pass
-#            print "FEED READER EXCEPTION :: ERR={0}".format(e)
+#            rt.log("FEED READER EXCEPTION :: ERR={0}".format(e))
 
 
     def can_read(self):
@@ -232,7 +233,7 @@ class FeedIngestorBase(IngestorBase):
         """
         self.increment_count()
         
-        print u"{0} INGESTOR :: INGESTING FEED ENTRY :: {1}.".format(self.name.upper(), url)
+        rt/log("{0} INGESTOR :: INGESTING FEED ENTRY :: {1}.".format(self.name.upper(), url))
 
         self.ingest_feed_entry(content)
 
@@ -335,8 +336,8 @@ class FeedIngestorBase(IngestorBase):
         utils.create_document_external_ids(document, first_only=True)
 
         # Print for debugging.
-        print u"CREATED DOC :: T={0} ID={1} UID={2} V={3}.".format(
-            document.Type, document.ID, document.UID, document.Version)
+        rt.log("CREATED DOC :: T={0} ID={1} UID={2} V={3}.".format(
+            document.Type, document.ID, document.UID, document.Version))
 
         return document
             

@@ -135,13 +135,13 @@ def is_cached(collection_key, item_key=None):
 
 
 def get(collection_key, item_key=None):
-    """Returns a cached object.
+    """Returns either a cached object or an attribute upon a cached object.
 
     :param collection: Cache collection key.
     :type collection: str
 
     :param item_key: Cache item key.
-    :type item_key: str
+    :type item_key: str or None
 
     :returns: Either a cached collection or a cached item, otherwise None.
     :rtype: None or sub-class of models.Entity or list
@@ -150,13 +150,14 @@ def get(collection_key, item_key=None):
     # Defensive programming.
     _assert_collection_key(collection_key)
 
-    collection_key = _format_key(collection_key)
+    collection = _cache[_format_key(collection_key)]
+
     if item_key is None:
-        return _cache[collection_key]
+        return collection
     else:
         item_key = _format_key(item_key)
-        if item_key in _cache[collection_key]:
-            return _cache[collection_key][item_key]
+        if item_key in collection:
+            return collection[item_key]
         else:
             return None
 
@@ -176,7 +177,7 @@ def get_count(collection_key=None):
         return len(_cache[_format_key(collection_key)])
 
 
-def get_item_id(collection_key, item_key):
+def get_id(collection_key, item_key):
     """Helper function to return a cached item's ID.
 
     :param collection_key: Cache collection key.
@@ -189,7 +190,7 @@ def get_item_id(collection_key, item_key):
     :rtype: None or int
 
     """
-    item = get_item(collection_key, item_key)
+    item = get(collection_key, item_key)
     
     return None if item is None else item.ID
 

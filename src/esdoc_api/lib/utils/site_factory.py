@@ -1,13 +1,11 @@
 """
 Creates & returns set of node supported across the site.
 """
-from esdoc_api.lib.utils.site_node import NODE_TYPE_PAGE_ACTION
-import site
-
 # Module imports.
-import string
 from esdoc_api.lib.utils.site import Site
 from esdoc_api.lib.utils.site_node import *
+import esdoc_api.lib.utils.runtime as rt
+
 
 
 def _create_section_for_about(site):
@@ -32,7 +30,7 @@ def create_site_map(path, role='public'):
     apply_permissions(site)
     set_page(site, path)
 
-    print 'REQUEST :: ROLE = {0}; PATH = {1}; NODE = {2}'.format(role, path, site.page.key)
+    rt.log("REQUEST :: ROLE = {0}; PATH = {1}; NODE = {2}".format(role, path, site.page.key))
 
     return site
 

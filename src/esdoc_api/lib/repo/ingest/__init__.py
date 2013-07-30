@@ -48,9 +48,11 @@ def create_ingestor(endpoint):
 
     """
     if endpoint.IngestorType not in _ingestor_types:
-        raise rt.ESDOC_API_Error("Unsupported ingestor :: {0}.".format(type))
+        msg = "Ingestor type is invalid :: {0}.".format(type)
+        rt.throw(msg)
 
-    print "Creating ingestor :: {0} (endpoint = {1}).".format(endpoint.IngestorType, endpoint.IngestURL)
+    rt.log("Creating ingestor :: {0} (endpoint = {1}).".format(endpoint.IngestorType, endpoint.IngestURL))
+    
     return _ingestor_types[endpoint.IngestorType](endpoint)
 
 
@@ -58,9 +60,9 @@ def execute():
     """Launches the set of pending ingest jobs.
 
     """
-    print "***************** INGESTION START *****************"
-    print "   STARTED @ {0}.".format(datetime.datetime.now())
-    print "***************** INGESTION START *****************"
+    rt.log("***************** INGESTION START *****************")
+    rt.log("   STARTED @ {0}.".format(datetime.datetime.now()))
+    rt.log("***************** INGESTION START *****************")
 
     # Repo connection string.
     _CONNECTION = "postgresql://postgres:Silence107!@localhost:5432/esdoc_api"
@@ -70,7 +72,7 @@ def execute():
 
     # Get all active ingestions.
     active = dao.get_ingest_endpoints()
-    print "Active ingestion endpoints = {0}".format(len(active))
+    rt.log("Active ingestion endpoints = {0}".format(len(active)))
 
     # For each pending, create ingestor & ingest.
     ingestor = None
@@ -79,8 +81,8 @@ def execute():
         ingestor = create_ingestor(endpoint)
 
         # Inform.
-        print '****************************************************************'
-        print "Ingesting :: URL={0}".format(ingestor.ingest_url)
+        rt.log('****************************************************************')
+        rt.log("Ingesting :: URL={0}".format(ingestor.ingest_url))
 
         try:
             # Ingest & persist.
@@ -89,8 +91,8 @@ def execute():
             session.commit()
 
             # Inform.
-            print "Ingested :: URL={0}".format(ingestor.ingest_url)
-            print '****************************************************************'
+            rt.log("Ingested :: URL={0}".format(ingestor.ingest_url))
+            rt.log('****************************************************************')
 
         except Exception as e:
             raise
@@ -110,12 +112,12 @@ def execute():
                     pass
 
             # Inform.
-            print "INGEST ERROR :: {0}.".format(str(e))
+            rt.log("INGEST ERROR :: {0}.".format(str(e)))
 
 
-    print "***************** INGESTION END *******************"
-    print "   COMPLETED @ {0}.".format(datetime.datetime.now())
-    print "***************** INGESTION END *******************"
+    rt.log("***************** INGESTION END *******************")
+    rt.log("   COMPLETED @ {0}.".format(datetime.datetime.now()))
+    rt.log("***************** INGESTION END *******************")
 
 
 def ingest_url(ep_url, content_url):
@@ -128,8 +130,8 @@ def ingest_url(ep_url, content_url):
     :param content_url: Ingest content URL.
 
     """
-    print "****************************************************************"
-    print "Processing :: EP = {0} URL = {1}".format(ep_url, content_url)
+    rt.log("****************************************************************")
+    rt.log("Processing :: EP = {0} URL = {1}".format(ep_url, content_url))
 
     # Get ingestor.
     endpoint = dao.get_ingest_endpoint(ep_url)
@@ -146,10 +148,10 @@ def ingest_url(ep_url, content_url):
         session.commit()
 #    except Exception as e:
 #        session.rollback()
-#        print "FEED READER EXCEPTION :: ERR={0}".format(e)
+#        rt.log("FEED READER EXCEPTION :: ERR={0}".format(e))
     finally:
-        print "Processed :: EP = {0} URL = {1}".format(ep_url, content_url)
-        print "****************************************************************"
+        rt.log("Processed :: EP = {0} URL = {1}".format(ep_url, content_url))
+        rt.log("****************************************************************")
 
 
 def ingest_file(ep_url, content_filepath):
@@ -162,8 +164,8 @@ def ingest_file(ep_url, content_filepath):
     :type content_filepath: str
 
     """
-    print "****************************************************************"
-    print "Processing :: EP = {0} FILE = {1}".format(ep_url, content_filepath)
+    rt.log("****************************************************************")
+    rt.log("Processing :: EP = {0} FILE = {1}".format(ep_url, content_filepath))
 
     # Get ingestor.
     endpoint = dao.get_ingest_endpoint(ep_url)
@@ -179,7 +181,7 @@ def ingest_file(ep_url, content_filepath):
         session.commit()
 #    except Exception as e:
 #        session.rollback()
-#        print "FEED READER EXCEPTION :: ERR={0}".format(e)
+#        rt.log("FEED READER EXCEPTION :: ERR={0}".format(e))
     finally:
-        print "Processed :: EP = {0} FILE = {1}".format(ep_url, content_filepath)
-        print "****************************************************************"
+        rt.log("Processed :: EP = {0} FILE = {1}".format(ep_url, content_filepath))
+        rt.log("****************************************************************")

@@ -37,9 +37,9 @@ class EntityManager(object):
 
         # Validate type info.
         if self.__type is None:
-            raise rt.ESDOC_API_Error("Entity type is unspecified.")
+            rt.throw("Entity type is unspecified.")
         if issubclass(self.__type, ESDOCEntity) == False:
-            raise rt.ESDOC_API_Error("Entity type must derive from rt.ESDOC_API_Error.")
+            rt.throw("Entity type must derive from rt.ESDOC_API_Error.")
 
         # Load instance.
         if load_instance == True:
@@ -198,9 +198,9 @@ class SearchManager(object):
         """
         # Defensive programming.
         if type is None:
-            raise rt.ESDOC_API_Error("Search type is unspecified.")
+            rt.throw("Search type is unspecified.")
         if issubclass(type, ESDOCSearchBase) == False:
-            raise rt.ESDOC_API_Error("Search type must derive from models.core.ESDOCSearchBase.")
+            rt.throw("Search type must derive from models.core.ESDOCSearchBase.")
 
         # Initialise.
         self.handler = type()

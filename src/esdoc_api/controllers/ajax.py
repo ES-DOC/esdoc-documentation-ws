@@ -17,6 +17,7 @@ from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.controllers.decorators import jsonify
 from esdoc_api.models import *
+import esdoc_api.lib.utils.runtime as rt
 
 
 
@@ -35,7 +36,7 @@ class AjaxController(BaseSiteAjaxController):
         # Get type.
         type = get_search_type(request.params['searchType'])
         
-        print "AJAX CONTROLLER - GET SEARCH RESULTS - {0}".format(type)
+        rt.log("AJAX CONTROLLER - GET SEARCH RESULTS - {0}".format(type))
 
         # Instantiate search manager.
         user_session = {}
@@ -50,6 +51,7 @@ class AjaxController(BaseSiteAjaxController):
 
         # Render.
         template = '/ajax/search-{0}-results.xhtml'.format(manager.type_key)
+
         return render(template)
 
 
@@ -64,13 +66,14 @@ class AjaxController(BaseSiteAjaxController):
         # Get type.
         type = get_search_type(request.params['searchType'])
 
-        print "AJAX CONTROLLER - GET SEARCH CRITERIA FORM - {0}".format(type)
+        rt.log("AJAX CONTROLLER - GET SEARCH CRITERIA FORM - {0}".format(type))
 
         # Instantiate manager.
         manager = SearchManager(type)
 
         # Render.
         template = '/ajax/search-{0}-criteria.xhtml'.format(manager.type_key)
+
         return render(template)
 
 
@@ -85,7 +88,7 @@ class AjaxController(BaseSiteAjaxController):
         # Get type.
         type = request.params['entityType']
 
-        print "AJAX CONTROLLER - GET ENTITY DETAIL FORM - {0}".format(type)
+        rt.log("AJAX CONTROLLER - GET ENTITY DETAIL FORM - {0}".format(type))
 
         # Render.
         template = '/ajax/entity-{0}.xhtml'.format(type.lower())
@@ -104,7 +107,7 @@ class AjaxController(BaseSiteAjaxController):
         type = get_entity_type(request.params['entityType'])
         id = request.params['entityID']
 
-        print "AJAX CONTROLLER - GET ENTITY - {0} - {1}".format(type, id)
+        rt.log("AJAX CONTROLLER - GET ENTITY - {0} - {1}".format(type, id))
 
         # Instantiate manager.
         manager = EntityManager(type, instance_id=id)
@@ -124,7 +127,7 @@ class AjaxController(BaseSiteAjaxController):
         # Get type.
         type = get_entity_type(request.params['entityType'])
 
-        print "AJAX CONTROLLER - GET ENTITY COLLECTION - {0}".format(type)
+        rt.log("AJAX CONTROLLER - GET ENTITY COLLECTION - {0}".format(type))
 
         # Instantiate manager.
         manager = EntityManager(type,
@@ -143,7 +146,7 @@ class AjaxController(BaseSiteAjaxController):
         type = get_entity_type(request.params['entityType'])
         id = request.params['entityID']
         
-        print "AJAX CONTROLLER - DELETE ENTITY - {0} - {1}".format(type, id)
+        rt.log("AJAX CONTROLLER - DELETE ENTITY - {0} - {1}".format(type, id))
 
         # Instantiate manager.
         manager = EntityManager(type, id)
@@ -165,7 +168,7 @@ class AjaxController(BaseSiteAjaxController):
         id = request.params['entityID']
         entity = request.params['entity']
 
-        print "AJAX CONTROLLER - SAVE ENTITY - {0} - {1}".format(type, id)
+        rt.log("AJAX CONTROLLER - SAVE ENTITY - {0} - {1}".format(type, id))
 
         # Instantiate manager.
         manager = EntityManager(type, instance_id=id, instance_json=entity)
@@ -213,7 +216,7 @@ class AjaxController(BaseSiteAjaxController):
         # Get cache key.
         key = request.params['key'].upper()
         
-        print "CACHE - GET DATA - {0}".format(key)
+        rt.log("CACHE - GET DATA - {0}".format(key))
 
         # TODO add support for cached data retrieval as and when required.
         raise Exception(u'Unsupported data key :: {0}'.format(key))

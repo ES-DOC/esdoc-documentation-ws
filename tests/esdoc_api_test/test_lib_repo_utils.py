@@ -268,8 +268,9 @@ def test_get_facets():
 
     facets = utils.get_facets(type.Name)    
     tu.assert_collection(facets, 1)
-    tu.assert_string(facets[0]['key'], facet.Key)
-    tu.assert_string(facets[0]['value'], facet.Value)
+    tu.assert_integer(facets[0][0], facet.ID)
+    tu.assert_string(facets[0][1], facet.Key)
+    tu.assert_string(facets[0][2], facet.Value)
 
 
 @with_setup(teardown=_teardown)
@@ -294,8 +295,8 @@ def test_get_facet_relations():
 
     relations = utils.get_facet_relations(type.Name)
     tu.assert_collection(relations, 1)
-    tu.assert_integer(relations[0]['from'], from_facet.ID)
-    tu.assert_integer(relations[0]['to'], to_facet.ID)
+    tu.assert_integer(relations[0][0], from_facet.ID)
+    tu.assert_integer(relations[0][1], to_facet.ID)
 
 
 def test_get_document_by_obj():

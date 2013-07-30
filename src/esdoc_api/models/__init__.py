@@ -22,6 +22,7 @@ from esdoc_api.models.docs import (
     DocumentRepresentation,
     DocumentSubDocument,
     DocumentSummary,
+    DOCUMENT_VERSIONS,
     DOCUMENT_VERSION_LATEST,
     DOCUMENT_VERSION_ALL
     )
@@ -78,6 +79,7 @@ from esdoc_api.models.vocab import (
     DocumentLanguage,
     DocumentOntology,
     DocumentType,
+    DOCUMENT_TYPE_ALL,
     INGEST_STATES,
     INGEST_STATE_QUEUED,
     INGEST_STATE_RUNNING,
@@ -118,7 +120,14 @@ supported_types = (
     DocumentLanguage,
     DocumentOntology,
     DocumentType,
+    DOCUMENT_TYPE_ALL,
     IngestState,
     Institute,
     Project
 )
+
+# Expose entity conversion methods.
+to_dict = EntityConvertor.to_dict
+to_dict_for_json = EntityConvertor.to_dict_for_json
+to_json = EntityConvertor.to_json
+to_string = EntityConvertor.to_string

@@ -61,6 +61,7 @@ __all__ = [
     'get_document_representation',
     'get_document_sub_document',
     'get_document_sub_documents',
+    'get_document_summaries',
     'get_document_summary',
     'get_documents_by_external_id',
     'get_facet',
@@ -93,15 +94,19 @@ def get_document(project_id, uid, version):
     q = session.query(Document)
     q = q.filter(Document.Project_ID==project_id)
     q = q.filter(Document.UID==unicode(uid))
+
+
     if version is None or \
-       version == 'latest' or \
-       version == 'all':
+       version in models.DOCUMENT_VERSIONS:
         q = q.order_by(Document.Version.desc())
     else:
         q = q.filter(Document.Version==int(version))
 
-    return q.all() if version == 'all' else q.first()
-
+    if version == models.DOCUMENT_VERSION_ALL:
+        return sort(Document, q.all())
+    else:
+        return q.first()
+    
 
 def get_document_by_name(project_id, 
                          type,
@@ -113,7 +118,7 @@ def get_document_by_name(project_id,
     :param project_id: ID of a Project instance.
     :type project_id: int
 
-    :param type: Document name.
+    :param type: Document type.
     :type type: str
 
     :param name: Document name.
@@ -357,6 +362,38 @@ def get_document_summary(document_id, language_id):
     q = q.filter(DocumentSummary.Language_ID==language_id)
 
     return q.first()
+
+
+def get_document_summaries(project_id, type, version, language_id):
+    """Returns a list of DocumentSummary instance with matching criteria.
+
+    :param project_id: ID of a Project instance.
+    :type project_id: int
+
+    :param type: Document type.
+    :type type: str
+
+    :param version: Document version (latest | all).
+    :type version: str
+
+    :param language_id: ID of a DocumentLanguage instance.
+    :type language_id: int
+
+    :returns: First DocumentSummary instance with matching document & language.
+    :rtype: esdoc_api.models.DocumentSummary
+
+    """
+    q = session.query(DocumentSummary, Document)
+    q = q.filter(Document.Project_ID==project_id)
+    q = q.filter(DocumentSummary.Language_ID==language_id)
+    if type != models.DOCUMENT_TYPE_ALL:
+        q = q.filter(Document.Type==type.upper())
+    if version.upper() == models.DOCUMENT_VERSION_LATEST:
+        q = q.filter(Document.IsLatest==True)
+
+    q = q.limit(session.QUERY_LIMIT)
+    
+    return sort(DocumentSummary, q.all())
 
 
 def get_document_ontology(name, version):
@@ -607,3 +644,16 @@ def delete_all_documents():
 
     """
     delete_by_type(Document, delete_document)
+
+
+def get_project_document_types(project_id):
+    """Returns a list of project specific DocumentType instances.
+
+    :param project_id: ID of a Project instance.
+    :type project_id: int
+
+    :returns: List of project specific DocumentType instances.
+    :rtype: list
+
+    """
+    pass

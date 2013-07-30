@@ -138,7 +138,7 @@ def get_inactive(type):
     return _get_active(type, False)
 
 
-def get_all(type):
+def get_all(type, format='object'):
     """Gets all instances of the entity.
 
     :param type: A supported entity type.

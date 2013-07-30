@@ -57,6 +57,7 @@ from esdoc_api.models import *
 from esdoc_api.models import *
 from esdoc_api.lib.repo.search import *
 from esdoc_api.lib.utils.helpers import *
+import esdoc_api.lib.utils.runtime as rt
 
 
 
@@ -71,10 +72,10 @@ class BaseController(WSGIController):
         """Pre action invocation handler.
 
         """
-        print "{0} CONTROLLER INVOKE START :: {1} :: {2}".format(
+        rt.log("{0} CONTROLLER INVOKE START :: {1} :: {2}".format(
             self.controller_type_description,
             action,
-            datetime.now())
+            datetime.now()))
 
         # Setup ORM session.
         repo_session.start(engine_from_config(config, 'sqlalchemy.'))
@@ -91,10 +92,10 @@ class BaseController(WSGIController):
         # Ensure ORM session is killed.
         repo_session.end()
 
-        print "{0} CONTROLLER INVOKE END :: {1} :: {2}".format(
+        rt.log("{0} CONTROLLER INVOKE END :: {1} :: {2}".format(
             self.controller_type_description,
             action,
-            datetime.now())
+            datetime.now()))
 
 
     @abstractproperty

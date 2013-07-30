@@ -36,7 +36,7 @@ class ESDOC_API_Error(Exception):
         """Returns the error string representation.
 
         """
-        return "ES-DOC API ERROR : {0}".format(repr(self.message))
+        return "ES-DOC API :: ERROR : {0}".format(repr(self.message))
 
 
 def raise_error(msg, type=ESDOC_API_Error):
@@ -66,7 +66,7 @@ def assert_function(f, msg=None):
         return "Function assertion failure."
 
     if not inspect.isfunction(f):
-        raise ESDOC_API_Error(get_msg if msg is None else msg)
+        throw(get_msg if msg is None else msg)
     
 
 def assert_var(name, value, type, msg=None):
@@ -90,7 +90,7 @@ def assert_var(name, value, type, msg=None):
         return msg.format(name, type.__name__)
     
     if value is None or not isinstance(value, type):
-        raise ESDOC_API_Error(get_msg if msg is None else msg)
+        throw(get_msg if msg is None else msg)
 
 
 def assert_optional_var(name, value, type, msg=None):
@@ -131,7 +131,7 @@ def assert_iter_item(collection, item, msg=None):
 
     assert_iter(collection)
     if not item in collection:
-        raise ESDOC_API_Error(get_msg if msg is None else msg)
+        throw(get_msg if msg is None else msg)
 
 
 def assert_iter(collection, msg=None):
@@ -150,7 +150,7 @@ def assert_iter(collection, msg=None):
     try:
         iter(collection)
     except TypeError:
-        raise ESDOC_API_Error(get_msg if msg is None else msg)
+        throw(get_msg if msg is None else msg)
 
 
 def assert_typed_iter(collection, type, msg=None):
@@ -173,7 +173,7 @@ def assert_typed_iter(collection, type, msg=None):
 
     assert_iter(collection)
     if len([i for i in collection if not isinstance(i, type)]) > 0:
-        raise ESDOC_API_Error(get_msg if msg is None else msg)
+        throw(get_msg if msg is None else msg)
 
 
 def assert_attr(instance, attr, msg=None):
@@ -194,7 +194,7 @@ def assert_attr(instance, attr, msg=None):
 
     assert_var('instance', instance, object)
     if not hasattr(instance, attr):
-        raise ESDOC_API_Error(get_msg if msg is None else msg)
+        throw(get_msg if msg is None else msg)
 
 
 def assert_pyesdoc_var(name, value):
@@ -230,3 +230,52 @@ def is_iterable(target):
     return is_iterable
 
 
+def assert_params(params, rules):
+    """Performs a set of assertions over a parameter dictionary.
+
+    :param params: Dictionary or input parameters.
+    :type params: dict
+
+    :param rules: Set of assertion rules.
+    :type rules: list
+
+    """
+    for rule in rules:
+        # Unpack rule.
+        name = white_list = formatter = None
+        if len(rule) == 2:
+            name, white_list = rule
+        if len(rule) == 3:
+            name, white_list, formatter = rule
+
+        # Assert param is specified.
+        if not params.has_key(name) or not len(str(params[name])):
+            throw("Parameter {0} is unspecified.".format(name))
+
+        # Assert param value is in constrained list.
+        print white_list
+        if len(white_list):
+            value = params[name] if not formatter else formatter(name)
+            if value not in white_list:
+                throw("Parameter {0} is invalid.".format(name))
+
+
+def throw(msg):
+    """Throws an ES-DOC API error.
+
+    :param msg: Error message.
+    :type msg: str
+
+    """
+    raise ESDOC_API_Error(msg)
+
+
+
+def log(msg):
+    """Outputs a message to log.
+
+    :param msg: Logging message.
+    :type msg: str
+
+    """
+    print "ES-DOC API :: " + str(msg)

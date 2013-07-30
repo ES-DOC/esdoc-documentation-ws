@@ -11,12 +11,13 @@
 # Module imports.
 from pylons.decorators import rest
 
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.utils as utils
-import esdoc_api.lib.pyesdoc as pyesdoc
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
+import esdoc_api.lib.repo.dao as dao
+import esdoc_api.lib.repo.utils as utils
+import esdoc_api.lib.pyesdoc as pyesdoc
+import esdoc_api.lib.utils.runtime as rt
 
 
 
@@ -162,9 +163,9 @@ class PublishController(BaseAPIController):
         response.content_type = self.get_response_content_type()
 
         # Log.
-        print 'CIM Document retrieved :: {0} {1} {2} {3} {4} {5}'.format(
+        rt.log('CIM Document retrieved :: {0} {1} {2} {3} {4} {5}'.format(
             project, self.ontology.Version, self.language.Code,
-            self.encoding.Encoding, uid, version)
+            self.encoding.Encoding, uid, version))
 
         # Return representation.
         return representation
@@ -192,9 +193,9 @@ class PublishController(BaseAPIController):
 
         # Escape if either project or document is not found.
         if project is None:
-            abort(HTTP_RESPONSE_NOT_ACCEPTABLE, 'Unsupported project')
+            abort(HTTP_RESPONSE_NOT_ACCEPTABLE, "Unsupported project")
         if document is None:
-            abort(HTTP_RESPONSE_BAD_REQUEST, 'No matching CIM document.')
+            abort(HTTP_RESPONSE_BAD_REQUEST, "No matching CIM document.")
 
         # Delete relations.
         DocumentSetDocument.remove_all(document)
@@ -203,8 +204,8 @@ class PublishController(BaseAPIController):
         dao.delete(document)
 
         # Log.
-        print 'CIM Document deleted :: {0} {1} {2}'.format(
-            project, uid, version)
+        rt.log("CIM Document deleted :: {0} {1} {2}".format(
+            project, uid, version))
 
 
     def _instance_update(self, project, uid, version):
@@ -259,9 +260,9 @@ class PublishController(BaseAPIController):
         session.commit()
 
         # Log.
-        print 'CIM Document updated :: {0} {1} {2} {3} {4} {5} {6}'.format(
+        rt.log("CIM Document updated :: {0} {1} {2} {3} {4} {5} {6}".format(
             project, self.ontology.Version, self.language.Code,
-            self.encoding.Encoding, doc_type, uid, version)
+            self.encoding.Encoding, doc_type, uid, version))
 
         # Return.
         response.content_type = 'text/xml'
@@ -315,9 +316,9 @@ class PublishController(BaseAPIController):
         session.commit()
 
         # Log.
-        print 'CIM Document uploaded :: {0} {1} {2} {3} {4} {5} {6}'.format(
+        rt.log("CIM Document uploaded :: {0} {1} {2} {3} {4} {5} {6}".format(
             project, self.ontology.Version, self.language.Code,
-            self.encoding.Encoding, doc_type, doc_uid, doc_version)
+            self.encoding.Encoding, doc_type, doc_uid, doc_version))
 
         # Return.
         response.content_type = 'text/xml'

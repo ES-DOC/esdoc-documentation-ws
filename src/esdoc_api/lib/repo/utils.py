@@ -580,7 +580,7 @@ def get_document_representation(document, ontology, encoding, language):
 
 
 def get_facets(type_name):
-    """Returns a list of Facet dictionary instances by their FacetType name.
+    """Maps a a list of Facet instances by their FacetType name to list of lists.
 
     :param type_name: Name of a FacetType.
     :type type_name: str
@@ -594,22 +594,18 @@ def get_facets(type_name):
     ft = dao.get_by_name(FacetType, type_name)
     if ft is not None:
         for v in ft.Values:
-            item = {
-                'id' : v.ID,
-                'key' : v.Key,
-                'value' : v.Value
-            }
+            item = [v.ID, v.Key, v.Value, '', '']
             if v.KeyForSort:
-                item['keyForSort'] = v.KeyForSort
+                item[3] = v.KeyForSort
             if v.ValueForDisplay:
-                item['valueForDisplay'] = v.ValueForDisplay
+                item[4] = v.ValueForDisplay
             result.append(item)
 
-    return sorted(result, key=lambda v: v['value'])
+    return sorted(result, key=lambda v: v[2])
 
 
 def get_facet_relations(type_name):
-    """Returns a list of FacetRelation dictionary instances by their FacetRelationType name.
+    """Maps a a list of FacetRelation instances by their FacetRelationType name to list of lists.
 
     :param type_name: Name of a FacetRelationType.
     :type type_name: str
@@ -623,12 +619,9 @@ def get_facet_relations(type_name):
     frt = dao.get_by_name(FacetRelationType, type_name)
     if frt is not None:
         for r in frt.Relations:
-            result.append({
-                'from' : r.From_ID,
-                'to' : r.To_ID
-            })
+            result.append([r.From_ID, r.To_ID])
 
-    return sorted(result, key=lambda r: r['from'])
+    return sorted(result, key=lambda r: r[0])
 
 
 def get_document_by_obj(project_id, as_obj):

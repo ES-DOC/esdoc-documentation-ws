@@ -126,7 +126,7 @@ def test_get_02():
 
 
 @nose.tools.with_setup(setup=_setup, teardown=_teardown)
-def test_get_item_id():
+def test_get_id():
     for info in _COLLECTIONS:
         collection = cache.get(info[0])
         for instance1 in collection.values():

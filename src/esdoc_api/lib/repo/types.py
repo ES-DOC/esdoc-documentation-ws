@@ -5,6 +5,7 @@
 # Module imports.
 from esdoc_api.models import *
 from esdoc_api.lib.repo.search import *
+import esdoc_api.lib.utils.runtime as rt
 
 
 # Managed collection of types being exposed to http.
@@ -25,6 +26,7 @@ def _register_type(type):
 _register_type(S1Search)
 
 
+
 def get_type(type_name):
     """Registers an entity type.
 
@@ -38,5 +40,5 @@ def get_type(type_name):
     try:
         return _types[type_name.upper()]
     except KeyError:
-        print "Type name is unsupported :: {0}.".format(type_name)
+        rt.log("Type name is unsupported :: {0}.".format(type_name))
 

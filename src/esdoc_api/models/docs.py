@@ -38,6 +38,7 @@ __all__ = [
     'DocumentRepresentation',
     'DocumentSubDocument',
     'DocumentSummary',
+    'DOCUMENT_VERSIONS',
     'DOCUMENT_VERSION_LATEST',
     'DOCUMENT_VERSION_ALL'
 ]
@@ -51,8 +52,9 @@ _DOMAIN_PARTITION = 'docs'
 _DRS_SPLIT = '/'
 
 # Document version related constants.
-DOCUMENT_VERSION_LATEST = 'latest'
-DOCUMENT_VERSION_ALL = 'all'
+DOCUMENT_VERSION_ALL = '*'
+DOCUMENT_VERSION_LATEST = 'LATEST'
+DOCUMENT_VERSIONS = [DOCUMENT_VERSION_ALL, DOCUMENT_VERSION_LATEST]
 
 
 class Document(Entity):
@@ -70,10 +72,11 @@ class Document(Entity):
     Project_ID = create_fk('vocab.tblProject.ID', required=True)
     Institute_ID = create_fk('vocab.tblInstitute.ID')
     IngestEndpoint_ID = create_fk('ingest.tblIngestEndpoint.ID')
+    #Type_ID = create_fk('vocab.tblDocumentType.ID', required=True)
     
     # Relationships.
     ExternalIDs = relationship("DocumentExternalID", backref="Document")
-    Summaries = relationship("DocumentSummary", backref="Document")
+    Summaries = relationship("DocumentSummary", backref="Document", lazy='joined')
     Representations = relationship("DocumentRepresentation", backref="Document")
 
     # Field set.
@@ -284,6 +287,17 @@ class DocumentSummary(Entity):
         fields = [getattr(self, 'Field_0' + str(i)) for i in range(8) if i is not None]
 
         return reduce(lambda x, y: x + y, fields, '')
+
+
+    def as_dict(self):
+        """Returns a dictionary representation.
+
+        """
+        d = super(DocumentSummary, self).as_dict()
+
+        d['Document'] = self.Document.as_dict()
+
+        return d
 
 
     @classmethod

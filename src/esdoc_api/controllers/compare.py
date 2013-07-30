@@ -21,8 +21,8 @@ from esdoc_api.lib.api.comparator_setup import get_setup_data
 
 
 
-# Set of comparators and their associated setup function pointers.
-_comparators = [
+# Set of supported comparator types.
+_COMPARATOR_TYPES = [
     'c1'
 ]
 
@@ -61,14 +61,14 @@ class ComparatorController(BaseAPIController):
             abort(HTTP_RESPONSE_BAD_REQUEST, 'Comparator type is unspecified')
 
         # 406 if unsupported.
-        if type.lower() not in _comparators:
+        if type.lower() not in _COMPARATOR_TYPES:
             msg = 'Comparator ({0}) is unsupported.'.format(type.lower())
             abort(HTTP_RESPONSE_NOT_ACCEPTABLE, msg)
 
 
     @rest.restrict('GET')
     @jsonify
-    def get_setup_data(self, project_code, comparator_type):
+    def setup(self, project_code, comparator_type):
         """Returns document matched by project, type, version and language.
 
         :param project_code: The project code, e.g. CMIP5.

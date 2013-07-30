@@ -189,8 +189,7 @@ class Ingestor(FeedIngestorBase):
         if code is not None:
             document.Institute_ID = get_id(code)
         else:
-            msg = "WARNING :: institute code unknown :: {0}"
-            print msg.format(code)
+            rt.log("WARNING :: institute code unknown :: {0}".format(code))
 
 
     def set_ensemble_members(self, simulation, drs):
@@ -281,7 +280,7 @@ class Ingestor(FeedIngestorBase):
                 simulation = do_ingest(elem)
                 break
         if simulation is None:
-            raise rt.ESDOC_API_Error("CMIP5Q documentset must contain a simulation.")
+            rt.throw("CMIP5Q documentset must contain a simulation.")
 
         # Ingest associated documents.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
@@ -334,8 +333,8 @@ class Ingestor(FeedIngestorBase):
 
         # Print.
         msg = "CREATED DOC SET :: ID={0} UID={1} V={2} DOCS={3}."
-        print msg.format(simulation.ID, uid, version, len(simulation.children) + 1)
-        print "****************************************************************"
+        rt.log(msg.format(simulation.ID, uid, version, len(simulation.children) + 1))
+        rt.log("****************************************************************")
 
         return simulation
 
@@ -377,7 +376,7 @@ class Ingestor(FeedIngestorBase):
 
         # Exclude old documents.
         if nsmap["cim"].find('1.4') != -1:
-            print "WARNING :: obsolete document"
+            rt.log("WARNING :: obsolete document")
             return None
         
         # Process document sets.

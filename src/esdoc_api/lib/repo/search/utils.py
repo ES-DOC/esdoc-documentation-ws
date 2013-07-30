@@ -17,6 +17,7 @@ from esdoc_api.models import (
     DocumentLanguage,
     Project
     )
+import esdoc_api.lib.utils.runtime as rt
 
 
 
@@ -112,7 +113,7 @@ class ESDOCSearchBase(object):
         # Execute.
         if ctx.q is not None:
             ctx.r = ctx.q.all()
-            print 'SEARCH RETURNED :: {0} records'.format(len(ctx.r))
+            rt.log("SEARCH RETURNED :: {0} records".format(len(ctx.r)))
 
         # Format.
         if len(ctx.r) > 0 and hasattr(self, 'format_results'):

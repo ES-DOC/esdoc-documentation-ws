@@ -17,7 +17,7 @@ import esdoc_api_test.utils as tu
 
 
 
-def test_get_document():
+def test_get_document_01():
     # Tests retrieiving a Document instance by it's project, UID & version.
     type = models.Document
     instance1 = tu.get_test_model(type)
@@ -26,6 +26,28 @@ def test_get_document():
                                  instance1.UID,
                                  instance1.Version)
     tu.assert_entity(instance1, instance2)
+
+
+def test_get_document_02():
+    # Tests retrieiving latest Document instance by it's project, UID & version.
+    type = models.Document
+    instance1 = tu.get_test_model(type)
+
+    instance2 = dao.get_document(instance1.Project_ID,
+                                 instance1.UID,
+                                 models.DOCUMENT_VERSION_LATEST)
+    tu.assert_entity(instance1, instance2)
+
+
+def test_get_document_03():
+    # Tests retrieiving latest Document instance by it's project, UID & version.
+    type = models.Document
+    instance = tu.get_test_model(type)
+
+    collection = dao.get_document(instance.Project_ID,
+                                  instance.UID,
+                                  models.DOCUMENT_VERSION_ALL)
+    tu.assert_collection(collection, 1)
 
 
 def test_get_document_by_name():

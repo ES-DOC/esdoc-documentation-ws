@@ -12,15 +12,15 @@
 
 # Module imports.
 import esdoc_api_test.utils as tu
+import esdoc_api.lib.utils.runtime as rt
 
 
 
 def setup_package():
-    print "ES-DOC API :: setting up test runner"
+    rt.log("setting up test runner")
     tu.start_repo_session()
 
 
 def teardown_package():
     tu.end_repo_session()
-    print "ES-DOC API :: tearing down test runner"
-
+    rt.log("tearing down test runner")
