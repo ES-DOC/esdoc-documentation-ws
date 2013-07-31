@@ -46,7 +46,7 @@ def _parse_criteria(criteria):
     """
     for target in ['project']:
         if target in criteria:
-            criteria[target] = str(criteria[target]).upper()
+            criteria[target] = str(criteria[target])
 
 
 def _validate_search_engine_type(type):

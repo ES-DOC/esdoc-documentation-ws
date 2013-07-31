@@ -14,6 +14,10 @@ from esdoc_api.lib.api.external_id_utils import (
     concat_ds,
     set_cmip5_id
     )
+from esdoc_api.lib.pyesdoc import (
+    CIM_1_TYPE_MODEL_COMPONENT,
+    CIM_1_TYPE_NUMERICAL_EXPERIMENT
+    )
 import esdoc_api.lib.repo.dao as dao
 
 

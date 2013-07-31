@@ -253,7 +253,6 @@ def assert_params(params, rules):
             throw("Parameter {0} is unspecified.".format(name))
 
         # Assert param value is in constrained list.
-        print white_list
         if len(white_list):
             value = params[name] if not formatter else formatter(name)
             if value not in white_list:

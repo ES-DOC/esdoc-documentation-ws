@@ -162,6 +162,30 @@ def get(collection_key, item_key=None):
             return None
 
 
+def get_names(collection_key, 
+              name_attr='Name',
+              name_formatter=lambda x : x.lower()):
+    """Returns list of names.
+
+    :param collection: Cache collection key.
+    :type collection: str
+
+    :param name_attr: Cache item name attribute.
+    :type name_attr: str
+
+    :param name_formatter: Cache item name formatter.
+    :type name_formatter: str
+
+    :returns: List of names.
+    :rtype: list
+
+    """
+    # Defensive programming.
+    _assert_collection_key(collection_key)
+
+    return map(lambda x : name_formatter(getattr(x, name_attr)),
+               _cache[_format_key(collection_key)].values())
+
 
 def get_count(collection_key=None):
     """Returns the count of cached collections.

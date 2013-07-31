@@ -19,10 +19,12 @@ from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.lib.pyesdoc.utils.ontologies import *
 import esdoc_api.lib.api.search_engine as se
+import esdoc_api.lib.repo.cache as cache
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.utils.runtime as rt
 import esdoc_api.models as models
+import esdoc_api.lib.controllers.url_validation as uv
 
 
 
@@ -33,6 +35,27 @@ _SEARCH_TYPES = [
     'documentByExternalID',
     'documentByDRS'
 ]
+
+
+
+def _get_se_type():
+    """Returns search engine type.
+
+    """
+    type = request.params['searchEngineType'] if request.params.has_key('searchEngineType') else None
+
+    return str(type)
+
+
+def _get_se_params():
+    """Factory method to derive set of search engine parameters from url.
+
+    """
+    params = {}
+    for key in [k for k in request.params if k not in ('onJSONPLoad', 'searchEngineType')]:
+        params[key] = request.params[key]
+
+    return params
 
 
 class SearchController(BaseAPIController):
@@ -256,15 +279,6 @@ class SearchController(BaseAPIController):
         return handlers[request.params['searchType']]()
 
 
-    def _get_se_type(self):
-        """Factory method to return search engine type.
-
-        """
-        type = request.params['searchEngineType'] if request.params.has_key('searchEngineType') else None
-
-        return str(type)
-
-
     @rest.restrict('GET')
     @jsonify
     def setup(self):
@@ -274,8 +288,22 @@ class SearchController(BaseAPIController):
         :rtype: dict
 
         """
+        # URL query parameter validation rulesets.
+        rules = [
+            (['onJSONPLoad', 'searchEngineType', 'project'], uv.must_not_be_other),
+            ('project', uv.must_exist),
+            ('project', uv.must_not_be_null),
+            ('project', uv.must_be_in, cache.get_names('Project')),
+            ('searchEngineType', uv.must_exist),
+            ('searchEngineType', uv.must_not_be_null),
+            ('searchEngineType', uv.must_be_in, ['se1'])
+        ]
+
+        # Validate URL query parameters.
+        uv.must(rules)
+        
         try:
-            return se.get_setup_data(self._get_se_type())
+            return se.get_setup_data(_get_se_type())
         except rt.ESDOC_API_Error as e:
             abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
 
@@ -286,18 +314,36 @@ class SearchController(BaseAPIController):
         """Returns search engine results.
 
         """
-        def get_criteria():
-            """Factory method to create criteria to be passed into search engine.
+        # URL query parameter validation rulesets.
+        rules = {
+            'default' : [
+                ('project', uv.must_exist),
+                ('project', uv.must_not_be_null),
+                ('project', uv.must_be_in, cache.get_names('Project')),
+                ('searchEngineType', uv.must_exist),
+                ('searchEngineType', uv.must_not_be_null),
+                ('searchEngineType', uv.must_be_in, ['se1'])
+            ],
+            'se1' : [
+                (['onJSONPLoad', 'searchEngineType', 'project', 'documentLanguage', 'documentType', 'documentVersion'], uv.must_not_be_other),
+                ('documentLanguage', uv.must_exist),
+                ('documentLanguage', uv.must_not_be_null),
+                ('documentLanguage', uv.must_be_in, cache.get_names('DocumentLanguage', 'Code')),
+                ('documentType', uv.must_exist),
+                ('documentType', uv.must_not_be_null),
+                ('documentType', uv.must_be_in, cache.get_names('DocumentType')),
+                ('documentVersion', uv.must_exist),
+                ('documentVersion', uv.must_not_be_null),
+                ('documentVersion', uv.must_be_in, models.DOCUMENT_VERSIONS)
+            ]
+        }
 
-            """
-            criteria = {}
-            for key in [k for k in request.params if k not in ('onJSONPLoad', 'searchEngineType')]:
-                criteria[key] = request.params[key]
-
-            return criteria
+        # Validate URL query parameters.
+        uv.must(rules['default'])
+        uv.must(rules[request.params['searchEngineType']])
 
         try:
-            return se.get_results_data(self._get_se_type(), get_criteria())
+            return se.get_results_data(_get_se_type(), _get_se_params())
         except rt.ESDOC_API_Error as e:
             abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
 

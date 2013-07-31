@@ -10,8 +10,12 @@
 
 """
 # Module imports.
-import esdoc_api.lib.repo.dao as dao
+from esdoc_api.lib.pyesdoc import (
+    CIM_1_TYPE_MODEL_COMPONENT,
+    CIM_1_TYPE_NUMERICAL_EXPERIMENT
+    )
 from esdoc_api.lib.api.external_id_utils import concat_ds
+import esdoc_api.lib.repo.dao as dao
 
 
 
@@ -59,22 +63,22 @@ def do_query(project, id):
     # Source 1 : From DRS keys.
     get = dao.get_document_by_drs_keys
     result = concat_ds(result, get(project.ID,
-                                 id.institute,
-                                 id.model,
-                                 id.experiment,
-                                 id.ensemble,
-                                 id.start_year))
+                                   id.institute,
+                                   id.model,
+                                   id.experiment,
+                                   id.ensemble,
+                                   id.start_year))
 
     # Source 2 : From model, experiment (if DRS returned nothing).
     if len(result) == 0:
         get = dao.get_document_by_name
         result = concat_ds(result, get(project.ID,
-                                     CIM_1_TYPE_MODEL_COMPONENT,
-                                     id.model))
+                                       CIM_1_TYPE_MODEL_COMPONENT,
+                                       id.model))
 
         result = concat_ds(result, get(project.ID,
-                                     CIM_1_TYPE_NUMERICAL_EXPERIMENT,
-                                     id.experiment))
+                                       CIM_1_TYPE_NUMERICAL_EXPERIMENT,
+                                       id.experiment))
 
     # Source 3 : From simulation ID.
     get = dao.get_documents_by_external_id

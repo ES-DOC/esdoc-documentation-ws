@@ -16,6 +16,15 @@ import esdoc_api.lib.repo.cache as cache
 import esdoc_api.lib.utils.runtime as rt
 
 
+def _to_dict(data):
+    """Helper function to return data as a json ready dictionary.
+
+    :param data: Data to be converted to a json ready dictionary.
+    :type data: Sub-class of models.Entity or list
+
+    """
+    return models.to_dict_for_json(data)
+
 
 def get_setup():
     """Loads search engine setup data.
@@ -25,8 +34,8 @@ def get_setup():
     
     """
     return {
-        'documentTypes' : models.to_dict_for_json(dao.get_all(models.DocumentType)),
-        'documentLanguages' : models.to_dict_for_json(dao.get_all(models.DocumentLanguage))
+        'documentTypes' : _to_dict(dao.get_all(models.DocumentType)),
+        'documentLanguages' : _to_dict(dao.get_all(models.DocumentLanguage))
     }
 
 
@@ -40,11 +49,10 @@ def get_results(criteria):
     :rtype: list
     
     """
-    return models.to_dict_for_json(
-        dao.get_document_summaries(cache.get_id('Project', criteria['project']),
-                                   criteria['documentType'],
-                                   criteria['documentVersion'],
-                                   cache.get_id('DocumentLanguage', criteria['documentLanguage'])))
+    return _to_dict(dao.get_document_summaries(cache.get_id('Project', criteria['project']),
+                                               criteria['documentType'],
+                                               criteria['documentVersion'],
+                                               cache.get_id('DocumentLanguage', criteria['documentLanguage'])))
 
 
 def validate_criteria(criteria):
