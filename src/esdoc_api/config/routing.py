@@ -26,31 +26,19 @@ def _make_map_for_common(map, config):
     map.connect('/error/{action}/{id}', controller='error')
 
 
-def _make_map_for_api(map, config):
-    """Constructs routing tables for web service api.
-
-    :param map: Routes url map being constructed.
-    :param config: Pylons configuration object.
-    :type map: routes.PylonsConfig
-    :type config: pylons.configuration.PylonsConfig
-
-    """
+def _make_map_for_api_v1(map, config):
+    """Constructs routing tables for web service api version 1."""
     def publish():
-        """Publish API routes.
-
-        """
+        """Publish API routes."""
         if 'publishing_enabled' in config and bool(config['publishing_enabled']):
-            map.connect('/1/publish/{project}',
-                        controller='publish', action='collection')
-            map.connect('/1/publish/{project}/{uid}/{version:\d+|latest|all}{.format:xml|json}',
-                        controller='publish', action='instance')
+            map.connect('/1/publishing/{uid}',
+                        controller='publishing', action='collection')
+            map.connect('/1/publishing/{uid}/{version:\d+|latest}{.format:xml|json}',
+                        controller='publishing', action='instance')
 
     def search():
-        """Search API routes.
-
-        """
+        """Search API routes."""
         map.connect('/1/search', controller='search', action='do')
-        map.connect('/1/search/results', controller='search', action='results')
         map.connect('/1/search/setup', controller='search', action='setup')
 
         
@@ -67,21 +55,8 @@ def _make_map_for_frontend(map, config):
     :type config: pylons.configuration.PylonsConfig
 
     """
-    # DEFAULT routes:
-    map.connect('/', controller='frontend', action='info')
-    map.connect('/index', controller='frontend', action='info')
-    map.connect('/home', controller='frontend', action='info')
-
-    # AJAX routes:
-    map.connect('/frontend/ajax/{action}', controller='ajax')
-
-    # PAGE routes:
-    map.connect('/frontend', controller='frontend', action='info')
-    map.connect('/frontend/public/about', controller='frontend', action='info')
-    map.connect('/frontend/public/ingestion', controller='frontend', action='ingest_history')
-
-    # DEFAULT routes:
-    map.connect('/frontend/public/{controller}/{action}')
+    for r in ['/', '/index', '/index.html', '/home']:
+        map.connect(r, controller='frontend', action='info')
 
 
 def make_map(config):
@@ -101,7 +76,7 @@ def make_map(config):
     mapppings = [
         _make_map_for_common,
         _make_map_for_frontend,
-        _make_map_for_api
+        _make_map_for_api_v1
     ]
     for mapping in mapppings:
         mapping(map, config)

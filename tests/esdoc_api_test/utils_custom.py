@@ -91,7 +91,7 @@ def _hydrate_docs_document(instance):
     instance.Project_ID = get_test_model_id(models.Project)
     instance.Institute_ID = get_test_model_id(models.Institute)
     instance.IngestEndpoint_ID = get_test_model_id(models.IngestEndpoint)
-    instance.Type = get_string(63).upper()
+    instance.Type = get_string(255).upper()
     instance.Name = get_string(255)
     instance.UID = get_string(63)
     instance.Version = get_int()
@@ -311,9 +311,7 @@ def _hydrate_vocab_document_type(instance):
 
     """
     instance.Ontology_ID = get_test_model_id(models.DocumentOntology)
-    instance.Package = get_string(63)
-    instance.Name = get_string(63)
-    instance.ShortName = get_string(31)
+    instance.Key = get_string(255)
     instance.DisplayName = get_string(63)
 
 

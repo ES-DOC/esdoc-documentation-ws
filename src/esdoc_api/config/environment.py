@@ -58,3 +58,4 @@ def load_environment(global_conf, app_conf):
         rt.log("ENVIRONMENT :: CONFIG ITEM :: {0} :: {1}.".format(key, str(value)))
 
     return config
+

@@ -95,7 +95,7 @@ class DocumentEncoding(Entity):
     )
 
     # Field set.
-    Encoding = Column(Unicode(15), nullable=False, unique=True)
+    Encoding = Column(Unicode(63), nullable=False, unique=True)
 
 
     @classmethod
@@ -163,8 +163,7 @@ class DocumentType(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tblDocumentType'
     __table_args__ = (
-        UniqueConstraint('Ontology_ID' ,'Package', 'Name'),
-        UniqueConstraint('Ontology_ID' ,'ShortName'),
+        UniqueConstraint('Key'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
@@ -172,9 +171,7 @@ class DocumentType(Entity):
     Ontology_ID = create_fk('vocab.tblDocumentOntology.ID', required=True)
 
     # Field set.
-    Package = Column(Unicode(63), nullable=False)
-    Name = Column(Unicode(63), nullable=False)
-    ShortName = Column(Unicode(31), nullable=False)
+    Key = Column(Unicode(255), nullable=False)
     DisplayName = Column(Unicode(63), nullable=False)
 
 

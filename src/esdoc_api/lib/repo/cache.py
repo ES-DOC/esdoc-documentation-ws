@@ -24,7 +24,7 @@ _cache_targets = (
     ('DocumentEncoding', models.DocumentEncoding, 'Encoding'),
     ('DocumentLanguage', models.DocumentLanguage, 'Code'),
     ('DocumentOntology', models.DocumentOntology, 'FullName'),
-    ('DocumentType', models.DocumentType, 'Name'),
+    ('DocumentType', models.DocumentType, 'Key'),
     ('IngestState', models.IngestState, 'Name'),
     ('Institute', models.Institute, 'Name'),
     ('Project', models.Project, 'Name'),
@@ -239,14 +239,26 @@ def get_document_language(language_name=None):
     return get('DocumentLanguage', language_name)
 
 
-def get_document_ontology(ontology_name=None):
+def get_document_ontology(ontology_name=None, ontology_version=None):
     """Returns either all document ontologies or first document ontology with matching name.
 
     :param ontology_name: Document ontology name.
     :type ontology_name: str
 
+    :param ontology_version: Document ontology version.
+    :type ontology_version: str
+
     """
-    return get('DocumentOntology', ontology_name)
+    if ontology_name is None:
+        return get('DocumentOntology')
+
+    for ontology in get('DocumentOntology').values():
+        if ontology.Name.upper() == ontology_name.upper() and \
+           ontology.Version.upper() == ontology_version.upper() :
+           return ontology
+
+    return None
+
 
 
 def get_document_type(type_name=None):

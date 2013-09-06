@@ -35,8 +35,8 @@ def test_create():
 
 @with_setup(teardown=_teardown)
 def test_create_document():
-    document = tu.get_test_document() # N.B. implicity calls utils.create_document
-    tu.assert_object(document, models.Document)
+    document1 = tu.get_test_document() # N.B. implicity calls utils.create_document
+    tu.assert_object(document1, models.Document)
 
     id = str(uuid.uuid1())
     version = tu.get_int()
@@ -44,6 +44,11 @@ def test_create_document():
     tu.assert_string(id, document.UID)
     tu.assert_integer(version, document.Version)
 
+    project = tu.get_test_model(models.Project)
+    document1 = tu.get_test_document(project=project)
+    document2 = tu.get_test_document(document1.UID, document1.Version, project=project)
+    tu.assert_entity(document1, document2)
+    
 
 @with_setup(teardown=_teardown)
 def test_set_document_is_latest_flag():
@@ -51,29 +56,18 @@ def test_set_document_is_latest_flag():
     document1 = tu.get_test_document(project=project)
     assert document1.IsLatest == True
     
-    document2 = tu.get_test_document(document1.UID, document1.Version, project=project)
-    tu.assert_entity(document1, document2)
-
-    document3 = tu.get_test_document(document1.UID, document1.Version + 1, project=project)
-    tu.assert_integer(document3.Version, document1.Version + 1)
-    assert document3.IsLatest == True
+    document2 = tu.get_test_document(document1.UID, document1.Version + 1, project=project)
+    tu.assert_integer(document2.Version, document1.Version + 1)
+    assert document2.IsLatest == True
     assert document1.IsLatest == False
     
 
 @with_setup(teardown=_teardown)
 def test_get_document_name():
-    as_obj = tu.get_test_pyesdoc_obj()
-    tu.assert_string(utils.get_document_name(as_obj), "HadGEM2-A")
-
-
-@with_setup(teardown=_teardown)
-def test_set_document_name():
-    document = tu.get_test_document()
-    assert document.Name.upper() == "HadGEM2-A".upper()
-
-    document.as_obj.short_name = "XXX"
-    utils.set_document_name(document, document.as_obj)
-    assert document.Name == "XXX"
+    doc = tu.get_test_pyesdoc_obj()
+    tu.assert_string(utils.get_document_name(doc), "HadGEM2-A")
+    doc.short_name = "XXX"
+    tu.assert_string(utils.get_document_name(doc), "XXX")
 
 
 @with_setup(teardown=_teardown)
@@ -129,8 +123,8 @@ def test_create_document_summary():
 
 @with_setup(teardown=_teardown)
 def test_get_document_summary_fields():
-    document = tu.get_test_document()
-    summary_fields = utils.get_document_summary_fields(document)
+    doc = tu.get_test_pyesdoc_obj()
+    summary_fields = utils.get_document_summary_fields(doc)
 
     tu.assert_collection(summary_fields, 3)
     tu.assert_string(summary_fields[0], "HadGEM2-A")
@@ -139,20 +133,21 @@ def test_get_document_summary_fields():
 
     
 @with_setup(teardown=_teardown)
-def test_set_document_summary_fields():
+def test_set_document_summary():
     document = tu.get_test_document()
+    doc = document.as_obj
     language = tu.get_test_model(models.DocumentLanguage)
     summary = utils.create_document_summary(document, language)
 
-    tu.assert_string(document.as_obj.short_name, summary.Field_01)
-    tu.assert_string(document.as_obj.long_name, summary.Field_02)
+    tu.assert_string(doc.short_name, summary.Field_01)
+    tu.assert_string(doc.long_name, summary.Field_02)
 
-    document.as_obj.short_name = "XXX"
-    document.as_obj.long_name = "YYY"
+    doc.short_name = "XXX"
+    doc.long_name = "YYY"
     summary = utils.create_document_summary(document, language)
 
-    tu.assert_string(document.as_obj.short_name, summary.Field_01)
-    tu.assert_string(document.as_obj.long_name, summary.Field_02)
+    tu.assert_string(doc.short_name, summary.Field_01)
+    tu.assert_string(doc.long_name, summary.Field_02)
 
 
 @with_setup(teardown=_teardown)

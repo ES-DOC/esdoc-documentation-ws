@@ -242,11 +242,7 @@ def assert_params(params, rules):
     """
     for rule in rules:
         # Unpack rule.
-        name = white_list = formatter = None
-        if len(rule) == 2:
-            name, white_list = rule
-        if len(rule) == 3:
-            name, white_list, formatter = rule
+        name, white_list = rule
 
         # Assert param is specified.
         if not params.has_key(name) or not len(str(params[name])):
@@ -254,8 +250,7 @@ def assert_params(params, rules):
 
         # Assert param value is in constrained list.
         if len(white_list):
-            value = params[name] if not formatter else formatter(name)
-            if value not in white_list:
+            if params[name] not in white_list:
                 throw("Parameter {0} is invalid.".format(name))
 
 

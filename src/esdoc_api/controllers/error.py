@@ -18,6 +18,8 @@ from webhelpers.html.builder import literal
 
 from esdoc_api.lib.controllers import *
 
+
+
 class ErrorController(BaseController):
 
     """Generates error documents as and when they are required.

@@ -245,7 +245,7 @@ class PublishController(BaseAPIController):
             abort(HTTP_RESPONSE_BAD_REQUEST, 'CIM document does not exist.')
 
         # Update document core attributes.
-        doc.Type = doc_type
+        doc.Type = doc_obj.type_key
 
         # Update document summary.
         doc.set_summary(doc_obj, self.language)
@@ -305,7 +305,7 @@ class PublishController(BaseAPIController):
         doc.Project_ID = doc_project.ID
         doc.UID = doc_uid
         doc.Version = doc_version
-        doc.Type = doc_type
+        doc.Type = doc_obj.type_key
 
         # Set associated attributes.
         doc.set_summary(doc_obj, self.language)

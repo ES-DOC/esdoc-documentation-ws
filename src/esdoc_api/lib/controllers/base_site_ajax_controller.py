@@ -1,7 +1,7 @@
 from esdoc_api.lib.controllers.base_site_controller import *
 
 
-class BaseSiteAjaxController(BaseSiteController):
+class BaseSiteAjaxController(BaseController):
     """Base ajax controller.
 
     """

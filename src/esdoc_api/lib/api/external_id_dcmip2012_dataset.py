@@ -11,8 +11,8 @@
 """
 # Module imports.
 from esdoc_api.lib.api.external_id_utils import concat_ds
-from esdoc_api.lib.pyesdoc import CIM_1_TYPE_MODEL_COMPONENT
 import esdoc_api.lib.repo.dao as dao
+import esdoc_api.lib.utils.cim_v1 as cim_v1
 
 
 
@@ -49,7 +49,7 @@ def do_query(project, id):
     """
     get = dao.get_document_by_name
 
-    return concat_ds([], get(project.ID, CIM_1_TYPE_MODEL_COMPONENT, id.model))
+    return concat_ds([], get(project.ID, cim_v1.TYPE_KEY_MODEL_COMPONENT, id.model))
 
 
 def is_valid(id):

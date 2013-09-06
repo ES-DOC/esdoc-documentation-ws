@@ -17,7 +17,6 @@ import datetime
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.utils.runtime as rt
-from esdoc_api.lib.pyesdoc.utils.ontologies import *
 from esdoc_api.models import (
     DocumentEncoding,
     INGEST_STATE_COMPLETE_ID,

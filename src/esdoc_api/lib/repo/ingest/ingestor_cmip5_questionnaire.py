@@ -9,22 +9,14 @@
 """
 
 # Module imports.
-from esdoc_api.lib.pyesdoc.utils.ontologies import CIM_1_TYPE_PLATFORM
 from lxml import etree as et
 
 from esdoc_api.lib.repo.index.cim_v1.model_component.mapper import map as map_facets_for_model_component
 from esdoc_api.lib.repo.index.cim_v1.numerical_experiment.mapper import map as map_facets_for_numerical_experiment
 from esdoc_api.lib.repo.ingest.base_ingestor_from_feed import FeedIngestorBase
-from esdoc_api.lib.pyesdoc.utils.ontologies import *
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.models import *
-from esdoc_api.lib.pyesdoc import (
-    CIM_1_TYPE_ENSEMBLE,
-    CIM_1_TYPE_MODEL_COMPONENT,
-    CIM_1_TYPE_NUMERICAL_EXPERIMENT,
-    CIM_1_TYPE_PLATFORM,
-    CIM_1_TYPE_SIMULATION_RUN
-    )
+import esdoc_api.lib.utils.cim_v1 as cim_v1
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.utils.runtime as rt
@@ -57,8 +49,8 @@ _DRS_SPLIT = '_'
 
 # Set of document facet mappers keyed by document type.
 _facet_mappers = {
-    CIM_1_TYPE_MODEL_COMPONENT : map_facets_for_model_component,
-    CIM_1_TYPE_NUMERICAL_EXPERIMENT : map_facets_for_numerical_experiment
+    cim_v1.TYPE_KEY_MODEL_COMPONENT : map_facets_for_model_component,
+    cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT : map_facets_for_numerical_experiment
 }
 
 # Set of model name overrides (workaround for questionnaire bug).
@@ -104,11 +96,11 @@ class Ingestor(FeedIngestorBase):
         return content.replace(_CIM_XML_1_5_XSD, _CIM_XML_1_5_SCHEMA)
 
 
-    def parse_document(self, as_obj, etree, nsmap):
+    def parse_document(self, doc, etree, nsmap):
         """Parser over deserialized pyesdoc document.
 
-        :param as_obj: Deserialized pyesdoc document representation.
-        :type as_obj: python object
+        :param doc: Deserialized pyesdoc document representation.
+        :type doc: python object
 
         :param etree: Document XML.
         :type etree: lxml.etree
@@ -117,22 +109,21 @@ class Ingestor(FeedIngestorBase):
         :type nsmap: dict
 
         """
-        # Workaround :: Set numerical experiment document version.
-        if as_obj.cim_info.type_info.type == CIM_1_TYPE_NUMERICAL_EXPERIMENT and \
-           as_obj.cim_info.version is None:
+        if doc.type_key == cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT:
+            # Workaround :: Set numerical experiment document version.
+           if doc.cim_info.version is None:
             version = etree.xpath(_XPATH_DOC_VERSION_FOR_NUM_EXP, namespaces=nsmap)
             if version is not None and len(version) > 0:
-                as_obj.cim_info.version = str(version[0])
+                doc.cim_info.version = str(version[0])
 
-        # Workaround :: Suppress root model component properties.
-        if as_obj.cim_info.type_info.type == CIM_1_TYPE_MODEL_COMPONENT:
-            as_obj.properties = []
-            as_obj.property_tree = []
-
-        # Workaround :: Override invalid model names.
-        if as_obj.cim_info.type_info.type == CIM_1_TYPE_MODEL_COMPONENT and \
-           as_obj.short_name in _MODEL_OVERRIDES:
-            as_obj.short_name = _MODEL_OVERRIDES[as_obj.short_name]
+        if doc.type_key == cim_v1.TYPE_KEY_MODEL_COMPONENT:
+            # Workaround :: Suppress root model component properties.
+            doc.properties = []
+            doc.property_tree = []
+            
+            # Workaround :: Override invalid model names.
+            if doc.short_name in _MODEL_OVERRIDES:
+                doc.short_name = _MODEL_OVERRIDES[doc.short_name]
             
 
     def set_institute(self, document, document_by_drs=None):
@@ -146,7 +137,7 @@ class Ingestor(FeedIngestorBase):
         """
         # Escape when assigning institute is unnecessary.
         if document.Institute_ID is not None or \
-           document.Type == CIM_1_TYPE_NUMERICAL_EXPERIMENT.upper():
+           document.Type == cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT:
             return
 
         def get_code(responsible_parties):
@@ -176,7 +167,7 @@ class Ingestor(FeedIngestorBase):
 
         # Set institute code from responsibile parties for models and platforms.
         elif document.as_obj is not None and \
-             document.Type in [CIM_1_TYPE_MODEL_COMPONENT.upper(), CIM_1_TYPE_PLATFORM.upper()]:
+             document.Type in [cim_v1.TYPE_KEY_MODEL_COMPONENT, cim_v1.TYPE_KEY_PLATFORM]:
             try:
                 code = get_code(document.as_obj.responsible_parties)
             except AttributeError:
@@ -201,8 +192,8 @@ class Ingestor(FeedIngestorBase):
         :type drs: esdoc_api.models.DocumentDRS
 
         """
-        for ensemble in [d.as_obj for d in simulation.children
-                         if d.Type == CIM_1_TYPE_ENSEMBLE.upper()]:
+        ensembles = [d.as_obj for d in simulation.children if d.Type == cim_v1.TYPE_KEY_ENSEMBLE]
+        for ensemble in ensembles:
             for member in ensemble.members:
                 for id in member.ensemble_ids:
                     if id.value.upper() != drs.Key_04:
@@ -219,9 +210,10 @@ class Ingestor(FeedIngestorBase):
 
         """
         if not document.IsIndexed:
-            type = document.as_obj.cim_info.type_info.type
-            if type in _facet_mappers:
-                _facet_mappers[type](document.as_obj)
+            doc = document.as_obj
+            if doc.type_key in _facet_mappers:
+                _facet_mappers[doc.type_key](doc)
+                rt.log("INDEXED DOC FACETS :: T={0}".format(doc.type_key))
             document.IsIndexed = True
 
 
@@ -276,7 +268,7 @@ class Ingestor(FeedIngestorBase):
         # Ingest simulation document.
         simulation = None        
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
-            if get_tag_name(elem) == CIM_1_TYPE_SIMULATION_RUN:
+            if get_tag_name(elem) == cim_v1.XML_TAG_SIMULATION_RUN:
                 simulation = do_ingest(elem)
                 break
         if simulation is None:
@@ -284,7 +276,7 @@ class Ingestor(FeedIngestorBase):
 
         # Ingest associated documents.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
-            if get_tag_name(elem) != CIM_1_TYPE_SIMULATION_RUN:                
+            if get_tag_name(elem) != cim_v1.XML_TAG_SIMULATION_RUN:
                 utils.create_sub_document(simulation, do_ingest(elem))                
 
         return simulation
@@ -319,7 +311,7 @@ class Ingestor(FeedIngestorBase):
         # Assign institute.
         self.set_institute(simulation, drs)
         for child in simulation.children:
-            if child.Type not in [CIM_1_TYPE_NUMERICAL_EXPERIMENT.upper()]:
+            if child.Type not in [cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT]:
                 child.Institute_ID = simulation.Institute_ID
             child.IsChild == True
 
@@ -380,7 +372,7 @@ class Ingestor(FeedIngestorBase):
             return None
         
         # Process document sets.
-        elif get_tag_name(etree) == CIM_1_TYPE_DOCUMENT_SET:
+        elif get_tag_name(etree) == cim_v1.XML_TAG_DOCUMENT_SET:
             return self.process_simulation_document_set(etree, nsmap)
 
         # Process single documents.

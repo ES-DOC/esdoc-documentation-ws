@@ -23,6 +23,7 @@ import esdoc_api.models as models
 __all__ = [
     'assert_is_live',
     'commit',
+    'count_query',
     'create_repo',
     'do_ingest',
     'delete',
@@ -180,15 +181,15 @@ def delete(instance, auto_commit=True):
             commit()
 
 
-def query(*types):
+def query(*args):
     """Intitiates a query operation against current session.
 
+    :param type: The model type to be queried.
+    :type type: class
+
     """
-    if len(types) == 0 or _State.sa_session is None:
+    if _State.sa_session is None:
         return None
 
-    q = _State.sa_session.query(types[0])
-    for type in types[1:]:
-        q = q.join(type)
-        
-    return q
+    return _State.sa_session.query(*args)
+

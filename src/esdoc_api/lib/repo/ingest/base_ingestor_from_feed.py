@@ -233,7 +233,7 @@ class FeedIngestorBase(IngestorBase):
         """
         self.increment_count()
         
-        rt/log("{0} INGESTOR :: INGESTING FEED ENTRY :: {1}.".format(self.name.upper(), url))
+        rt.log("{0} INGESTOR :: INGESTING FEED ENTRY :: {1}.".format(self.name.upper(), url))
 
         self.ingest_feed_entry(content)
 
@@ -269,14 +269,17 @@ class FeedIngestorBase(IngestorBase):
         """Create document representations.
 
         :param document: Document being processed.
-        :param etree: Document xml etree.
         :type document: esdoc_api.models.Document
+        
+        :param etree: Document xml etree.
         :type etree: lxml.etree
 
         """
-        self.set_document_representation(document, pyesdoc.ESDOC_ENCODING_JSON)
-        doc_xml = et.tostring(etree).decode('UTF-8','strict')
-        self.set_document_representation(document, pyesdoc.ESDOC_ENCODING_XML, doc_xml)
+        self.set_document_representation(document,
+                                         pyesdoc.ESDOC_ENCODING_JSON)
+#        self.set_document_representation(document,
+#                                         pyesdoc.METAFOR_CIM_XML_ENCODING,
+#                                         et.tostring(etree).decode('UTF-8','strict'))
 
     
     def set_document_representation(self,
@@ -297,10 +300,7 @@ class FeedIngestorBase(IngestorBase):
         """
         # Encode (if necessary).
         if representation is None:
-            representation = pyesdoc.encode(document.as_obj,
-                                            self.ontology.Name,
-                                            self.ontology.Version,
-                                            encoding)
+            representation = pyesdoc.encode(document.as_obj, encoding)
 
         # Assign representation to document.
         utils.create_document_representation(document,
@@ -310,7 +310,7 @@ class FeedIngestorBase(IngestorBase):
                                              unicode(representation))
 
 
-    def create_document(self, etree, nsmap, as_obj):
+    def create_document(self, etree, nsmap, doc):
         """Creates a document.
 
         :param etree: Document xml etree.
@@ -319,12 +319,12 @@ class FeedIngestorBase(IngestorBase):
         :param nsmap: Document xml namespace map.
         :type nsmap: dict
 
-        :param as_obj: pyesdoc document representation.
-        :type as_obj: pyesdoc.object
+        :param doc: pyesdoc document representation.
+        :type doc: pyesdoc.object
         
         """
         # Create document.
-        document = utils.create_document(self.project, self.endpoint, as_obj)
+        document = utils.create_document(self.project, self.endpoint, doc)
 
         # Create document representations.
         self.set_document_representations(document, etree)
@@ -356,20 +356,20 @@ class FeedIngestorBase(IngestorBase):
 
         """
         # Deserialize.
-        as_obj = pyesdoc.decode(etree, 'cim', '1', pyesdoc.ESDOC_ENCODING_XML)
+        doc = pyesdoc.decode(etree, pyesdoc.METAFOR_CIM_XML_ENCODING)
     
         # Assign doc info attributes.
-        as_obj.cim_info.project = self.project.Name
-        as_obj.cim_info.source = self.endpoint.MetadataSource
+        doc.cim_info.project = self.project.Name
+        doc.cim_info.source = self.endpoint.MetadataSource
 
         # Call post deserialization callback.
         if on_deserialize is not None:
-            on_deserialize(as_obj, etree, nsmap)
+            on_deserialize(doc, etree, nsmap)
 
         # Retrieve / create as appropriate.
-        document = utils.get_document_by_obj(self.project.ID, as_obj)
+        document = utils.get_document_by_obj(self.project.ID, doc)
         if document is None:
-            document = self.create_document(etree, nsmap, as_obj)
+            document = self.create_document(etree, nsmap, doc)
 
         return document
     

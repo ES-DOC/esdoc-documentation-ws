@@ -15,11 +15,7 @@ import esdoc_api.lib.repo.dao as dao
 import esdoc_api.models as models
 import esdoc_api_test.utils as tu
 import esdoc_api.lib.pyesdoc as pyesdoc
-from esdoc_api.lib.pyesdoc import (
-    ESDOC_ENCODINGS,
-    ESDOC_ONTOLOGIES,
-    CIM_1_TYPES_ACTIVE
-    )
+from esdoc_api.lib.utils.cim_v1 import ACTIVE_TYPES
 from esdoc_api.lib.repo.ingest import INGESTOR_KEYS
 
 
@@ -46,8 +42,8 @@ def test_populate_document_ontology():
 
 def test_populate_document_type():
     all = dao.get_all(models.DocumentType)
-    tu.assert_collection(all, len(pyesdoc.CIM_1_TYPES_ACTIVE))
-    tu.assert_in_collection(all, "Name", (i.upper() for i in pyesdoc.CIM_1_TYPES_ACTIVE))
+    tu.assert_collection(all, len(pyesdoc.ACTIVE_TYPES))
+    tu.assert_in_collection(all, "Name", (i.upper() for i in ACTIVE_TYPES))
 
 
 def test_populate_facet():

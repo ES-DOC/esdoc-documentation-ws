@@ -14,7 +14,7 @@ from lxml import etree as et
 from esdoc_api.lib.repo.ingest.base_ingestor_from_feed import FeedIngestorBase
 from esdoc_api.lib.utils.xml_utils import *
 from esdoc_api.models import *
-from esdoc_api.lib.pyesdoc import CIM_1_TYPE_STATISTICAL_MODEL_COMPONENT
+import esdoc_api.lib.utils.cim_v1 as cim_v1
 
 
 # Project identifier.
@@ -63,6 +63,5 @@ class Ingestor(FeedIngestorBase):
         nsmap["cim"] = nsmap.pop(None)
 
         # Restrict ingest to model components.
-        if get_tag_name(etree) == CIM_1_TYPE_STATISTICAL_MODEL_COMPONENT:
+        if get_tag_name(etree) == cim_v1.XML_TAG_STATISTICAL_MODEL_COMPONENT:
             self.ingest_document(etree, nsmap)
-

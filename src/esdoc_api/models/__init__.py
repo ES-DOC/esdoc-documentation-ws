@@ -95,6 +95,8 @@ from esdoc_api.models.vocab import (
     Institute,
     Project
 )
+import esdoc_api.lib.utils.runtime as rt
+
 
 
 # Set of supported model types - useful for testing scenarios.
@@ -120,7 +122,6 @@ supported_types = (
     DocumentLanguage,
     DocumentOntology,
     DocumentType,
-    DOCUMENT_TYPE_ALL,
     IngestState,
     Institute,
     Project
@@ -131,3 +132,38 @@ to_dict = EntityConvertor.to_dict
 to_dict_for_json = EntityConvertor.to_dict_for_json
 to_json = EntityConvertor.to_json
 to_string = EntityConvertor.to_string
+
+
+# Runtime support functions.
+def assert_type(type):
+    """Asserts that passed type is supported.
+
+    :param type: A supported entity type.
+    :type type: class
+
+    """
+    def get_msg():
+        return "Unsupported model type ({0}).".format(type.__class__.__name__)
+
+    rt.assert_iter_item(supported_types, type, get_msg)
+
+
+def assert_instance(instance):
+    """Asserts that passed instance is of a supported type.
+
+    :param instance: An repo model instance being processed.
+    :type instance: sub-class of models.Entity
+
+    """
+    assert_type(instance.__class__)
+
+
+def assert_collection(collection):
+    """Asserts that all members of the passed colllection are supported types.
+
+    :param collection: A collection of supported entity types.
+    :type collection: iterable
+
+    """
+    for instance in collection:
+        assert_instance(instance)

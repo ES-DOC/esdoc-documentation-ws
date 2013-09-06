@@ -13,19 +13,13 @@ def _create_section_for_about(site):
     p = SiteNode('main', NODE_TYPE_PAGE, s, 'about')
 
 
-def _create_section_for_ingestion(site):
-    s = SiteNode('ingestion', NODE_TYPE_SITE_SECTION, site)
-    p = SiteNode('main', NODE_TYPE_PAGE, s)
-
-
 def create_site_map(path, role='public'):
     """Factory method to return a virtual model of the CIM web-site.
 
     """
-    site = Site("ES-DOC API", '0.8.7.1', role)
+    site = Site("ES-DOC API", '0.8.7.2', role)
     
     _create_section_for_about(site)
-    _create_section_for_ingestion(site)
 
     apply_permissions(site)
     set_page(site, path)

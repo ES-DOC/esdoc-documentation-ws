@@ -12,19 +12,38 @@
 
 # Module imports.
 import uuid
-import datetime
 import types
 
 from dateutil import parser as dateutil_parser
 from lxml import etree as et
-from lxml.etree import _ElementStringResult as etstring
-
-from esdoc_api.lib.pyesdoc.utils.exception import PYESDOC_Exception
 
 
 
 # Null uuid for checking whether one has to be generated.
 NULL_UUID = ['00000000-0000-0000-0000-000000000000']
+
+
+
+class _PYESDOC_XMLError(Exception):
+    """Module exception class.
+
+    """
+
+    def __init__(self, message):
+        """Contructor.
+
+        :param message: Exception message.
+        :type message: str
+
+        """
+        self.message = message
+
+
+    def __str__(self):
+        """Returns a string representation.
+
+        """
+        return "ES-DOC PY-CLIENT XML ERROR : {0}".format(repr(self.message))
 
 
 
@@ -385,22 +404,18 @@ def decode_xml(decoder, xml, nsmap, is_iterable):
     """
     # None if passed none.
     if xml is None:
-        # print 'Nothing to decode ...'
         return None
 
     # Instance if passed etree element.
     if isinstance(xml, et._Element):
-        # print 'Decoding an instance ...'
         return decoder(xml, nsmap)
 
     # Instance if passed etree element collection and caller wants first only.
     if isinstance(xml, types.ListType) and is_iterable == False:
-        # print 'Decoding first instance  from collection ...'
         return None if len(xml) == 0 else decode_xml(decoder, xml[0], nsmap, None)
 
     # Collection if passed etree element collection.
     if isinstance(xml, types.ListType):
-        # print 'Decoding a collection ...'
         collection = []
         for elem in xml:
             instance = decode_xml(decoder, elem, nsmap, None)
@@ -408,7 +423,7 @@ def decode_xml(decoder, xml, nsmap, is_iterable):
         return collection
 
     # otherwise exception
-    raise PYESDOC_Exception("xml cannot be decoded.")
+    raise _PYESDOC_XMLError("xml cannot be decoded.")
 
 
 def load_xml(xml, return_nsmap=False, default_ns='cim'):
@@ -429,7 +444,7 @@ def load_xml(xml, return_nsmap=False, default_ns='cim'):
     """
     # Defensive programming.
     if xml is None:
-        raise PYESDOC_Exception("XML is undefined.")
+        raise _PYESDOC_XMLError("XML is undefined.")
 
     nsmap = None
     # ... etree elements.
@@ -452,9 +467,9 @@ def load_xml(xml, return_nsmap=False, default_ns='cim'):
                     xml = et.fromstring(xml)
                     nsmap = xml.nsmap
                 except Exception:
-                    raise PYESDOC_Exception("Invalid xml string.")
+                    raise _PYESDOC_XMLError("Invalid xml string.")
             else:
-                raise PYESDOC_Exception("Unsupported xml type, must be either a string, file, url or etree.")
+                raise _PYESDOC_XMLError("Unsupported xml type, must be either a string, file, url or etree.")
 
     # Set default namespace.
     if nsmap is not None:

@@ -10,7 +10,7 @@
 # Module imports.
 import types
 
-from esdoc_api.lib.pyesdoc.ontologies.cim.v1.types.software.component_property import ComponentProperty
+from esdoc_api.lib.pyesdoc.ontologies.cim.v1 import ComponentProperty
 
 
 

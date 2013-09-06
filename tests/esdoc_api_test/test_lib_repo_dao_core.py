@@ -21,11 +21,10 @@ import esdoc_api_test.utils as tu
 
 
 
-
 def test_assert_type_01():
     # Test valid types assertion.
     for type in models.supported_types:
-        dao.assert_type(type)
+        models.assert_type(type)
     
 
 @nose.tools.raises(rt.ESDOC_API_Error)
@@ -33,13 +32,13 @@ def test_assert_type_02():
     # Test invalid type assertion.
     class TestModelA(object):
         pass
-    dao.assert_type(TestModelA)
+    models.assert_type(TestModelA)
 
 
 def test_assert_instance_01():
     # Test valid instance assertion.
     for type in models.supported_types:
-        dao.assert_instance(type())
+        models.assert_instance(type())
 
 
 @nose.tools.raises(rt.ESDOC_API_Error)
@@ -47,12 +46,12 @@ def test_assert_instance_02():
     # Test invalid instance assertion.
     class TestModelA(object):
         pass
-    dao.assert_instance(TestModelA())
+    models.assert_instance(TestModelA())
 
 
 def test_assert_collection_01():
     # Test valid collection assertion.
-    dao.assert_collection(map(lambda st : st(), models.supported_types))
+    models.assert_collection(map(lambda st : st(), models.supported_types))
 
 
 @nose.tools.raises(rt.ESDOC_API_Error)
@@ -62,7 +61,7 @@ def test_assert_collection_02():
         pass
     class TestModelB(object):
         pass
-    dao.assert_collection([TestModelA(), TestModelB()])
+    models.assert_collection([TestModelA(), TestModelB()])
 
 
 def test_delete_01():

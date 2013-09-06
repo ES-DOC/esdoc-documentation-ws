@@ -128,8 +128,9 @@ def populate_ingest_endpoint():
     i.ContactName =  "Allyn Treshanksky"
     i.ContactEmail =  "allyn.treshansky@noaa.gov"
     i.ContactTelephone =  "+1 303-497-7734"
-    i.IngestURL =  "http://earthsystemcog.org/metadata/feed/qed-2013/"
+    i.IngestURL =  "http://earthsystemcog.org/dcf/feed/downscaling/"
     i.Institute_ID = dao.get_by_name(models.Institute, "NOAA-GFDL").ID
     i.MetadataSource = 'ES-DOC django-cim-forms'
     i.Priority = 10000
     session.insert(i)
+

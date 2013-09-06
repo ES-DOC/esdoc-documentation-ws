@@ -80,7 +80,7 @@ class Document(Entity):
     Representations = relationship("DocumentRepresentation", backref="Document")
 
     # Field set.
-    Type =  Column(Unicode(63), nullable=False)
+    Type =  Column(Unicode(255), nullable=False)
     Name =  Column(Unicode(255), nullable=False)
     UID = Column(Unicode(63), nullable=False, default=uuid.uuid4())
     Version = Column(Integer, nullable=False, default=1)
@@ -269,6 +269,7 @@ class DocumentSummary(Entity):
     Language_ID = create_fk('vocab.tblDocumentLanguage.ID', required=True)
 
     # Field set.
+    Description = Column(Unicode(1023))
     Field_01 = Column(Unicode(1023))
     Field_02 = Column(Unicode(1023))
     Field_03 = Column(Unicode(1023))

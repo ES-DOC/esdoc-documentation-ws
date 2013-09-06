@@ -17,8 +17,7 @@ from esdoc_api.lib.api.external_id import get_handler as get_external_id_handler
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
-from esdoc_api.lib.pyesdoc.utils.ontologies import *
-import esdoc_api.lib.api.search_engine as se
+import esdoc_api.lib.api.search as se
 import esdoc_api.lib.repo.cache as cache
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.utils as utils
@@ -28,31 +27,145 @@ import esdoc_api.lib.controllers.url_validation as uv
 
 
 
-# Set of supported search types.
-_SEARCH_TYPES = [
-    'documentByID',
-    'documentByName',
-    'documentByExternalID',
-    'documentByDRS'
-]
+# Default URL query parameters.
+_default_params = (
+    {
+        'name' : 'onJSONPLoad',
+        'required' : False,
+    },
+    {
+        'name' : 'project',
+        'required' : True,
+        'whitelist' : lambda : cache.get_names('Project'),
+        'key_formatter' : lambda n : n.lower(),
+    },
+    {
+        'name' : 'searchType',
+        'required' : True,
+        'whitelist' : lambda : [
+            'documentByDRS',
+            'documentByExternalID',
+            'documentByID',
+            'documentByName',
+            'documentSummaryByName',
+            'se1',
+        ],
+    },
+)
+
+_params_do_defaults_document_by = _default_params + (
+    {
+        'name' : 'language',
+        'required' : True,
+        'whitelist' : lambda : cache.get_names('DocumentLanguage', 'Code'),
+        'key_formatter' : lambda n : n.lower(),
+    },
+    {
+        'name' : 'encoding',
+        'required' : True,
+        'whitelist' : lambda : cache.get_names('DocumentEncoding', 'Encoding'),
+        'key_formatter' : lambda n : n.lower(),
+    },
+    {
+        'name' : 'ontologyName',
+        'required' : True,
+        'whitelist' : lambda : cache.get_names('DocumentOntology'),
+        'key_formatter' : lambda n : n.lower(),
+    },
+    {
+        'name' : 'ontologyVersion',
+        'required' : True,
+    },
+)
+
+# URL query parameters for do action.
+_params_do = {
+    'documentByDRS' : _params_do_defaults_document_by + (
+        {
+            'name' : 'drsPath',
+            'required' : True
+        },
+    ),
+    'documentByExternalID' : _params_do_defaults_document_by + (
+        {
+            'name' : 'externalID',
+            'required' : True,
+        },
+        {
+            'name' : 'externalType',
+            'required' : True,
+        },
+    ),
+    'documentByID' : _params_do_defaults_document_by + (
+        {
+            'name' : 'id',
+            'required' : True,
+        },
+        {
+            'name' : 'version',
+            'required' : True,
+        },
+    ),
+    'documentByName' : _params_do_defaults_document_by + (
+        {
+            'name' : 'name',
+            'required' : True,
+        },
+        {
+            'name' : 'type',
+            'required' : True,
+        },
+        {
+            'name' : 'institute',
+            'required' : False,
+            'whitelist' : lambda : cache.get_names('Institute'),
+            'key_formatter' : lambda n : n.lower(),
+        },
+    ),
+    'documentSummaryByName' : _default_params + (
+        
+    ),
+    'se1' : _default_params + (
+        {
+            'name' : 'documentLanguage',
+            'required' : True,
+            'whitelist' : lambda : cache.get_names('DocumentLanguage', 'Code'),
+            'key_formatter' : lambda n : n.lower(),
+        },
+        {
+            'name' : 'documentType',
+            'required' : True,
+            'whitelist' : lambda : cache.get_names('DocumentType'),
+            'key_formatter' : lambda n : n.lower(),
+        },
+        {
+            'name' : 'documentVersion',
+            'required' : True,
+            'whitelist' : lambda : models.DOCUMENT_VERSIONS
+        }
+    )
+}
 
 
+# URL query parameters for setup action.
+_params_setup = {
+    'se1' : _default_params
+}
 
-def _get_se_type():
-    """Returns search engine type.
 
-    """
-    type = request.params['searchEngineType'] if request.params.has_key('searchEngineType') else None
+def _validate_url_params(params):
+    """Helper method to validate url parameters."""
+    # Validate search type.
+    uv.validate(_default_params[2])
 
-    return str(type)
+    # Validate other params.
+    uv.validate(params[request.params['searchType']])
 
 
 def _get_se_params():
-    """Factory method to derive set of search engine parameters from url.
-
-    """
+    """Factory method to derive set of search engine parameters from url."""
     params = {}
-    for key in [k for k in request.params if k not in ('onJSONPLoad', 'searchEngineType')]:
+    for key in [k for k in request.params if k not in ('onJSONPLoad', 'searchType')]:
         params[key] = request.params[key]
 
     return params
@@ -62,6 +175,81 @@ class SearchController(BaseAPIController):
     """ES-DOC API repository query controller.
 
     """
+    def __before__(self, action, **kwargs):
+        """Pre action invocation handler.
+
+        """
+        super(SearchController, self).__before__(action, **kwargs)
+
+        # Set common context info.
+        self.__set_doc_metainfo()
+
+
+    def __set_doc_metainfo(self):
+        """Assigns document meta-information from incoming http request.
+
+        """
+        # Assign values.
+        setters = [
+            self.__set_doc_project,
+            self.__set_doc_institute,
+            self.__set_doc_ontology,
+            self.__set_doc_encoding,
+            self.__set_doc_language
+        ]
+        for setter in setters:
+            setter()
+
+
+    def __set_doc_project(self):
+        """Assigns document project from incoming http request.
+
+        """
+        self.project = None if not request.params.has_key('project') else \
+                       cache.get_project(request.params['project'])
+        self.project_id = None if self.project is None else self.project.ID
+
+
+    def __set_doc_institute(self):
+        """Assigns document institute from incoming http request.
+
+        """
+        self.institute = None if not request.params.has_key('institute') else \
+                         cache.get_institute(request.params['institute'])
+        self.institute_id = None if self.institute is None else self.institute.ID
+
+
+    def __set_doc_encoding(self):
+        """Assigns document encoding from incoming http request.
+
+        """
+        self.encoding = None if not request.params.has_key('encoding') else \
+                        cache.get_document_encoding(request.params['encoding'])
+        self.encoding_id = None if self.encoding is None else self.encoding.ID
+
+
+    def __set_doc_language(self):
+        """Assigns document language from incoming http request.
+
+        """
+        self.language = None if not request.params.has_key('language') else \
+                        cache.get_document_language(request.params['language'].split('-')[0].lower())
+        self.language_id = None if self.language is None else self.language.ID
+
+
+    def __set_doc_ontology(self):
+        """Assigns document ontology from incoming http request.
+
+        """
+        if request.params.has_key('ontologyName') and \
+           request.params.has_key('ontologyVersion'):
+            self.ontology = cache.get_document_ontology(request.params['ontologyName'],
+                                                        request.params['ontologyVersion'])
+        else:
+            self.ontology = None
+        self.ontology_id = None if self.ontology is None else self.ontology.ID
+
+
     def __load_representation(self, document):
         """Loads a document representation.
 
@@ -251,28 +439,45 @@ class SearchController(BaseAPIController):
         return self.__load(lambda : handler.do_query(self.project, external_id))
 
 
+    def __load_results(self):
+        """Returns search engine results.
+
+        """
+        try:
+            return se.get_results_data(request.params['searchType'],
+                                       _get_se_params())
+        except rt.ESDOC_API_Error as e:
+            abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
+
+
+    def __load_setup(self):
+        """Returns search engine setup data.
+
+        """
+        try:
+            return se.get_setup_data(request.params['searchType'],
+                                     request.params['project'])
+        except rt.ESDOC_API_Error as e:
+            abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
+
+
     @rest.restrict('GET')
     @jsonify
     def do(self):
         """Executes a document set search against ES-DOC API repository.
 
         """
-        # Defensive programming.
-        if self.is_doc_metainfo_valid == False:
-            abort(HTTP_RESPONSE_BAD_REQUEST, 'URL parameters {project}, {encoding}, {schema} & {language} are mandatory')
-
-        if not request.params.has_key('searchType'):
-            abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter {searchType} is mandatory")
-
-        if not request.params['searchType'] in _SEARCH_TYPES:
-            abort(HTTP_RESPONSE_BAD_REQUEST, "Search type is unsupported")
+        # Validate URL query parameters.
+        _validate_url_params(_params_do)
 
         # Set of handlers.
         handlers = {
             'documentByDRS' : self.__document_by_drs,
             'documentByID' : self.__document_by_id,
             'documentByName' : self.__document_by_name,
-            'documentByExternalID' : self.__document_by_external_id
+            'documentByExternalID' : self.__document_by_external_id,
+            'documentSummaryByName' : self.__load_results,
+            'se1' : self.__load_results,
         }
 
         # Return handler invocation result.
@@ -288,62 +493,14 @@ class SearchController(BaseAPIController):
         :rtype: dict
 
         """
-        # URL query parameter validation rulesets.
-        rules = [
-            (['onJSONPLoad', 'searchEngineType', 'project'], uv.must_not_be_other),
-            ('project', uv.must_exist),
-            ('project', uv.must_not_be_null),
-            ('project', uv.must_be_in, cache.get_names('Project')),
-            ('searchEngineType', uv.must_exist),
-            ('searchEngineType', uv.must_not_be_null),
-            ('searchEngineType', uv.must_be_in, ['se1'])
-        ]
-
         # Validate URL query parameters.
-        uv.must(rules)
-        
-        try:
-            return se.get_setup_data(_get_se_type())
-        except rt.ESDOC_API_Error as e:
-            abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
+        _validate_url_params(_params_setup)
 
-
-    @rest.restrict('GET')
-    @jsonify
-    def results(self):
-        """Returns search engine results.
-
-        """
-        # URL query parameter validation rulesets.
-        rules = {
-            'default' : [
-                ('project', uv.must_exist),
-                ('project', uv.must_not_be_null),
-                ('project', uv.must_be_in, cache.get_names('Project')),
-                ('searchEngineType', uv.must_exist),
-                ('searchEngineType', uv.must_not_be_null),
-                ('searchEngineType', uv.must_be_in, ['se1'])
-            ],
-            'se1' : [
-                (['onJSONPLoad', 'searchEngineType', 'project', 'documentLanguage', 'documentType', 'documentVersion'], uv.must_not_be_other),
-                ('documentLanguage', uv.must_exist),
-                ('documentLanguage', uv.must_not_be_null),
-                ('documentLanguage', uv.must_be_in, cache.get_names('DocumentLanguage', 'Code')),
-                ('documentType', uv.must_exist),
-                ('documentType', uv.must_not_be_null),
-                ('documentType', uv.must_be_in, cache.get_names('DocumentType')),
-                ('documentVersion', uv.must_exist),
-                ('documentVersion', uv.must_not_be_null),
-                ('documentVersion', uv.must_be_in, models.DOCUMENT_VERSIONS)
-            ]
+        # Set of handlers.
+        handlers = {
+            'se1' : self.__load_setup,
         }
 
-        # Validate URL query parameters.
-        uv.must(rules['default'])
-        uv.must(rules[request.params['searchEngineType']])
-
-        try:
-            return se.get_results_data(_get_se_type(), _get_se_params())
-        except rt.ESDOC_API_Error as e:
-            abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
+        # Return handler invocation result.
+        return handlers[request.params['searchType']]()
 

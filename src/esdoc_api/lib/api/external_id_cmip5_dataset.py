@@ -14,11 +14,8 @@ from esdoc_api.lib.api.external_id_utils import (
     concat_ds,
     set_cmip5_id
     )
-from esdoc_api.lib.pyesdoc import (
-    CIM_1_TYPE_MODEL_COMPONENT,
-    CIM_1_TYPE_NUMERICAL_EXPERIMENT
-    )
 import esdoc_api.lib.repo.dao as dao
+import esdoc_api.lib.utils.cim_v1 as cim_v1
 
 
 def parse(id):
@@ -62,11 +59,11 @@ def do_query(project, id):
     if len(result) == 0:
         get = dao.get_document_by_name
         result = concat_ds(result, get(project.ID,
-                                       CIM_1_TYPE_MODEL_COMPONENT,
+                                       cim_v1.TYPE_KEY_MODEL_COMPONENT,
                                        id.model))
 
         result = concat_ds(result, get(project.ID,
-                                       CIM_1_TYPE_NUMERICAL_EXPERIMENT,
+                                       cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT,
                                        id.experiment))
 
     # Source 3 : From dataset ID.

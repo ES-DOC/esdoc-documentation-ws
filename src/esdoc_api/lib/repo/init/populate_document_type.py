@@ -7,6 +7,7 @@
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.models as models
 import esdoc_api.lib.repo.session as session
+import esdoc_api.lib.utils.cim_v1 as cim_v1
 from esdoc_api.lib.utils.string import get_rows
 
 
@@ -31,18 +32,19 @@ def populate_document_type():
     """
     ontologies = {}
 
-    for row in get_rows(_data):
+    for type_key in cim_v1.ACTIVE_TYPES:
+        # Unpack type info.
+        o, v, p, t = type_key.split(".")
+        
         # Cache.
-        if row[0] + row[1] not in ontologies:
-            ontologies[row[0] + row[1]] = dao.get_document_ontology(row[0], row[1])
+        if o + v not in ontologies:
+            ontologies[o + v] = dao.get_document_ontology(o, v)
 
         # Create.
         i = models.DocumentType()
-        i.Ontology_ID = ontologies[row[0] + row[1]].ID
-        i.Package = row[2].upper()
-        i.Name = row[3].upper()
-        i.ShortName = row[4].upper()
-        i.DisplayName = row[5]
+        i.Ontology_ID = ontologies[o + v].ID
+        i.Key = type_key
+        i.DisplayName = cim_v1.DISPLAY_NAMES[type_key]
 
         # Persist.
         session.insert(i)

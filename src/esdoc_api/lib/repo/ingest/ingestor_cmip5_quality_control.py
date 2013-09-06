@@ -15,7 +15,6 @@ import esdoc_api.lib.repo.dao as dao
 
 from esdoc_api.lib.repo.ingest.base_ingestor_from_feed import FeedIngestorBase
 from esdoc_api.models import *
-from esdoc_api.lib.pyesdoc.utils.ontologies import *
 
 
 # Project identifier.

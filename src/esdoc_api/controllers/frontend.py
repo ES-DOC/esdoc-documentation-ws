@@ -9,8 +9,10 @@
 """
 
 # Module imports.
-from esdoc_api.lib.controllers import *
-import esdoc_api.lib.repo.dao as dao
+from esdoc_api.lib.controllers import BaseSitePageController
+
+from pylons.templating import render_mako as render
+
 
 
 class FrontendController(BaseSitePageController):
@@ -25,17 +27,4 @@ class FrontendController(BaseSitePageController):
         :rtype: html
         
         """
-        return render("/pages/site-about.xhtml")
-
-
-    def ingest_history(self):
-        """Renders ingestion history page.
-
-        :returns: Ingestion history page.
-        :rtype: html
-
-        """
-        # Set context and render.
-        c.ingest_history = dao.get_all(IngestHistory)
-        return render("/pages/site-ingestion-history.xhtml")
-    
+        return render("/index.html")
