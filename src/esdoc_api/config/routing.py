@@ -31,10 +31,12 @@ def _make_map_for_api_v1(map, config):
     def publish():
         """Publish API routes."""
         if 'publishing_enabled' in config and bool(config['publishing_enabled']):
-            map.connect('/1/publishing/{uid}',
+            map.connect('/1/publishing',
                         controller='publishing', action='collection')
-            map.connect('/1/publishing/{uid}/{version:\d+|latest}{.format:xml|json}',
+            map.connect('/1/publishing/{uid}',
                         controller='publishing', action='instance')
+            map.connect('/1/publishing/{uid}/{version:\d+|latest}{.format:xml|json}',
+                        controller='publishing', action='version')
 
     def search():
         """Search API routes."""

@@ -18,7 +18,7 @@ TYPE_KEY_NUMERICAL_EXPERIMENT = 'cim.1.activity.NumericalExperiment'
 TYPE_KEY_PLATFORM = 'cim.1.shared.Platform'
 TYPE_KEY_QUALITY = 'cim.1.quality.CimQuality'
 TYPE_KEY_SIMULATION_COMPOSITE = 'cim.1.activity.SimulationComposite'
-TYPE_KEY_SIMULATION = 'cim.1.activity.Simulation'
+TYPE_KEY_SIMULATION_RUN = 'cim.1.activity.SimulationRun'
 TYPE_KEY_STATISTICAL_MODEL_COMPONENT = 'cim.1.software.StatisticalModelComponent'
 
 # CIM v1 active typeset.
@@ -31,7 +31,7 @@ ACTIVE_TYPES = [
     TYPE_KEY_PLATFORM,
     TYPE_KEY_QUALITY,
     TYPE_KEY_SIMULATION_COMPOSITE,
-    TYPE_KEY_SIMULATION,
+    TYPE_KEY_SIMULATION_RUN,
     TYPE_KEY_STATISTICAL_MODEL_COMPONENT
 ]
 
@@ -61,7 +61,7 @@ DISPLAY_NAMES = {
     TYPE_KEY_PLATFORM : "Platform",
     TYPE_KEY_QUALITY : "Quailty",
     TYPE_KEY_SIMULATION_COMPOSITE : "Simulation",
-    TYPE_KEY_SIMULATION : "Simulation",
+    TYPE_KEY_SIMULATION_RUN : "Simulation",
     TYPE_KEY_STATISTICAL_MODEL_COMPONENT : "Statistical Model",
 }
 

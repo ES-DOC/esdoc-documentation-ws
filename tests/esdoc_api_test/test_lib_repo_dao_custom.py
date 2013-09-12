@@ -121,12 +121,12 @@ def test_get_document_summary():
     pass
 
 
-def test_get_document_ontology():
+def test_get_doc_ontology():
     # Tests retrieiving a DocumentOntology instance with matching name & version.
     pass
 
 
-def test_get_document_language():
+def test_get_doc_language():
     # Tests retrieiving a DocumentLanguage instance by it's code.
     pass
 
@@ -166,7 +166,7 @@ def test_get_facet_types():
     pass
 
 
-def test_get_document_representation():
+def test_get_doc_reprensentation():
     # Tests retrieiving a DocumentRepresentation instance with matching ontology, encoding and language.
     pass
 

@@ -11,6 +11,7 @@ import esdoc_api.lib.utils.app_globals as app_globals
 import esdoc_api.lib.utils.helpers
 import esdoc_api.lib.utils.runtime as rt
 
+import esdoc_api.lib.pyesdoc as pyesdoc
 
 
 def load_environment(global_conf, app_conf):

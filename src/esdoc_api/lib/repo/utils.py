@@ -10,6 +10,8 @@
 
 """
 # Module imports.
+import esdoc_api.lib.pyesdoc as pyesdoc
+import esdoc_api.lib.repo.cache as cache
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.session as session
 import esdoc_api.lib.utils.runtime as rt
@@ -38,44 +40,178 @@ def create(type):
     return instance
 
 
-def create_document(project, endpoint, doc):
+def create_doc_from_json(doc_json):
+    """Creates a document instance from a json blob.
+
+    :param doc_json: A json blob.
+    :type doc_json: unicode
+
+    :returns: A document.
+    :rtype: esdoc_api.models.Document
+
+    """
+    # Decode document from json.
+    doc = pyesdoc.decode(doc_json, pyesdoc.ESDOC_ENCODING_JSON)
+    if doc is None:
+        rt.raise_error("Document could not be deserialized")
+
+    # Derive project.
+    project = cache.get_project(doc.doc_info.project)
+    if project is None:
+        rt.raise_error("Project {0} is unsupported".format(doc.doc_info.project))
+
+    # Verify document does not already exist.
+    if dao.get_document(project.ID, doc.doc_info.id, doc.doc_info.version) is not None:
+        rt.raise_error("Document already exists")        
+
+    # Derive institute.
+    institute = cache.get_institute(doc.doc_info.institute)
+
+    # Derive language.
+    language = cache.get_doc_language(doc.doc_info.language)
+    if language is None:
+        rt.raise_error("Language {0} is unsupported".format(doc.doc_info.language))
+
+    # Derive encoding.
+    encoding = cache.get_doc_encoding(pyesdoc.ESDOC_ENCODING_JSON)
+
+    # Derive ontology.
+    ontology = get_doc_ontology(doc)
+    if ontology is None:
+        rt.raise_error("Ontology {0} is unsupported".format(doc.__class__.type_key))
+
+    # Create document repository.
+    document = create_doc(doc, project, None, institute)
+
+    # Create document representation.
+    create_doc_representation(document, ontology, encoding, language, doc_json)
+
+    # Create document summary.
+    create_doc_summary(document, language)
+
+    # Create document external ID (i.e. simulation id).
+    create_doc_external_ids(document)
+
+    # Persist.
+    session.commit()
+
+    # Log.
+    rt.log("CREATED DOC :: T={0} ID={1} UID={2} V={3}.".format(
+        document.Type, document.ID, document.UID, document.Version))
+
+    return {
+        id : document.ID
+    }
+
+
+def update_doc_from_json(doc_json):
+    """Updates a document instance from a json blob.
+
+    :param doc_json: A json blob.
+    :type doc_json: unicode
+
+    :returns: A document.
+    :rtype: esdoc_api.models.Document
+
+    """
+    # Decode document from json.
+    doc = pyesdoc.decode(doc_json, pyesdoc.ESDOC_ENCODING_JSON)
+    if doc is None:
+        rt.raise_error("Document could not be deserialized")
+
+    # Derive project.
+    project = cache.get_project(doc.doc_info.project)
+    if project is None:
+        rt.raise_error("Project {0} is unsupported".format(doc.doc_info.project))
+
+    # Derive institute.
+    institute = cache.get_institute(doc.doc_info.institute)
+
+    # Derive language.
+    language = cache.get_doc_language(doc.doc_info.language)
+    if language is None:
+        rt.raise_error("Language {0} is unsupported".format(doc.doc_info.language))
+
+    # Derive encoding.
+    encoding = cache.get_doc_encoding(pyesdoc.ESDOC_ENCODING_JSON)
+
+    # Derive ontology.
+    ontology = get_doc_ontology(doc)
+    if ontology is None:
+        rt.raise_error("Ontology {0} is unsupported".format(doc.__class__.type_key))
+
+    # Create document repository.
+    document = create_doc(doc, project, None, institute)
+
+    # Create document representation.
+    create_doc_representation(document, ontology, encoding, language, doc_json)
+
+    # Create document summary.
+    create_doc_summary(document, language)
+
+    # Create document external ID (i.e. simulation id).
+    create_doc_external_ids(document)
+
+    # Persist.
+    session.commit()
+
+    # Log.
+    rt.log("CREATED DOC :: T={0} ID={1} UID={2} V={3}.".format(
+        document.Type, document.ID, document.UID, document.Version))
+
+    return {
+        id : document.ID
+    }
+
+
+def create_doc(doc, project, endpoint, institute=None):
     """Creates & returns a models.Document instance.
 
-    :param project: models.Project with which document is associated.
+    :param doc: pyesdoc document object representation.
+    :type doc: object
+    
+    :param project: Project with which document is associated.
     :type project: esdoc_api.models.Project
 
     :param endpoint: Endpoint from which document was ingested.
     :type endpoint: esdoc_api.models.IngestEndpoint
 
-    :param doc: pyesdoc document object representation.
-    :type doc: object
+    :param institute: Institute with which document is associated.
+    :type institute: esdoc_api.models.Institute
+
+    :returns: A document.
+    :rtype: esdoc_api.models.Document
 
     """
     # Defensive programming.
+    rt.assert_doc('doc', doc)
     rt.assert_var('project', project, models.Project)
-    rt.assert_var('endpoint', endpoint, models.IngestEndpoint)
-    rt.assert_pyesdoc_var('doc', doc)
+    rt.assert_optional_var('endpoint', endpoint, models.IngestEndpoint)
+    rt.assert_optional_var('institute', institute, models.Institute)
 
     # Instantiate & assign attributes.
     instance = dao.get_document(project.ID,
-                                str(doc.cim_info.id),
-                                str(doc.cim_info.version))
+                                str(doc.doc_info.id),
+                                str(doc.doc_info.version))
     if instance is None:
         instance = create(models.Document)
         instance.as_obj = doc
-        instance.IngestEndpoint_ID = endpoint.ID
-        instance.Name = get_document_name(doc)
+        if endpoint is not None:
+            instance.IngestEndpoint_ID = endpoint.ID
+        if institute is not None:
+            instance.Institute_ID = institute.ID
+        instance.Name = get_doc_name(doc)
         instance.Project_ID = project.ID
         instance.Type = doc.type_key
-        instance.UID = str(doc.cim_info.id)
-        instance.Version = int(doc.cim_info.version)
-        set_document_is_latest_flag(instance)
+        instance.UID = str(doc.doc_info.id)
+        instance.Version = int(doc.doc_info.version)
+        set_doc_is_latest_flag(instance)
 
     return instance
 
 
-def create_sub_document(parent, child):
-    """Creates & returns a models.DocumentSubmodels.Document instance.
+def create_sub_doc(parent, child):
+    """Creates & returns a models.DocumentSubDocument instance.
 
     :param parent: Parent document.
     :type parent: esdoc_api.models.Document
@@ -84,7 +220,7 @@ def create_sub_document(parent, child):
     :type child: esdoc_api.models.Document
 
     :returns: Submodels.Document instance.
-    :rtype: esdoc_api.models.DocumentSubmodels.Document
+    :rtype: esdoc_api.models.DocumentSubDocument
 
     """
     # Defensive programming.
@@ -98,15 +234,15 @@ def create_sub_document(parent, child):
     # Instantiate & assign attributes.
     instance = dao.get_document_sub_document(parent.ID, child.ID)
     if instance is None:
-        instance = create(models.DocumentSubmodels.Document)
+        instance = create(models.DocumentSubDocument)
         instance.Document_ID = parent.ID
-        instance.Submodels.Document_ID = child.ID
+        instance.SubDocument_ID = child.ID
         parent.HasChildren = True
 
     return instance
 
 
-def set_document_is_latest_flag(document):
+def set_doc_is_latest_flag(document):
     """Sets flag indicating whether a document is the latest version or not.
 
     :param document: models.Document whose is_latest flag is being assigned.
@@ -124,7 +260,7 @@ def set_document_is_latest_flag(document):
             document.IsLatest == all[i].IsLatest
 
 
-def create_document_drs(document, keys):
+def create_doc_drs(document, keys):
     """Factory method to create and return a models.DocumentDRS instance.
 
     :param document: A deserialized models.Document instance.
@@ -160,7 +296,7 @@ def create_document_drs(document, keys):
     return instance
 
 
-def create_document_external_ids(document, first_only=False):
+def create_doc_external_ids(document, first_only=False):
     """Factory method to create and return a list of models.DocumentExternalID instances.
 
     :param document: A deserialized models.Document instance.
@@ -176,9 +312,9 @@ def create_document_external_ids(document, first_only=False):
     # Defensive programming.
     rt.assert_var('document', document, models.Document)
     rt.assert_var('first_only', first_only, bool)
-    rt.assert_pyesdoc_var('document.as_obj', document.as_obj)
+    rt.assert_doc('document.as_obj', document.as_obj)
 
-    for id in document.as_obj.cim_info.external_ids:
+    for id in document.as_obj.doc_info.external_ids:
         instance = dao.get_document_external_id(document.Project_ID,
                                                 document.ID,
                                                 id.value.upper())
@@ -193,7 +329,7 @@ def create_document_external_ids(document, first_only=False):
     return dao.get_document_external_ids(document.ID, document.Project_ID)
 
 
-def create_document_summary(document, language):
+def create_doc_summary(document, language):
     """Factory method to create and return a models.DocumentSummary instance.
 
     :param document: A deserialized models.Document instance.
@@ -218,7 +354,7 @@ def create_document_summary(document, language):
         instance.Language_ID = language.ID
 
     # Set attributes derived from pyesdoc document.
-    set_document_summary(document.as_obj, instance)
+    set_doc_summary(document.as_obj, instance)
 
     # Rebuild collection.
     document.Summaries = [s for s in document.Summaries if s.ID != instance.ID]
@@ -227,9 +363,33 @@ def create_document_summary(document, language):
     return instance
 
 
-def _get_document_info(doc, getters):
+def delete_doc(uid, version):
+    """Deletes a document.
+
+    :param uid: Document unique identifier.
+    :type uid: str
+
+    :param version: Document version.
+    :type version: str
+
+    """
+    docs = dao.get_document(None, uid, version)
+    if docs is None:
+        return
+    
+    if not rt.is_iterable(docs):
+        docs = [docs]
+
+    for doc in docs:
+        dao.delete_document(doc.ID)
+
+    # Persist.
+    session.commit()
+
+
+def _get_doc_info(doc, getters):
     # Defensive programming.
-    rt.assert_pyesdoc_var('doc', doc)
+    rt.assert_doc('doc', doc)
 
     # Assign getter.
     getter = None if doc.type_key not in getters else getters[doc.type_key]
@@ -237,7 +397,7 @@ def _get_document_info(doc, getters):
     return None if getter is None else getter(doc)
 
 
-def get_document_name(doc):
+def get_doc_name(doc):
     """Gets document name.
 
     :param doc: pyesdoc document object representation.
@@ -245,12 +405,12 @@ def get_document_name(doc):
 
     """
     # Defensive programming.
-    rt.assert_pyesdoc_var('doc', doc)
+    rt.assert_doc('doc', doc)
 
-    return _get_document_info(doc, _get_cim_v1_document_name_getters())
+    return _get_doc_info(doc, _get_cim_v1_doc_name_getters())
 
 
-def get_document_description(doc):
+def get_doc_description(doc):
     """Returns document descriptions.
 
     :param doc: pyesdoc document object representation.
@@ -258,12 +418,12 @@ def get_document_description(doc):
 
     """
     # Defensive programming.
-    rt.assert_pyesdoc_var('doc', doc)
+    rt.assert_doc('doc', doc)
 
-    return _get_document_info(doc, _get_cim_v1_document_description_getters())
+    return _get_doc_info(doc, _get_cim_v1_doc_description_getters())
 
 
-def get_document_summary_fields(doc):
+def get_doc_summary_fields(doc):
     """Returns document summary fields.
 
     :param doc: pyesdoc document object representation.
@@ -271,12 +431,31 @@ def get_document_summary_fields(doc):
 
     """
     # Defensive programming.
-    rt.assert_pyesdoc_var('doc', doc)
+    rt.assert_doc('doc', doc)
     
-    return _get_document_info(doc, _get_cim_v1_document_summary_field_getters())
+    return _get_doc_info(doc, _get_cim_v1_doc_summary_field_getters())
 
 
-def set_document_summary(doc, summary):
+def get_doc_ontology(doc):
+    """Returns document ontology.
+
+    :param doc: pyesdoc document object representation.
+    :type doc: object
+
+    :returns: pyesdoc document ontology.
+    :rtype: models.DocumentOntology
+
+    """
+    # Defensive programming.
+    rt.assert_doc('doc', doc)
+
+    # Unpack type key.
+    o, v, p, t = doc.__class__.type_key.split(".")
+
+    return cache.get_doc_ontology(o, v)
+
+
+def set_doc_summary(doc, summary):
     """Sets document summary fields.
 
     :param doc: pyesdoc document object representation.
@@ -287,11 +466,11 @@ def set_document_summary(doc, summary):
 
     """
     # Defensive programming.
-    rt.assert_pyesdoc_var('doc', doc)
+    rt.assert_doc('doc', doc)
     rt.assert_var('summary', summary, models.DocumentSummary)
 
-    summary.Description = get_document_description(doc)
-    for i, field in enumerate(get_document_summary_fields(doc)):
+    summary.Description = get_doc_description(doc)
+    for i, field in enumerate(get_doc_summary_fields(doc)):
         setattr(summary, 'Field_0' + str(i + 1), str(field))
 
 
@@ -377,7 +556,7 @@ def create_facet(ft, key, value, value_for_display=None, key_for_sort=None):
     return f
 
 
-def create_document_representation(document, 
+def create_doc_representation(document, 
                                    ontology,
                                    encoding,
                                    language,
@@ -411,7 +590,7 @@ def create_document_representation(document,
     rt.assert_var('representation', representation, unicode)
 
     # Update or create as appropriate.
-    instance = dao.get_document_representation(document.ID,
+    instance = dao.get_doc_reprensentation(document.ID,
                                                ontology.ID,
                                                encoding.ID,
                                                language.ID)
@@ -426,7 +605,7 @@ def create_document_representation(document,
     return instance
 
 
-def get_document_representation(document, ontology, encoding, language):
+def get_doc_reprensentation(document, ontology, encoding, language):
     """Loads a document representation.
 
     :param document: A document for which a representation is being retrieved.
@@ -451,7 +630,7 @@ def get_document_representation(document, ontology, encoding, language):
     rt.assert_var('encoding', encoding, models.DocumentEncoding)
     rt.assert_var('language', language, models.DocumentLanguage)
 
-    instance = dao.get_document_representation(document.ID,
+    instance = dao.get_doc_reprensentation(document.ID,
                                                ontology.ID,
                                                encoding.ID,
                                                language.ID)
@@ -504,7 +683,7 @@ def get_facet_relations(type_name):
     return sorted(result, key=lambda r: r[0])
 
 
-def get_document_by_obj(project_id, as_obj):
+def get_doc_by_obj(project_id, as_obj):
     """Returns a models.Document instance by it's project and pyesdoc object representation.
 
     :param project_id: ID of a models.Project instance.
@@ -518,7 +697,7 @@ def get_document_by_obj(project_id, as_obj):
 
     """
     # Retrieve.
-    doc_info = as_obj.cim_info
+    doc_info = as_obj.doc_info
     instance = dao.get_document(project_id, doc_info.id, doc_info.version)
 
     # Assign.
@@ -528,7 +707,7 @@ def get_document_by_obj(project_id, as_obj):
     return instance
 
 
-def _get_cim_v1_document_summary_field_getters():
+def _get_cim_v1_doc_summary_field_getters():
     """Returns a tuple of document summary field getters for cim v1.
 
     """
@@ -540,10 +719,10 @@ def _get_cim_v1_document_summary_field_getters():
 
     def _quality(d):
         return (
-            d.cim_info.id,
-            d.cim_info.version,
-            None if not len(d.cim_info.external_ids) else \
-                    d.cim_info.external_ids[0].value
+            d.doc_info.id,
+            d.doc_info.version,
+            None if not len(d.doc_info.external_ids) else \
+                    d.doc_info.external_ids[0].value
         )
 
     def _data_object(d):
@@ -575,12 +754,12 @@ def _get_cim_v1_document_summary_field_getters():
         cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT : _default,
         cim_v1.TYPE_KEY_PLATFORM : _default,
         cim_v1.TYPE_KEY_QUALITY : _quality,
-        cim_v1.TYPE_KEY_SIMULATION : _default,
+        cim_v1.TYPE_KEY_SIMULATION_RUN : _default,
         cim_v1.TYPE_KEY_STATISTICAL_MODEL_COMPONENT : _model_component
     }
 
 
-def _get_cim_v1_document_description_getters():
+def _get_cim_v1_doc_description_getters():
     """Returns document description getters for cim v1.
 
     """
@@ -593,8 +772,9 @@ def _get_cim_v1_document_description_getters():
         cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT : _default,
         cim_v1.TYPE_KEY_STATISTICAL_MODEL_COMPONENT : _default
     }
+    
 
-def _get_cim_v1_document_name_getters():
+def _get_cim_v1_doc_name_getters():
     """Returns document name getters for cim v1.
 
     """
@@ -626,6 +806,6 @@ def _get_cim_v1_document_name_getters():
         cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT : _default,
         cim_v1.TYPE_KEY_PLATFORM : _default,
         cim_v1.TYPE_KEY_QUALITY : _default,
-        cim_v1.TYPE_KEY_SIMULATION : _default,
+        cim_v1.TYPE_KEY_SIMULATION_RUN : _default,
         cim_v1.TYPE_KEY_STATISTICAL_MODEL_COMPONENT : _default
     }

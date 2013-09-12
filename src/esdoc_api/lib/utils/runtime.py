@@ -197,7 +197,7 @@ def assert_attr(instance, attr, msg=None):
         throw(get_msg if msg is None else msg)
 
 
-def assert_pyesdoc_var(name, value):
+def assert_doc(name, value):
     """Asserts thay passed variable is a pyesdoc object instance.
 
     :param name: Variable name.
@@ -211,7 +211,7 @@ def assert_pyesdoc_var(name, value):
         return "{0} is not a pyesdoc type instance".format(name)
     
     assert_var(name, value, object, msg=get_msg)
-    assert_attr(value, 'cim_info', msg=get_msg)
+    assert_attr(value, 'doc_info', msg=get_msg)
 
 
 def is_iterable(target):

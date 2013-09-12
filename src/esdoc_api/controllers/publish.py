@@ -115,7 +115,7 @@ class PublishController(BaseAPIController):
                                             encoding)
 
         # Assign representation to document.
-        utils.create_document_representation(document,
+        utils.create_doc_representation(document,
                                              self.ontology,
                                              c.get_encoding(encoding),
                                              self.language,
@@ -154,7 +154,7 @@ class PublishController(BaseAPIController):
             abort(HTTP_RESPONSE_NOT_FOUND, 'CIM Document Not Found')
 
         # Load representation.
-        representation = utils.get_document_representation(doc,
+        representation = utils.get_doc_reprensentation(doc,
                                                            self.ontology,
                                                            self.encoding,
                                                            self.language)
@@ -254,7 +254,7 @@ class PublishController(BaseAPIController):
         self.__set_representations(doc, doc_xml, doc_obj)
         
         # Update document is latest flag.
-        utils.set_document_is_latest_flag(doc, doc_project)
+        utils.set_doc_is_latest_flag(doc, doc_project)
 
         # Persist to db.
         session.commit()
@@ -310,7 +310,7 @@ class PublishController(BaseAPIController):
         # Set associated attributes.
         doc.set_summary(doc_obj, self.language)
         self.__set_representations(doc, doc_xml, doc_obj)
-        utils.set_document_is_latest_flag(doc, doc_project)
+        utils.set_doc_is_latest_flag(doc, doc_project)
 
         # Persist to db.
         session.commit()

@@ -136,27 +136,27 @@ def test_get_id():
 
 
 @nose.tools.with_setup(setup=_setup, teardown=_teardown)
-def test_get_document_encoding():
-    tu.assert_collection(cache.get_document_encoding(), length=5, item_type=models.DocumentEncoding)
-    tu.assert_object(cache.get_document_encoding('json'), models.DocumentEncoding)
+def test_get_doc_encoding():
+    tu.assert_collection(cache.get_doc_encoding(), length=5, item_type=models.DocumentEncoding)
+    tu.assert_object(cache.get_doc_encoding('json'), models.DocumentEncoding)
 
 
 @nose.tools.with_setup(setup=_setup, teardown=_teardown)
-def test_get_document_language():
-    tu.assert_collection(cache.get_document_language(), length=139, item_type=models.DocumentLanguage)
-    tu.assert_object(cache.get_document_language('aa'), models.DocumentLanguage)
+def test_get_doc_language():
+    tu.assert_collection(cache.get_doc_language(), length=139, item_type=models.DocumentLanguage)
+    tu.assert_object(cache.get_doc_language('aa'), models.DocumentLanguage)
 
 
 @nose.tools.with_setup(setup=_setup, teardown=_teardown)
-def test_get_document_ontology():
-    tu.assert_collection(cache.get_document_ontology(), length=1, item_type=models.DocumentOntology)
-    tu.assert_object(cache.get_document_ontology('cim-v1'), models.DocumentOntology)
+def test_get_doc_ontology():
+    tu.assert_collection(cache.get_doc_ontology(), length=1, item_type=models.DocumentOntology)
+    tu.assert_object(cache.get_doc_ontology('cim-v1'), models.DocumentOntology)
 
 
 @nose.tools.with_setup(setup=_setup, teardown=_teardown)
-def test_get_document_type():
-    tu.assert_collection(cache.get_document_type(), length=1, item_type=models.DocumentType)
-    tu.assert_object(cache.get_document_type('modelComponent'), models.DocumentType)
+def test_get_doc_type():
+    tu.assert_collection(cache.get_doc_type(), length=1, item_type=models.DocumentType)
+    tu.assert_object(cache.get_doc_type('modelComponent'), models.DocumentType)
 
 
 @nose.tools.with_setup(setup=_setup, teardown=_teardown)

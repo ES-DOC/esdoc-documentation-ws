@@ -66,8 +66,8 @@ class IngestorBase(object):
         
         """
         self.project = dao.get_by_name(Project, project)
-        self.ontology = dao.get_document_ontology(ontology_name, ontology_version)
-        self.language = dao.get_document_language(language)
+        self.ontology = dao.get_doc_ontology(ontology_name, ontology_version)
+        self.language = dao.get_doc_language(language)
         self.encodings = dao.get_all(DocumentEncoding)
                 
         self.history = utils.create(IngestHistory)

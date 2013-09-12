@@ -111,10 +111,10 @@ class Ingestor(FeedIngestorBase):
         """
         if doc.type_key == cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT:
             # Workaround :: Set numerical experiment document version.
-           if doc.cim_info.version is None:
+           if doc.doc_info.version is None:
             version = etree.xpath(_XPATH_DOC_VERSION_FOR_NUM_EXP, namespaces=nsmap)
             if version is not None and len(version) > 0:
-                doc.cim_info.version = str(version[0])
+                doc.doc_info.version = str(version[0])
 
         if doc.type_key == cim_v1.TYPE_KEY_MODEL_COMPONENT:
             # Workaround :: Suppress root model component properties.
@@ -242,7 +242,7 @@ class Ingestor(FeedIngestorBase):
         :rtype: str
 
         """
-        for id in simulation.as_obj.cim_info.external_ids:
+        for id in simulation.as_obj.doc_info.external_ids:
             for standard in id.standards:
                 if standard.name == 'QN_DRS':
                     return id.value.upper()
@@ -266,7 +266,8 @@ class Ingestor(FeedIngestorBase):
             return self.ingest_document(xml, nsmap, self.parse_document)
 
         # Ingest simulation document.
-        simulation = None        
+        simulation = None
+        children = []
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
             if get_tag_name(elem) == cim_v1.XML_TAG_SIMULATION_RUN:
                 simulation = do_ingest(elem)
@@ -277,7 +278,7 @@ class Ingestor(FeedIngestorBase):
         # Ingest associated documents.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
             if get_tag_name(elem) != cim_v1.XML_TAG_SIMULATION_RUN:
-                utils.create_sub_document(simulation, do_ingest(elem))                
+                utils.create_sub_doc(simulation, do_ingest(elem))                
 
         return simulation
 
@@ -286,9 +287,11 @@ class Ingestor(FeedIngestorBase):
         """Processes a simulation document set.
 
         :param etree: Document XML.
-        :param nsmap: Document XML namespaces.
         :type etree: lxml.etree
+
+        :param nsmap: Document XML namespaces.
         :type nsmap: dict
+
         :returns: A processsed document set.
         :rtype: esdoc_api.models.Document
 
@@ -304,7 +307,7 @@ class Ingestor(FeedIngestorBase):
         simulation = self.ingest_simulation_document_set(etree, nsmap)
 
         # Assign drs.
-        drs = utils.create_document_drs(simulation, self.get_drs_keys(simulation))
+        drs = utils.create_doc_drs(simulation, self.get_drs_keys(simulation))
         if drs is not None:
             self.set_ensemble_members(simulation, drs)
 

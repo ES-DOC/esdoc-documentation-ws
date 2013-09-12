@@ -34,8 +34,8 @@ def test_create():
 
 
 @with_setup(teardown=_teardown)
-def test_create_document():
-    document1 = tu.get_test_document() # N.B. implicity calls utils.create_document
+def test_create_doc():
+    document1 = tu.get_test_document() # N.B. implicity calls utils.create_doc
     tu.assert_object(document1, models.Document)
 
     id = str(uuid.uuid1())
@@ -51,7 +51,7 @@ def test_create_document():
     
 
 @with_setup(teardown=_teardown)
-def test_set_document_is_latest_flag():
+def test_set_doc_is_latest_flag():
     project = tu.get_test_model(models.Project)
     document1 = tu.get_test_document(project=project)
     assert document1.IsLatest == True
@@ -63,19 +63,19 @@ def test_set_document_is_latest_flag():
     
 
 @with_setup(teardown=_teardown)
-def test_get_document_name():
-    doc = tu.get_test_pyesdoc_obj()
-    tu.assert_string(utils.get_document_name(doc), "HadGEM2-A")
+def test_get_doc_name():
+    doc = tu.get_test_pyesdoc_doc()
+    tu.assert_string(utils.get_doc_name(doc), "HadGEM2-A")
     doc.short_name = "XXX"
-    tu.assert_string(utils.get_document_name(doc), "XXX")
+    tu.assert_string(utils.get_doc_name(doc), "XXX")
 
 
 @with_setup(teardown=_teardown)
-def test_create_document_drs():
+def test_create_doc_drs():
     document = tu.get_test_document()
     path = reduce(lambda path, i: path + "/Key_" + str(i + 1), range(8), "")[1:]
     keys = path.split('/')
-    drs = utils.create_document_drs(document, path.split('/'))
+    drs = utils.create_doc_drs(document, path.split('/'))
 
     tu.assert_object(drs, models.DocumentDRS)
     assert drs.Path == path.upper()
@@ -84,28 +84,28 @@ def test_create_document_drs():
 
 
 @with_setup(teardown=_teardown)
-def test_create_document_external_ids():
+def test_create_doc_external_ids():
     document = tu.get_test_document()
     tu.assert_integer(0, len(dao.get_document_external_ids(document.ID, document.Project_ID)))
 
     external_id = StandardName()
     external_id.value = tu.get_uuid()
-    document.as_obj.cim_info.external_ids.append(external_id)
+    document.as_obj.doc_info.external_ids.append(external_id)
 
-    utils.create_document_external_ids(document)
+    utils.create_doc_external_ids(document)
     tu.assert_integer(1, len(dao.get_document_external_ids(document.ID, document.Project_ID)))
 
 
 @with_setup(teardown=_teardown)
-def test_create_document_summary():
+def test_create_doc_summary():
     document = tu.get_test_document()
     language1 = tu.get_test_model(models.DocumentLanguage)
     language2 = tu.get_test_model(models.DocumentLanguage)
 
-    summary1 = utils.create_document_summary(document, language1)
+    summary1 = utils.create_doc_summary(document, language1)
     tu.assert_object(summary1, models.DocumentSummary)
 
-    summary2 = utils.create_document_summary(document, language2)
+    summary2 = utils.create_doc_summary(document, language2)
     tu.assert_object(summary2, models.DocumentSummary)
 
     tu.assert_string(document.as_obj.short_name, summary1.Field_01)
@@ -114,17 +114,17 @@ def test_create_document_summary():
     tu.assert_string(document.as_obj.short_name, summary2.Field_01)
     tu.assert_string(document.as_obj.long_name, summary2.Field_02)
 
-    summary1_ = utils.create_document_summary(document, language1)
+    summary1_ = utils.create_doc_summary(document, language1)
     tu.assert_entity(summary1, summary1_)
 
-    summary2_ = utils.create_document_summary(document, language2)
+    summary2_ = utils.create_doc_summary(document, language2)
     tu.assert_entity(summary2, summary2_)
 
 
 @with_setup(teardown=_teardown)
-def test_get_document_summary_fields():
-    doc = tu.get_test_pyesdoc_obj()
-    summary_fields = utils.get_document_summary_fields(doc)
+def test_get_doc_summary_fields():
+    doc = tu.get_test_pyesdoc_doc()
+    summary_fields = utils.get_doc_summary_fields(doc)
 
     tu.assert_collection(summary_fields, 3)
     tu.assert_string(summary_fields[0], "HadGEM2-A")
@@ -133,18 +133,18 @@ def test_get_document_summary_fields():
 
     
 @with_setup(teardown=_teardown)
-def test_set_document_summary():
+def test_set_doc_summary():
     document = tu.get_test_document()
     doc = document.as_obj
     language = tu.get_test_model(models.DocumentLanguage)
-    summary = utils.create_document_summary(document, language)
+    summary = utils.create_doc_summary(document, language)
 
     tu.assert_string(doc.short_name, summary.Field_01)
     tu.assert_string(doc.long_name, summary.Field_02)
 
     doc.short_name = "XXX"
     doc.long_name = "YYY"
-    summary = utils.create_document_summary(document, language)
+    summary = utils.create_doc_summary(document, language)
 
     tu.assert_string(doc.short_name, summary.Field_01)
     tu.assert_string(doc.long_name, summary.Field_02)
@@ -194,7 +194,7 @@ def test_create_facet():
 
 
 @with_setup(teardown=_teardown)
-def test_create_document_representation():
+def test_create_doc_representation():
     # Create test objects.
     document = tu.get_test_document()
     ontology = tu.get_test_model(models.DocumentOntology)
@@ -203,7 +203,7 @@ def test_create_document_representation():
     as_unicode1 = tu.get_unicode(63)
 
     # Create representation.
-    representation1 = utils.create_document_representation(document,
+    representation1 = utils.create_doc_representation(document,
                                                            ontology,
                                                            encoding,
                                                            language,
@@ -213,7 +213,7 @@ def test_create_document_representation():
 
     # Update representation.
     as_unicode2 = tu.get_unicode(63)
-    representation2 = utils.create_document_representation(document,
+    representation2 = utils.create_doc_representation(document,
                                                            ontology,
                                                            encoding,
                                                            language,
@@ -222,7 +222,7 @@ def test_create_document_representation():
     tu.assert_integer(representation1.ID, representation2.ID)
 
     language = tu.get_test_model(models.DocumentLanguage)
-    representation3 = utils.create_document_representation(document,
+    representation3 = utils.create_doc_representation(document,
                                                            ontology,
                                                            encoding,
                                                            language,
@@ -231,21 +231,21 @@ def test_create_document_representation():
     
 
 @with_setup(teardown=_teardown)
-def test_get_document_representation():
+def test_get_doc_reprensentation():
     # Create test objects.
     document = tu.get_test_document()
     ontology = tu.get_test_model(models.DocumentOntology)
     encoding = tu.get_test_model(models.DocumentEncoding)
     language = tu.get_test_model(models.DocumentLanguage)
     as_unicode = tu.get_unicode(63)
-    utils.create_document_representation(document,
+    utils.create_doc_representation(document,
                                          ontology,
                                          encoding,
                                          language,
                                          as_unicode)
 
     # Create representation.
-    representation = utils.get_document_representation(document,
+    representation = utils.get_doc_reprensentation(document,
                                                        ontology,
                                                        encoding,
                                                        language)
@@ -294,9 +294,9 @@ def test_get_facet_relations():
     tu.assert_integer(relations[0][1], to_facet.ID)
 
 
-def test_get_document_by_obj():
+def test_get_doc_by_obj():
     # Tests retrieiving a Document instance by it's project and pyesdoc object representation.
     instance1 = tu.get_test_document()
     tu.assert_object(instance1.as_obj)
-    instance2 = utils.get_document_by_obj(instance1.Project_ID, instance1.as_obj)
+    instance2 = utils.get_doc_by_obj(instance1.Project_ID, instance1.as_obj)
     tu.assert_entity(instance1, instance2)

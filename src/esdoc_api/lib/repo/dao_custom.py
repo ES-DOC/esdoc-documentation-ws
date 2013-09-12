@@ -53,13 +53,13 @@ __all__ = [
     'get_document',
     'get_document_by_drs_keys',
     'get_document_by_name',
-    'get_document_descriptions',
+    'get_doc_descriptions',
     'get_document_drs',
     'get_document_external_id',
     'get_document_external_ids',
-    'get_document_language',
-    'get_document_ontology',
-    'get_document_representation',
+    'get_doc_language',
+    'get_doc_ontology',
+    'get_doc_reprensentation',
     'get_document_sub_document',
     'get_document_sub_documents',
     'get_document_summaries',
@@ -78,7 +78,7 @@ __all__ = [
 
 
 
-def get_document(project_id, uid, version):
+def get_document(project_id, uid, version=models.DOCUMENT_VERSION_LATEST):
     """Returns a Document instance by it's project, UID & version.
 
     :param project_id: ID of a Project instance.
@@ -98,8 +98,7 @@ def get_document(project_id, uid, version):
     if project_id is not None:
         q = q.filter(Document.Project_ID==project_id)
     q = q.filter(Document.UID==unicode(uid))
-    if version is None or \
-       version in models.DOCUMENT_VERSIONS:
+    if version is None or version in models.DOCUMENT_VERSIONS:
         q = q.order_by(Document.Version.desc())
     else:
         q = q.filter(Document.Version==int(version))
@@ -395,7 +394,7 @@ def get_document_summaries(project_id, type, version, language_id):
     return sort(DocumentSummary, q.all())
 
 
-def get_document_ontology(name, version):
+def get_doc_ontology(name, version):
     """Returns a DocumentOntology instance with matching name & version.
 
     :param name: Ontology name.
@@ -415,7 +414,7 @@ def get_document_ontology(name, version):
     return q.first()
 
 
-def get_document_language(code=pyesdoc.ESDOC_DEFAULT_LANGUAGE):
+def get_doc_language(code=pyesdoc.ESDOC_DEFAULT_LANGUAGE):
     """Returns a DocumentLanguage instance by it's code.
 
     :param type: A supported entity type.
@@ -537,7 +536,7 @@ def get_facet_types():
     return [get_by_name(FacetType, i) for i in models.FACET_TYPES]
 
 
-def get_document_representation(document_id, ontology_id, encoding_id, language_id):
+def get_doc_reprensentation(document_id, ontology_id, encoding_id, language_id):
     """Returns a DocumentRepresentation instance with matching ontology, encoding and language.
 
     :param document_id: ID of a Document instance.
@@ -687,7 +686,7 @@ def get_project_document_language_counts(project_id):
 
 
 
-def get_document_descriptions(project_id, language_id, type):
+def get_doc_descriptions(project_id, language_id, type):
     """Returns document descriptions.
 
     :param project_id: ID of a Project instance.

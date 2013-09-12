@@ -55,11 +55,11 @@ class Ingestor(FeedIngestorBase):
 
         """
         # Escape if no external id has been defined.
-        if len(document.as_obj.cim_info.external_ids) == 0:
+        if len(document.as_obj.doc_info.external_ids) == 0:
             return
 
         # Derive drs.
-        drs = document.as_obj.cim_info.external_ids[0].value
+        drs = document.as_obj.doc_info.external_ids[0].value
         drs = drs.split('.')[2:]
 
         # Derive institute.

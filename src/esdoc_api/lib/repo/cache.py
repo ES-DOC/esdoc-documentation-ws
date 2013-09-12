@@ -219,7 +219,7 @@ def get_id(collection_key, item_key):
     return None if item is None else item.ID
 
 
-def get_document_encoding(encoding_name=None):
+def get_doc_encoding(encoding_name=None):
     """Returns either all document encodings or first document encoding with matching name.
 
     :param encoding_name: Document encoding name.
@@ -229,7 +229,7 @@ def get_document_encoding(encoding_name=None):
     return get('DocumentEncoding', encoding_name)
 
 
-def get_document_language(language_name=None):
+def get_doc_language(language_name=None):
     """Returns either all document languages or first document language with matching name.
 
     :param language_name: Document language name.
@@ -239,7 +239,7 @@ def get_document_language(language_name=None):
     return get('DocumentLanguage', language_name)
 
 
-def get_document_ontology(ontology_name=None, ontology_version=None):
+def get_doc_ontology(ontology_name=None, ontology_version=None):
     """Returns either all document ontologies or first document ontology with matching name.
 
     :param ontology_name: Document ontology name.
@@ -247,6 +247,9 @@ def get_document_ontology(ontology_name=None, ontology_version=None):
 
     :param ontology_version: Document ontology version.
     :type ontology_version: str
+
+    :returns: Either list of all ontologies or first matching ontology.
+    :rtype: list or models.DocumentOntology
 
     """
     if ontology_name is None:
@@ -260,8 +263,7 @@ def get_document_ontology(ontology_name=None, ontology_version=None):
     return None
 
 
-
-def get_document_type(type_name=None):
+def get_doc_type(type_name=None):
     """Returns either all document types or first document type with matching name.
 
     :param type_name: Document type name.

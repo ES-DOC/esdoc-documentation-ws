@@ -55,14 +55,14 @@ def decode_pyesdoc_obj(ontology_name, ontology_version, xml_file, expected_type)
     return pyesdoc_obj
 
 
-def get_test_pyesdoc_obj():
+def get_test_pyesdoc_doc():
     """Returns a pyesdoc object for test purposes.
 
     """
-    instance = decode_pyesdoc_obj('cim', '1', 'software.model_component.xml', cim_v1.ModelComponent)
-    assert_object(instance, cim_v1.ModelComponent)
+    doc = decode_pyesdoc_obj('cim', '1', 'software.model_component.xml', cim_v1.ModelComponent)
+    assert_object(doc, cim_v1.ModelComponent)
 
-    return instance
+    return doc
 
 
 def get_test_document(id=None, version=None, project=None):
@@ -74,11 +74,11 @@ def get_test_document(id=None, version=None, project=None):
     """
     project = project if project is not None else get_test_model(models.Project)
     endpoint = get_test_model(models.IngestEndpoint)
-    as_obj = get_test_pyesdoc_obj()
-    as_obj.cim_info.id = get_uuid() if id is None else id
-    as_obj.cim_info.version = 1 if version is None else version
+    doc = get_test_pyesdoc_doc()
+    doc.doc_info.id = get_uuid() if id is None else id
+    doc.doc_info.version = 1 if version is None else version
         
-    return utils.create_document(project, endpoint, as_obj)
+    return utils.create_doc(doc, project, endpoint)
 
 
 def _hydrate_docs_document(instance):

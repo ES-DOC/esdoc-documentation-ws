@@ -303,14 +303,14 @@ class FeedIngestorBase(IngestorBase):
             representation = pyesdoc.encode(document.as_obj, encoding)
 
         # Assign representation to document.
-        utils.create_document_representation(document,
+        utils.create_doc_representation(document,
                                              self.ontology,
                                              self.get_encoding(encoding),
                                              self.language,
                                              unicode(representation))
 
 
-    def create_document(self, etree, nsmap, doc):
+    def create_doc(self, etree, nsmap, doc):
         """Creates a document.
 
         :param etree: Document xml etree.
@@ -324,16 +324,16 @@ class FeedIngestorBase(IngestorBase):
         
         """
         # Create document.
-        document = utils.create_document(self.project, self.endpoint, doc)
+        document = utils.create_doc(doc, self.project, self.endpoint)
 
         # Create document representations.
         self.set_document_representations(document, etree)
 
         # Create document summary.
-        utils.create_document_summary(document, self.language)
+        utils.create_doc_summary(document, self.language)
         
         # Create document external ID (i.e. simulation id).
-        utils.create_document_external_ids(document, first_only=True)
+        utils.create_doc_external_ids(document, first_only=True)
 
         # Print for debugging.
         rt.log("CREATED DOC :: T={0} ID={1} UID={2} V={3}.".format(
@@ -359,17 +359,17 @@ class FeedIngestorBase(IngestorBase):
         doc = pyesdoc.decode(etree, pyesdoc.METAFOR_CIM_XML_ENCODING)
     
         # Assign doc info attributes.
-        doc.cim_info.project = self.project.Name
-        doc.cim_info.source = self.endpoint.MetadataSource
+        doc.doc_info.project = self.project.Name
+        doc.doc_info.source = self.endpoint.MetadataSource
 
         # Call post deserialization callback.
         if on_deserialize is not None:
             on_deserialize(doc, etree, nsmap)
 
         # Retrieve / create as appropriate.
-        document = utils.get_document_by_obj(self.project.ID, doc)
+        document = utils.get_doc_by_obj(self.project.ID, doc)
         if document is None:
-            document = self.create_document(etree, nsmap, doc)
+            document = self.create_doc(etree, nsmap, doc)
 
         return document
     

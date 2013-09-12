@@ -38,7 +38,7 @@ def populate_document_type():
         
         # Cache.
         if o + v not in ontologies:
-            ontologies[o + v] = dao.get_document_ontology(o, v)
+            ontologies[o + v] = dao.get_doc_ontology(o, v)
 
         # Create.
         i = models.DocumentType()

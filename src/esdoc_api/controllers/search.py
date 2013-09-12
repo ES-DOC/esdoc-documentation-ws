@@ -224,7 +224,7 @@ class SearchController(BaseAPIController):
 
         """
         self.encoding = None if not request.params.has_key('encoding') else \
-                        cache.get_document_encoding(request.params['encoding'])
+                        cache.get_doc_encoding(request.params['encoding'])
         self.encoding_id = None if self.encoding is None else self.encoding.ID
 
 
@@ -233,7 +233,7 @@ class SearchController(BaseAPIController):
 
         """
         self.language = None if not request.params.has_key('language') else \
-                        cache.get_document_language(request.params['language'].split('-')[0].lower())
+                        cache.get_doc_language(request.params['language'].split('-')[0].lower())
         self.language_id = None if self.language is None else self.language.ID
 
 
@@ -243,7 +243,7 @@ class SearchController(BaseAPIController):
         """
         if request.params.has_key('ontologyName') and \
            request.params.has_key('ontologyVersion'):
-            self.ontology = cache.get_document_ontology(request.params['ontologyName'],
+            self.ontology = cache.get_doc_ontology(request.params['ontologyName'],
                                                         request.params['ontologyVersion'])
         else:
             self.ontology = None
@@ -260,7 +260,7 @@ class SearchController(BaseAPIController):
         :rtype: str
 
         """
-        return utils.get_document_representation(document,
+        return utils.get_doc_reprensentation(document,
                                                  self.ontology,
                                                  self.encoding,
                                                  self.language)
