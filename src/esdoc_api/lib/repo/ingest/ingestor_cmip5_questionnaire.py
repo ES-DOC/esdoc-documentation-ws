@@ -119,7 +119,6 @@ class Ingestor(FeedIngestorBase):
         if doc.type_key == cim_v1.TYPE_KEY_MODEL_COMPONENT:
             # Workaround :: Suppress root model component properties.
             doc.properties = []
-            doc.property_tree = []
             
             # Workaround :: Override invalid model names.
             if doc.short_name in _MODEL_OVERRIDES:

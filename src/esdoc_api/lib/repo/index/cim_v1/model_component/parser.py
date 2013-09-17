@@ -46,6 +46,7 @@ def _set_standard_property(p_tree, values, name, description):
     else:
         append_value(p, values)
     p_tree.append(p)
+    
     return p
 
 
@@ -97,12 +98,12 @@ def _set_standard_properties_citations(c, p_tree):
                                'Citations',
                                'Set of component citations')
 
-    _set_standard_property(p.children,
-                           [get_citation_title(i) for i in c.citation_list if i.title is not None],
+    _set_standard_property(p.sub_properties,
+                           [get_citation_title(i) for i in c.citations if i.title is not None],
                            'Title',
                            'Title')
-    _set_standard_property(p.children,
-                           [get_citation_url(i) for i in c.citation_list if i.title is not None],
+    _set_standard_property(p.sub_properties,
+                           [get_citation_url(i) for i in c.citations if i.title is not None],
                            'Location',
                            'Location')
 
@@ -159,7 +160,7 @@ def _set_standard_properties(c):
 
     # Create sub-groups.
     for subgroup in subgroups:
-        subgroup(c, p.children)
+        subgroup(c, p.sub_properties)
 
 
 def _set_scientific_properties(c):
@@ -183,7 +184,7 @@ def _parse_components(c_tree):
     for c in c_tree:
         _set_scientific_properties(c)
         _set_standard_properties(c)
-        _parse_components(c.children)
+        _parse_components(c.sub_components)
 
                       
 def parse(m):
@@ -197,6 +198,6 @@ def parse(m):
 
     """
     # Parse set of child components.
-    _parse_components(m.children)
+    _parse_components(m.sub_components)
 
     return m

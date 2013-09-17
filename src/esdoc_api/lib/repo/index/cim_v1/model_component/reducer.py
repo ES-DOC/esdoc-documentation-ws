@@ -31,7 +31,7 @@ def _property_predicate(p):
     :rtype: bool
 
     """
-    return len(p.values) > 0 or len(p.children) > 0
+    return len(p.values) > 0 or len(p.sub_properties) > 0
 
 
 def _reduce_values(memo, v_list):
@@ -79,8 +79,8 @@ def _reduce_properties(memo, c, p_tree, parent=None):
     # Reduce property tree.
     for p in [i for i in p_tree if _property_predicate(i)]:
         memo.append((p, _reduce_values([], p.values)))
-        if len(p.children) > 0:
-            _reduce_properties(memo, c, p.children, p)
+        if len(p.sub_properties) > 0:
+            _reduce_properties(memo, c, p.sub_properties, p)
             
     return memo
 
@@ -108,8 +108,8 @@ def _reduce_components(memo, c_tree, parent=None):
     # Reduce component tree.
     for c in [i for i in c_tree if _component_predicate(i)]:
         memo.append((c, _reduce_properties([], c, c.properties)))
-        if len(c.children) > 0:
-            _reduce_components(memo, c.children, c)
+        if len(c.sub_components) > 0:
+            _reduce_components(memo, c.sub_components, c)
             
     return memo
 
@@ -124,4 +124,4 @@ def reduce(m):
     :rtype: tuple
 
     """
-    return (m, _reduce_components([], m.children))
+    return (m, _reduce_components([], m.sub_components))

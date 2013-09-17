@@ -1,7 +1,7 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.serialization.serializer_xml.py
+.. module:: esdoc_api.lib.pyesdoc.utils.serializer_xml.py
 
-   :copyright: @2013 Earth System Documentation (http://esdocumentation.org)
+   :copyright: @2013 Earth System Documentation (http://es-doc.org)
    :license: GPL / CeCILL
    :platform: Unix, Windows
    :synopsis: Exposes document xml serialization functions.
@@ -15,7 +15,10 @@ import datetime
 import xml.etree.ElementTree as ET
 
 from . import serializer_dict
-from .. import utils
+from . convertors import (
+    convert_dict_keys,
+    convert_to_camel_case
+    )
 
 
 
@@ -37,7 +40,12 @@ def _get_item_tag(tag):
             return tag[0:len(tag) - len(suffix)] + replacement
         
     return tag + 'Item'
-    
+
+
+def _is_encodable_scalar(sv):
+    """Predicate returning flag indicating whether a scalar value requires encoding."""
+    return sv not in (None, str(), int())
+
 
 def _encode_scalar(xml, sv):
     """Encodes a scalar value."""
@@ -67,20 +75,26 @@ def _encode_list(xml, tag, l):
 
 def _encode_dict(xml, d):
     """Encodes a dictionary."""
-    for k, v in d.items():
+    for k in sorted(d.iterkeys()):
+        v = d[k]
         if isinstance(v, dict):
             _encode_dict(ET.SubElement(xml, k), v)
         elif isinstance(v, list):
-            _encode_list(ET.SubElement(xml, k), k, v)
+            if len(v) > 0:
+                _encode_list(ET.SubElement(xml, k), k, v)
         else:
-            _encode_scalar(ET.SubElement(xml, k), v)
+            if _is_encodable_scalar(v):
+                if k == 'docTypeKey':
+                    xml.attrib["ontologyTypeKey"] = v
+                else:
+                    _encode_scalar(ET.SubElement(xml, k), v)
 
     return xml
 
 
 def _get_xml_tag(doc):
     """Returns document root xml tag."""
-    return utils.convert_to_camel_case(doc.__class__.type_key.split('.')[3])
+    return convert_to_camel_case(doc.__class__.type_key.split('.')[3])
 
 
 def encode(doc):
@@ -97,7 +111,7 @@ def encode(doc):
     as_dict = serializer_dict.encode(doc)
 
     # Format dictionary keys.    
-    as_dict = utils.convert_dict_keys(as_dict, utils.convert_to_camel_case)
+    as_dict = convert_dict_keys(as_dict, convert_to_camel_case)
 
     # Encode to an xml element.
     as_xml = _encode_dict(ET.Element(_get_xml_tag(doc)), as_dict)

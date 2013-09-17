@@ -18,6 +18,8 @@ import esdoc_api.lib.utils.runtime as rt
 import esdoc_api.models as models
 import esdoc_api.lib.utils.cim_v1 as cim_v1
 
+
+
 # Default drs split.
 _DRS_SPLIT = '/'
 
@@ -805,7 +807,7 @@ def _get_cim_v1_doc_name_getters():
         cim_v1.TYPE_KEY_MODEL_COMPONENT : _default,
         cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT : _default,
         cim_v1.TYPE_KEY_PLATFORM : _default,
-        cim_v1.TYPE_KEY_QUALITY : _default,
+        cim_v1.TYPE_KEY_QUALITY : _quality,
         cim_v1.TYPE_KEY_SIMULATION_RUN : _default,
         cim_v1.TYPE_KEY_STATISTICAL_MODEL_COMPONENT : _default
     }
