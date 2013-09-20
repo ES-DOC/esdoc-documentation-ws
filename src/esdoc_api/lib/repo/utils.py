@@ -592,7 +592,7 @@ def create_doc_representation(document,
     rt.assert_var('representation', representation, unicode)
 
     # Update or create as appropriate.
-    instance = dao.get_doc_reprensentation(document.ID,
+    instance = dao.get_doc_representation(document.ID,
                                                ontology.ID,
                                                encoding.ID,
                                                language.ID)
@@ -607,7 +607,7 @@ def create_doc_representation(document,
     return instance
 
 
-def get_doc_reprensentation(document, ontology, encoding, language):
+def get_doc_representation(document, ontology, encoding, language):
     """Loads a document representation.
 
     :param document: A document for which a representation is being retrieved.
@@ -632,7 +632,7 @@ def get_doc_reprensentation(document, ontology, encoding, language):
     rt.assert_var('encoding', encoding, models.DocumentEncoding)
     rt.assert_var('language', language, models.DocumentLanguage)
 
-    instance = dao.get_doc_reprensentation(document.ID,
+    instance = dao.get_doc_representation(document.ID,
                                                ontology.ID,
                                                encoding.ID,
                                                language.ID)

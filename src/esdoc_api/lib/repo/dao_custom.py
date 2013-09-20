@@ -59,7 +59,7 @@ __all__ = [
     'get_document_external_ids',
     'get_doc_language',
     'get_doc_ontology',
-    'get_doc_reprensentation',
+    'get_doc_representation',
     'get_document_sub_document',
     'get_document_sub_documents',
     'get_document_summaries',
@@ -93,7 +93,8 @@ def get_document(project_id, uid, version=models.DOCUMENT_VERSION_LATEST):
     :returns: First matching document.
     :rtype: esdoc_api.models.Document
 
-    """    
+    """
+
     q = session.query(Document)
     if project_id is not None:
         q = q.filter(Document.Project_ID==project_id)
@@ -134,7 +135,7 @@ def get_document_by_name(project_id,
     """
     q = session.query(Document)
     q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(Document.Type==type)
+    q = q.filter(sa.func.upper(Document.Type)==type.upper())
     q = q.filter(sa.func.upper(Document.Name)==name.upper())    
     if institute_id is not None:
         q = q.filter(Document.Institute_ID==institute_id)
@@ -394,7 +395,7 @@ def get_document_summaries(project_id, type, version, language_id):
     return sort(DocumentSummary, q.all())
 
 
-def get_doc_ontology(name, version):
+def get_doc_ontology(name, version=None):
     """Returns a DocumentOntology instance with matching name & version.
 
     :param name: Ontology name.
@@ -408,8 +409,10 @@ def get_doc_ontology(name, version):
 
     """
     q = session.query(DocumentOntology)
+    if version is not None:
+        name += '.'
+        name += str(version)
     q = q.filter(DocumentOntology.Name==name.lower())
-    q = q.filter(DocumentOntology.Version==version)
 
     return q.first()
 
@@ -536,7 +539,7 @@ def get_facet_types():
     return [get_by_name(FacetType, i) for i in models.FACET_TYPES]
 
 
-def get_doc_reprensentation(document_id, ontology_id, encoding_id, language_id):
+def get_doc_representation(document_id, ontology_id, encoding_id, language_id):
     """Returns a DocumentRepresentation instance with matching ontology, encoding and language.
 
     :param document_id: ID of a Document instance.

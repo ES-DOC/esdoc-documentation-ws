@@ -21,10 +21,7 @@ import esdoc_api.lib.utils.cim_v1 as cim_v1
 _PROJECT = 'QED-2013'
 
 # Ontology schema name.
-_ONTOLOGY_NAME = 'cim'
-
-# Ontology schema version.
-_ONTOLOGY_VERSION = '1'
+_ONTOLOGY = 'cim.1'
 
 
 
@@ -41,10 +38,7 @@ class Ingestor(FeedIngestorBase):
         :type endpoint: esdoc_api.models.IngestEndpoint
         
         """
-        super(Ingestor, self).__init__(endpoint,
-                                       _PROJECT,
-                                       _ONTOLOGY_NAME,
-                                       _ONTOLOGY_VERSION)
+        super(Ingestor, self).__init__(endpoint, _PROJECT, _ONTOLOGY)
     
 
     def ingest_feed_entry(self, content):

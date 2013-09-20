@@ -50,7 +50,7 @@ class PublishingController(BaseAPIController):
                 encoding = cache.get_doc_encoding(pyesdoc.ESDOC_ENCODING_JSON)
                 language = cache.get_doc_language(pyesdoc.ESDOC_DEFAULT_LANGUAGE)
                 ontology = cache.get_doc_ontology('cim', '1')
-                repr = dao.get_doc_reprensentation(doc.ID, ontology.ID, encoding.ID, language.ID)
+                repr = dao.get_doc_representation(doc.ID, ontology.ID, encoding.ID, language.ID)
                 if repr is not None:
                     return repr.Representation
 

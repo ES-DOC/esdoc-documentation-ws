@@ -231,7 +231,7 @@ def test_create_doc_representation():
     
 
 @with_setup(teardown=_teardown)
-def test_get_doc_reprensentation():
+def test_get_doc_representation():
     # Create test objects.
     document = tu.get_test_document()
     ontology = tu.get_test_model(models.DocumentOntology)
@@ -245,7 +245,7 @@ def test_get_doc_reprensentation():
                                          as_unicode)
 
     # Create representation.
-    representation = utils.get_doc_reprensentation(document,
+    representation = utils.get_doc_representation(document,
                                                        ontology,
                                                        encoding,
                                                        language)

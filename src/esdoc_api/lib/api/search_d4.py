@@ -51,9 +51,7 @@ def parse_criteria(criteria):
     :type criteria: dict
     
     """
-    for target in ['encoding', 'language', 'ontologyName']:
+    for target in ['encoding', 'language', 'ontology']:
         if target in criteria:
             criteria[target] = str(criteria[target]).upper()
-    if 'ontologyName' in criteria and 'ontologyVersion' in criteria:
-        criteria['ontology'] = criteria['ontologyName'] + criteria['ontologyVersion']
     

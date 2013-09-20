@@ -239,26 +239,28 @@ def get_doc_language(language_name=None):
     return get('DocumentLanguage', language_name)
 
 
-def get_doc_ontology(ontology_name=None, ontology_version=None):
+def get_doc_ontology(name=None, version=None):
     """Returns either all document ontologies or first document ontology with matching name.
 
-    :param ontology_name: Document ontology name.
-    :type ontology_name: str
+    :param name: Document ontology name.
+    :type name: str
 
-    :param ontology_version: Document ontology version.
-    :type ontology_version: str
+    :param version: Document ontology version.
+    :type version: str
 
     :returns: Either list of all ontologies or first matching ontology.
     :rtype: list or models.DocumentOntology
 
     """
-    if ontology_name is None:
+    if name is None:
         return get('DocumentOntology')
 
-    for ontology in get('DocumentOntology').values():
-        if ontology.Name.upper() == ontology_name.upper() and \
-           ontology.Version.upper() == ontology_version.upper() :
-           return ontology
+    if version is not None:
+        name += ""
+        name += str(version)
+    for o in get('DocumentOntology').values():
+        if o.Name.upper() == name.upper():
+            return o
 
     return None
 

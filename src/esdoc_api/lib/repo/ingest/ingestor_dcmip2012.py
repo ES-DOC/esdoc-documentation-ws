@@ -20,11 +20,8 @@ import esdoc_api.lib.utils.cim_v1 as cim_v1
 # Project identifier.
 _PROJECT = 'DCMIP-2012'
 
-# Ontology schema name.
-_ONTOLOGY_NAME = 'cim'
-
-# Ontology schema version.
-_ONTOLOGY_VERSION = '1'
+# Ontology.
+_ONTOLOGY = 'cim.1'
 
 
 
@@ -43,8 +40,7 @@ class Ingestor(FeedIngestorBase):
         """
         super(Ingestor, self).__init__(endpoint,
                                        _PROJECT,
-                                       _ONTOLOGY_NAME,
-                                       _ONTOLOGY_VERSION,
+                                       _ONTOLOGY,
                                        url_parser=self.parse_entry_url,
                                        content_parser=self.parse_entry_content)
     

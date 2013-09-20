@@ -151,8 +151,7 @@ class FeedIngestorBase(IngestorBase):
     
     :ivar endpoint: Feed endpoint.
     :ivar project: Project with which feed is associated.
-    :ivar ontology_name: Name of ontology with which feed entries are associated with.
-    :ivar ontology_version: Version of ontology with which feed entries are associated with.
+    :ivar ontology: Name of ontology with which feed entries are associated with.
     :ivar language: Language with which feed is associated.
     :ivar url_parser: Function for parsing feed url's.
     :ivar content_parser: Function for parsing feed content.
@@ -161,8 +160,7 @@ class FeedIngestorBase(IngestorBase):
     def __init__(self,
                  endpoint,
                  project,
-                 ontology_name,
-                 ontology_version,
+                 ontology,
                  language=pyesdoc.ESDOC_DEFAULT_LANGUAGE,
                  url_parser=None,
                  content_parser=None):
@@ -174,11 +172,8 @@ class FeedIngestorBase(IngestorBase):
         :param project: Project with which feed is associated.
         :type project: str
 
-        :param ontology_name: Name of ontology with which feed entries are associated with.
-        :type ontology_name: str
-
-        :param ontology_version: Version of ontology with which feed entries are associated with.
-        :type ontology_version: str
+        :param ontology: Name of ontology with which feed entries are associated with.
+        :type ontology: str
 
         :param language: Language with which feed is associated.
         :type language: str
@@ -192,8 +187,7 @@ class FeedIngestorBase(IngestorBase):
         """
         super(FeedIngestorBase, self).__init__(endpoint,
                                                project,
-                                               ontology_name,
-                                               ontology_version,
+                                               ontology,
                                                language)
         self.entry_url_parser = url_parser
         self.entry_content_parser = content_parser
@@ -359,8 +353,8 @@ class FeedIngestorBase(IngestorBase):
         doc = pyesdoc.decode(etree, pyesdoc.METAFOR_CIM_XML_ENCODING)
     
         # Assign doc info attributes.
-        doc.doc_info.project = self.project.Name
-        doc.doc_info.source = self.endpoint.MetadataSource
+        doc.doc_info.project = str(self.project.Name)
+        doc.doc_info.source = str(self.endpoint.MetadataSource)
 
         # Call post deserialization callback.
         if on_deserialize is not None:

@@ -166,7 +166,7 @@ def test_get_facet_types():
     pass
 
 
-def test_get_doc_reprensentation():
+def test_get_doc_representation():
     # Tests retrieiving a DocumentRepresentation instance with matching ontology, encoding and language.
     pass
 

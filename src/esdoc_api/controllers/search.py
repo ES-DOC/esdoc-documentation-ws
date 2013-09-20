@@ -67,15 +67,11 @@ _params_do_defaults_document_by = _default_params + (
         'key_formatter' : lambda n : n.lower(),
     },
     {
-        'name' : 'ontologyName',
+        'name' : 'ontology',
         'required' : True,
         'whitelist' : lambda : cache.get_names('DocumentOntology'),
         'key_formatter' : lambda n : n.lower(),
-    },
-    {
-        'name' : 'ontologyVersion',
-        'required' : True,
-    },
+    }
 )
 
 # URL query parameters for do action.
@@ -241,12 +237,8 @@ class SearchController(BaseAPIController):
         """Assigns document ontology from incoming http request.
 
         """
-        if request.params.has_key('ontologyName') and \
-           request.params.has_key('ontologyVersion'):
-            self.ontology = cache.get_doc_ontology(request.params['ontologyName'],
-                                                        request.params['ontologyVersion'])
-        else:
-            self.ontology = None
+        self.ontology = None if not request.params.has_key('ontology') else \
+                        cache.get_doc_ontology(request.params['ontology'])
         self.ontology_id = None if self.ontology is None else self.ontology.ID
 
 
@@ -260,10 +252,10 @@ class SearchController(BaseAPIController):
         :rtype: str
 
         """
-        return utils.get_doc_reprensentation(document,
-                                                 self.ontology,
-                                                 self.encoding,
-                                                 self.language)
+        return utils.get_doc_representation(document,
+                                            self.ontology,
+                                            self.encoding,
+                                            self.language)
 
 
     def __load_representation_set(self, document_set):
@@ -279,7 +271,7 @@ class SearchController(BaseAPIController):
         representation_set = []
         if document_set is not None:
             representation_set = [self.__load_representation(d) for d in document_set]
-            
+
         return [r for r in representation_set if r is not None]
 
 
@@ -333,7 +325,7 @@ class SearchController(BaseAPIController):
         return document_set
 
 
-    def __document_by_id(self):
+    def __get_documentset_by_id(self):
         """Returns first document set with matching id and version.
 
         :returns: a collection of document representations.
@@ -359,7 +351,7 @@ class SearchController(BaseAPIController):
                                                      request.params['version']))
 
 
-    def __document_by_name(self):
+    def __get_documentset_by_name(self):
         """Returns first document set with matching type and name.
 
         :returns: a collection of document representations.
@@ -380,7 +372,7 @@ class SearchController(BaseAPIController):
                                                              self.institute_id))
 
 
-    def __document_by_drs(self):
+    def __get_documentset_by_drs(self):
         """Returns first document set with matching drs path.
 
         :returns: a set of document representations.
@@ -411,7 +403,7 @@ class SearchController(BaseAPIController):
 
 
 
-    def __document_by_external_id(self):
+    def __get_documentset_by_external_id(self):
         """Returns first document set with matching external type and id.
 
         :returns: a collection of document representations.
@@ -472,10 +464,10 @@ class SearchController(BaseAPIController):
 
         # Set of handlers.
         handlers = {
-            'documentByDRS' : self.__document_by_drs,
-            'documentByID' : self.__document_by_id,
-            'documentByName' : self.__document_by_name,
-            'documentByExternalID' : self.__document_by_external_id,
+            'documentByDRS' : self.__get_documentset_by_drs,
+            'documentByID' : self.__get_documentset_by_id,
+            'documentByName' : self.__get_documentset_by_name,
+            'documentByExternalID' : self.__get_documentset_by_external_id,
             'documentSummaryByName' : self.__load_results,
             'se1' : self.__load_results,
         }

@@ -150,7 +150,8 @@ def test_get_doc_language():
 @nose.tools.with_setup(setup=_setup, teardown=_teardown)
 def test_get_doc_ontology():
     tu.assert_collection(cache.get_doc_ontology(), length=1, item_type=models.DocumentOntology)
-    tu.assert_object(cache.get_doc_ontology('cim-v1'), models.DocumentOntology)
+    tu.assert_object(cache.get_doc_ontology('cim.1'), models.DocumentOntology)
+    tu.assert_object(cache.get_doc_ontology('cim', '1'), models.DocumentOntology)
 
 
 @nose.tools.with_setup(setup=_setup, teardown=_teardown)

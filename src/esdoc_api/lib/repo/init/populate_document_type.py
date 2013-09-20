@@ -12,18 +12,6 @@ from esdoc_api.lib.utils.string import get_rows
 
 
 
-_data = u'''cim | 1 | quality | cIM_Quality | quality | Quality
-cim | 1 | data | dataObject | data | Data
-cim | 1 | activity | ensemble | ensemble | Ensemble
-cim | 1 | grids | gridSpec | grid | Grid Spec
-cim | 1 | software | modelComponent | model | Model
-cim | 1 | software | statisticalModelComponent | statistical model | Statistical Model
-cim | 1 | activity | numericalExperiment | experiment | Experiment
-cim | 1 | shared | platform | platform | Platform
-cim | 1 | activity | simulationRun| simulation | Simulation
-cim | 1 | activity | simulationComposite| simulations | Simulations'''
-
-
 def populate_document_type():
     """Populates collection of cim document schema types.
 
@@ -48,3 +36,4 @@ def populate_document_type():
 
         # Persist.
         session.insert(i)
+

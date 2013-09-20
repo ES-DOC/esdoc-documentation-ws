@@ -33,8 +33,7 @@ class IngestorBase(object):
 
     :ivar endpoint: Ingest endpoint.
     :ivar project: Project with which endpoint is associated.
-    :ivar ontology_name: Name of ontology with which feed entries are associated with.
-    :ivar ontology_version: Version of ontology with which feed entries are associated with.
+    :ivar ontology: Name of ontology with which feed entries are associated with.
     :ivar language: Language with which endpoint is associated.
     
     """
@@ -44,8 +43,7 @@ class IngestorBase(object):
     def __init__(self,
                  endpoint,
                  project,
-                 ontology_name,
-                 ontology_version,
+                 ontology,
                  language):
         """Constructor.
 
@@ -55,18 +53,15 @@ class IngestorBase(object):
         :param project: Project with which endpoint is associated.
         :type project: str
 
-        :param ontology_name: Name of ontology with which feed entries are associated with.
-        :type ontology_name: str
-
-        :param ontology_version: Version of ontology with which feed entries are associated with.
-        :type ontology_version: str
+        :param ontology: Name of ontology with which feed entries are associated with.
+        :type ontology: str
 
         :param language: Language with which endpoint is associated.
         :type language: str
         
         """
         self.project = dao.get_by_name(Project, project)
-        self.ontology = dao.get_doc_ontology(ontology_name, ontology_version)
+        self.ontology = dao.get_doc_ontology(ontology)
         self.language = dao.get_doc_language(language)
         self.encodings = dao.get_all(DocumentEncoding)
                 

@@ -20,11 +20,8 @@ from esdoc_api.models import *
 # Project identifier.
 _PROJECT = 'CMIP5'
 
-# Ontology schema name.
-_ONTOLOGY_NAME = 'cim'
-
-# Ontology schema version.
-_ONTOLOGY_VERSION = '1'
+# Ontology.
+_ONTOLOGY = 'cim.1'
 
 
             
@@ -41,10 +38,7 @@ class Ingestor(FeedIngestorBase):
         :type endpoint: esdoc_api.models.IngestEndpoint
 
         """
-        super(Ingestor, self).__init__(endpoint,
-                                       _PROJECT,
-                                       _ONTOLOGY_NAME,
-                                       _ONTOLOGY_VERSION)
+        super(Ingestor, self).__init__(endpoint, _PROJECT, _ONTOLOGY)
 
     
     def set_institute(self, document):

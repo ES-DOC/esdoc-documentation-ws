@@ -26,11 +26,8 @@ import esdoc_api.lib.api.comparator_setup as comparator
 # Project code.
 _PROJECT = 'CMIP5'
 
-# Ontology schema name.
-_ONTOLOGY_NAME = 'cim'
-
-# Ontology schema version.
-_ONTOLOGY_VERSION = '1'
+# Ontology.
+_ONTOLOGY = 'cim.1'
 
 # Supported CIM xml schemas.
 _CIM_XML_1_5_SCHEMA = 'http://www.purl.org/org/esmetadata/cim/1.5/schemas'
@@ -76,10 +73,7 @@ class Ingestor(FeedIngestorBase):
         :type endpoint: esdoc_api.models.IngestEndpoint
 
         """
-        super(Ingestor, self).__init__(endpoint,
-                                       _PROJECT,
-                                       _ONTOLOGY_NAME,
-                                       _ONTOLOGY_VERSION,
+        super(Ingestor, self).__init__(endpoint, _PROJECT, _ONTOLOGY,
                                        content_parser=self.parse_feed_entry)
 
 
