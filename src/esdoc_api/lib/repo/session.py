@@ -14,6 +14,7 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import Engine
+from sqlalchemy.schema import CreateSchema
 
 import esdoc_api.models as models
 
@@ -23,7 +24,6 @@ import esdoc_api.models as models
 __all__ = [
     'assert_is_live',
     'commit',
-    'count_query',
     'create_repo',
     'do_ingest',
     'delete',
@@ -37,7 +37,7 @@ __all__ = [
 
 
 # Default query limit to apply.
-QUERY_LIMIT = 250
+QUERY_LIMIT = 200
 
 
 class _State(object):
@@ -84,6 +84,10 @@ def create_repo():
 
     """
     from esdoc_api.lib.repo.init import execute as seed_repo
+
+    # Create schemas.
+    for p in models.PARTITIONS:
+        _State.sa_engine.execute(CreateSchema(p))    
 
     # Create tables.
     models.metadata.create_all(_State.sa_engine)

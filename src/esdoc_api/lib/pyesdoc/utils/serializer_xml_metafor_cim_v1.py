@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.utils.serializer_xml_metafor_cim_v1.py
+.. module:: pyesdoc.utils.serializer_xml_metafor_cim_v1.py
 
    :copyright: @2013 Earth System Documentation (http://es-doc.org)
    :license: GPL / CeCILL
@@ -38,7 +38,7 @@ _decoders = {
 
 
 def decode(repr):
-    """Decodes a esdoc_api.lib.pyesdoc document from passed representation.
+    """Decodes a pyesdoc document from passed representation.
 
     :param repr: Metafor CIM v1 XML document representation.
     :type repr: lxml.etree._ElementTree
@@ -54,7 +54,7 @@ def decode(repr):
     if doc_type not in _decoders:
         raise rt.PYESDOC_Exception("CIM v1 - {0} document type decoding unsupported.".format(doc_type))
 
-    # Decode esdoc_api.lib.pyesdoc doc.
+    # Decode pyesdoc doc.
     return decode_xml(_decoders[doc_type], xml, nsmap, None)
 
 

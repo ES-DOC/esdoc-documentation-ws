@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.utils.serializer_dict.py
+.. module:: pyesdoc.utils.serializer_dict.py
 
    :copyright: @2013 Earth System Documentation (http://es-doc.org)
    :license: GPL / CeCILL
@@ -121,10 +121,10 @@ def encode(doc):
 def decode(repr):
     """Decodes a document from a dictionary.
 
-    :param as_dict: Document dictionary representation.
-    :type as_dict: dict
+    :param repr: Document dictionary representation.
+    :type repr: dict
 
-    :returns: A esdoc_api.lib.pyesdoc document instance.
+    :returns: A pyesdoc document instance.
     :rtype: object
 
     """

@@ -267,8 +267,12 @@ class DocumentSummary(Entity):
     # Foreign keys.
     Document_ID = create_fk('docs.tblDocument.ID', required=True)
     Language_ID = create_fk('vocab.tblDocumentLanguage.ID', required=True)
+    Model_ID = create_fk('facets.tblFacet.ID', required=False)
+    Experiment_ID = create_fk('facets.tblFacet.ID', required=False)
 
     # Field set.
+    ShortName = Column(Unicode(1023))
+    LongName = Column(Unicode(1023))
     Description = Column(Unicode(1023))
     Field_01 = Column(Unicode(1023))
     Field_02 = Column(Unicode(1023))
@@ -306,5 +310,5 @@ class DocumentSummary(Entity):
         """
         Gets default sort key.
         """
-        return lambda instance: instance.Field_01
+        return lambda instance: instance.ShortName
 

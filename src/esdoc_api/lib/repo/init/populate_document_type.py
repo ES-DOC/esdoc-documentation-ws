@@ -23,14 +23,15 @@ def populate_document_type():
     for type_key in cim_v1.ACTIVE_TYPES:
         # Unpack type info.
         o, v, p, t = type_key.split(".")
-        
+        o = o + "." + v
+
         # Cache.
-        if o + v not in ontologies:
-            ontologies[o + v] = dao.get_doc_ontology(o, v)
+        if o not in ontologies:
+            ontologies[o] = dao.get_doc_ontology(o)
 
         # Create.
         i = models.DocumentType()
-        i.Ontology_ID = ontologies[o + v].ID
+        i.Ontology_ID = ontologies[o].ID
         i.Key = type_key
         i.DisplayName = cim_v1.DISPLAY_NAMES[type_key]
 

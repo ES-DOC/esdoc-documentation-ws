@@ -3,18 +3,18 @@ from mako import runtime, filters, cache
 UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
-_magic_number = 6
-_modified_time = 1376663386.2775421
-_template_filename='/Users/markmorgan/Development/sourcetree/esdoc/esdoc-api/src/esdoc_api/templates/index.html'
-_template_uri='/index.html'
-_template_cache=cache.Cache(__name__, _modified_time)
-_source_encoding='utf-8'
+_magic_number = 9
+_modified_time = 1380545016.799831
+_enable_loop = True
+_template_filename = '/Users/markmorgan/Development/sourcetree/esdoc/esdoc-api/src/esdoc_api/templates/index.html'
+_template_uri = '/index.html'
+_source_encoding = 'utf-8'
 from webhelpers.html import escape
 _exports = []
 
 
 def render_body(context,**pageargs):
-    context.caller_stack._push_frame()
+    __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
         __M_writer = context.writer()

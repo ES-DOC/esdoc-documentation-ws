@@ -92,7 +92,7 @@ def populate_ingest_endpoint():
     i.Priority = 100
     session.insert(i)
 
-    # DCMIP-2012 - file system feed.
+    # DCMIP-2012.
     i = models.IngestEndpoint()
     i.IsActive = True
     i.Description = "ATOM - DCMIP-2012"
@@ -100,27 +100,13 @@ def populate_ingest_endpoint():
     i.ContactName =  "Allyn Treshanksky"
     i.ContactEmail =  "allyn.treshansky@noaa.gov"
     i.ContactTelephone =  "+1 303-497-7734"
-    i.IngestURL =  "http://hydra.fsl.noaa.gov/cim-atom-feed/feeds/cim"
+    i.IngestURL =  "http://prod.questionnaire.esdoc.webfactional.com/metadata/feed/dycore/"
     i.Institute_ID = dao.get_by_name(models.Institute, "NOAA-GFDL").ID
     i.MetadataSource = 'ES-DOC django-cim-forms'
     i.Priority = 10000
     session.insert(i)
     
-    # DCMIP-2012 - dynamic feed.
-    i = models.IngestEndpoint()
-    i.IsActive = True
-    i.Description = "ATOM - DCMIP-2012"
-    i.IngestorType = 'dcmip2012'
-    i.ContactName =  "Allyn Treshanksky"
-    i.ContactEmail =  "allyn.treshansky@noaa.gov"
-    i.ContactTelephone =  "+1 303-497-7734"
-    i.IngestURL =  "http://earthsystemcog.org/metadata/feed/dycore/"
-    i.Institute_ID = dao.get_by_name(models.Institute, "NOAA-GFDL").ID
-    i.MetadataSource = 'ES-DOC django-cim-forms'
-    i.Priority = 10000
-    session.insert(i)
-
-    # QED-2013 - dynamic feed.
+    # QED-2013.
     i = models.IngestEndpoint()
     i.IsActive = True
     i.Description = "ATOM - QED-2013"
@@ -128,7 +114,7 @@ def populate_ingest_endpoint():
     i.ContactName =  "Allyn Treshanksky"
     i.ContactEmail =  "allyn.treshansky@noaa.gov"
     i.ContactTelephone =  "+1 303-497-7734"
-    i.IngestURL =  "http://earthsystemcog.org/dcf/feed/downscaling/"
+    i.IngestURL =  "http://prod.questionnaire.esdoc.webfactional.com/dcf/feed/downscaling/"
     i.Institute_ID = dao.get_by_name(models.Institute, "NOAA-GFDL").ID
     i.MetadataSource = 'ES-DOC django-cim-forms'
     i.Priority = 10000

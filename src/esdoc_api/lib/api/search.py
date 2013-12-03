@@ -97,9 +97,18 @@ def get_results_data(type, criteria):
     for v in [_validate_criteria, se.validate_criteria]:
         v(criteria)
 
-    # Return setup data.
-    return {
+    # Return results data.
+    data = {
         'engine' : type,
+        'timestamp' : criteria['timestamp'],
         'results' : se.get_results(criteria),
         'project' : criteria['project'],
     }
+
+    # Allow search engine to return subdata.
+    if hasattr(se, 'set_results_subdata'):
+        se.set_results_subdata(data, criteria)
+
+    rt.log("Search returned :: " + str(len(data['results'])) + " results")
+
+    return data

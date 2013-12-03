@@ -23,6 +23,7 @@ from esdoc_api.models import (
     INGEST_STATE_ERROR_ID,
     INGEST_STATE_RUNNING_ID,
     IngestHistory,
+    Institute,
     Project
     )
 
@@ -64,6 +65,7 @@ class IngestorBase(object):
         self.ontology = dao.get_doc_ontology(ontology)
         self.language = dao.get_doc_language(language)
         self.encodings = dao.get_all(DocumentEncoding)
+        self.institutes = dao.get_all(Institute)
                 
         self.history = utils.create(IngestHistory)
         self.history.StartDateTime = datetime.datetime.now()
@@ -105,6 +107,44 @@ class IngestorBase(object):
         if self.__max_ingest_count == 0:
             self.__max_ingest_count = value
 
+
+    def get_encoding(self, encoding):
+        """Returns document encoding entity from cached collection.
+
+        :param encoding: Feed entry encoding.
+        :type encoding: str
+        
+        :returns: Encoding type.
+        :rtype: esdoc_api.models.DocumentEncoding
+
+        """
+        encoding = encoding.lower()
+        for e in self.encodings:
+            if e.Encoding == encoding:
+                return e
+            
+        return None
+
+
+    def get_institute(self, institute):
+        """Returns institute entity from cached collection.
+
+        :param institute: Feed entry institute code.
+        :type institute: str
+        
+        :returns: Institute type.
+        :rtype: esdoc_api.models.Institute
+
+        """
+        for i in self.institutes:
+            if isinstance(institute, str) and \
+               i.Name.lower() == institute.lower():
+                return i
+            elif isinstance(institute, int) and \
+                i.ID == institute:
+                return i
+            
+        return None
 
 
     def can_ingest(self):

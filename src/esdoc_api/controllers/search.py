@@ -40,6 +40,10 @@ _default_params = (
         'key_formatter' : lambda n : n.lower(),
     },
     {
+        'name' : 'timestamp',
+        'required' : True,
+    },
+    {
         'name' : 'searchType',
         'required' : True,
         'whitelist' : lambda : [
@@ -58,19 +62,19 @@ _params_do_defaults_document_by = _default_params + (
         'name' : 'language',
         'required' : True,
         'whitelist' : lambda : cache.get_names('DocumentLanguage', 'Code'),
-        'key_formatter' : lambda n : n.lower(),
+        'key_formatter' : lambda k : k.lower(),
     },
     {
         'name' : 'encoding',
         'required' : True,
         'whitelist' : lambda : cache.get_names('DocumentEncoding', 'Encoding'),
-        'key_formatter' : lambda n : n.lower(),
+        'key_formatter' : lambda k : k.lower(),
     },
     {
         'name' : 'ontology',
         'required' : True,
         'whitelist' : lambda : cache.get_names('DocumentOntology'),
-        'key_formatter' : lambda n : n.lower(),
+        'key_formatter' : lambda k : k.lower(),
     }
 )
 
@@ -90,6 +94,14 @@ _params_do = {
         {
             'name' : 'externalType',
             'required' : True,
+        },
+        {
+            'name' : 'typeWhiteList',
+            'required' : False,
+        },
+        {
+            'name' : 'typeBlackList',
+            'required' : False,
         },
     ),
     'documentByID' : _params_do_defaults_document_by + (
@@ -115,7 +127,7 @@ _params_do = {
             'name' : 'institute',
             'required' : False,
             'whitelist' : lambda : cache.get_names('Institute'),
-            'key_formatter' : lambda n : n.lower(),
+            'key_formatter' : lambda k : k.lower(),
         },
     ),
     'documentSummaryByName' : _default_params + (
@@ -126,18 +138,24 @@ _params_do = {
             'name' : 'documentLanguage',
             'required' : True,
             'whitelist' : lambda : cache.get_names('DocumentLanguage', 'Code'),
-            'key_formatter' : lambda n : n.lower(),
+            'key_formatter' : lambda k : k.lower(),
         },
         {
             'name' : 'documentType',
             'required' : True,
-            'whitelist' : lambda : cache.get_names('DocumentType'),
-            'key_formatter' : lambda n : n.lower(),
+            'whitelist' : lambda : cache.get_names('DocumentType', 'Key'),
+            'key_formatter' : lambda k : k.lower(),
         },
         {
             'name' : 'documentVersion',
             'required' : True,
             'whitelist' : lambda : models.DOCUMENT_VERSIONS
+        },
+        {
+            'name' : 'institute',
+            'required' : False,
+            'whitelist' : lambda : cache.get_names('Institute'),
+            'key_formatter' : lambda k : k.lower(),
         }
     )
 }
@@ -292,7 +310,38 @@ class SearchController(BaseAPIController):
                     document_set.extend(dao.get_document_sub_documents(document.ID))
                 
         return document_set
-    
+
+
+    def __apply_type_filters(self, ds):
+        """Apply white/black type list filters."""
+        def apply_type_filter(param):
+            type_keys = map(lambda s : s.strip(),
+                            request.params[param].upper().split(','))
+            is_white_list = True if 'White' in param else False
+            def do_filter(memo, d):
+                if is_white_list:
+                    if d.Type.upper() in type_keys:
+                        memo.append(d)
+                elif d.Type.upper() not in type_keys:
+                    memo.append(d)
+                return memo
+
+            return reduce(do_filter, ds, [])
+
+        for param in ['typeBlackList', 'typeWhiteList']:
+            if request.params.has_key(param):
+                ds = apply_type_filter(param)
+
+        return ds
+
+
+    def __initialise_ds(self, ds):
+        if ds is None:
+            ds = []
+        elif isinstance(ds, Document):
+            ds = [ds]
+
+        return ds
 
     def __load(self, load):
         """Loads document representations from repository.
@@ -304,26 +353,15 @@ class SearchController(BaseAPIController):
         :rtype: list
         
         """
-        # Set document set.
-        document_set = load()
-        if document_set is None:
-            document_set = []
-        elif isinstance(document_set, Document):
-            document_set = [document_set]
-
-        # Set sub documents.
-        if (len(document_set) > 0):
-            document_set = self.__load_children(document_set)
-
-        # Set representations.
-        if (len(document_set) > 0):
-            document_set = self.__load_representation_set(document_set)
-
-        # Set response content type.
-        response.content_type = self.get_response_content_type()
-
-        return document_set
-
+        # Apply transformations.
+        transformations = [
+            self.__initialise_ds,
+            self.__load_children,
+            self.__apply_type_filters,
+            self.__load_representation_set
+        ]
+        return reduce(lambda ds, f : f(ds), transformations, load())
+    
 
     def __get_documentset_by_id(self):
         """Returns first document set with matching id and version.
@@ -436,8 +474,9 @@ class SearchController(BaseAPIController):
 
         """
         try:
-            return se.get_results_data(request.params['searchType'],
-                                       _get_se_params())
+            searchType = request.params['searchType']
+            params = _get_se_params()
+            return se.get_results_data(searchType, params)
         except rt.ESDOC_API_Error as e:
             abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
 
@@ -447,8 +486,9 @@ class SearchController(BaseAPIController):
 
         """
         try:
-            return se.get_setup_data(request.params['searchType'],
-                                     request.params['project'])
+            searchType = request.params['searchType']
+            project = request.params['project']
+            return se.get_setup_data(searchType, project)
         except rt.ESDOC_API_Error as e:
             abort(HTTP_RESPONSE_BAD_REQUEST, e.message)
 
@@ -471,6 +511,9 @@ class SearchController(BaseAPIController):
             'documentSummaryByName' : self.__load_results,
             'se1' : self.__load_results,
         }
+
+        # Set response content type.
+        response.content_type = self.get_response_content_type()
 
         # Return handler invocation result.
         return handlers[request.params['searchType']]()
@@ -495,4 +538,3 @@ class SearchController(BaseAPIController):
 
         # Return handler invocation result.
         return handlers[request.params['searchType']]()
-

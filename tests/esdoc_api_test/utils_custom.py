@@ -168,6 +168,9 @@ def _hydrate_docs_document_summary(instance):
     """
     instance.Document_ID = get_test_model_id(models.Document)
     instance.Language_ID = get_test_model_id(models.DocumentLanguage)
+    instance.Description = get_string(1023)
+    instance.ShortName = get_string(1023)
+    instance.LongName = get_string(1023)
     instance.Field_01 = get_string(1023)
     instance.Field_02 = get_string(1023)
     instance.Field_03 = get_string(1023)

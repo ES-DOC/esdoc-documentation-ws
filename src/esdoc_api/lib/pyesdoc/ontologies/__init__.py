@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.ontologies.__init__.py
+.. module:: pyesdoc.ontologies.__init__.py
    :copyright: Copyright "Jun 14, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -11,6 +11,8 @@
 """
 # Module imports.
 import cim
+from .. utils import runtime as rt
+
 
 
 # Set of ontologies supported out of the box.
@@ -26,9 +28,9 @@ def _get_ontologies():
 
     return tuple(result)
 
+
 # Set of supported ontologies.
 ESDOC_ONTOLOGIES = _get_ontologies()
-
 
 
 class _State(object):
@@ -111,7 +113,10 @@ def list_types(name=None, version=None):
     :rtype: tuple
 
     """
-    return tuple([tuple(t.type_key.split('.')) for t in get_types(name, version)])
+    types = get_types(name, version)
+    types = [tuple(t.type_key.split('.')) for t in types] 
+
+    return tuple(types)
 
 
 def get_type(name, version, package, type):
@@ -133,7 +138,9 @@ def get_type(name, version, package, type):
     :rtype: class or None
 
     """
-    return get_type_from_key(get_type_key(name, version, package, type))
+    type_key = get_type_key(name, version, package, type)
+
+    return get_type_from_key(type_key)
 
 
 def get_type_from_key(key):
@@ -198,8 +205,8 @@ def create(name, version, package, type):
     :param type: Ontology type, e.g. Experiment.
     :type type: str
 
-    :returns: A esdoc_api.lib.pyesdoc document instance.
-    :rtype: esdoc_api.lib.pyesdoc object
+    :returns: A pyesdoc document instance.
+    :rtype: pyesdoc object
 
     """
     type = get_type(name, version, package, type)
@@ -223,3 +230,37 @@ def get_type_info(type, types=get_types()):
             ti += get_type_info(base, types)
 
     return ti
+
+
+def associate(left, attr, right):
+    """Creates and returns an association between two documents.
+
+    :param left: A document.
+    :type left:  A pyesdoc object.
+
+    :param attr: Name of attribute upon left document to which the association will be assigned.
+    :type attr:  str
+
+    :param right: A document.
+    :type right:  A pyesdoc object.
+
+    :returns: A document reference.
+    :rtype:  object
+
+    """
+    # Defensive Programming.
+    rt.assert_doc("left", left)
+    rt.assert_doc("right", right)
+    if not hasattr(left, attr):
+        rt.throw("Cannot set association upon invalid attribute.")
+
+    # Create reference.
+    # TODO alter reference based upon ontology type.
+    ref = cim.v1.DocReference()
+    ref.id = right.doc_info.id
+    ref.version = right.doc_info.version
+    
+    # Set association.
+    setattr(left, attr, ref)
+
+    return ref

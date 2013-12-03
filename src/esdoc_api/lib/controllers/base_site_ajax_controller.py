@@ -1,4 +1,4 @@
-from esdoc_api.lib.controllers.base_site_controller import *
+from esdoc_api.lib.controllers.base_controller import *
 
 
 class BaseSiteAjaxController(BaseController):

@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.utils.serializer_xml.py
+.. module:: pyesdoc.utils.serializer_xml.py
 
    :copyright: @2013 Earth System Documentation (http://es-doc.org)
    :license: GPL / CeCILL
@@ -126,7 +126,7 @@ def decode(repr):
     :param repr: Document xml representation.
     :type repr: str
 
-    :returns: A esdoc_api.lib.pyesdoc document instance.
+    :returns: A pyesdoc document instance.
     :rtype: object
 
     """

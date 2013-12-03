@@ -16,7 +16,7 @@ from esdoc_api.lib.utils.string import get_rows
 
 
 
-_data = u'''cim | 1'''
+_data = u'''cim.1 | 1'''
 
 
 def populate_document_ontology():

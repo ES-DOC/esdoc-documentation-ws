@@ -1,0 +1,272 @@
+{
+	"meta": {
+		"description": "List of institutes.",
+		"key": "institute",
+		"scope": "global",
+		"type": "flat_list",
+		"uid": "c2f4a73a-d105-4d42-bd6c-ed98bc23fe49"
+	},
+	"terms": [
+		{
+			"country": "AU",
+			"homepage": "http://www.csiro.au/",
+			"id": 2,
+			"key": "CSIRO-BOM",
+			"longName": "Commonwealth Scientific and Industrial Research Organization (CSIRO) and Bureau of Meteorology (BOM), Australia",
+			"name": "CSIRO-BOM",
+			"uid": "b207e6f7-2292-46da-908e-9a94b7456c08"
+		},
+		{
+			"country": "AU",
+			"homepage": "http://www.csiro.au/",
+			"id": 12,
+			"key": "CSIRO-QCCCE",
+			"longName": "Commonwealth Scientific and Industrial Research Organisation / Queensland Climate Change Centre of Excellence",
+			"name": "CSIRO-QCCCE",
+			"uid": "43420197-43af-432e-849b-7fed04e2227c"
+		},
+		{
+			"country": "BR",
+			"homepage": "http://www.inpe.br/",
+			"id": 17,
+			"key": "INPE",
+			"longName": "Instituto Nacional de Pesquisas Espaciais",
+			"name": "INPE",
+			"uid": "4743ebd6-724b-4116-a1c6-98a66fb229ff"
+		},
+		{
+			"country": "CA",
+			"homepage": "http://www.ec.gc.ca/ccmac-cccma/",
+			"id": 5,
+			"key": "CCCMA",
+			"longName": "Canadian Centre for Climate Modelling and Analysis",
+			"name": "CCCMA",
+			"uid": "3ac3e42b-7f07-4127-a95b-6011cfa0bfec"
+		},
+		{
+			"country": "CN",
+			"homepage": "http://bcc.cma.gov.cn/en/",
+			"id": 3,
+			"key": "BCC",
+			"longName": "Beijing Climate Center, China Meteorological Administration",
+			"name": "BCC",
+			"uid": "c3698dbe-0a8d-4b12-b30a-dbb43b13f530"
+		},
+		{
+			"country": "CN",
+			"homepage": "http://www.fio.org.cn/",
+			"id": 16,
+			"key": "FIO",
+			"longName": "The First Institute of Oceanography, SOA, China",
+			"name": "FIO",
+			"uid": "97242ba1-e276-4a09-9472-df98d979cdcc"
+		},
+		{
+			"country": "CN",
+			"homepage": "http://www.bnu.edu.cn/gces/",
+			"id": 4,
+			"key": "GCESS",
+			"longName": "College of Global Change and Earth System Science, Beijing Normal University",
+			"name": "GCESS",
+			"uid": "eb5526cd-bdcd-4453-a066-ed544a332756"
+		},
+		{
+			"country": "CN",
+			"homepage": "http://www.iap.ac.cn/ http://www.tsinghua.edu.cn/publish/cessen/",
+			"id": 14,
+			"key": "LASG-CESS",
+			"longName": "LASG, Institute of Atmospheric Physics, Chinese Academy of Sciences and CESS,Tsinghua University",
+			"name": "LASG-CESS",
+			"uid": "5220f1f8-5600-47f0-89ad-9c8d0a3a9a12"
+		},
+		{
+			"country": "CN",
+			"homepage": "http://www.iap.ac.cn/",
+			"id": 15,
+			"key": "LASG-IAP",
+			"longName": "LASG, Institute of Atmospheric Physics, Chinese Academy of Sciences",
+			"name": "LASG-IAP",
+			"uid": "a5f59143-fb89-4405-a99d-5912ef0e3178"
+		},
+		{
+			"country": "DE",
+			"homepage": "http://www.mpimet.mpg.de/",
+			"id": 26,
+			"key": "MPI-M",
+			"longName": "Max Planck Institute for Meteorology",
+			"name": "MPI-M",
+			"uid": "196b325b-c98f-4444-bd61-3ccae69bcffc"
+		},
+		{
+			"country": "FR",
+			"homepage": "http://www.cerfacs.fr/",
+			"id": 11,
+			"key": "CNRM-CERFACS",
+			"longName": "Centre National de Recherches Meteorologiques / Centre Europeen de Recherche et de Formation Avancee en Calcul Scientifique",
+			"name": "CNRM-CERFACS",
+			"uid": "3de17983-6198-4126-a74f-6c98ea99b321"
+		},
+		{
+			"country": "FR",
+			"homepage": "http://www.ipsl.fr/",
+			"id": 24,
+			"key": "IPSL",
+			"longName": "Institut Pierre Simon Laplace",
+			"name": "IPSL",
+			"uid": "26ec376e-29a6-4cb6-95f3-8e0e166c84bd"
+		},
+		{
+			"country": "IT",
+			"homepage": "http://www.cmcc.it/",
+			"id": 10,
+			"key": "CMCC",
+			"longName": "Centro Euro-Mediterraneo per I Cambiamenti Climatici",
+			"name": "CMCC",
+			"uid": "6fafe1b6-789d-4679-802a-fa18db6b29c9"
+		},
+		{
+			"country": "JP",
+			"homepage": "http://www.ccsr.u-tokyo.ac.jp/",
+			"id": 25,
+			"key": "MIROC",
+			"longName": "Japan Agency for Marine-Earth Science and Technology, Atmosphere and Ocean Research Institute (The University of Tokyo), and National Institute for Environmental Studies",
+			"name": "MIROC",
+			"uid": "847150cb-c399-4257-a853-27e7c8c9faa7"
+		},
+		{
+			"country": "JP",
+			"homepage": "http://www.mri-jma.go.jp/",
+			"id": 27,
+			"key": "MRI",
+			"longName": "Meteorological Research Institute",
+			"name": "MRI",
+			"uid": "88a215f4-8077-44bd-a567-7cd67ad75cd7"
+		},
+		{
+			"country": "JP",
+			"homepage": "http://www.ccsr.u-tokyo.ac.jp/~satoh/nicam/index.html",
+			"id": 28,
+			"key": "NICAM",
+			"longName": "Nonhydrostatic Icosahedral Atmospheric Model Group",
+			"name": "NICAM",
+			"uid": "fe9b7ebb-23f0-4bfe-9cdd-887ef872de36"
+		},
+		{
+			"country": "KR",
+			"homepage": "http://www.nimr.go.kr/MA/main.jsp",
+			"id": 21,
+			"key": "NIMR-KMA",
+			"longName": "National Institute of Meteorological Research/Korea Meteorological Administration",
+			"name": "NIMR-KMA",
+			"uid": "104f8960-9351-47cb-b7dd-7019b0294ef1"
+		},
+		{
+			"country": "NL",
+			"homepage": "http://ecearth.knmi.nl/",
+			"id": 13,
+			"key": "EC-EARTH",
+			"longName": "EC-EARTH",
+			"name": "EC-EARTH",
+			"uid": "e6c0a55f-5a2f-4c28-8810-fc2277caa1bb"
+		},
+		{
+			"country": "NO",
+			"homepage": "http://www.cicero.uio.no/",
+			"id": 29,
+			"key": "NCC",
+			"longName": "Norwegian Climate Centre",
+			"name": "NCC",
+			"uid": "7687372a-827c-4260-868d-10bb1e35e095"
+		},
+		{
+			"country": "RU",
+			"homepage": "http://www.inm.ras.ru/",
+			"id": 23,
+			"key": "INM",
+			"longName": "Institute of Numerical Mathematics",
+			"name": "INM",
+			"uid": "64a15e68-da78-46e9-a14e-c2ad8e95bc1b"
+		},
+		{
+			"country": "UK",
+			"homepage": "http://badc.nerc.ac.uk/home/index.html",
+			"id": 1,
+			"key": "BADC",
+			"longName": "British Atmospheric Data Centre",
+			"name": "BADC",
+			"uid": "ef38700d-74ca-45e3-a783-3cb62f649b81"
+		},
+		{
+			"country": "UK",
+			"homepage": "http://www.metoffice.gov.uk/climatechange/science/hadleycentre/",
+			"id": 22,
+			"key": "MOHC",
+			"longName": "Met Office Hadley Centre",
+			"name": "MOHC",
+			"uid": "7aa7a531-1bc0-464c-b684-d32e01ab73f5"
+		},
+		{
+			"country": "US",
+			"homepage": "http://www.giss.nasa.gov/",
+			"id": 20,
+			"key": "NASA-GISS",
+			"longName": "NASA Goddard Institute for Space Studies",
+			"name": "NASA-GISS",
+			"uid": "a8265050-c0f9-4cc3-bcf8-3378092f5ac6"
+		},
+		{
+			"country": "US",
+			"homepage": "https://gmao.gsfc.nasa.gov/",
+			"id": 18,
+			"key": "NASA-GMAO",
+			"longName": "NASA Global Modeling and Assimilation Office",
+			"name": "NASA-GMAO",
+			"uid": "e8d9882d-7db0-4766-907d-bb6c4b107908"
+		},
+		{
+			"country": "US",
+			"homepage": "http://ncar.ucar.edu/",
+			"id": 7,
+			"key": "NCAR",
+			"longName": "National Center for Atmospheric Research",
+			"name": "NCAR",
+			"uid": "801ef71a-cfa0-4ac0-b11a-a03d41aab267"
+		},
+		{
+			"country": "US",
+			"homepage": "http://www.ncep.noaa.gov/",
+			"id": 9,
+			"key": "NCEP",
+			"longName": "National Centers for Environmental Prediction",
+			"name": "NCEP",
+			"uid": "61d7af63-3518-4101-aee8-b2abb552b3d3"
+		},
+		{
+			"country": "US",
+			"homepage": "http://www.gfdl.noaa.gov/",
+			"id": 19,
+			"key": "NOAA-GFDL",
+			"longName": "NOAA Geophysical Fluid Dynamics Laboratory",
+			"name": "NOAA-GFDL",
+			"uid": "cfb7da1e-cfb8-4c31-be3e-339dc8239801"
+		},
+		{
+			"country": "US",
+			"homepage": "http://www.cesm.ucar.edu/",
+			"id": 8,
+			"key": "NSF-DOE-NCAR",
+			"longName": "Community Earth System Model Contributors",
+			"name": "NSF-DOE-NCAR",
+			"uid": "d7811b0c-4d06-4668-877b-45daae62dfd0"
+		},
+		{
+			"country": "US",
+			"homepage": "http://www.rsmas.miami.edu/",
+			"id": 6,
+			"key": "RSMAS",
+			"longName": "University of Miami - RSMAS",
+			"name": "RSMAS",
+			"uid": "a0067c45-32d4-4e79-9165-e3f364f90b20"
+		}
+	]
+}

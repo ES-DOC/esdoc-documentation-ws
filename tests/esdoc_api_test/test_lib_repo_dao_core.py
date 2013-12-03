@@ -185,13 +185,13 @@ def test_get_by_facet_03():
     dao.insert(collection)
 
     # Set sort fields.
-    fields = sorted(map(lambda i : i.Field_01, collection))
+    fields = sorted(map(lambda i : i.ShortName, collection))
 
     # Assert sorted collection.
     collection = dao.get_by_facet(type, None, get_iterable=True)
     tu.assert_collection(collection, length=3, item_type=type)
     for i in range(len(collection)):
-        tu.assert_string(fields[i], collection[i].Field_01)
+        tu.assert_string(fields[i], collection[i].ShortName)
 
 
 def test_get_by_facet_04():
@@ -207,14 +207,14 @@ def test_get_by_facet_04():
     dao.insert(collection)
     
     # Set sort fields.
-    fields = sorted(map(lambda i : i.Field_02, collection))
+    fields = sorted(map(lambda i : i.LongName, collection))
     
     # Assert ordered collection.
     collection = dao.get_by_facet(type, None, get_iterable=True,
-                                  order_by=type.Field_02)
+                                  order_by=type.LongName)
     tu.assert_collection(collection, length=3, item_type=type)
     for i in range(len(collection)):
-        tu.assert_string(fields[i], collection[i].Field_02)
+        tu.assert_string(fields[i], collection[i].LongName)
 
 
 def test_get_by_id():

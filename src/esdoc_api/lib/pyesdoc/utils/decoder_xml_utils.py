@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.utils.decoder_xml_utils.py
+.. module:: pyesdoc.utils.decoder_xml_utils.py
 
    :copyright: @2013 Earth System Documentation (http://es-doc.org)
    :license: GPL / CeCILL
@@ -223,7 +223,7 @@ _simple_type_decoders = {
 def set_attributes(target, xml, nsmap, decodings):
     """Decodes entity attributes from a collection of decodings.
 
-    :param target: A esdoc_api.lib.pyesdoc object with a set of attributes to be assigned.
+    :param target: A pyesdoc object with a set of attributes to be assigned.
     :type target: object
 
     :param xml: An xml element.
@@ -235,7 +235,7 @@ def set_attributes(target, xml, nsmap, decodings):
     :param decodings: Set of mappings used to perform decoding.
     :type decodings: dict
 
-    :returns: A esdoc_api.lib.pyesdoc object with assigned attributes.
+    :returns: A pyesdoc object with assigned attributes.
     :rtype: object
     
     """
@@ -267,7 +267,7 @@ def set_attributes(target, xml, nsmap, decodings):
 def _set_attribute(target, xml, nsmap, attr, decoder, xpath, is_simple_type, is_iterable):
     """Decodes entity attribute from a decoding.
 
-    :param target: A esdoc_api.lib.pyesdoc object with a set of attributes to be assigned.
+    :param target: A pyesdoc object with a set of attributes to be assigned.
     :type target: object
 
     :param xml: An xml element.
@@ -291,7 +291,7 @@ def _set_attribute(target, xml, nsmap, attr, decoder, xpath, is_simple_type, is_
     :param is_iterable: flag indicating whether attribute is iterable or not.
     :type is_iterable: bool
 
-    :returns: A esdoc_api.lib.pyesdoc object with assigned attribute.
+    :returns: A pyesdoc object with assigned attribute.
     :rtype: object
 
     """

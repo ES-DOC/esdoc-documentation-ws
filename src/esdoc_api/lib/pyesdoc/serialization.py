@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.serialization.py
+.. module:: pyesdoc.serialization.py
    :copyright: @2013 Earth System Documentation (http://es-doc.org)
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -10,7 +10,7 @@
 
 """
 # Module imports.
-from . utils import (
+from .utils import (
     runtime as rt,
     serializer_dict,
     serializer_json,
@@ -20,7 +20,7 @@ from . utils import (
 
 
 
-# Set of supported ESDOC encodings.
+# Supported ESDOC encodings.
 ESDOC_ENCODING_DICT = 'dict'
 ESDOC_ENCODING_JSON = 'json'
 ESDOC_ENCODING_XML = 'xml'
@@ -38,13 +38,13 @@ ESDOC_ENCODINGS_CUSTOM = (
     METAFOR_CIM_XML_ENCODING,
 )
 
-# Standard ESDOC encodings.
+# Map of standard ESDOC encodings to MIME types.
 ESDOC_ENCODING_HTTP_MEDIA_TYPES = {
     ESDOC_ENCODING_JSON : "application/json",
     ESDOC_ENCODING_XML : "application/xml"
 }
 
-# Set of supported sesrializers keyed by encoding.
+# Map of encodings to serializers.
 _serializers = {
     ESDOC_ENCODING_DICT : serializer_dict,
     ESDOC_ENCODING_JSON : serializer_json,
@@ -67,11 +67,11 @@ def _assert_doc(doc):
 def _assert_representation(repr):
     """Asserts that the representation is decodable."""
     if repr is None:
-        _raise("Documents cannot be decoded from null objects.")
+        rt.throw("Documents cannot be decoded from null objects.")
 
 
 def decode(repr, encoding):
-    """Decodes a esdoc_api.lib.pyesdoc document representation.
+    """Decodes a pyesdoc document representation.
 
     :param repr: A document representation (e.g. json).
     :type repr: str
@@ -79,7 +79,7 @@ def decode(repr, encoding):
     :param encoding: A document encoding (dict|json|xml|metafor-cim-1-xml).
     :type encoding: str
 
-    :returns: A esdoc_api.lib.pyesdoc document instance.
+    :returns: A pyesdoc document instance.
     :rtype: object
 
     """
@@ -90,15 +90,15 @@ def decode(repr, encoding):
 
 
 def encode(doc, encoding):
-    """Encodes a esdoc_api.lib.pyesdoc document instance.
+    """Encodes a pyesdoc document instance.
 
-    :param doc: esdoc_api.lib.pyesdoc document instance.
+    :param doc: pyesdoc document instance.
     :type doc: object
 
     :param encoding: A document encoding (dict|json|xml).
     :type encoding: str
 
-    :returns: A esdoc_api.lib.pyesdoc document representation.
+    :returns: A pyesdoc document representation.
     :rtype: unicode | dict
 
     """
@@ -106,3 +106,22 @@ def encode(doc, encoding):
     _assert_encoding(encoding)
 
     return _serializers[encoding].encode(doc)
+
+
+def convert(repr, encoding_from, encoding_to):
+    """Converts one encoding to another.
+
+    :param repr: A document representation (e.g. json).
+    :type repr: str
+
+    :param encoding_from: A document encoding (dict|json|xml).
+    :type encoding_from: str
+
+    :param encoding_to: A document encoding (dict|json|xml).
+    :type encoding_to: str
+
+    :returns: A pyesdoc document representation.
+    :rtype: str
+
+    """
+    return encode(decode(repr, encoding_from), encoding_to)

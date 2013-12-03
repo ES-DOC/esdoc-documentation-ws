@@ -98,6 +98,14 @@ from esdoc_api.models.vocab import (
 import esdoc_api.lib.utils.runtime as rt
 
 
+# Set of supported model domain partiions (maps to db schemas).
+PARTITIONS = set([
+    'docs',
+    'facets',
+    'ingest',
+    'vocab'
+    ])
+
 
 # Set of supported model types - useful for testing scenarios.
 supported_types = (

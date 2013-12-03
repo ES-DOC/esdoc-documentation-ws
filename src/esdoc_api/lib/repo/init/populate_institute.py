@@ -159,7 +159,6 @@ def populate_institute():
     # NASA GMAO.
     i = models.Institute()
     i.Name = "NASA-GMAO"
-    i.Synonym = "NASA GMAO"
     i.LongName = "NASA Global Modeling and Assimilation Office"
     i.CountryCode = "US"
     i.URL = "https://gmao.gsfc.nasa.gov/"
@@ -168,7 +167,6 @@ def populate_institute():
     # NOAA-GFDL.
     i = models.Institute()
     i.Name = "NOAA-GFDL"
-    i.Synonym = "NOAA GFDL"
     i.LongName = "NOAA Geophysical Fluid Dynamics Laboratory"
     i.CountryCode = "US"
     i.URL = "http://www.gfdl.noaa.gov/"
@@ -176,8 +174,7 @@ def populate_institute():
     
     # NASA GISS.
     i = models.Institute()
-    i.Name = "NASA GISS"
-    i.Synonym = "NASA-GISS"
+    i.Name = "NASA-GISS"
     i.LongName = "NASA Goddard Institute for Space Studies"
     i.CountryCode = "US"
     i.URL = "http://www.giss.nasa.gov/"
@@ -186,7 +183,6 @@ def populate_institute():
     # NIMR-KMA.
     i = models.Institute()
     i.Name = "NIMR-KMA"
-    i.Synonym = "NIMR/KMA"
     i.LongName = "National Institute of Meteorological Research/Korea Meteorological Administration"
     i.CountryCode = "KR"
     i.URL = "http://www.nimr.go.kr/MA/main.jsp"

@@ -51,11 +51,11 @@ def execute():
     """Executes repo setup.
 
     """
-    rt.log("REPOSITORY POPULATION BEGINS")
+    rt.log("DB POPULATION BEGINS")
 
     for f in _populators:
-        rt.log("ES-DOC API :: REPOSITORY POPULATION :: {0}".format(f.__name__))
+        rt.log("DB POPULATION :: {0}".format(f.__name__))
         f()
 
-    rt.log("REPOSITORY POPULATION ENDS")
+    rt.log("DB POPULATION ENDS")
 

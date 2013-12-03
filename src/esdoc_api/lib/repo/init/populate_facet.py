@@ -18,7 +18,7 @@ def populate_facet():
         # Create.
         i = models.Facet()
         i.Key = institute.Name.upper()
-        i.Type_ID = models.ID_OF_FACET_INSTITUTE
+        i.Type_ID = models.ID_OF_FACET_INSTITUTE + 1
         i.Value = institute.Name
 
         # Persist.

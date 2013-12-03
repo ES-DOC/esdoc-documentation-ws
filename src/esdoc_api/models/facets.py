@@ -167,6 +167,7 @@ class Facet(Entity):
 
     # Foreign keys.
     Type_ID = create_fk('facets.tblFacetType.ID', required=True)
+    Project_ID = create_fk('vocab.tblProject.ID', required=False)
 
     # Field set.
     Key = Column(Unicode(2047), nullable=False)

@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.utils.runtime.py
+.. module:: pyesdoc.utils.runtime.py
    :copyright: Copyright "Feb 7, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
@@ -195,7 +195,7 @@ def assert_attr(instance, attr, msg=None):
 
 
 def assert_doc(name, value, msg=None):
-    """Asserts thay passed variable is a esdoc_api.lib.pyesdoc object instance.
+    """Asserts thay passed variable is a pyesdoc object instance.
 
     :param name: Variable name.
     :type name: str
@@ -209,7 +209,7 @@ def assert_doc(name, value, msg=None):
     """
     def get_msg():
         return msg if msg is not None else \
-               "{0} is not a esdoc_api.lib.pyesdoc type instance".format(name)
+               "{0} is not a pyesdoc type instance".format(name)
 
     assert_var(name, value, object, msg=get_msg)
     assert_attr(value, 'doc_info', msg="Document meta-information is missing")
@@ -262,8 +262,7 @@ def throw(msg):
     :type msg: str
 
     """
-    raise PYESDOC_Exception(msg)
-
+    raise_error(msg)
 
 
 def log(msg):
@@ -273,4 +272,5 @@ def log(msg):
     :type msg: str
 
     """
+    # TODO Implement proper logging.
     print "ES-DOC API :: " + str(msg)

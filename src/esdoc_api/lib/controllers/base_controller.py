@@ -8,7 +8,6 @@ import logging
 import sys
 import httplib
 import json
-import simplejson
 import warnings
 import time
 from abc import ABCMeta
@@ -75,9 +74,6 @@ class BaseController(WSGIController):
             action,
             datetime.now()))
 
-        # Setup ORM session.
-        repo_session.start(engine_from_config(config, 'sqlalchemy.'))
-
         # Set common context info.
         c.timestamp = datetime.now()
         c.path = request.path
@@ -91,9 +87,6 @@ class BaseController(WSGIController):
         """Post action invocation handler.
 
         """
-        # Ensure ORM session is killed.
-        repo_session.end()
-
         rt.log("{0} CONTROLLER INVOKE END :: {1} :: {2}".format(
             self.controller_type_description,
             action,

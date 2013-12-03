@@ -7,7 +7,6 @@
 
 
 """
-
 # Module imports.
 from lxml import etree as et
 
@@ -23,6 +22,7 @@ import esdoc_api.lib.utils.runtime as rt
 import esdoc_api.lib.api.comparator_setup as comparator
 
 
+
 # Project code.
 _PROJECT = 'CMIP5'
 
@@ -33,8 +33,7 @@ _ONTOLOGY = 'cim.1'
 _CIM_XML_1_5_SCHEMA = 'http://www.purl.org/org/esmetadata/cim/1.5/schemas'
 _CIM_XML_1_5_XSD = 'http://www.purl.org/org/esmetadata/cim/1.5/schemas/cim.xsd'
 
-
-# XPaths for accessing document set xml fragments.
+# XPaths for accessing xml fragments.
 _XPATH_DOC_SET = '/cim:CIMDocumentSet/*'
 _XPATH_DOC_SET_SIMULATION = 'child::cim:simulationRun'
 _XPATH_DOC_SET_SIMULATION_ID = 'child::cim:simulationRun/child::cim:documentID/text()'
@@ -55,9 +54,20 @@ _MODEL_OVERRIDES = {
     'BCC_CSM1.1' : 'BCC-CSM1.1'
 }
 
+# Set of institute name overrides (workaround for questionnaire bug).
+_INSTITUTE_OVERRIDES = {
+    'CMA-BCC' : 'BCC',
+    'CNRM-GAME' : 'CNRM-CERFACS',
+    'GFDL' : 'NOAA-GFDL',
+    'GISS' : 'NASA-GISS',
+    'NASA GISS' : 'NASA-GISS',
+    'NASA' : 'NASA-GISS',
+    'NIMR/KMA' : 'NIMR-KMA',
+    'Steve' : 'CSIRO-QCCCE',
+}
+
 # Set of comparators associated with CMIP5.
 _COMPARATOR_TYPES = [ 'c1' ]
-
 
 
 class Ingestor(FeedIngestorBase):
@@ -77,106 +87,32 @@ class Ingestor(FeedIngestorBase):
                                        content_parser=self.parse_feed_entry)
 
 
-    def parse_feed_entry(self, content):
-        """Parses feed entry content.
-
-        :param content: Feed entry content.
-        :type content: str
-        :returns: Parsed feed entry content.
-        :rtype: str
-
-        """
-        # Workaround :: Replace erroneous XML schema declaration.
-        return content.replace(_CIM_XML_1_5_XSD, _CIM_XML_1_5_SCHEMA)
-
-
-    def parse_document(self, doc, etree, nsmap):
-        """Parser over deserialized pyesdoc document.
-
-        :param doc: Deserialized pyesdoc document representation.
-        :type doc: python object
-
-        :param etree: Document XML.
-        :type etree: lxml.etree
-
-        :param nsmap: Document XML namespaces.
-        :type nsmap: dict
-
-        """
-        if doc.type_key == cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT:
-            # Workaround :: Set numerical experiment document version.
-           if doc.doc_info.version is None:
-            version = etree.xpath(_XPATH_DOC_VERSION_FOR_NUM_EXP, namespaces=nsmap)
-            if version is not None and len(version) > 0:
-                doc.doc_info.version = str(version[0])
-
-        if doc.type_key == cim_v1.TYPE_KEY_MODEL_COMPONENT:
-            # Workaround :: Suppress root model component properties.
-            doc.properties = []
-            
-            # Workaround :: Override invalid model names.
-            if doc.short_name in _MODEL_OVERRIDES:
-                doc.short_name = _MODEL_OVERRIDES[doc.short_name]
-            
-
-    def set_institute(self, document, document_by_drs=None):
+    def _set_institute(self, document):
         """Assigns institute to document.
 
         :param document: A document being ingested.
-        :param document_by_drs: DRS keys associated with a document.
-        :type document: esdoc_api.models.Document        
-        :type document_by_drs: esdoc_api.models.DocumentDRS
-
+        :type document: esdoc_api.models.Document
+        
         """
         # Escape when assigning institute is unnecessary.
         if document.Institute_ID is not None or \
            document.Type == cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT:
             return
 
-        def get_code(responsible_parties):
-            code = None
-            for rp in responsible_parties:
-                if rp.role == 'centre':
-                    code = rp.abbreviation
-                    break;
-            if code is None:
-                for rp in responsible_parties:
-                    if rp.role == 'contact' and rp.abbreviation is not None:
-                        code = rp.abbreviation
-                        break;
-            return code
+        # Get institute code.
+        code = document.as_obj.doc_info.institute
+        if code in _INSTITUTE_OVERRIDES:
+            code = _INSTITUTE_OVERRIDES[code]
 
-        def get_id(name):
-            i = dao.get_by_name(Institute, name)
-            return i.ID if i is not None else None
-
-
-        code = None
-
-        # Set institute code from drs path.
-        if document_by_drs is not None:
-            if document_by_drs.Key_01 is not None :
-                code = document_by_drs.Key_01
-
-        # Set institute code from responsibile parties for models and platforms.
-        elif document.as_obj is not None and \
-             document.Type in [cim_v1.TYPE_KEY_MODEL_COMPONENT, cim_v1.TYPE_KEY_PLATFORM]:
-            try:
-                code = get_code(document.as_obj.responsible_parties)
-            except AttributeError:
-                try:
-                    code = get_code(document.as_obj.contacts)
-                except AttributeError:
-                    pass
-
-        # Either assign institute or output warning.
-        if code is not None:
-            document.Institute_ID = get_id(code)
-        else:
+        # Map code to institute entry in repo.
+        institute = dao.get_by_name(Institute, code)
+        if institute is None:
             rt.log("WARNING :: institute code unknown :: {0}".format(code))
+        else:
+            document.Institute_ID = institute.ID
 
 
-    def set_ensemble_members(self, simulation, drs):
+    def _set_ensemble_members(self, simulation, drs):
         """Assigns set of simulation ensemble members.
 
         :param simulation: A simulation document being ingested.
@@ -195,7 +131,7 @@ class Ingestor(FeedIngestorBase):
                         id_drs.reset_path()
 
 
-    def set_facets(self, document):
+    def _set_facets(self, document):
         """Assigns facets derived from an ingested document.
 
         :param document: A document being ingested.
@@ -210,39 +146,43 @@ class Ingestor(FeedIngestorBase):
             document.IsIndexed = True
 
 
-    def get_drs_keys(self, simulation):
+    def _get_drs_keys(self, doc):
         """Returns a set of simulation drs keys.
 
-        :param simulation: A simulation document being ingested.
-        :type simulation: esdoc_api.models.Document
+        :param doc: A simulation document being ingested.
+        :type doc: pyesdoc object
+        
         :returns: A set of simulation DRS keys as encoded in XML document.
         :rtype: str
 
         """
         keys = []
-        for key in self.get_drs_path(simulation).split(_DRS_SPLIT):
+        
+        for key in self._get_drs_path(doc).split(_DRS_SPLIT):
             key = key.split(" ")
             keys.append(key[len(key) - 1])
+            
         return keys
     
 
-    def get_drs_path(self, simulation):
+    def _get_drs_path(self, doc):
         """Returns a simulation drs path.
 
-        :param simulation: A simulation document being ingested.
-        :type simulation: esdoc_api.models.Document
+        :param doc: A simulation document being ingested.
+        :type doc: pyesdoc object
+        
         :returns: A simulation DRS path as encoded in XML document.
         :rtype: str
 
         """
-        for id in simulation.as_obj.doc_info.external_ids:
+        for id in doc.doc_info.external_ids:
             for standard in id.standards:
                 if standard.name == 'QN_DRS':
                     return id.value.upper()
         return None
 
 
-    def ingest_simulation_document_set(self, etree, nsmap):
+    def _ingest_document_set(self, etree, nsmap):
         """Ingests a cim simulation document set.
 
         :param etree: Document XML.
@@ -255,28 +195,41 @@ class Ingestor(FeedIngestorBase):
         :rtype: esdoc_api.models.Document
 
         """
-        def do_ingest(xml):
-            return self.ingest_document(xml, nsmap, self.parse_document)
+        def set_model_and_experiment(left, right=None):
+            if right is None:
+                right = left
+            left.summary.Model = right.summary.Field_02
+            left.summary.Experiment = right.summary.Field_03
 
-        # Ingest simulation document.
+        def do_ingest(xml, parent=None):
+            return self.ingest_document(xml, nsmap, parent)
+
         simulation = None
-        children = []
+        
+        # Ingest simulation document.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
             if get_tag_name(elem) == cim_v1.XML_TAG_SIMULATION_RUN:
                 simulation = do_ingest(elem)
                 break
         if simulation is None:
             rt.throw("CMIP5Q documentset must contain a simulation.")
+        set_model_and_experiment(simulation)
 
         # Ingest associated documents.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
             if get_tag_name(elem) != cim_v1.XML_TAG_SIMULATION_RUN:
-                utils.create_sub_doc(simulation, do_ingest(elem))                
+                doc = do_ingest(elem, simulation.as_obj)
+                utils.create_sub_doc(simulation, doc)
+                if get_tag_name(elem) not in [
+                        cim_v1.XML_TAG_MODEL_COMPONENT, 
+                        cim_v1.XML_TAG_NUMERICAL_EXPERIMENT
+                    ]:
+                    set_model_and_experiment(doc, simulation)
 
         return simulation
 
 
-    def process_simulation_document_set(self, etree, nsmap):
+    def _process_document_set(self, etree, nsmap):
         """Processes a simulation document set.
 
         :param etree: Document XML.
@@ -297,15 +250,15 @@ class Ingestor(FeedIngestorBase):
             return
 
         # Create.
-        simulation = self.ingest_simulation_document_set(etree, nsmap)
+        simulation = self._ingest_document_set(etree, nsmap)
 
         # Assign drs.
-        drs = utils.create_doc_drs(simulation, self.get_drs_keys(simulation))
+        drs = utils.create_doc_drs(simulation, self._get_drs_keys(simulation.as_obj))
         if drs is not None:
-            self.set_ensemble_members(simulation, drs)
+            self._set_ensemble_members(simulation, drs)
 
         # Assign institute.
-        self.set_institute(simulation, drs)
+        self._set_institute(simulation)
         for child in simulation.children:
             if child.Type not in [cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT]:
                 child.Institute_ID = simulation.Institute_ID
@@ -313,11 +266,11 @@ class Ingestor(FeedIngestorBase):
 
         # Assign summary.
         if drs is not None:
-            simulation.Summaries[0].Field_03 = drs.Key_01
-            simulation.Summaries[0].Field_04 = drs.Key_02
-            simulation.Summaries[0].Field_05 = drs.Key_03
-            simulation.Summaries[0].Field_06 = drs.Key_04
-            simulation.Summaries[0].Field_07 = drs.Key_05
+            simulation.Summaries[0].Field_01 = drs.Key_01
+            simulation.Summaries[0].Field_02 = drs.Key_02
+            simulation.Summaries[0].Field_03 = drs.Key_03
+            simulation.Summaries[0].Field_04 = drs.Key_04
+            simulation.Summaries[0].Field_05 = drs.Key_05
 
         # Print.
         msg = "CREATED DOC SET :: ID={0} UID={1} V={2} DOCS={3}."
@@ -327,7 +280,7 @@ class Ingestor(FeedIngestorBase):
         return simulation
 
 
-    def process_document(self, etree, nsmap):
+    def _process_document(self, etree, nsmap):
         """Processes a document.
 
         :param etree: Document XML.
@@ -339,13 +292,88 @@ class Ingestor(FeedIngestorBase):
 
         """
         # Ingest.
-        document = self.ingest_document(etree, nsmap, self.parse_document)
+        document = self.ingest_document(etree, nsmap)
 
         # Perform post deserialization tasks.
-        for task in [self.set_institute, self.set_facets]:
+        for task in [self._set_institute, self._set_facets]:
             task(document)
 
         return document
+
+
+    def parse_feed_entry(self, content):
+        """Parses feed entry content.
+
+        :param content: Feed entry content.
+        :type content: str
+        :returns: Parsed feed entry content.
+        :rtype: str
+
+        """
+        # Workaround :: Replace erroneous XML schema declaration.
+        return content.replace(_CIM_XML_1_5_XSD, _CIM_XML_1_5_SCHEMA)
+
+
+    def on_doc_decoded(self, doc, etree, nsmap):
+        """On document decoded handler.
+
+        :param doc: Deserialized pyesdoc document representation.
+        :type doc: python object
+
+        :param etree: Document XML.
+        :type etree: lxml.etree
+
+        :param nsmap: Document XML namespaces.
+        :type nsmap: dict
+
+        """
+        super(Ingestor, self).on_doc_decoded(doc, etree, nsmap)
+
+        def get_institute(responsible_parties):
+            code = None
+            for rp in responsible_parties:
+                if rp.role == 'centre':
+                    code = rp.abbreviation
+                    break;
+            if code is None:
+                for rp in responsible_parties:
+                    if rp.role == 'contact' and rp.abbreviation is not None:
+                        code = rp.abbreviation
+                        break;
+            return code
+
+        
+        # Workaround :: Set numerical experiment document version.
+        if doc.type_key == cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT and\
+           doc.doc_info.version is None:
+            version = etree.xpath(_XPATH_DOC_VERSION_FOR_NUM_EXP, namespaces=nsmap)
+            if version is not None and len(version) > 0:
+                doc.doc_info.version = str(version[0])
+
+        # Workaround :: Suppress root model component properties.
+        if doc.type_key == cim_v1.TYPE_KEY_MODEL_COMPONENT:
+            doc.properties = []
+
+        # Workaround :: Override invalid model names.
+        if doc.type_key == cim_v1.TYPE_KEY_MODEL_COMPONENT:
+            if doc.short_name in _MODEL_OVERRIDES:
+                doc.short_name = _MODEL_OVERRIDES[doc.short_name]
+
+        # Workaround :: Derive institute code - 1.
+        if doc.type_key in [cim_v1.TYPE_KEY_MODEL_COMPONENT, cim_v1.TYPE_KEY_PLATFORM]:
+            try:
+                doc.doc_info.institute = get_institute(doc.responsible_parties)
+            except AttributeError:
+                try:
+                    doc.doc_info.institute = get_institute(doc.contacts)
+                except AttributeError:
+                    pass
+
+        # Workaround :: Derive institute code - 2.
+        if doc.type_key == cim_v1.TYPE_KEY_SIMULATION_RUN:
+            drs_keys = self._get_drs_keys(doc)
+            if len(drs_keys) > 0:
+                doc.doc_info.institute = drs_keys[0]
 
 
     def ingest_feed_entry(self, content):
@@ -369,11 +397,11 @@ class Ingestor(FeedIngestorBase):
         
         # Process document sets.
         elif get_tag_name(etree) == cim_v1.XML_TAG_DOCUMENT_SET:
-            return self.process_simulation_document_set(etree, nsmap)
+            return self._process_document_set(etree, nsmap)
 
         # Process single documents.
         else:
-            return self.process_document(etree, nsmap)
+            return self._process_document(etree, nsmap)
 
 
     def on_feed_ingested(self):

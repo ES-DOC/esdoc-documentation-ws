@@ -10,24 +10,24 @@
 
 # Module imports.
 from esdoc_api.models import Project
-import esdoc_api.lib.api.external_id_cmip5_dataset as cmip5_dataset
-import esdoc_api.lib.api.external_id_cmip5_file as cmip5_file
-import esdoc_api.lib.api.external_id_cmip5_simulation as cmip5_simulation
-import esdoc_api.lib.api.external_id_dcmip2012_dataset as dcmip2012_dataset
-import esdoc_api.lib.api.external_id_dcmip2012_file as dcmip2012_file
+import external_id_cmip5_dataset as cmip5_dataset_handler
+import external_id_cmip5_file as cmip5_file_handler
+import external_id_cmip5_simulation as cmip5_simulation_handler
+import external_id_dcmip2012_dataset as dcmip2012_dataset_handler
+import external_id_dcmip2012_file as dcmip2012_file_handler
 
 
 
 # Set of supported query handlers keyed by project.
 _handlers = {
     'cmip5' : {
-        'dataset' : cmip5_dataset,
-        'file' : cmip5_file,
-        'simulation' : cmip5_simulation
+        'dataset' : cmip5_dataset_handler,
+        'file' : cmip5_file_handler,
+        'simulation' : cmip5_simulation_handler
     },
     'dcmip-2012' : {
-        'dataset' : dcmip2012_dataset,
-        'file' : dcmip2012_file
+        'dataset' : dcmip2012_dataset_handler,
+        'file' : dcmip2012_file_handler
     }
 }
 

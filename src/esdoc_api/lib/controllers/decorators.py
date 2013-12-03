@@ -6,10 +6,11 @@ available to Controllers. This module is available to templates as 'h'.
 # Import helpers as desired, or define your own, ie:
 #from webhelpers.html.tags import checkbox, password
 from decorator import decorator
+import json
 import logging
 import sys
 import httplib
-import simplejson
+import uuid
 import warnings
 import datetime
 from pylons import request
@@ -32,11 +33,10 @@ __all__ = ['jsonify', '_jsonify']
 log = logging.getLogger(__name__)
 
 
-class JSONEncoder(simplejson.JSONEncoder):
-    """
-    Extends simplejson to handle specific types.
-    """
+class _JSONEncoder(json.JSONEncoder):
+    """Extends json encoder so as to handle extended types.
 
+    """
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
             return obj.isoformat().replace('T', ' ')
@@ -44,8 +44,10 @@ class JSONEncoder(simplejson.JSONEncoder):
             return obj.isoformat()
         elif isinstance(obj, datetime.time):
             return obj.isoformat()
+        elif isinstance(obj, uuid.UUID):
+            return str(obj)
         else:
-            return simplejson.JSONEncoder.default(self, obj)
+            raise TypeError(repr(obj) + " is not JSON serializable")
 
 
 def _jsonify(cb=None):
@@ -63,11 +65,11 @@ def _jsonify(cb=None):
         if the request includes ``cb=process`` then the output will
         look like ``process({"some": "json"});``.
     ``**dumps_kwargs``
-        Arguments to pass to the ``simplejson.dumps`` function. Can be
+        Arguments to pass to the ``json.dumps`` function. Can be
         useful to specify a specific encoder (using the ``cls``
         argument).
     Use the ``jsonify`` decorator if what you need is JSON and if you
-    don't need to pass specific arguments to ``simplejson.dumps``.
+    don't need to pass specific arguments to ``json.dumps``.
     (``jsonify`` is defined as ``_jsonify()``.)
     """
 
@@ -76,7 +78,7 @@ def _jsonify(cb=None):
 
         # Format json data.
         data = func(*args, **kwargs)
-        output = JSONEncoder().encode(data)
+        output = _JSONEncoder().encode(data)
 
         # Response content type = either jsonp or json.
         cb_name = pylons.request.params.get(cb)

@@ -108,11 +108,11 @@ def test_create_doc_summary():
     summary2 = utils.create_doc_summary(document, language2)
     tu.assert_object(summary2, models.DocumentSummary)
 
-    tu.assert_string(document.as_obj.short_name, summary1.Field_01)
-    tu.assert_string(document.as_obj.long_name, summary1.Field_02)
+    tu.assert_string(document.as_obj.short_name, summary1.ShortName)
+    tu.assert_string(document.as_obj.long_name, summary1.LongName)
 
-    tu.assert_string(document.as_obj.short_name, summary2.Field_01)
-    tu.assert_string(document.as_obj.long_name, summary2.Field_02)
+    tu.assert_string(document.as_obj.short_name, summary2.ShortName)
+    tu.assert_string(document.as_obj.long_name, summary2.LongName)
 
     summary1_ = utils.create_doc_summary(document, language1)
     tu.assert_entity(summary1, summary1_)
@@ -139,15 +139,15 @@ def test_set_doc_summary():
     language = tu.get_test_model(models.DocumentLanguage)
     summary = utils.create_doc_summary(document, language)
 
-    tu.assert_string(doc.short_name, summary.Field_01)
-    tu.assert_string(doc.long_name, summary.Field_02)
+    tu.assert_string(doc.short_name, summary.ShortName)
+    tu.assert_string(doc.long_name, summary.LongName)
 
     doc.short_name = "XXX"
     doc.long_name = "YYY"
     summary = utils.create_doc_summary(document, language)
 
-    tu.assert_string(doc.short_name, summary.Field_01)
-    tu.assert_string(doc.long_name, summary.Field_02)
+    tu.assert_string(doc.short_name, summary.ShortName)
+    tu.assert_string(doc.long_name, summary.LongName)
 
 
 @with_setup(teardown=_teardown)

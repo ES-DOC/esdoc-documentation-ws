@@ -64,6 +64,7 @@ __all__ = [
     'get_document_sub_documents',
     'get_document_summaries',
     'get_document_summary',
+    'get_document_type_count',
     'get_documents_by_external_id',
     'get_facet',
     'get_facet_relation',
@@ -76,6 +77,16 @@ __all__ = [
     'get_project_document_type_counts'
 ]
 
+
+
+def _sort(q, type):
+    """Code simplification helper function that applies and returns a sort."""
+    return sort(DocumentSummary, q.all())
+
+
+def _order(q, expression):
+    """Code simplification helper function that applies a query order."""
+    q = q.order_by(expression) 
 
 
 def get_document(project_id, uid, version=models.DOCUMENT_VERSION_LATEST):
@@ -94,13 +105,13 @@ def get_document(project_id, uid, version=models.DOCUMENT_VERSION_LATEST):
     :rtype: esdoc_api.models.Document
 
     """
-
     q = session.query(Document)
+
     if project_id is not None:
         q = q.filter(Document.Project_ID==project_id)
     q = q.filter(Document.UID==unicode(uid))
     if version is None or version in models.DOCUMENT_VERSIONS:
-        q = q.order_by(Document.Version.desc())
+        _order(q, Document.Version.desc())
     else:
         q = q.filter(Document.Version==int(version))
 
@@ -134,9 +145,10 @@ def get_document_by_name(project_id,
 
     """
     q = session.query(Document)
+
     q = q.filter(Document.Project_ID==project_id)
     q = q.filter(sa.func.upper(Document.Type)==type.upper())
-    q = q.filter(sa.func.upper(Document.Name)==name.upper())    
+    q = q.filter(sa.func.upper(Document.Name)==name.upper())
     if institute_id is not None:
         q = q.filter(Document.Institute_ID==institute_id)
     if latest_only == True:
@@ -192,6 +204,7 @@ def get_document_by_drs_keys(project_id,
 
     """
     q = session.query(Document).join(DocumentDRS)
+
     q = q.filter(Document.Project_ID==project_id)
     if key_01 is not None:
         q = q.filter(DocumentDRS.Key_01==key_01.upper())
@@ -229,6 +242,7 @@ def get_documents_by_external_id(project_id, external_id):
 
     """
     q = session.query(Document).join(DocumentExternalID)
+
     q = q.filter(Document.Project_ID==project_id)
     q = q.filter(DocumentExternalID.ExternalID.like('%' + external_id.upper() + '%'))
 
@@ -249,6 +263,7 @@ def get_document_sub_document(parent_id, child_id):
 
     """
     q = session.query(DocumentSubDocument)
+
     q = q.filter(DocumentSubDocument.Document_ID==parent_id)
     q = q.filter(DocumentSubDocument.SubDocument_ID==child_id)
 
@@ -266,6 +281,7 @@ def get_document_sub_documents(document_id):
 
     """
     q = session.query(DocumentSubDocument)
+
     q = q.filter(DocumentSubDocument.Document_ID==document_id)
 
     return map(lambda sd: get_by_id(Document, sd.SubDocument_ID), q.all())
@@ -288,6 +304,7 @@ def get_document_drs(project_id, document_id, path):
 
     """
     q = session.query(DocumentDRS)
+
     q = q.filter(DocumentDRS.Project_ID==project_id)
     q = q.filter(DocumentDRS.Document_ID==document_id)
     q = q.filter(DocumentDRS.Path==path.upper())
@@ -312,6 +329,7 @@ def get_document_external_id(project_id, document_id, external_id):
 
     """
     q = session.query(DocumentExternalID)
+
     q = q.filter(DocumentExternalID.Project_ID==project_id)
     q = q.filter(DocumentExternalID.Document_ID==document_id)
     q = q.filter(DocumentExternalID.ExternalID==external_id)
@@ -336,6 +354,7 @@ def get_document_external_ids(document_id, project_id=None):
 
     """
     q = session.query(DocumentExternalID)
+
     q = q.filter(DocumentExternalID.Document_ID==document_id)
     if project_id is not None:
         q = q.filter(DocumentExternalID.Project_ID==project_id)
@@ -357,13 +376,19 @@ def get_document_summary(document_id, language_id):
 
     """
     q = session.query(DocumentSummary)
+
     q = q.filter(DocumentSummary.Document_ID==document_id)
     q = q.filter(DocumentSummary.Language_ID==language_id)
 
     return q.first()
 
 
-def get_document_summaries(project_id, type, version, language_id):
+def get_document_summaries(
+    project_id, 
+    type, 
+    version, 
+    language_id, 
+    institute_id=None):
     """Returns a list of DocumentSummary instance with matching criteria.
 
     :param project_id: ID of a Project instance.
@@ -378,22 +403,39 @@ def get_document_summaries(project_id, type, version, language_id):
     :param language_id: ID of a DocumentLanguage instance.
     :type language_id: int
 
+    :param institute_id: ID of an Institute instance.
+    :type institute_id: int
+
     :returns: First DocumentSummary instance with matching document & language.
     :rtype: esdoc_api.models.DocumentSummary
 
     """
+    print "SSS", institute_id
+
+    # Format params.
+    version = version.lower()
+    type = type.upper()
+
+    # Set query.
     q = session.query(DocumentSummary).join(Document)
+
+    # Set params.
     q = q.filter(Document.Project_ID==project_id)
     q = q.filter(DocumentSummary.Language_ID==language_id)
+    if institute_id is not None:
+        print "TTT", institute_id
+        q = q.filter(Document.Institute_ID==institute_id)
     if type != models.DOCUMENT_TYPE_ALL:
-        q = q.filter(Document.Type==type.upper())
-    if version.upper() == models.DOCUMENT_VERSION_LATEST:
+        q = q.filter(sa.func.upper(Document.Type)==type)
+    if version == models.DOCUMENT_VERSION_LATEST:
         q = q.filter(Document.IsLatest==True)
+    q = q.filter(Document.IsChild==False)
 
+    # Apply query limit.
     q = q.limit(session.QUERY_LIMIT)
-    
-    return sort(DocumentSummary, q.all())
 
+    return _sort(q, DocumentSummary)
+    
 
 def get_doc_ontology(name, version=None):
     """Returns a DocumentOntology instance with matching name & version.
@@ -408,10 +450,12 @@ def get_doc_ontology(name, version=None):
     :rtype: esdoc_api.models.DocumentOntology
 
     """
-    q = session.query(DocumentOntology)
     if version is not None:
         name += '.'
         name += str(version)
+
+    q = session.query(DocumentOntology)
+
     q = q.filter(DocumentOntology.Name==name.lower())
 
     return q.first()
@@ -430,7 +474,8 @@ def get_doc_language(code=pyesdoc.ESDOC_DEFAULT_LANGUAGE):
     :rtype: esdoc_api.models.DocumentLanguage
 
     """
-    return get_by_facet(DocumentLanguage, DocumentLanguage.Code==code.lower())
+    return get_by_facet(DocumentLanguage, 
+                        DocumentLanguage.Code==code.lower())
 
 
 def get_ingest_endpoint(url):
@@ -443,7 +488,8 @@ def get_ingest_endpoint(url):
     :rtype: esdoc_api.models.IngestEndpoint
 
     """
-    return get_by_facet(IngestEndpoint, IngestEndpoint.IngestURL==url)
+    return get_by_facet(IngestEndpoint, 
+                        IngestEndpoint.IngestURL==url)
 
 
 def get_ingest_endpoints():
@@ -454,12 +500,11 @@ def get_ingest_endpoints():
 
     """
     q = session.query(IngestEndpoint)
+
     q = q.filter(IngestEndpoint.IsActive==True)
-    q = q.order_by(IngestEndpoint.Priority.desc())
+    _order(q, IngestEndpoint.Priority.desc())
 
     return q.all()
-
-    #return get_active(IngestEndpoint)
 
 
 def get_ingest_url(url):
@@ -489,6 +534,7 @@ def get_facet(type_id, key):
 
     """
     q = session.query(Facet)
+
     q = q.filter(Facet.Type_ID==type_id)
     q = q.filter(Facet.Key==key[:2047])
 
@@ -512,6 +558,7 @@ def get_facet_relation(relation_type_id, from_facet_id, to_facet_id):
 
     """
     q = session.query(FacetRelation)
+
     q = q.filter(FacetRelation.Type_ID==relation_type_id)
     q = q.filter(FacetRelation.From_ID==from_facet_id)
     q = q.filter(FacetRelation.To_ID==to_facet_id)
@@ -559,6 +606,7 @@ def get_doc_representation(document_id, ontology_id, encoding_id, language_id):
 
     """
     q = session.query(DocumentRepresentation)
+
     q = q.filter(DocumentRepresentation.Document_ID==document_id)
     q = q.filter(DocumentRepresentation.Ontology_ID==ontology_id)
     q = q.filter(DocumentRepresentation.Encoding_ID==encoding_id)
@@ -607,8 +655,10 @@ def delete_document_sub_documents(document_id):
     :type document_id: int
 
     """
-    delete_by_facet(DocumentSubDocument, DocumentSubDocument.SubDocument_ID==document_id)
-    delete_by_facet(DocumentSubDocument, DocumentSubDocument.Document_ID==document_id)
+    delete_by_facet(DocumentSubDocument, 
+                    DocumentSubDocument.SubDocument_ID==document_id)
+    delete_by_facet(DocumentSubDocument, 
+                    DocumentSubDocument.Document_ID==document_id)
 
 
 def delete_document_external_ids(document_id):
@@ -664,10 +714,35 @@ def get_project_document_type_counts(project_id):
     
     """
     q = session.query(sa.func.count(Document.Type), Document.Type)
+
     q = q.filter(Document.Project_ID==project_id)
     q = q.group_by(Document.Type)
-    
+
     return q.all()
+
+
+def get_document_type_count(project_id, type):
+    """Returns count over a project's document type.
+
+    :param type: Document type.
+    :type type: str
+
+    :param project_id: ID of a Project instance.
+    :type project_id: int
+
+    :returns: List of counts over a project's document types.
+    :rtype: list
+    
+    """
+    q = session.query(sa.func.count(Document.Type))
+
+    q = q.filter(Document.Project_ID==project_id)
+    q = q.filter(sa.func.upper(Document.Type)==type)
+    q = q.group_by(Document.Type)
+
+    counts = q.all()
+
+    return 0 if not len(counts) else counts[0][0]
 
 
 def get_project_document_language_counts(project_id):
@@ -682,11 +757,11 @@ def get_project_document_language_counts(project_id):
     """
     q = session.query(sa.func.count(DocumentSummary.Language_ID), DocumentSummary.Language_ID)
     q = q.join(Document)
+
     q = q.filter(Document.Project_ID==project_id)
     q = q.group_by(DocumentSummary.Language_ID)
 
     return q.all()
-
 
 
 def get_doc_descriptions(project_id, language_id, type):
@@ -705,8 +780,9 @@ def get_doc_descriptions(project_id, language_id, type):
     :rtype: dict
 
     """
-    q = session.query(Document.Name, DocumentSummary.Description)
+    q = session.query(Document.Name, DocumentSummary.Description)    
     q = q.join(DocumentSummary)
+
     q = q.filter(Document.IsLatest==True)
     q = q.filter(Document.Project_ID==project_id)
     q = q.filter(Document.Type==type)

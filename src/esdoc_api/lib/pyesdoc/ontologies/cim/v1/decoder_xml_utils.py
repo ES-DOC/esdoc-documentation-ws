@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.pyesdoc.ontologies.cim.v1.decoder_xml_utils.py
+.. module:: pyesdoc.ontologies.cim.v1.decoder_xml_utils.py
 
    :copyright: @2013 Earth System Documentation (http://esdocumentation.org)
    :license: GPL / CeCILL
@@ -227,7 +227,7 @@ _simple_type_decoders = {
 def set_attributes(target, xml, nsmap, decodings):
     """Decodes entity attributes from a collection of decodings.
 
-    :param target: A esdoc_api.lib.pyesdoc object with a set of attributes to be assigned.
+    :param target: A pyesdoc object with a set of attributes to be assigned.
     :type target: object
 
     :param xml: An xml element.
@@ -239,7 +239,7 @@ def set_attributes(target, xml, nsmap, decodings):
     :param decodings: Set of mappings used to perform decoding.
     :type decodings: dict
 
-    :returns: A esdoc_api.lib.pyesdoc object with assigned attributes.
+    :returns: A pyesdoc object with assigned attributes.
     :rtype: object
 
     """

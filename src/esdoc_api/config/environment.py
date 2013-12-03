@@ -5,13 +5,15 @@ import sys
 from mako.lookup import TemplateLookup
 from pylons.configuration import PylonsConfig
 from pylons.error import handle_mako_error
+from sqlalchemy import engine_from_config
 
 from esdoc_api.config.routing import make_map
 import esdoc_api.lib.utils.app_globals as app_globals
 import esdoc_api.lib.utils.helpers
 import esdoc_api.lib.utils.runtime as rt
 
-import esdoc_api.lib.pyesdoc as pyesdoc
+import esdoc_api.lib.repo.session as db_session
+
 
 
 def load_environment(global_conf, app_conf):
@@ -36,6 +38,9 @@ def load_environment(global_conf, app_conf):
     # Setup cache object as early as possible
     import pylons
     pylons.cache._push_object(config['pylons.app_globals'].cache)
+
+    # Setup the SQLAlchemy database engine
+    db_session.start(engine_from_config(config, 'sqlalchemy.'))
 
     # Create the Mako TemplateLookup, with the default auto-escaping
     config['pylons.app_globals'].mako_lookup = TemplateLookup(

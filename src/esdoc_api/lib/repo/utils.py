@@ -473,7 +473,12 @@ def set_doc_summary(doc, summary):
 
     summary.Description = get_doc_description(doc)
     for i, field in enumerate(get_doc_summary_fields(doc)):
-        setattr(summary, 'Field_0' + str(i + 1), str(field))
+        if i == 0:
+            summary.ShortName = str(field)
+        elif i == 1:
+            summary.LongName = str(field)
+        else:
+            setattr(summary, 'Field_0' + str(i - 1), str(field))
 
 
 def create_facet_relation(frt, from_facet, to_facet):
@@ -593,9 +598,9 @@ def create_doc_representation(document,
 
     # Update or create as appropriate.
     instance = dao.get_doc_representation(document.ID,
-                                               ontology.ID,
-                                               encoding.ID,
-                                               language.ID)
+                                          ontology.ID,
+                                          encoding.ID,
+                                          language.ID)
     if instance is None:
         instance = create(models.DocumentRepresentation)
         instance.Document_ID = document.ID
@@ -699,8 +704,9 @@ def get_doc_by_obj(project_id, as_obj):
 
     """
     # Retrieve.
-    doc_info = as_obj.doc_info
-    instance = dao.get_document(project_id, doc_info.id, doc_info.version)
+    instance = dao.get_document(project_id,
+                                as_obj.doc_info.id,
+                                as_obj.doc_info.version)
 
     # Assign.
     if instance is not None:
@@ -720,12 +726,12 @@ def _get_cim_v1_doc_summary_field_getters():
         )
 
     def _quality(d):
-        return (
-            d.doc_info.id,
-            d.doc_info.version,
-            None if not len(d.doc_info.external_ids) else \
-                    d.doc_info.external_ids[0].value
-        )
+        if not len(d.doc_info.external_ids):
+            return ()
+        else:
+            return (
+                d.doc_info.external_ids[0].value
+            )
 
     def _data_object(d):
         return (
@@ -740,24 +746,17 @@ def _get_cim_v1_doc_summary_field_getters():
                 d.esm_model_grids[0].long_name
             )
 
-    def _model_component(d):
-        return (
-            d.short_name,
-            d.long_name,
-            None if d.release_date is None else str(d.release_date)
-        )
-
     # Return setter functions organised by document type.
     return {
         cim_v1.TYPE_KEY_DATA_OBJECT : _data_object,
         cim_v1.TYPE_KEY_ENSEMBLE : _default,
         cim_v1.TYPE_KEY_GRID_SPEC : _grid_spec,
-        cim_v1.TYPE_KEY_MODEL_COMPONENT : _model_component,
+        cim_v1.TYPE_KEY_MODEL_COMPONENT : _default,
         cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT : _default,
         cim_v1.TYPE_KEY_PLATFORM : _default,
         cim_v1.TYPE_KEY_QUALITY : _quality,
         cim_v1.TYPE_KEY_SIMULATION_RUN : _default,
-        cim_v1.TYPE_KEY_STATISTICAL_MODEL_COMPONENT : _model_component
+        cim_v1.TYPE_KEY_STATISTICAL_MODEL_COMPONENT : _default
     }
 
 

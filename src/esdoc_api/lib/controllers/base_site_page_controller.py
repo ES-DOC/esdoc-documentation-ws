@@ -1,4 +1,4 @@
-from esdoc_api.lib.controllers.base_site_controller import *
+from esdoc_api.lib.controllers.base_controller import *
 from esdoc_api.lib.utils.site_factory import create_site_map
 
 

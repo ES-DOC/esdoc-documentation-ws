@@ -211,7 +211,6 @@ class Institute(Entity):
 
     # Field set.
     Name =  Column(Unicode(16), nullable=False, unique=True)
-    Synonym =  Column(Unicode(16), unique=True)
     LongName =  Column(Unicode(512), nullable=False)
     CountryCode = Column(Unicode(2), nullable=False)
     URL =  Column(Unicode(256))

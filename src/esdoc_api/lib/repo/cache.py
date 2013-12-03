@@ -256,7 +256,7 @@ def get_doc_ontology(name=None, version=None):
         return get('DocumentOntology')
 
     if version is not None:
-        name += ""
+        name += "."
         name += str(version)
     for o in get('DocumentOntology').values():
         if o.Name.upper() == name.upper():

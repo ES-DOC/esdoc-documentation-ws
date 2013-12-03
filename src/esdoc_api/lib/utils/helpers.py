@@ -9,7 +9,6 @@ import logging
 import sys
 import httplib
 import json
-import simplejson
 import warnings
 import time
 from datetime import datetime

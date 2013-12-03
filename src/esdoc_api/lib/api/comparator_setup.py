@@ -37,6 +37,9 @@ def _get_c1_setup_data():
             'modelToValue' : utils.get_facet_relations(models.MODEL_2_VALUE),
             'propertyToProperty' : utils.get_facet_relations(models.PROPERTY_2_PROPERTY),
             'propertyToValue' : utils.get_facet_relations(models.PROPERTY_2_VALUE),
+        },
+        'joinSet' : {
+            'modelToPropertyAndValue' : [],
         }
     }
 
