@@ -73,8 +73,8 @@ __all__ = [
     'get_ingest_endpoints',
     'get_ingest_endpoint',
     'get_ingest_url',
-    'get_project_document_language_counts',
-    'get_project_document_type_counts'
+    'get_project_document_type_counts',
+    'get_project_institute_counts'
 ]
 
 
@@ -410,8 +410,6 @@ def get_document_summaries(
     :rtype: esdoc_api.models.DocumentSummary
 
     """
-    print "SSS", institute_id
-
     # Format params.
     version = version.lower()
     type = type.upper()
@@ -703,19 +701,35 @@ def delete_all_documents():
     delete_by_type(Document, delete_document)
 
 
-def get_project_document_type_counts(project_id):
-    """Returns list of counts over a project's document types.
+def get_project_institute_counts():
+    """Returns institute counts grouped by project.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
+    :returns: List of counts over a project's institutes.
+    :rtype: list
+    
+    """
+    q = session.query(sa.func.count(Document.Institute_ID), 
+                      Document.Project_ID, 
+                      Document.Institute_ID)
+
+    q = q.group_by(Document.Project_ID)
+    q = q.group_by(Document.Institute_ID)
+
+    return q.all()
+
+
+def get_project_document_type_counts():
+    """Returns document type counts grouped by project.
 
     :returns: List of counts over a project's document types.
     :rtype: list
     
     """
-    q = session.query(sa.func.count(Document.Type), Document.Type)
+    q = session.query(sa.func.count(Document.Type), 
+                      Document.Project_ID, 
+                      Document.Type)
 
-    q = q.filter(Document.Project_ID==project_id)
+    q = q.group_by(Document.Project_ID)
     q = q.group_by(Document.Type)
 
     return q.all()
@@ -743,25 +757,6 @@ def get_document_type_count(project_id, type):
     counts = q.all()
 
     return 0 if not len(counts) else counts[0][0]
-
-
-def get_project_document_language_counts(project_id):
-    """Returns list of counts over a project's document languages.
-
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :returns: List of counts over a project's language types.
-    :rtype: list
-
-    """
-    q = session.query(sa.func.count(DocumentSummary.Language_ID), DocumentSummary.Language_ID)
-    q = q.join(Document)
-
-    q = q.filter(Document.Project_ID==project_id)
-    q = q.group_by(DocumentSummary.Language_ID)
-
-    return q.all()
 
 
 def get_doc_descriptions(project_id, language_id, type):

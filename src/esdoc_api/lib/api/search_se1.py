@@ -35,19 +35,16 @@ def get_setup(project):
     :rtype: dict
     
     """
-    # Extract criteria.
-    project_id = cache.get_id('Project', project)
-
     # Return setup data.
     return {
         'projects' : _to_dict(dao.get_all(models.Project)),
         'models' : [],
         'experiments' : [],
         'institutes' : _to_dict(dao.get_all(models.Institute)),
+        'instituteCounts' : dao.get_project_institute_counts(),
         'documentTypes' : _to_dict(dao.get_all(models.DocumentType)),
-        'documentTypeCounts' : dao.get_project_document_type_counts(project_id),
-        'documentLanguages' : _to_dict(dao.get_all(models.DocumentLanguage)),
-        'documentLanguageCounts' : dao.get_project_document_language_counts(project_id)
+        'documentTypeCounts' : dao.get_project_document_type_counts(),
+        'documentLanguages' : _to_dict(dao.get_all(models.DocumentLanguage))
     }
 
 

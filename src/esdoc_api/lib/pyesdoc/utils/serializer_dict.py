@@ -27,6 +27,9 @@ from . convertors import (
 # Set of ontology types.
 _TYPES = ontologies.get_types()
 
+# Set of overrides for iterables.
+_ITERABLE_OVERRIDES = (str, )
+
 
 def _is_encodable(obj):
     """Returns flag indicating whether an object is encodable or not."""
@@ -45,7 +48,7 @@ def _encode(doc):
         except TypeError:
             result[k] = _encode(v) if _is_encodable(v) else v
         else:
-            if v.__class__ in (str,):
+            if v.__class__ in _ITERABLE_OVERRIDES:
                 result[k] = v
             else:
                 result[k] = map(lambda i : _encode(i) if _is_encodable(i) else i, v)

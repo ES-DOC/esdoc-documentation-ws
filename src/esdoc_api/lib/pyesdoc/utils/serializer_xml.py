@@ -50,7 +50,7 @@ def _is_encodable_scalar(sv):
 def _encode_scalar(xml, sv):
     """Encodes a scalar value."""
     if sv in (None, 'None'):
-        return ''
+        sv = ''
     elif isinstance(sv, datetime.datetime):
         sv = sv.isoformat().replace('T', ' ')
     elif isinstance(sv, datetime.date):
@@ -59,9 +59,9 @@ def _encode_scalar(xml, sv):
         sv = sv.isoformat()
     else:
         sv = str(sv)
-    
-    xml.text = sv
 
+    xml.text = sv
+    
 
 def _encode_list(xml, tag, l):
     """Encodes a list."""

@@ -54,7 +54,6 @@ class PublishingController(BaseAPIController):
     
     def _retrieve(self, uid, version, format=pyesdoc.ESDOC_ENCODING_JSON):
         """Retrieves document from repo."""
-        print "AAA", format
         def do():
             doc = dao.get_document(None, uid, version)
             if doc is not None:
@@ -66,7 +65,9 @@ class PublishingController(BaseAPIController):
                     if format == pyesdoc.ESDOC_ENCODING_JSON:
                         return repr.Representation
                     elif format == pyesdoc.ESDOC_ENCODING_XML:
-                        return pyesdoc.convert(repr.Representation, pyesdoc.ESDOC_ENCODING_JSON, pyesdoc.ESDOC_ENCODING_XML)
+                        return pyesdoc.convert(repr.Representation, 
+                                               pyesdoc.ESDOC_ENCODING_JSON, 
+                                               pyesdoc.ESDOC_ENCODING_XML)
 
 
             return None
