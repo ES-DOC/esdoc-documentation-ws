@@ -19,6 +19,7 @@ from esdoc_api.lib.repo.ingest.ingestor_dcmip2012 import Ingestor as DCMIP2012In
 from esdoc_api.lib.repo.ingest.ingestor_qed2013 import Ingestor as QED2013Ingestor
 import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.session as session
+import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.utils.runtime as rt
 
 
@@ -114,6 +115,9 @@ def execute():
             # Inform.
             rt.log("INGEST ERROR :: {0}.".format(str(e)))
 
+    # Update stats.
+    rt.log("UPDATING STATS :: {0}.")
+    utils.write_doc_stats()
 
     rt.log("***************** INGESTION END *******************")
     rt.log("   COMPLETED @ {0}.".format(datetime.datetime.now()))

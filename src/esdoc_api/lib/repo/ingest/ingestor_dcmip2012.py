@@ -41,24 +41,8 @@ class Ingestor(FeedIngestorBase):
         super(Ingestor, self).__init__(endpoint,
                                        _PROJECT,
                                        _ONTOLOGY,
-                                       url_parser=self.parse_entry_url,
                                        content_parser=self.parse_entry_content)
     
-
-    def parse_entry_url(self, url):
-        """Parses feed entry url's in order to correct errors on feed setup.
-
-        :param url: Feed entry url.
-        :type content: str
-        :returns: Parsed feed entry url.
-        :rtype: str
-
-        """
-        if url.startswith('http://hydra.fsl.noaa.gov/content/'):
-            url = url.replace('http://hydra.fsl.noaa.gov/content/',
-                              'http://hydra.fsl.noaa.gov/cim-atom-feed/feeds/cim/content/')
-        return url
-
 
     def parse_entry_content(self, content):
         """Parses feed entry content.

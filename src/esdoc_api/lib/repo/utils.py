@@ -10,6 +10,9 @@
 
 """
 # Module imports.
+import json
+import os
+
 import esdoc_api.lib.pyesdoc as pyesdoc
 import esdoc_api.lib.repo.cache as cache
 import esdoc_api.lib.repo.dao as dao
@@ -810,3 +813,41 @@ def _get_cim_v1_doc_name_getters():
         cim_v1.TYPE_KEY_SIMULATION_RUN : _default,
         cim_v1.TYPE_KEY_STATISTICAL_MODEL_COMPONENT : _default
     }
+
+
+def write_doc_stats():
+    """Writes document stats to file system.
+
+    """
+    def map_row(row):
+        return {
+            "project": row[1],
+            "institute": row[2],
+            "doc_type": row[3],
+            "doc_count": row[0]          
+        }
+
+    def write_json(counts):
+        path = os.path.dirname(os.path.abspath(__file__))
+        path = path.replace("lib/repo", "static/json")
+        path += "/doc_stats.json"
+
+        with open(path, 'w') as f:
+            json.dump(map(map_row, counts), f, encoding="ISO-8859-1")
+
+    def write_csv(counts):
+        path = os.path.dirname(os.path.abspath(__file__))
+        path = path.replace("lib/repo", "static/csv")
+        path += "/doc_stats.csv"
+
+        with open(path, 'w') as f:
+            f.write("Project, Institute, Document Type, Document Count\n")
+            for doc_count, project, institute, doc_type in counts:
+                f.write("{0}, {1}, {2}, {3}\n".format(project, institute, doc_type, doc_count))
+
+    # Get counts.
+    counts = dao.get_document_counts()
+
+    # Write files.
+    for f in [write_csv, write_json]:
+        f(counts)

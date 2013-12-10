@@ -44,6 +44,14 @@ class PublishingController(BaseAPIController):
         return _exec(do)
 
 
+    def _exists(self, uid, version=None):
+        """Determines whether document exists."""
+        doc = dao.get_document(None, uid, version)
+
+        if doc is None:
+            abort(http.HTTP_RESPONSE_NOT_FOUND)
+
+    
     def _delete(self, uid, version=None):
         """Delete document from repo."""
         def do():
@@ -51,8 +59,11 @@ class PublishingController(BaseAPIController):
 
         return _exec(do)
 
-    
-    def _retrieve(self, uid, version, format=pyesdoc.ESDOC_ENCODING_JSON):
+
+    def _retrieve(self, 
+        uid, 
+        version=pyesdoc.ESDOC_DOC_VERSION_LATEST, 
+        format=pyesdoc.ESDOC_ENCODING_JSON):
         """Retrieves document from repo."""
         def do():
             doc = dao.get_document(None, uid, version)
@@ -84,10 +95,10 @@ class PublishingController(BaseAPIController):
         pass
 
 
-    @rest.dispatch_on(DELETE='_delete')
+    @rest.dispatch_on(GET='_retrieve', DELETE='_delete', HEAD='_exists')
     @jsonify
     def instance(self, uid):
-        """Processes requests to collection endpoint.
+        """Processes requests to instance endpoint.
 
         :param uid: Document uid.
         :type uid: str
@@ -96,10 +107,10 @@ class PublishingController(BaseAPIController):
         pass
 
 
-    @rest.dispatch_on(GET='_retrieve', DELETE='_delete')
+    @rest.dispatch_on(GET='_retrieve', DELETE='_delete', HEAD='_exists')
     @jsonify
     def version(self, uid, version, format=pyesdoc.ESDOC_ENCODING_JSON):
-        """Processes requests to instance endpoint.
+        """Processes requests to versioned instance endpoint.
 
         :param uid: Document uid.
         :type uid: str

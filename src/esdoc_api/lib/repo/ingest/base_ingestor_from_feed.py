@@ -30,24 +30,20 @@ class FeedReader(object):
 
     :ivar feed_url: Feed URL.
     :ivar auto_open: Feed URL.
-    :ivar entry_url_parser: Feed URL.
     :ivar entry_content_parser: Feed URL.
 
     """
     def __init__(self,
                  feed_url,
                  auto_open=False,
-                 entry_url_parser=None,
                  entry_content_parser=None):
         """Constructor.
 
         :param feed_url: Feed URL.
         :param auto_open: Feed URL.
-        :param entry_url_parser: Feed URL.
         :param entry_content_parser: Feed URL.
         :type feed_url: str
         :type auto_open: bool
-        :type entry_url_parser: function
         :type entry_content_parser: function
 
         """
@@ -56,11 +52,6 @@ class FeedReader(object):
         if auto_open == True:
             self.open()
             
-        if entry_url_parser is not None:
-            self.entry_url_parser = entry_url_parser
-        else:
-            self.entry_url_parser = lambda url: url
-
         if entry_content_parser is not None:
             self.entry_content_parser = entry_content_parser
         else:
@@ -104,8 +95,6 @@ class FeedReader(object):
 
         # Set entry url.
         entry_url = self.entry['links'][0].href
-        if self.entry_url_parser is not None:
-            entry_url = self.entry_url_parser(entry_url)
 
         # TODO place this on queue rather than processing directly.
         # Process entry content (if not already processed).
@@ -162,7 +151,6 @@ class FeedIngestorBase(IngestorBase):
                  project,
                  ontology,
                  language=pyesdoc.ESDOC_DEFAULT_LANGUAGE,
-                 url_parser=None,
                  content_parser=None):
         """Constructor.
 
@@ -189,7 +177,6 @@ class FeedIngestorBase(IngestorBase):
                                                project,
                                                ontology,
                                                language)
-        self.entry_url_parser = url_parser
         self.entry_content_parser = content_parser
         
 
@@ -200,7 +187,6 @@ class FeedIngestorBase(IngestorBase):
         # Open feed.
         fr = FeedReader(self.ingest_url,
                         auto_open = True,
-                        entry_url_parser = self.entry_url_parser,
                         entry_content_parser = self.entry_content_parser)
 
         # N.B. : uncomment when testing to avoid ingesting entire feed.

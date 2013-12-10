@@ -33,7 +33,9 @@ from esdoc_api.models import (
     FacetRelation,
     FacetRelationType,
     IngestEndpoint,
-    IngestURL
+    IngestURL,
+    Institute,
+    Project
 )
 import esdoc_api.models as models
 import esdoc_api.lib.pyesdoc as pyesdoc
@@ -53,6 +55,7 @@ __all__ = [
     'get_document',
     'get_document_by_drs_keys',
     'get_document_by_name',
+    'get_document_counts',
     'get_doc_descriptions',
     'get_document_drs',
     'get_document_external_id',
@@ -731,6 +734,29 @@ def get_project_document_type_counts():
 
     q = q.group_by(Document.Project_ID)
     q = q.group_by(Document.Type)
+
+    return q.all()
+
+
+def get_document_counts():
+    """Returns document counts.
+
+    :returns: List of counts over document types.
+    :rtype: list
+    
+    """
+    q = session.query(sa.func.count(Document.Institute_ID), 
+                      Project.Name, 
+                      Institute.Name,
+                      Document.Type)
+    q = q.join(Project)
+    q = q.join(Institute)
+
+    q = q.group_by(Project.ID)
+    q = q.group_by(Institute.ID)
+    q = q.group_by(Document.Type)
+
+    q = q.order_by(Document.Type.desc())
 
     return q.all()
 
