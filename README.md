@@ -27,12 +27,16 @@ Who uses esdoc-api ?
 esdoc-api underpins the ES-DOC eco-system of tools and is thus used by those upstream tools built either by ES-DOC or 3rd parties.
 
 
+What are the endpoints supported by esdoc-api ?
+--------------------------------------
+
+Please refer to the [documentation](https://github.com/ES-DOC/esdoc-api/wiki/API-Documentation) for further information.
+
 What are the contents of esdoc-api ?
 --------------------------------------
 
     \src                Source code.
     \tests              Unit tests.
-
 
 Further Information ?
 --------------------------------------
