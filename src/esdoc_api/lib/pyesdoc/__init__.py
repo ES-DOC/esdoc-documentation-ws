@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Package initializer.
 
-.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@esdocumentation.org>
+.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
 
 """
 # Module imports.
@@ -36,6 +36,7 @@ from .options import (
 from .publishing import (
     ESDOC_DOC_VERSION_LATEST,
     ESDOC_DOC_VERSION_ALL,
+    exists,
     publish,
     retrieve,
     unpublish
@@ -54,6 +55,7 @@ from .serialization import (
     )
 from .utils import (
     PYESDOC_Exception,
+    PYESDOC_XMLError,
     runtime as rt
     )
 from .validation import (
@@ -98,3 +100,10 @@ __all__ = [
     'validate',
 ]
 
+
+# Standard package info.
+__title__ = 'pyesdoc'
+__version__ = '0.9.0.0'
+__author__ = 'ES-DOC'
+__license__ = 'GPL'
+__copyright__ = 'Copyright 2013 ES-DOC'

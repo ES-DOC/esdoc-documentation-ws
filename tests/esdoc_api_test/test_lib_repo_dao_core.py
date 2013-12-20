@@ -1,12 +1,12 @@
 """
 .. module:: esdoc_api_test.test_repo_dao.py
 
-   :copyright: @2013 Institute Pierre Simon Laplace (http://esdocumentation.org)
+   :copyright: @2013 Institute Pierre Simon Laplace (http://es-doc.org)
    :license: GPL / CeCILL
    :platform: Unix
    :synopsis: 1st set of repository dao functional tests - N.B. these tests are against a pre-populated repo.
 
-.. moduleauthor:: Institute Pierre Simon Laplace (ES-DOC) <dev@esdocumentation.org>
+.. moduleauthor:: Institute Pierre Simon Laplace (ES-DOC) <dev@es-doc.org>
 
 """
 

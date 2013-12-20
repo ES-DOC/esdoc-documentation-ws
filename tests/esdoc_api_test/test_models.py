@@ -1,12 +1,12 @@
 """
 .. module:: esdoc_api_test.test_models.py
 
-   :copyright: @2013 Institute Pierre Simon Laplace (http://esdocumentation.org)
+   :copyright: @2013 Institute Pierre Simon Laplace (http://es-doc.org)
    :license: GPL / CeCILL
    :platform: Unix
    :synopsis: Repository models functional tests.
 
-.. moduleauthor:: Institute Pierre Simon Laplace (ES-DOC) <dev@esdocumentation.org>
+.. moduleauthor:: Institute Pierre Simon Laplace (ES-DOC) <dev@es-doc.org>
 
 """
 

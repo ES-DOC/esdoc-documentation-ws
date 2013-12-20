@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: XML decoding utility functions.
 
-.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@esdocumentation.org>
+.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
 
 """
 
@@ -24,7 +24,7 @@ NULL_UUID = ['00000000-0000-0000-0000-000000000000']
 
 
 
-class _PYESDOC_XMLError(Exception):
+class PYESDOC_XMLError(Exception):
     """Module exception class.
 
     """
@@ -428,7 +428,7 @@ def decode_xml(decoder, xml, nsmap, is_iterable):
         return collection
 
     # otherwise exception
-    raise _PYESDOC_XMLError("xml cannot be decoded.")
+    raise PYESDOC_XMLError("xml cannot be decoded.")
 
 
 def load_xml(xml, return_nsmap=False, default_ns='cim'):
@@ -449,7 +449,7 @@ def load_xml(xml, return_nsmap=False, default_ns='cim'):
     """
     # Defensive programming.
     if xml is None:
-        raise _PYESDOC_XMLError("XML is undefined.")
+        raise PYESDOC_XMLError("XML is undefined.")
 
     nsmap = None
     # ... etree elements.
@@ -465,16 +465,16 @@ def load_xml(xml, return_nsmap=False, default_ns='cim'):
             xml = et.parse(xml)
             xml = xml.getroot()
             nsmap = xml.nsmap
-        except Exception as e:
+        except Exception:
             # ... strings.
             if isinstance(xml, basestring):
                 try:
                     xml = et.fromstring(xml)
                     nsmap = xml.nsmap
                 except Exception:
-                    raise _PYESDOC_XMLError("Invalid xml string.")
+                    raise PYESDOC_XMLError("Invalid xml string.")
             else:
-                raise _PYESDOC_XMLError("Unsupported xml type, must be either a string, file, url or etree.")
+                raise PYESDOC_XMLError("Unsupported xml type, must be either a string, file, url or etree.")
 
     # Set default namespace.
     if nsmap is not None:

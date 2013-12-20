@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Exposes functions for decoding document instances from Metafor CIM v1 xml representations.
 
-.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@esdocumentation.org>
+.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
 
 """
 
@@ -53,7 +53,7 @@ def decode(repr):
     doc_type = xml.tag.split('}')[1]
     if doc_type not in _decoders:
         raise rt.PYESDOC_Exception("CIM v1 - {0} document type decoding unsupported.".format(doc_type))
-
+        
     # Decode pyesdoc doc.
     return decode_xml(_decoders[doc_type], xml, nsmap, None)
 

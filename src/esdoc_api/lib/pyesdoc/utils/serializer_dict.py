@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Exposes document dictionary serialization functions.
 
-.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@esdocumentation.org>
+.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
 
 """
 # Module imports.
@@ -27,9 +27,6 @@ from . convertors import (
 # Set of ontology types.
 _TYPES = ontologies.get_types()
 
-# Set of overrides for iterables.
-_ITERABLE_OVERRIDES = (str, )
-
 
 def _is_encodable(obj):
     """Returns flag indicating whether an object is encodable or not."""
@@ -48,7 +45,7 @@ def _encode(doc):
         except TypeError:
             result[k] = _encode(v) if _is_encodable(v) else v
         else:
-            if v.__class__ in _ITERABLE_OVERRIDES:
+            if v.__class__ in (str,):
                 result[k] = v
             else:
                 result[k] = map(lambda i : _encode(i) if _is_encodable(i) else i, v)
