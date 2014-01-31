@@ -835,6 +835,18 @@ def write_doc_stats():
         with open(path, 'w') as f:
             json.dump(map(map_row, counts), f, encoding="ISO-8859-1")
 
+
+    def write_jsonp(counts):
+        path = os.path.dirname(os.path.abspath(__file__))
+        path = path.replace("lib/repo", "static/json")
+        path += "/doc_stats.jsonp"
+
+        with open(path, 'w') as f:
+            f.write('onESDOC_JSONPLoad(')
+            json.dump(map(map_row, counts), f, encoding="ISO-8859-1")
+            f.write(');')
+
+
     def write_csv(counts):
         path = os.path.dirname(os.path.abspath(__file__))
         path = path.replace("lib/repo", "static/csv")
@@ -849,5 +861,6 @@ def write_doc_stats():
     counts = dao.get_document_counts()
 
     # Write files.
-    for f in [write_csv, write_json]:
+    for f in [write_csv, write_json, write_jsonp]:
         f(counts)
+
