@@ -11,9 +11,13 @@
 """
 # Module imports.
 import datetime
-
+import uuid
 import xml.etree.ElementTree as ET
 
+from dateutil import parser as date_parser
+
+from .. import ontologies
+from . import runtime as rt
 from . import serializer_dict
 from . convertors import (
     convert_dict_keys,
@@ -32,6 +36,10 @@ _suffix_maps = (
     ('s', ''),
 )
 
+# Set of ontology types.
+_TYPES = ontologies.get_types()
+
+
 
 def _get_item_tag(tag):
     "Returns tag name of a collection item."
@@ -40,6 +48,63 @@ def _get_item_tag(tag):
             return tag[0:len(tag) - len(suffix)] + replacement
         
     return tag + 'Item'
+
+
+def _decode_scalar(sv, type, iterable):
+    """Decodes a scalar value."""
+    def _do(s):
+        # None if empty value.
+        if not len(s):
+            return None
+
+        # Encode.
+        s = s.encode('utf-8') if isinstance(s, unicode) else str(s)
+
+        # Decode according to type:
+        # ... date
+        if type in (datetime.datetime, datetime.date, datetime.time):
+            return date_parser.parse(s)
+        # ... uuid
+        elif type is uuid.UUID:
+            return uuid.UUID(s)
+        # ... boolean
+        elif type is bool:
+            if s.lower() in ("yes", "true", "t", "1", "y"):
+                return True
+            return False
+        # ... other
+        else:
+            try:
+                return type(s)
+            except Error as e:
+                print "Scalar decoding error", s, type, iterable
+
+    return map(lambda i : _do(i.text), sv) if iterable else _do(sv.text)
+
+
+def _decode(repr, typeof, iterable):
+    """Decodes an xml element."""        
+    def _do(xml):
+        # Set doc type.
+        doc_type = typeof
+        if typeof.type_key != xml.get('ontologyTypeKey'):
+            doc_type = ontologies.get_type_from_key(xml.get('ontologyTypeKey'))
+        if doc_type is None:
+            rt.raise_error('Decoding type is unrecognized')
+    
+        # Set doc.
+        doc = doc_type()
+
+        # Set doc attributes.
+        for _name, _type, _required, _iterable in ontologies.get_type_info(doc_type):            
+            elem = xml.find(convert_to_camel_case(_name))
+            if elem is not None:
+                decoder = _decode if _type in _TYPES else _decode_scalar
+                setattr(doc, _name, decoder(elem, _type, _iterable))
+
+        return doc
+
+    return map(lambda i : _do(i), repr) if iterable else _do(repr)
 
 
 def _is_encodable_scalar(sv):
@@ -129,5 +194,12 @@ def decode(repr):
     :returns: A pyesdoc document instance.
     :rtype: object
 
-    """
-    raise NotImplementedError()
+    """  
+    # Convert to etree.
+    xml = repr if type(repr) == ET else ET.fromstring(repr)
+
+    # Get target type.
+    o, v, p, t = xml.get("ontologyTypeKey").split('.')
+    doc_type = ontologies.get_type(o, v, p, t)
+
+    return _decode(xml, doc_type, False)
