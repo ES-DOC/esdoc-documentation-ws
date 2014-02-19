@@ -648,11 +648,11 @@ def get_doc_representation(document, ontology, encoding, language):
     return None if instance is None else instance.Representation
 
 
-def get_facets(type_name):
+def get_facets(project_id, type_name):
     """Maps a a list of models.Facet instances by their models.FacetType name to list of lists.
 
-    :param type_name: Name of a models.FacetType.
-    :type type_name: str
+    :param int project_id: ID of of a models.Project instance.
+    :param str type_name: Name of a models.FacetType instance.
 
     :returns: List of models.Facet instances with matching models.FacetType name.
     :rtype: list
@@ -662,7 +662,7 @@ def get_facets(type_name):
 
     ft = dao.get_by_name(models.FacetType, type_name)
     if ft is not None:
-        for v in ft.Values:
+        for v in [v for v in ft.Values if v.Project_ID == project_id]:
             item = [v.ID, v.Key, v.Value, '', '']
             if v.KeyForSort:
                 item[3] = v.KeyForSort
@@ -673,11 +673,11 @@ def get_facets(type_name):
     return sorted(result, key=lambda v: v[2])
 
 
-def get_facet_relations(type_name):
+def get_facet_relations(project_id, type_name):
     """Maps a a list of models.FacetRelation instances by their models.FacetRelationType name to list of lists.
 
-    :param type_name: Name of a models.FacetRelationType.
-    :type type_name: str
+    :param int project_id: ID of of a models.Project instance.
+    :param str type_name: Name of a models.FacetRelationType.
 
     :returns: List of models.FacetRelation instances with matching models.FacetRelationType name.
     :rtype: list
@@ -687,7 +687,7 @@ def get_facet_relations(type_name):
 
     frt = dao.get_by_name(models.FacetRelationType, type_name)
     if frt is not None:
-        for r in frt.Relations:
+        for r in [r for r in frt.Relations if r.Project_ID == project_id]:
             result.append([r.From_ID, r.To_ID])
 
     return sorted(result, key=lambda r: r[0])

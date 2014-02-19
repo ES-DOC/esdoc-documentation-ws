@@ -14,29 +14,28 @@ import json
 import os
 
 import esdoc_api.models as models
+import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.utils.runtime as rt
 
 
-def _get_c1_setup_data():
-    """Loads setup data for the c1 comparator.
-
-    """
+def _get_c1_setup_data(project_id):
+    """Loads setup data for the c1 comparator."""
     return {
         'facetSet' : {
-            'component' : utils.get_facets(models.MODEL_COMPONENT),
-            'model' : utils.get_facets(models.MODEL),
-            'property' : utils.get_facets(models.MODEL_COMPONENT_PROPERTY),
-            'value' : utils.get_facets(models.MODEL_COMPONENT_PROPERTY_VALUE),
+            'component' : utils.get_facets(project_id, models.MODEL_COMPONENT),
+            'model' : utils.get_facets(project_id, models.MODEL),
+            'property' : utils.get_facets(project_id, models.MODEL_COMPONENT_PROPERTY),
+            'value' : utils.get_facets(project_id, models.MODEL_COMPONENT_PROPERTY_VALUE),
         },
         'relationSet' : {
-            'componentToComponent' : utils.get_facet_relations(models.COMPONENT_2_COMPONENT),
-            'componentToProperty' : utils.get_facet_relations(models.COMPONENT_2_PROPERTY),
-            'modelToComponent' : utils.get_facet_relations(models.MODEL_2_COMPONENT),
-            'modelToProperty' : utils.get_facet_relations(models.MODEL_2_PROPERTY),
-            'modelToValue' : utils.get_facet_relations(models.MODEL_2_VALUE),
-            'propertyToProperty' : utils.get_facet_relations(models.PROPERTY_2_PROPERTY),
-            'propertyToValue' : utils.get_facet_relations(models.PROPERTY_2_VALUE),
+            'componentToComponent' : utils.get_facet_relations(project_id, models.COMPONENT_2_COMPONENT),
+            'componentToProperty' : utils.get_facet_relations(project_id, models.COMPONENT_2_PROPERTY),
+            'modelToComponent' : utils.get_facet_relations(project_id, models.MODEL_2_COMPONENT),
+            'modelToProperty' : utils.get_facet_relations(project_id, models.MODEL_2_PROPERTY),
+            'modelToValue' : utils.get_facet_relations(project_id, models.MODEL_2_VALUE),
+            'propertyToProperty' : utils.get_facet_relations(project_id, models.PROPERTY_2_PROPERTY),
+            'propertyToValue' : utils.get_facet_relations(project_id, models.PROPERTY_2_VALUE),
         },
         'joinSet' : {
             'modelToPropertyAndValue' : [],
@@ -52,22 +51,20 @@ _comparators = {
 }
 
 
-def _validate_project_code(code):
-    """Validates project code in readiness for subsequent actions.
-
-    :param code: The project code, e.g. CMIP5.
-    :type code: str
-
-    """
+def _get_project(code):
+    """Loads project."""
     # Error if unspecified.
     if code is None:
         rt.throw("Project code must be specified.")
 
     # Error if not found.
-    if c.get_project(code) is None:
+    project = dao.get_by_name(models.Project, code.upper())
+    if project is None:
         msg = 'Project code ({0}) is unsupported.'
         msg = msg.format(code)
         rt.throw(msg)
+
+    return project
 
 
 def get_setup_data(project_code, comparator_type):
@@ -103,12 +100,15 @@ def get_setup_data(project_code, comparator_type):
     project_code = project_code.upper()
     comparator_type = comparator_type.lower()
 
+    # Load project.
+    project = _get_project(project_code)
+
     # Return setup data.
     return {
         'comparator' : comparator_type,
         'title' : _comparators[comparator_type]['title'],
         'project' : project_code,
-        'data' : _comparators[comparator_type]['setup']()
+        'data' : _comparators[comparator_type]['setup'](project.ID)
     }
 
 

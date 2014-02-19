@@ -14,6 +14,7 @@ import json
 import os
 
 import esdoc_api.models as models
+import esdoc_api.lib.repo.dao as dao
 import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.utils.runtime as rt
 
@@ -23,18 +24,16 @@ _JSON_ENCODING = "ISO-8859-1"
 
 
 
-def _get_v1_setup_data():
-    """Loads setup data for the v1 visualizer.
-
-    """
+def _get_v1_setup_data(project_id):
+    """Loads setup data for the v1 visualizer."""
     return {
         'facetSet' : {
             'component' : utils.get_facets(models.MODEL_COMPONENT),
             'model' : utils.get_facets(models.MODEL),
         },
         'relationSet' : {
-            'componentToComponent' : utils.get_facet_relations(models.COMPONENT_2_COMPONENT),
-            'modelToComponent' : utils.get_facet_relations(models.MODEL_2_COMPONENT),
+            'componentToComponent' : utils.get_facet_relations(project_id, models.COMPONENT_2_COMPONENT),
+            'modelToComponent' : utils.get_facet_relations(project_id, models.MODEL_2_COMPONENT),
         }
     }
 
@@ -45,6 +44,22 @@ _visualizers = {
         'setup' : _get_v1_setup_data
     }
 }
+
+
+def _get_project(code):
+    """Loads project."""
+    # Error if unspecified.
+    if code is None:
+        rt.throw("Project code must be specified.")
+
+    # Error if not found.
+    project = dao.get_by_name(models.Project, code.upper())
+    if project is None:
+        msg = 'Project code ({0}) is unsupported.'
+        msg = msg.format(code)
+        rt.throw(msg)
+
+    return project
 
 
 def get_setup_data(project_code, visualizer_type):
@@ -80,12 +95,15 @@ def get_setup_data(project_code, visualizer_type):
     project_code = project_code.upper()
     visualizer_type = visualizer_type.lower()        
 
+    # Load project.
+    project = _get_project(project_code)
+
     # Return setup data.
     return {
         'visualizer' : visualizer_type,
         'title' : _visualizers[visualizer_type]['title'],
         'project' : project_code,
-        'data' : _visualizers[visualizer_type]['setup']()
+        'data' : _visualizers[visualizer_type]['setup'](project.ID)
     }
 
 

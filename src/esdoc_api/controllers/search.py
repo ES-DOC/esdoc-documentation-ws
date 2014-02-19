@@ -343,6 +343,7 @@ class SearchController(BaseAPIController):
 
         return ds
 
+
     def __load(self, load):
         """Loads document representations from repository.
 
@@ -373,20 +374,20 @@ class SearchController(BaseAPIController):
         # Defensive programming.
         if not request.params.has_key('id'):
             abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter id is mandatory")
-
+        id = request.params['id'].lower()
+        
         if not request.params.has_key('version'):
             abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter version is mandatory")
-        
-        if request.params['version'] not in models.DOCUMENT_VERSIONS:
+        version = request.params['version'].lower()
+
+        if version not in models.DOCUMENT_VERSIONS:
             try:
-                int(request.params['version'])
+                int(version)
             except ValueError:
                 abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter version must be either an integer or one of the string literals 'latest' | '*'.")
 
         # Load document set.
-        return self.__load(lambda : dao.get_document(self.project_id,
-                                                     request.params['id'],
-                                                     request.params['version']))
+        return self.__load(lambda : dao.get_document(self.project_id, id, version))
 
 
     def __get_documentset_by_name(self):

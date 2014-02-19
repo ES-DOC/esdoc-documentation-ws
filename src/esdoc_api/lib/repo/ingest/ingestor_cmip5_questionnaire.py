@@ -141,7 +141,7 @@ class Ingestor(FeedIngestorBase):
         if not document.IsIndexed:
             doc = document.as_obj
             if doc.type_key in _facet_mappers:
-                _facet_mappers[doc.type_key](doc)
+                _facet_mappers[doc.type_key](self.project.id, doc)
                 rt.log("INDEXED DOC FACETS :: T={0}".format(doc.type_key))
             document.IsIndexed = True
 

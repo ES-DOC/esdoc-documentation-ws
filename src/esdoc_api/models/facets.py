@@ -192,6 +192,7 @@ class FacetRelation(Entity):
     Type_ID = create_fk('facets.tblFacetRelationType.ID', required=True)
     From_ID = create_fk('facets.tblFacet.ID', required=True)
     To_ID = create_fk('facets.tblFacet.ID', required=True)
+    Project_ID = create_fk('vocab.tblProject.ID', required=False)
 
 
 class FacetRelationType(Entity):
