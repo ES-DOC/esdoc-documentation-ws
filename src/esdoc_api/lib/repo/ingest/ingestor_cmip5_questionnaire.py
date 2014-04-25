@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: CMIP5 Questionnaire atom feed ingestor.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -92,7 +92,7 @@ class Ingestor(FeedIngestorBase):
 
         :param document: A document being ingested.
         :type document: esdoc_api.models.Document
-        
+
         """
         # Escape when assigning institute is unnecessary.
         if document.Institute_ID is not None or \
@@ -100,7 +100,7 @@ class Ingestor(FeedIngestorBase):
             return
 
         # Get institute code.
-        code = document.as_obj.doc_info.institute
+        code = document.as_obj.meta.institute
         if code in _INSTITUTE_OVERRIDES:
             code = _INSTITUTE_OVERRIDES[code]
 
@@ -151,31 +151,31 @@ class Ingestor(FeedIngestorBase):
 
         :param doc: A simulation document being ingested.
         :type doc: pyesdoc object
-        
+
         :returns: A set of simulation DRS keys as encoded in XML document.
         :rtype: str
 
         """
         keys = []
-        
+
         for key in self._get_drs_path(doc).split(_DRS_SPLIT):
             key = key.split(" ")
             keys.append(key[len(key) - 1])
-            
+
         return keys
-    
+
 
     def _get_drs_path(self, doc):
         """Returns a simulation drs path.
 
         :param doc: A simulation document being ingested.
         :type doc: pyesdoc object
-        
+
         :returns: A simulation DRS path as encoded in XML document.
         :rtype: str
 
         """
-        for id in doc.doc_info.external_ids:
+        for id in doc.meta.external_ids:
             for standard in id.standards:
                 if standard.name == 'QN_DRS':
                     return id.value.upper()
@@ -205,7 +205,7 @@ class Ingestor(FeedIngestorBase):
             return self.ingest_document(xml, nsmap, parent)
 
         simulation = None
-        
+
         # Ingest simulation document.
         for elem in etree.xpath(_XPATH_DOC_SET, namespaces=nsmap):
             if get_tag_name(elem) == cim_v1.XML_TAG_SIMULATION_RUN:
@@ -221,7 +221,7 @@ class Ingestor(FeedIngestorBase):
                 doc = do_ingest(elem, simulation.as_obj)
                 utils.create_sub_doc(simulation, doc)
                 if get_tag_name(elem) not in [
-                        cim_v1.XML_TAG_MODEL_COMPONENT, 
+                        cim_v1.XML_TAG_MODEL_COMPONENT,
                         cim_v1.XML_TAG_NUMERICAL_EXPERIMENT
                     ]:
                     set_model_and_experiment(doc, simulation)
@@ -295,8 +295,9 @@ class Ingestor(FeedIngestorBase):
         document = self.ingest_document(etree, nsmap)
 
         # Perform post deserialization tasks.
-        for task in [self._set_institute, self._set_facets]:
+        for task in (self._set_institute, ):
             task(document)
+        # for task in (self._set_institute, self._set_facets):
 
         return document
 
@@ -342,13 +343,13 @@ class Ingestor(FeedIngestorBase):
                         break;
             return code
 
-        
+
         # Workaround :: Set numerical experiment document version.
         if doc.type_key == cim_v1.TYPE_KEY_NUMERICAL_EXPERIMENT and\
-           doc.doc_info.version is None:
+           doc.meta.version is None:
             version = etree.xpath(_XPATH_DOC_VERSION_FOR_NUM_EXP, namespaces=nsmap)
             if version is not None and len(version) > 0:
-                doc.doc_info.version = str(version[0])
+                doc.meta.version = str(version[0])
 
         # Workaround :: Suppress root model component properties.
         if doc.type_key == cim_v1.TYPE_KEY_MODEL_COMPONENT:
@@ -362,10 +363,10 @@ class Ingestor(FeedIngestorBase):
         # Workaround :: Derive institute code - 1.
         if doc.type_key in [cim_v1.TYPE_KEY_MODEL_COMPONENT, cim_v1.TYPE_KEY_PLATFORM]:
             try:
-                doc.doc_info.institute = get_institute(doc.responsible_parties)
+                doc.meta.institute = get_institute(doc.responsible_parties)
             except AttributeError:
                 try:
-                    doc.doc_info.institute = get_institute(doc.contacts)
+                    doc.meta.institute = get_institute(doc.contacts)
                 except AttributeError:
                     pass
 
@@ -373,7 +374,7 @@ class Ingestor(FeedIngestorBase):
         if doc.type_key == cim_v1.TYPE_KEY_SIMULATION_RUN:
             drs_keys = self._get_drs_keys(doc)
             if len(drs_keys) > 0:
-                doc.doc_info.institute = drs_keys[0]
+                doc.meta.institute = drs_keys[0]
 
 
     def ingest_feed_entry(self, content):
@@ -387,6 +388,7 @@ class Ingestor(FeedIngestorBase):
         """
         # Set etree representation.
         etree = et.fromstring(content)
+
         nsmap = etree.nsmap
         nsmap["cim"] = nsmap.pop(None)
 
@@ -394,7 +396,7 @@ class Ingestor(FeedIngestorBase):
         if nsmap["cim"].find('1.4') != -1:
             rt.log("WARNING :: obsolete document")
             return None
-        
+
         # Process document sets.
         elif get_tag_name(etree) == cim_v1.XML_TAG_DOCUMENT_SET:
             return self._process_document_set(etree, nsmap)

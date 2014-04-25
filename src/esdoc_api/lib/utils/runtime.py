@@ -5,7 +5,7 @@
    :platform: Unix, Windows
    :synopsis: Runtime helper functions
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -211,7 +211,7 @@ def assert_doc(name, value):
         return "{0} is not a pyesdoc type instance".format(name)
     
     assert_var(name, value, object, msg=get_msg)
-    assert_attr(value, 'doc_info', msg=get_msg)
+    assert_attr(value, 'meta', msg=get_msg)
 
 
 def is_iterable(target):

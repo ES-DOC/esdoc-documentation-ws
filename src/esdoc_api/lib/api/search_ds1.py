@@ -5,7 +5,7 @@
    :platform: Unix, Windows
    :synopsis: Search engine ds1 - document summary by name.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """

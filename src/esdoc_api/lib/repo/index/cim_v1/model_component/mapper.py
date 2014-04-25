@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: Maps facets derived from parse over a cim.v1.software.model_component document.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """

@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: Encapsulates document publishing operations.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """

@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: Base class for all ingestors.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """

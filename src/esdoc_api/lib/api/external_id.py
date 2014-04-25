@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: Encapsulates querying of repository by project specific external id's.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """

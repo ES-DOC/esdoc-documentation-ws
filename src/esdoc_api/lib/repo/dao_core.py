@@ -3,7 +3,7 @@
    :platform: Unix
    :synopsis: Set of core repo data access operations.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -220,7 +220,7 @@ def insert(target):
 
     """
     if rt.is_iterable(target):
-        models.assert_collection(target)
+        models.assert_iter(target)
         for target in target:
             session.insert(target)
     else:
@@ -236,7 +236,7 @@ def delete(target):
 
     """
     if rt.is_iterable(target):
-        models.assert_collection(target)
+        models.assert_iter(target)
         for target in target:
             session.delete(target)
     else:

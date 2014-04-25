@@ -47,7 +47,7 @@ def test_get_document_03():
     collection = dao.get_document(instance.Project_ID,
                                   instance.UID,
                                   models.DOCUMENT_VERSION_ALL)
-    tu.assert_collection(collection, 1)
+    tu.assert_iter(collection, 1)
 
 
 def test_get_document_by_name():
@@ -88,7 +88,7 @@ def test_get_documents_by_external_id():
     document = dao.get_by_id(models.Document, external_id.Document_ID)
     tu.assert_object(document, models.Document)
     documents = dao.get_documents_by_external_id(document.Project_ID, external_id.ExternalID)
-    tu.assert_collection(documents, length=1, item_type=models.Document)
+    tu.assert_iter(documents, length=1, item_type=models.Document)
     tu.assert_entity(document, documents[0])
     
 

@@ -5,7 +5,7 @@
    :platform: Unix, Windows
    :synopsis: The facets set of ES-DOC API models.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """

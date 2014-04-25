@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: Performs a pre-facet indexing parse over a cim.v1.software.model_component object.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -50,8 +50,8 @@ def _set_standard_property(p_tree, values, name, description):
     return p
 
 
-def _set_standard_properties_defaults(c, p_tree):
-    """Sets default standard properties.
+def _set_standard_properties_descriptive(c, p_tree):
+    """Sets descriptive standard properties.
 
     :param c: A model component.
     :type c: pyesdoc.ontologies.cim.v1.software.ModelComponent
@@ -151,16 +151,13 @@ def _set_standard_properties(c):
                                'Standard Properties',
                                'Set of properties common to all components')
 
-    # Define sub-property group factories.
-    subgroups = [
-        _set_standard_properties_defaults,
+    # Create sub-groups.
+    for factory in [
+        _set_standard_properties_descriptive,
         _set_standard_properties_pi,
         _set_standard_properties_citations
-    ]
-
-    # Create sub-groups.
-    for subgroup in subgroups:
-        subgroup(c, p.sub_properties)
+    ]:
+        factory(c, p.sub_properties)
 
 
 def _set_scientific_properties(c):
@@ -182,8 +179,8 @@ def _parse_components(c_tree):
     
     """
     for c in c_tree:
-        _set_scientific_properties(c)
         _set_standard_properties(c)
+        _set_scientific_properties(c)
         _parse_components(c.sub_components)
 
                       

@@ -5,7 +5,7 @@
    :platform: Unix, Windows
    :synopsis: Set of models supported by ES-DOC API.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -166,7 +166,7 @@ def assert_instance(instance):
     assert_type(instance.__class__)
 
 
-def assert_collection(collection):
+def assert_iter(collection):
     """Asserts that all members of the passed colllection are supported types.
 
     :param collection: A collection of supported entity types.

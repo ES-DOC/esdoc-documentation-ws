@@ -5,7 +5,7 @@
    :platform: Unix, Windows
    :synopsis: Set of url validation related utility functions.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -90,6 +90,8 @@ def _validate_param(param):
 
 
 def _validate_params(params):
+    print params
+    
     # Validate param name whitelist.
     _not_other(map(lambda p : p['name'], params))
     

@@ -5,7 +5,7 @@
    :platform: Unix, Windows
    :synopsis: Repository utility functions.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -61,21 +61,21 @@ def create_doc_from_json(doc_json):
         rt.raise_error("Document could not be deserialized")
 
     # Derive project.
-    project = cache.get_project(doc.doc_info.project)
+    project = cache.get_project(doc.meta.project)
     if project is None:
-        rt.raise_error("Project {0} is unsupported".format(doc.doc_info.project))
+        rt.raise_error("Project {0} is unsupported".format(doc.meta.project))
 
     # Verify document does not already exist.
-    if dao.get_document(project.ID, doc.doc_info.id, doc.doc_info.version) is not None:
+    if dao.get_document(project.ID, doc.meta.id, doc.meta.version) is not None:
         rt.raise_error("Document already exists")        
 
     # Derive institute.
-    institute = cache.get_institute(doc.doc_info.institute)
+    institute = cache.get_institute(doc.meta.institute)
 
     # Derive language.
-    language = cache.get_doc_language(doc.doc_info.language)
+    language = cache.get_doc_language(doc.meta.language)
     if language is None:
-        rt.raise_error("Language {0} is unsupported".format(doc.doc_info.language))
+        rt.raise_error("Language {0} is unsupported".format(doc.meta.language))
 
     # Derive encoding.
     encoding = cache.get_doc_encoding(pyesdoc.ESDOC_ENCODING_JSON)
@@ -125,17 +125,17 @@ def update_doc_from_json(doc_json):
         rt.raise_error("Document could not be deserialized")
 
     # Derive project.
-    project = cache.get_project(doc.doc_info.project)
+    project = cache.get_project(doc.meta.project)
     if project is None:
-        rt.raise_error("Project {0} is unsupported".format(doc.doc_info.project))
+        rt.raise_error("Project {0} is unsupported".format(doc.meta.project))
 
     # Derive institute.
-    institute = cache.get_institute(doc.doc_info.institute)
+    institute = cache.get_institute(doc.meta.institute)
 
     # Derive language.
-    language = cache.get_doc_language(doc.doc_info.language)
+    language = cache.get_doc_language(doc.meta.language)
     if language is None:
-        rt.raise_error("Language {0} is unsupported".format(doc.doc_info.language))
+        rt.raise_error("Language {0} is unsupported".format(doc.meta.language))
 
     # Derive encoding.
     encoding = cache.get_doc_encoding(pyesdoc.ESDOC_ENCODING_JSON)
@@ -196,8 +196,8 @@ def create_doc(doc, project, endpoint, institute=None):
 
     # Instantiate & assign attributes.
     instance = dao.get_document(project.ID,
-                                str(doc.doc_info.id),
-                                str(doc.doc_info.version))
+                                str(doc.meta.id),
+                                str(doc.meta.version))
     if instance is None:
         instance = create(models.Document)
         instance.as_obj = doc
@@ -208,8 +208,8 @@ def create_doc(doc, project, endpoint, institute=None):
         instance.Name = get_doc_name(doc)
         instance.Project_ID = project.ID
         instance.Type = doc.type_key
-        instance.UID = str(doc.doc_info.id)
-        instance.Version = int(doc.doc_info.version)
+        instance.UID = str(doc.meta.id)
+        instance.Version = int(doc.meta.version)
         set_doc_is_latest_flag(instance)
 
     return instance
@@ -319,7 +319,7 @@ def create_doc_external_ids(document, first_only=False):
     rt.assert_var('first_only', first_only, bool)
     rt.assert_doc('document.as_obj', document.as_obj)
 
-    for id in document.as_obj.doc_info.external_ids:
+    for id in document.as_obj.meta.external_ids:
         instance = dao.get_document_external_id(document.Project_ID,
                                                 document.ID,
                                                 id.value.upper())
@@ -392,7 +392,7 @@ def delete_doc(uid, version):
     session.commit()
 
 
-def _get_doc_info(doc, getters):
+def _get_doc_meta_info(doc, getters):
     # Defensive programming.
     rt.assert_doc('doc', doc)
 
@@ -412,7 +412,7 @@ def get_doc_name(doc):
     # Defensive programming.
     rt.assert_doc('doc', doc)
 
-    return _get_doc_info(doc, _get_cim_v1_doc_name_getters())
+    return _get_doc_meta_info(doc, _get_cim_v1_doc_name_getters())
 
 
 def get_doc_description(doc):
@@ -425,7 +425,7 @@ def get_doc_description(doc):
     # Defensive programming.
     rt.assert_doc('doc', doc)
 
-    return _get_doc_info(doc, _get_cim_v1_doc_description_getters())
+    return _get_doc_meta_info(doc, _get_cim_v1_doc_description_getters())
 
 
 def get_doc_summary_fields(doc):
@@ -438,7 +438,7 @@ def get_doc_summary_fields(doc):
     # Defensive programming.
     rt.assert_doc('doc', doc)
     
-    return _get_doc_info(doc, _get_cim_v1_doc_summary_field_getters())
+    return _get_doc_meta_info(doc, _get_cim_v1_doc_summary_field_getters())
 
 
 def get_doc_ontology(doc):
@@ -708,8 +708,8 @@ def get_doc_by_obj(project_id, as_obj):
     """
     # Retrieve.
     instance = dao.get_document(project_id,
-                                as_obj.doc_info.id,
-                                as_obj.doc_info.version)
+                                as_obj.meta.id,
+                                as_obj.meta.version)
 
     # Assign.
     if instance is not None:
@@ -729,11 +729,11 @@ def _get_cim_v1_doc_summary_field_getters():
         )
 
     def _quality(d):
-        if not len(d.doc_info.external_ids):
+        if not len(d.meta.external_ids):
             return ()
         else:
             return (
-                d.doc_info.external_ids[0].value
+                d.meta.external_ids[0].value
             )
 
     def _data_object(d):

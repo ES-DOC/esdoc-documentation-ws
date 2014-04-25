@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: DCMIP 2012 atom feed ingestor.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """

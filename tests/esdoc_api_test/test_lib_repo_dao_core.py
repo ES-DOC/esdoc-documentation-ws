@@ -49,19 +49,19 @@ def test_assert_instance_02():
     models.assert_instance(TestModelA())
 
 
-def test_assert_collection_01():
+def test_assert_iter_01():
     # Test valid collection assertion.
-    models.assert_collection(map(lambda st : st(), models.supported_types))
+    models.assert_iter(map(lambda st : st(), models.supported_types))
 
 
 @nose.tools.raises(rt.ESDOC_API_Error)
-def test_assert_collection_02():
+def test_assert_iter_02():
     # Test invalid collection assertion.
     class TestModelA(object):
         pass
     class TestModelB(object):
         pass
-    models.assert_collection([TestModelA(), TestModelB()])
+    models.assert_iter([TestModelA(), TestModelB()])
 
 
 def test_delete_01():
@@ -71,7 +71,7 @@ def test_delete_01():
     dao.insert(instance)
     count = dao.get_count(type)
     dao.delete(instance)
-    tu.assert_integer(count - 1, dao.get_count(type))
+    tu.assert_int(count - 1, dao.get_count(type))
 
 
 def test_delete_02():
@@ -84,9 +84,9 @@ def test_delete_02():
         tu.get_test_model(type)
     ]
     dao.insert(collection)
-    tu.assert_integer(count + len(collection), dao.get_count(type))
+    tu.assert_int(count + len(collection), dao.get_count(type))
     dao.delete(collection)
-    tu.assert_integer(count, dao.get_count(type))
+    tu.assert_int(count, dao.get_count(type))
 
 
 def test_delete_by_type_01():
@@ -98,9 +98,9 @@ def test_delete_by_type_01():
         tu.get_test_model(models.IngestURL)
     ]
     dao.insert(collection)
-    tu.assert_integer(count + len(collection), dao.get_count(models.IngestURL))
+    tu.assert_int(count + len(collection), dao.get_count(models.IngestURL))
     dao.delete_by_type(models.IngestURL)
-    tu.assert_integer(count, dao.get_count(models.IngestURL))
+    tu.assert_int(count, dao.get_count(models.IngestURL))
 
 
 def test_delete_by_type_02():
@@ -115,9 +115,9 @@ def test_delete_by_type_02():
         tu.get_test_model(models.IngestURL)
     ]
     dao.insert(collection)
-    tu.assert_integer(count + len(collection), dao.get_count(models.IngestURL))
+    tu.assert_int(count + len(collection), dao.get_count(models.IngestURL))
     dao.delete_by_type(models.IngestURL, delete_callback)
-    tu.assert_integer(count, dao.get_count(models.IngestURL))
+    tu.assert_int(count, dao.get_count(models.IngestURL))
 
 
 def test_delete_by_id():
@@ -126,7 +126,7 @@ def test_delete_by_id():
     dao.insert(instance)
     count = dao.get_count(models.Project)
     dao.delete_by_id(models.Project, instance.ID)
-    tu.assert_integer(count - 1, dao.get_count(models.Project))
+    tu.assert_int(count - 1, dao.get_count(models.Project))
 
 
 def test_delete_by_name():
@@ -135,17 +135,17 @@ def test_delete_by_name():
     dao.insert(instance)
     count = dao.get_count(models.Project)
     dao.delete_by_name(models.Project, instance.Name)
-    tu.assert_integer(count - 1, dao.get_count(models.Project))
+    tu.assert_int(count - 1, dao.get_count(models.Project))
 
 
 def test_get_active():
     # Test retrieving all active instances of a specified type.
-    tu.assert_collection(dao.get_active(models.IngestEndpoint), 8)
+    tu.assert_iter(dao.get_active(models.IngestEndpoint), 8)
 
 
 def test_get_all():
     # Test retrieving all instances of a specified type.
-    tu.assert_collection(dao.get_all(models.DocumentEncoding), 3)
+    tu.assert_iter(dao.get_all(models.DocumentEncoding), 3)
 
 
 def test_get_by_facet_01():
@@ -168,7 +168,7 @@ def test_get_by_facet_02():
 
     # Retrieve instance via a collection.
     collection = dao.get_by_facet(type, type.ID==instance.ID, get_iterable=True)
-    tu.assert_collection(collection, length=1, item_type=type)
+    tu.assert_iter(collection, length=1, item_type=type)
     tu.assert_entity(collection[0], instance)
 
 
@@ -189,9 +189,9 @@ def test_get_by_facet_03():
 
     # Assert sorted collection.
     collection = dao.get_by_facet(type, None, get_iterable=True)
-    tu.assert_collection(collection, length=3, item_type=type)
+    tu.assert_iter(collection, length=3, item_type=type)
     for i in range(len(collection)):
-        tu.assert_string(fields[i], collection[i].ShortName)
+        tu.assert_str(fields[i], collection[i].ShortName)
 
 
 def test_get_by_facet_04():
@@ -212,9 +212,9 @@ def test_get_by_facet_04():
     # Assert ordered collection.
     collection = dao.get_by_facet(type, None, get_iterable=True,
                                   order_by=type.LongName)
-    tu.assert_collection(collection, length=3, item_type=type)
+    tu.assert_iter(collection, length=3, item_type=type)
     for i in range(len(collection)):
-        tu.assert_string(fields[i], collection[i].LongName)
+        tu.assert_str(fields[i], collection[i].LongName)
 
 
 def test_get_by_id():
@@ -229,12 +229,12 @@ def test_get_by_name():
 
 def test_get_count():
     # Test retrieving a count of instances by type.
-    tu.assert_integer(dao.get_count(models.DocumentEncoding), 3, tu.COMPARE_GTE)
+    tu.assert_int(dao.get_count(models.DocumentEncoding), 3, tu.COMPARE_GTE)
 
 
 def test_get_inactive():
     # Test retrieving all active instances of a specified type.
-    tu.assert_collection(dao.get_inactive(models.IngestEndpoint), 0, length_compare=tu.COMPARE_EXACT)
+    tu.assert_iter(dao.get_inactive(models.IngestEndpoint), 0, length_compare=tu.COMPARE_EXACT)
 
 
 def test_insert():    
@@ -242,7 +242,7 @@ def test_insert():
     count = dao.get_count(models.Project)
     instance = tu.get_test_model(models.Project)
     dao.insert(instance)
-    tu.assert_integer(count + 1, dao.get_count(models.Project))
+    tu.assert_int(count + 1, dao.get_count(models.Project))
 
 
 def test_insert_all():
@@ -254,4 +254,4 @@ def test_insert_all():
         tu.get_test_model(models.IngestEndpoint)
     ]
     dao.insert(collection)
-    tu.assert_integer(count + len(collection), dao.get_count(models.IngestEndpoint))
+    tu.assert_int(count + len(collection), dao.get_count(models.IngestEndpoint))

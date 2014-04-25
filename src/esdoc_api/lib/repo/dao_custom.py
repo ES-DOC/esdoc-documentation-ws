@@ -3,7 +3,7 @@
    :platform: Unix
    :synopsis: Set of custom repo data access operations.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -82,16 +82,6 @@ __all__ = [
 
 
 
-def _sort(q, type):
-    """Code simplification helper function that applies and returns a sort."""
-    return sort(DocumentSummary, q.all())
-
-
-def _order(q, expression):
-    """Code simplification helper function that applies a query order."""
-    q = q.order_by(expression) 
-
-
 def get_document(project_id, uid, version=models.DOCUMENT_VERSION_LATEST):
     """Returns a Document instance by it's project, UID & version.
 
@@ -114,7 +104,7 @@ def get_document(project_id, uid, version=models.DOCUMENT_VERSION_LATEST):
         q = q.filter(Document.Project_ID==project_id)
     q = q.filter(Document.UID==unicode(uid))
     if version is None or version in models.DOCUMENT_VERSIONS:
-        _order(q, Document.Version.desc())
+        q = q.order_by(Document.Version.desc())
     else:
         q = q.filter(Document.Version==int(version))
 
@@ -435,7 +425,7 @@ def get_document_summaries(
     # Apply query limit.
     q = q.limit(session.QUERY_LIMIT)
 
-    return _sort(q, DocumentSummary)
+    return sort(DocumentSummary, q.all())
     
 
 def get_doc_ontology(name, version=None):
@@ -503,7 +493,7 @@ def get_ingest_endpoints():
     q = session.query(IngestEndpoint)
 
     q = q.filter(IngestEndpoint.IsActive==True)
-    _order(q, IngestEndpoint.Priority.desc())
+    q = q.order_by(IngestEndpoint.Priority.desc())
 
     return q.all()
 

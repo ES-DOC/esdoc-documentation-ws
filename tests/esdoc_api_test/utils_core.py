@@ -1,5 +1,5 @@
 """
-.. module:: prodiguer_shared_tests.test_utils.py
+.. module:: utils_core.py
 
    :copyright: @2013 Institute Pierre Simon Laplace (http://es-doc.org)
    :license: GPL / CeCILL
@@ -172,7 +172,7 @@ def get_uuid():
     return str(uuid.uuid1())
 
 
-def assert_collection(collection, 
+def assert_iter(collection, 
                       length = -1,
                       length_compare = COMPARE_GTE,
                       item_type=None):
@@ -194,7 +194,7 @@ def assert_collection(collection,
     assert_object(collection)
     assert iter(collection) is not None
     if length != -1:
-        assert_integer(len(collection), length, length_compare)
+        assert_int(len(collection), length, length_compare)
     if item_type is not None:
         if isinstance(collection, dict):
             collection = collection.values()
@@ -237,7 +237,7 @@ def assert_entity(actual, expected):
     """
     assert_object(actual, models.Entity)
     assert_object(expected, models.Entity)
-    assert_integer(actual.ID, expected.ID)
+    assert_int(actual.ID, expected.ID)
 
 
 def assert_none(instance):
@@ -280,7 +280,7 @@ def assert_objects(instance1, instance2):
     assert instance1 == instance2
 
 
-def assert_string(actual, expected, startswith=False):
+def assert_str(actual, expected, startswith=False):
     """Asserts a string.
 
     :param actual: A string.
@@ -335,7 +335,7 @@ def assert_date(actual, expected):
     assert actual == dateutil_parser.parse(expected)
 
 
-def assert_integer(actual, expected, assert_type=COMPARE_EXACT):
+def assert_int(actual, expected, assert_type=COMPARE_EXACT):
     """Asserts an integer.
 
     :param actual: An integer.
@@ -359,7 +359,7 @@ def assert_integer(actual, expected, assert_type=COMPARE_EXACT):
         assert actual == expected, "{0} != {1}".format(actual, expected)
 
 
-def assert_integer_negative(actual, expected):
+def assert_int_negative(actual, expected):
     """Negatively asserts an integer.
 
     :param actual: An integer.
@@ -449,8 +449,8 @@ def assert_model_persistence(type, factory):
     factory(type)
 
     # Reassert counts.
-    assert_integer(dao.get_count(type), count + 1)
+    assert_int(dao.get_count(type), count + 1)
 
     # Delete & reassert count.
     delete_test_models()
-    assert_integer(dao.get_count(type), count)
+    assert_int(dao.get_count(type), count)

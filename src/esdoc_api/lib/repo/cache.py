@@ -5,7 +5,7 @@
    :platform: Unix, Windows
    :synopsis: Static cache of repo entities.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -31,7 +31,7 @@ _cache_targets = (
 )
 
 
-def _assert_collection(collection):
+def _assert_iter(collection):
     """Asserts that the the collection is an iterable.
     
     :param collection: Cache collection.
@@ -43,7 +43,7 @@ def _assert_collection(collection):
                          "All collection items must be sub-classes of models.Entity.")
 
 
-def _assert_collection_key(key):
+def _assert_iter_key(key):
     """Asserts that the the collection key is supported.
 
     :param key: Cache collection key.
@@ -86,7 +86,7 @@ def register(collection_key, collection, item_key_attribute='Name'):
 
     """
     # Denfensive programming.
-    _assert_collection(collection)
+    _assert_iter(collection)
 
     def get_collection():
         result = {}
@@ -130,7 +130,7 @@ def is_cached(collection_key, item_key=None):
     if item_key is None:
         return _format_key(collection_key) in _cache.keys()
     else:
-        _assert_collection_key(collection_key)
+        _assert_iter_key(collection_key)
         return _format_key(item_key) in _cache[_format_key(collection_key)]
 
 
@@ -148,7 +148,7 @@ def get(collection_key, item_key=None):
 
     """
     # Defensive programming.
-    _assert_collection_key(collection_key)
+    _assert_iter_key(collection_key)
 
     collection = _cache[_format_key(collection_key)]
 
@@ -181,7 +181,7 @@ def get_names(collection_key,
 
     """
     # Defensive programming.
-    _assert_collection_key(collection_key)
+    _assert_iter_key(collection_key)
 
     return map(lambda x : name_formatter(getattr(x, name_attr)),
                _cache[_format_key(collection_key)].values())
@@ -197,7 +197,7 @@ def get_count(collection_key=None):
     if collection_key is None:
         return len(_cache)
     else:
-        _assert_collection_key(collection_key)
+        _assert_iter_key(collection_key)
         return len(_cache[_format_key(collection_key)])
 
 

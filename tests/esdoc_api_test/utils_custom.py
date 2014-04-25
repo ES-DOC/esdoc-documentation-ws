@@ -75,8 +75,8 @@ def get_test_document(id=None, version=None, project=None):
     project = project if project is not None else get_test_model(models.Project)
     endpoint = get_test_model(models.IngestEndpoint)
     doc = get_test_pyesdoc_doc()
-    doc.doc_info.id = get_uuid() if id is None else id
-    doc.doc_info.version = 1 if version is None else version
+    doc.meta.id = get_uuid() if id is None else id
+    doc.meta.version = 1 if version is None else version
         
     return utils.create_doc(doc, project, endpoint)
 
@@ -490,8 +490,8 @@ def assert_model_persistence(type):
     get_test_model(type)
 
     # Reassert counts.
-    assert_integer(dao.get_count(type), count + 1)
+    assert_int(dao.get_count(type), count + 1)
 
     # Delete & reassert count.
     delete_test_models()
-    assert_integer(dao.get_count(type), count)
+    assert_int(dao.get_count(type), count)

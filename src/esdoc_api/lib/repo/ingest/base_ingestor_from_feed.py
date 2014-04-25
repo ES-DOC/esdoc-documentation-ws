@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: Base class for all feed ingestors.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -313,11 +313,11 @@ class FeedIngestorBase(IngestorBase):
         doc = pyesdoc.decode(etree, pyesdoc.METAFOR_CIM_XML_ENCODING)
 
         # Assign doc attributes.
-        doc.doc_info.project = str(self.project.Name)
-        doc.doc_info.source = str(self.endpoint.MetadataSource)
-        doc.doc_info.type = doc.__class__.type_key
+        doc.meta.project = str(self.project.Name)
+        doc.meta.source = str(self.endpoint.MetadataSource)
+        doc.meta.type = doc.__class__.type_key
         if parent is not None:
-            doc.doc_info.institute = parent.doc_info.institute
+            doc.meta.institute = parent.meta.institute
     
         # Call post decoding handler.
         self.on_doc_decoded(doc, etree, nsmap)

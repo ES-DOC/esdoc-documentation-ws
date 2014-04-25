@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: Reduces a cim.v1.software.model_component document in readiness for facet emission.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """

@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: CMIP5 quality control atom feed ingestor.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
@@ -49,11 +49,11 @@ class Ingestor(FeedIngestorBase):
 
         """
         # Escape if no external id has been defined.
-        if len(document.as_obj.doc_info.external_ids) == 0:
+        if len(document.as_obj.meta.external_ids) == 0:
             return
 
         # Derive drs.
-        drs = document.as_obj.doc_info.external_ids[0].value
+        drs = document.as_obj.meta.external_ids[0].value
         drs = drs.split('.')[2:]
 
         # Derive institute.

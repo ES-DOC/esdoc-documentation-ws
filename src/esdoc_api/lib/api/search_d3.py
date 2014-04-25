@@ -5,7 +5,7 @@
    :platform: Unix, Windows
    :synopsis: Search engine d1 - document by external ID.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
