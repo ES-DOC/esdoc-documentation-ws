@@ -32,8 +32,12 @@ def set_cmip5_id(id, instance):
     instance.realm = instance.drs[6]
     instance.mip = instance.drs[7]
     instance.ensemble = instance.drs[8]
-    instance.version = instance.drs[9]
-    instance.dataset_id = '.'.join(instance.drs[0:9])
+    if len(instance.drs) >= 10:
+        instance.version = instance.drs[9]
+        instance.dataset_id = '.'.join(instance.drs[0:9])
+    else:
+        instance.version = None
+        instance.dataset_id = '.'.join(instance.drs[0:8])
 
     return instance.drs
 
@@ -43,7 +47,7 @@ def concat_ds(document_set, target):
 
     :param document_set: A set of documents.
     :type document_set:
-    
+
     :param target: Current document set.
     :type target: list | object
 

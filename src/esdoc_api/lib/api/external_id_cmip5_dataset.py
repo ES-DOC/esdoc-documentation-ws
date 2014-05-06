@@ -80,4 +80,4 @@ def is_valid(id):
     :type id: str
 
     """
-    return False if len(id.split('.')) < 10 else True
+    return False if len(id.split('.')) < 9 else True

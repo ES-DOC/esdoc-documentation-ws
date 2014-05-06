@@ -24,6 +24,7 @@ import esdoc_api.lib.repo.utils as utils
 import esdoc_api.lib.utils.runtime as rt
 import esdoc_api.models as models
 import esdoc_api.lib.controllers.url_validation as uv
+import esdoc_api.lib.pyesdoc as pyesdoc
 
 
 
@@ -131,7 +132,7 @@ _params_do = {
         },
     ),
     'documentSummaryByName' : _default_params + (
-        
+
     ),
     'se1' : _default_params + (
         {
@@ -240,6 +241,10 @@ class SearchController(BaseAPIController):
         self.encoding = None if not request.params.has_key('encoding') else \
                         cache.get_doc_encoding(request.params['encoding'])
         self.encoding_id = None if self.encoding is None else self.encoding.ID
+        self.json_encoding = cache.get_doc_encoding('json')
+        if self.encoding is None:
+            self.encoding = self.json_encoding
+            self.encoding_id = self.json_encoding.ID
 
 
     def __set_doc_language(self):
@@ -270,10 +275,17 @@ class SearchController(BaseAPIController):
         :rtype: str
 
         """
-        return utils.get_doc_representation(document,
-                                            self.ontology,
-                                            self.encoding,
-                                            self.language)
+        r = utils.get_doc_representation(document,
+                                         self.ontology,
+                                         self.json_encoding,
+                                         self.language)
+
+        if self.encoding != self.json_encoding:
+            r = pyesdoc.decode(r, 'json')
+            r = pyesdoc.parse(r)
+            r = pyesdoc.encode(r, self.encoding.Encoding)
+
+        return r
 
 
     def __load_representation_set(self, document_set):
@@ -308,7 +320,7 @@ class SearchController(BaseAPIController):
             for document in iterator:
                 if document.HasChildren:
                     document_set.extend(dao.get_document_sub_documents(document.ID))
-                
+
         return document_set
 
 
@@ -352,7 +364,7 @@ class SearchController(BaseAPIController):
 
         :returns: A list of document representations.
         :rtype: list
-        
+
         """
         # Apply transformations.
         transformations = [
@@ -362,7 +374,7 @@ class SearchController(BaseAPIController):
             self.__load_representation_set
         ]
         return reduce(lambda ds, f : f(ds), transformations, load())
-    
+
 
     def __get_documentset_by_id(self):
         """Returns first document set with matching id and version.
@@ -375,7 +387,7 @@ class SearchController(BaseAPIController):
         if not request.params.has_key('id'):
             abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter id is mandatory")
         id = request.params['id'].lower()
-        
+
         if not request.params.has_key('version'):
             abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter version is mandatory")
         version = request.params['version'].lower()
@@ -403,7 +415,7 @@ class SearchController(BaseAPIController):
 
         if not request.params.has_key('name'):
             abort(HTTP_RESPONSE_BAD_REQUEST, "URL parameter name is mandatory")
-            
+
         # Load document set.
         return self.__load(lambda : dao.get_document_by_name(self.project_id,
                                                              request.params['type'],
@@ -424,7 +436,7 @@ class SearchController(BaseAPIController):
 
         if len(request.params['drsPath'].split('/')) > 8:
             abort(HTTP_RESPONSE_BAD_REQUEST, "A DRS path must consist of a maximum 8 keys")
-        
+
         # Format drs keys.
         keys = [x for x in request.params['drsPath'].split('/') if len(x) > 0]
         keys = [x for x in keys if not x.upper() == self.project.Name]
@@ -495,13 +507,18 @@ class SearchController(BaseAPIController):
 
 
     @rest.restrict('GET')
-    @jsonify
     def do(self):
         """Executes a document set search against ES-DOC API repository.
 
         """
-        # Validate URL query parameters.
-        _validate_url_params(_params_do)
+        @jsonify
+        def as_json(data):
+            return data
+
+        def as_html(data):
+            r = reduce(lambda r, h: r + h, data, "")
+
+            return "<div class='esdoc-document-set'>{0}</div>".format(r)
 
         # Set of handlers.
         handlers = {
@@ -513,11 +530,26 @@ class SearchController(BaseAPIController):
             'se1' : self.__load_results,
         }
 
+        # Set of formatters.
+        formatters = {
+            'json': as_json,
+            'html': as_html
+        }
+
+        # Validate URL query parameters.
+        _validate_url_params(_params_do)
+
         # Set response content type.
         response.content_type = self.get_response_content_type()
 
-        # Return handler invocation result.
-        return handlers[request.params['searchType']]()
+        # Get search results.
+        results = handlers[request.params['searchType']]()
+
+        # Return in relevant encoding.
+        if self.encoding.Encoding in formatters:
+            return formatters[self.encoding.Encoding](results)
+        else:
+            return results
 
 
     @rest.restrict('GET')

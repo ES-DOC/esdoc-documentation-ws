@@ -641,9 +641,9 @@ def get_doc_representation(document, ontology, encoding, language):
     rt.assert_var('language', language, models.DocumentLanguage)
 
     instance = dao.get_doc_representation(document.ID,
-                                               ontology.ID,
-                                               encoding.ID,
-                                               language.ID)
+                                          ontology.ID,
+                                          encoding.ID,
+                                          language.ID)
 
     return None if instance is None else instance.Representation
 
