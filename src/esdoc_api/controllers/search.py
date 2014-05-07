@@ -12,6 +12,7 @@
 import itertools
 
 from pylons.decorators import rest
+from pylons import response
 
 from esdoc_api.lib.api.external_id import get_handler as get_external_id_handler
 from esdoc_api.lib.controllers import *
@@ -200,7 +201,7 @@ class SearchController(BaseAPIController):
         self.__set_doc_metainfo()
 
         # Permit CORS.
-        pylons.response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
 
 
     def __set_doc_metainfo(self):
