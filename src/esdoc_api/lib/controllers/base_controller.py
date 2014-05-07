@@ -64,6 +64,7 @@ class BaseController(WSGIController):
     """
     # Abstract Base Class module - see http://docs.python.org/library/abc.html
     __metaclass__ = ABCMeta
+    
 
     def __before__(self, action, **kwargs):
         """Pre action invocation handler.

@@ -199,6 +199,9 @@ class SearchController(BaseAPIController):
         # Set common context info.
         self.__set_doc_metainfo()
 
+        # Permit CORS.
+        pylons.response.headers['Access-Control-Allow-Origin'] = '*'
+
 
     def __set_doc_metainfo(self):
         """Assigns document meta-information from incoming http request.

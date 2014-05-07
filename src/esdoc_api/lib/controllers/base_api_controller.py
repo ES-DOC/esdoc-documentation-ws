@@ -12,7 +12,7 @@ class BaseAPIController(BaseController):
     @property
     def controller_type_description(self):
         """Gets type controller type description.
-        
+
         """
         return "WEB SERVICE"
 
