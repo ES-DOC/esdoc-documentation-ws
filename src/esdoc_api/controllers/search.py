@@ -200,7 +200,7 @@ class SearchController(BaseAPIController):
         # Set common context info.
         self.__set_doc_metainfo()
 
-        # Permit CORS.
+        # Permit CORS - TODO apply white list from a config file.
         response.headers['Access-Control-Allow-Origin'] = '*'
 
 
