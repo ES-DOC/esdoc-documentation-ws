@@ -13,33 +13,17 @@
 import json
 import os
 
-import esdoc_api.models as models
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.utils as utils
+import esdoc_api.db.models as models
+import esdoc_api.db.dao as dao
+import esdoc_api.db.utils as utils
 import esdoc_api.lib.utils.runtime as rt
 
 
 def _get_c1_setup_data(project_id):
     """Loads setup data for the c1 comparator."""
     return {
-        'facetSet' : {
-            'component' : utils.get_facets(project_id, models.MODEL_COMPONENT),
-            'model' : utils.get_facets(project_id, models.MODEL),
-            'property' : utils.get_facets(project_id, models.MODEL_COMPONENT_PROPERTY),
-            'value' : utils.get_facets(project_id, models.MODEL_COMPONENT_PROPERTY_VALUE),
-        },
-        'relationSet' : {
-            'componentToComponent' : utils.get_facet_relations(project_id, models.COMPONENT_2_COMPONENT),
-            'componentToProperty' : utils.get_facet_relations(project_id, models.COMPONENT_2_PROPERTY),
-            'modelToComponent' : utils.get_facet_relations(project_id, models.MODEL_2_COMPONENT),
-            'modelToProperty' : utils.get_facet_relations(project_id, models.MODEL_2_PROPERTY),
-            'modelToValue' : utils.get_facet_relations(project_id, models.MODEL_2_VALUE),
-            'propertyToProperty' : utils.get_facet_relations(project_id, models.PROPERTY_2_PROPERTY),
-            'propertyToValue' : utils.get_facet_relations(project_id, models.PROPERTY_2_VALUE),
-        },
-        'joinSet' : {
-            'modelToPropertyAndValue' : [],
-        }
+        'fields' : utils.get_node_field_set(project_id),
+        'nodes' : utils.get_node_set(project_id),
     }
 
 # Set of comparators and their associated setup function pointers.
@@ -117,7 +101,7 @@ def write_comparator_json(project_code, comparator_type):
 
     :param project_code: The project code, e.g. CMIP5.
     :type project_code: str
-    
+
     :param comparator_type: The comparator code, e.g. c1.
     :type comparator_type: str
 
@@ -133,11 +117,11 @@ def write_comparator_json(project_code, comparator_type):
 
     # Write json file.
     with open(path, 'w') as f:
+        f.write('esdocSetupData = ')
         json.dump(data, f, encoding="ISO-8859-1")
 
     # Write jsonp file.
     with open(path + 'p', 'w') as f:
-        f.write('onESDOC_JSONPLoad(')
+        f.write('onESDOC_JSONPLoad(esdocSetupData = ')
         json.dump(data, f, encoding="ISO-8859-1")
         f.write(');')
-    

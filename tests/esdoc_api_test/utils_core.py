@@ -20,9 +20,9 @@ from lxml import etree as et
 
 from nose.tools import nottest
 
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.models as models
-import esdoc_api.lib.repo.session as session
+import esdoc_api.db.dao as dao
+import esdoc_api.db.models as models
+import esdoc_api.db.session as session
 
 
 
@@ -229,10 +229,10 @@ def assert_entity(actual, expected):
     """Asserts a pair of entity instances.
 
     :param actual: An entity.
-    :type actual: esdoc_api.models.Entity
+    :type actual: esdoc_api.db.models.Entity
 
     :param expected: An entity.
-    :type expected: esdoc_api.models.Entity
+    :type expected: esdoc_api.db.models.Entity
 
     """
     assert_object(actual, models.Entity)

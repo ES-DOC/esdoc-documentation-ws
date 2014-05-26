@@ -13,8 +13,8 @@
 # Module imports.
 import nose.tools 
 
-import esdoc_api.lib.repo.cache as cache
-import esdoc_api.models as models
+import esdoc_api.db.cache as cache
+import esdoc_api.db.models as models
 import esdoc_api.lib.utils.runtime as rt
 import esdoc_api_test.utils as tu
 

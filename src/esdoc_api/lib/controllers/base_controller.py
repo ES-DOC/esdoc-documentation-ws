@@ -49,11 +49,11 @@ import lxml
 from lxml import etree as et
 
 # Portal packages.
-from esdoc_api.models import *
+from esdoc_api.db.models import *
 from esdoc_api.lib.utils.helpers import *
-import esdoc_api.lib.repo.session as repo_session
+import esdoc_api.db.session as repo_session
 import esdoc_api.lib.utils.helpers as h
-import esdoc_api.lib.repo.cache as cache
+import esdoc_api.db.cache as cache
 import esdoc_api.lib.utils.runtime as rt
 
 

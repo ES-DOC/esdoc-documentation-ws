@@ -16,7 +16,8 @@ import esdoc_api.lib.api.search_d3 as d3
 import esdoc_api.lib.api.search_d4 as d4
 import esdoc_api.lib.api.search_ds1 as ds1
 import esdoc_api.lib.api.search_se1 as se1
-import esdoc_api.lib.repo.cache as cache
+import esdoc_api.db.models as models
+import esdoc_api.db.cache as cache
 import esdoc_api.lib.utils.runtime as rt
 
 
@@ -41,7 +42,7 @@ def _validate_criteria(criteria):
     """
     rt.assert_var('criteria', criteria, dict)
     rt.assert_params(criteria, [
-        ('project', cache.get('Project'))
+        ('project', cache.get_names(models.Project))
     ])
 
 
@@ -54,7 +55,7 @@ def _parse_criteria(criteria):
     """
     for target in ['project']:
         if target in criteria:
-            criteria[target] = str(criteria[target]).upper()
+            criteria[target] = str(criteria[target]).lower()
 
 
 def get_setup_data(type, project):
@@ -62,7 +63,7 @@ def get_setup_data(type, project):
 
     :param type: The Search type, e.g. se1.
     :type type: str
-    
+
     :param project: The associated project code.
     :type project: str
 

@@ -11,12 +11,12 @@
 """
 
 # Module imports.
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.models as models
+import esdoc_api.db.dao as dao
+import esdoc_api.db.models as models
 import esdoc_api_test.utils as tu
-import esdoc_api.lib.pyesdoc as pyesdoc
+import esdoc_api.pyesdoc as pyesdoc
 from esdoc_api.lib.utils.cim_v1 import ACTIVE_TYPES
-from esdoc_api.lib.repo.ingest import INGESTOR_KEYS
+from esdoc_api.db.ingest import INGESTOR_KEYS
 
 
 

@@ -12,7 +12,7 @@ import esdoc_api.lib.utils.app_globals as app_globals
 import esdoc_api.lib.utils.helpers
 import esdoc_api.lib.utils.runtime as rt
 
-import esdoc_api.lib.repo.session as db_session
+import esdoc_api.db.session as db_session
 
 
 

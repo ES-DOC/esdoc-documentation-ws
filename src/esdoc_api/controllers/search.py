@@ -19,13 +19,13 @@ from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.http_utils import *
 from esdoc_api.lib.utils.xml_utils import *
 import esdoc_api.lib.api.search as se
-import esdoc_api.lib.repo.cache as cache
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.utils as utils
+import esdoc_api.db.cache as cache
+import esdoc_api.db.dao as dao
+import esdoc_api.db.utils as utils
 import esdoc_api.lib.utils.runtime as rt
-import esdoc_api.models as models
+import esdoc_api.db.models as models
 import esdoc_api.lib.controllers.url_validation as uv
-import esdoc_api.lib.pyesdoc as pyesdoc
+import esdoc_api.pyesdoc as pyesdoc
 
 
 
@@ -38,7 +38,7 @@ _default_params = (
     {
         'name' : 'project',
         'required' : True,
-        'whitelist' : lambda : cache.get_names('Project'),
+        'whitelist' : lambda : cache.get_names(models.Project),
         'key_formatter' : lambda n : n.lower(),
     },
     {
@@ -63,19 +63,19 @@ _params_do_defaults_document_by = _default_params + (
     {
         'name' : 'language',
         'required' : True,
-        'whitelist' : lambda : cache.get_names('DocumentLanguage', 'Code'),
+        'whitelist' : lambda : cache.get_names(models.DocumentLanguage),
         'key_formatter' : lambda k : k.lower(),
     },
     {
         'name' : 'encoding',
         'required' : True,
-        'whitelist' : lambda : cache.get_names('DocumentEncoding', 'Encoding'),
+        'whitelist' : lambda : cache.get_names(models.DocumentEncoding),
         'key_formatter' : lambda k : k.lower(),
     },
     {
         'name' : 'ontology',
         'required' : True,
-        'whitelist' : lambda : cache.get_names('DocumentOntology'),
+        'whitelist' : lambda : cache.get_names(models.DocumentOntology),
         'key_formatter' : lambda k : k.lower(),
     }
 )
@@ -128,7 +128,7 @@ _params_do = {
         {
             'name' : 'institute',
             'required' : False,
-            'whitelist' : lambda : cache.get_names('Institute'),
+            'whitelist' : lambda : cache.get_names(models.Institute),
             'key_formatter' : lambda k : k.lower(),
         },
     ),
@@ -139,13 +139,13 @@ _params_do = {
         {
             'name' : 'documentLanguage',
             'required' : True,
-            'whitelist' : lambda : cache.get_names('DocumentLanguage', 'Code'),
+            'whitelist' : lambda : cache.get_names(models.DocumentLanguage),
             'key_formatter' : lambda k : k.lower(),
         },
         {
             'name' : 'documentType',
             'required' : True,
-            'whitelist' : lambda : cache.get_names('DocumentType', 'Key'),
+            'whitelist' : lambda : cache.get_names(models.DocumentType),
             'key_formatter' : lambda k : k.lower(),
         },
         {
@@ -156,7 +156,7 @@ _params_do = {
         {
             'name' : 'institute',
             'required' : False,
-            'whitelist' : lambda : cache.get_names('Institute'),
+            'whitelist' : lambda : cache.get_names(models.Institute),
             'key_formatter' : lambda k : k.lower(),
         }
     )
@@ -273,7 +273,7 @@ class SearchController(BaseAPIController):
         """Loads a document representation.
 
         :param document: document being loaded.
-        :type document: esdoc_api.models.Document
+        :type document: db.models.Document
 
         :returns: A document representation.
         :rtype: str
@@ -286,7 +286,7 @@ class SearchController(BaseAPIController):
 
         if self.encoding != self.json_encoding:
             r = pyesdoc.decode(r, 'json')
-            r = pyesdoc.parse(r)
+            r = pyesdoc.extend(r)
             r = pyesdoc.encode(r, self.encoding.Encoding)
 
         return r

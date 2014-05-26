@@ -9,7 +9,7 @@
 """
 
 # Module imports.
-from esdoc_api.models import Project
+from esdoc_api.db.models import Project
 import external_id_cmip5_dataset as cmip5_dataset_handler
 import external_id_cmip5_file as cmip5_file_handler
 import external_id_cmip5_simulation as cmip5_simulation_handler

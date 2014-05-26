@@ -16,20 +16,20 @@ import esdoc_api_test.utils as tu
 
 
 def test_import_package_01():
-    import esdoc_api.models as models
+    import esdoc_api.db.models as models
 
 
 def test_import_package_02():
-    from esdoc_api.models import *
+    from esdoc_api.db.models import *
 
 
 def test_import_model_types():
-    import esdoc_api.models as models
+    import esdoc_api.db.models as models
     assert len(models.supported_types) == 20
 
 
 def test_conversion():
-    import esdoc_api.models as models
+    import esdoc_api.db.models as models
 
     target = tu.assert_model_conversion
     for mt in models.supported_types:
@@ -38,7 +38,7 @@ def test_conversion():
 
 
 def test_creation():
-    import esdoc_api.models as models
+    import esdoc_api.db.models as models
 
     target = tu.assert_model_conversion
     for mt in models.supported_types:
@@ -47,7 +47,7 @@ def test_creation():
 
 
 def test_persistence():
-    import esdoc_api.models as models
+    import esdoc_api.db.models as models
 
     target = tu.assert_model_persistence
     for mt in models.supported_types:

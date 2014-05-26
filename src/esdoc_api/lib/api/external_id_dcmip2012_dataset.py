@@ -11,7 +11,7 @@
 """
 # Module imports.
 from esdoc_api.lib.api.external_id_utils import concat_ds
-import esdoc_api.lib.repo.dao as dao
+import esdoc_api.db.dao as dao
 import esdoc_api.lib.utils.cim_v1 as cim_v1
 
 
@@ -38,7 +38,7 @@ def do_query(project, id):
     """Query handler for returning documents by dcmip-2012 dataset id.
 
     :param project: DCMIP-2012 project identifier.
-    :type project: esdoc_api.models.Project
+    :type project: esdoc_api.db.models.Project
 
     :param id: DCMIP-2012 dataset identifier
     :type id: DatasetID

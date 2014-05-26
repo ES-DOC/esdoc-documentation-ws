@@ -10,9 +10,9 @@
 
 """
 # Module imports.
-import esdoc_api.models as models
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.cache as cache
+import esdoc_api.db.models as models
+import esdoc_api.db.dao as dao
+import esdoc_api.db.cache as cache
 import esdoc_api.lib.utils.runtime as rt
 
 
@@ -59,9 +59,9 @@ def get_results(criteria):
     """
     # Extract criteria.
     institute_id = None if 'institute' not in criteria else \
-                   cache.get_id('Institute', criteria['institute'])
-    language_id = cache.get_id('DocumentLanguage', criteria['documentLanguage'])
-    project_id = cache.get_id('Project', criteria['project'])
+                   cache.get_id(models.Institute, criteria['institute'])
+    language_id = cache.get_id(models.DocumentLanguage, criteria['documentLanguage'])
+    project_id = cache.get_id(models.Project, criteria['project'])
     type = criteria['documentType']
     version = criteria['documentVersion']
 
@@ -87,7 +87,7 @@ def set_results_subdata(data, criteria):
 
     """
     # Extract criteria.
-    project_id = cache.get_id('Project', criteria['project'])
+    project_id = cache.get_id(models.Project, criteria['project'])
     type = criteria['documentType']
 
     # Set total number of project documents as per document type.
@@ -101,9 +101,10 @@ def validate_criteria(criteria):
 
     """
     # Verify criteria are within controlled vocabs.
+    cache.get_names(models.DocumentLanguage)
     rt.assert_params(criteria, [
-        ('documentLanguage', cache.get('DocumentLanguage')),
-        ('documentType', cache.get('DocumentType')),
+        ('documentLanguage', cache.get_names(models.DocumentLanguage)),
+        ('documentType', cache.get_names(models.DocumentType)),
         ('documentVersion', models.DOCUMENT_VERSIONS)
     ])
 

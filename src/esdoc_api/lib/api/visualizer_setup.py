@@ -13,9 +13,9 @@
 import json
 import os
 
-import esdoc_api.models as models
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.utils as utils
+import esdoc_api.db.models as models
+import esdoc_api.db.dao as dao
+import esdoc_api.db.utils as utils
 import esdoc_api.lib.utils.runtime as rt
 
 

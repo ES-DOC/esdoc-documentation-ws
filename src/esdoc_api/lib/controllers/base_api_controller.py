@@ -1,7 +1,7 @@
 from esdoc_api.lib.controllers.base_controller import BaseController
 from pylons import request
 import esdoc_api.lib.utils.http_utils as http_utils
-import esdoc_api.lib.pyesdoc as pyesdoc
+import esdoc_api.pyesdoc as pyesdoc
 
 
 

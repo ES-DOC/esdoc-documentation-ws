@@ -14,7 +14,7 @@ from esdoc_api.lib.api.external_id_utils import (
     concat_ds,
     set_cmip5_id
     )
-import esdoc_api.lib.repo.dao as dao
+import esdoc_api.db.dao as dao
 import esdoc_api.lib.utils.cim_v1 as cim_v1
 
 
@@ -36,7 +36,7 @@ def do_query(project, id):
     """Query handler for returning documents by cmip5 dataset id.
 
     :param project: CMIP5 project identifier.
-    :type project: esdoc_api.models.Project
+    :type project: esdoc_api.db.models.Project
 
     :param id: CMIP5 dataset identifier
     :type id: CMIP5DatasetID

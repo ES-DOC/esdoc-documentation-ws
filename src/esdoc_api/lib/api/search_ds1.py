@@ -10,9 +10,9 @@
 
 """
 # Module imports.
-import esdoc_api.models as models
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.cache as cache
+import esdoc_api.db.models as models
+import esdoc_api.db.dao as dao
+import esdoc_api.db.cache as cache
 import esdoc_api.lib.utils.runtime as rt
 
 
@@ -38,9 +38,9 @@ def validate_criteria(criteria):
 
     """
     rt.assert_params(criteria, [
-        ('encoding', cache.get('DocumentEncoding')),
-        ('language', cache.get('DocumentLanguage')),
-        ('ontology', cache.get('DocumentOntology')),
+        ('encoding', cache.get_names(models.DocumentEncoding)),
+        ('language', cache.get_names(models.DocumentLanguage)),
+        ('ontology', cache.get_names(models.DocumentOntology)),
     ])
 
 

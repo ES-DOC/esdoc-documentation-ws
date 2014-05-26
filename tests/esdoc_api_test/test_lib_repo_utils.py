@@ -15,11 +15,11 @@ import uuid
 from nose.tools import with_setup
 
 import esdoc_api_test.utils as tu
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.models as models
-import esdoc_api.lib.repo.session as session
-import esdoc_api.lib.repo.utils as utils
-from esdoc_api.lib.pyesdoc.ontologies.cim.v1.types import StandardName
+import esdoc_api.db.dao as dao
+import esdoc_api.db.models as models
+import esdoc_api.db.session as session
+import esdoc_api.db.utils as utils
+from esdoc_api.pyesdoc.ontologies.cim.v1.types import StandardName
 
 
 

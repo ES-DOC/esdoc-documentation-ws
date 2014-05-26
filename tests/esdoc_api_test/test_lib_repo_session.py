@@ -15,17 +15,17 @@ import esdoc_api_test.utils as tu
 
 
 def test_import():
-    import esdoc_api.lib.repo.session as session
+    import esdoc_api.db.session as session
 
 
 def test_is_live():
-    import esdoc_api.lib.repo.session as session
+    import esdoc_api.db.session as session
 
     session.assert_is_live()
 
 
 def test_end():
-    import esdoc_api.lib.repo.session as session
+    import esdoc_api.db.session as session
 
     session.end()
     session.assert_is_dead()

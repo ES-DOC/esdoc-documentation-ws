@@ -67,9 +67,9 @@ def assert_function(f, msg=None):
 
     if not inspect.isfunction(f):
         throw(get_msg if msg is None else msg)
-    
 
-def assert_var(name, value, type, msg=None):
+
+def assert_var(name, value, types, msg=None):
     """Asserts that a variable is of the expected type.
 
     :param name: Variable name.
@@ -77,19 +77,37 @@ def assert_var(name, value, type, msg=None):
 
     :param name: Variable value.
     :type value: object
-    
-    :param name: Variable type.
-    :type type: class
+
+    :param name: Variable types.
+    :type types: class | list
 
     :param msg: Error message to output if assertion fails.
     :type msg: str or None
-    
+
     """
     def get_msg():
         msg = "Parameter '{0}' is of an invalid type (expected type = {1})."
         return msg.format(name, type.__name__)
-    
-    if value is None or not isinstance(value, type):
+
+    # Null values.
+    is_valid = value is not None
+
+    # Type mismatches.
+    if is_valid:
+        try:
+            iter(types)
+        except TypeError:
+            types = [types]
+
+        is_valid_type = False
+        for type in types:
+            if isinstance(value, type):
+                is_valid_type = True
+                break
+
+        is_valid = is_valid_type
+
+    if not is_valid:
         throw(get_msg if msg is None else msg)
 
 
@@ -146,7 +164,7 @@ def assert_iter(collection, msg=None):
     """
     def get_msg():
         return "Collection is not iterable."
-    
+
     try:
         iter(collection)
     except TypeError:
@@ -209,7 +227,7 @@ def assert_doc(name, value):
     """
     def get_msg():
         return "{0} is not a pyesdoc type instance".format(name)
-    
+
     assert_var(name, value, object, msg=get_msg)
     assert_attr(value, 'meta', msg=get_msg)
 
@@ -250,7 +268,8 @@ def assert_params(params, rules):
 
         # Assert param value is in constrained list.
         if len(white_list):
-            if params[name] not in white_list:
+            white_list = [i.upper() for i in white_list]
+            if params[name].upper() not in white_list:
                 throw("Parameter {0} is invalid.".format(name))
 
 

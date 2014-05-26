@@ -14,12 +14,12 @@ from sqlalchemy.exc import IntegrityError
 
 from nose.tools import nottest
 
-import esdoc_api.lib.pyesdoc as pyesdoc
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.models as models
-import esdoc_api.lib.repo.session as session
-import esdoc_api.lib.repo.utils as utils
-import esdoc_api.lib.pyesdoc.ontologies.cim.v1.types as cim_v1
+import esdoc_api.pyesdoc as pyesdoc
+import esdoc_api.db.dao as dao
+import esdoc_api.db.models as models
+import esdoc_api.db.session as session
+import esdoc_api.db.utils as utils
+import esdoc_api.pyesdoc.ontologies.cim.v1.types as cim_v1
 from esdoc_api_test.utils_core import *
 
 
@@ -69,7 +69,7 @@ def get_test_document(id=None, version=None, project=None):
     """Factory method to instantiate and return a test Document instance.
 
     :returns: A test Document instance.
-    :rtype: esdoc_api.models.Document
+    :rtype: esdoc_api.db.models.Document
 
     """
     project = project if project is not None else get_test_model(models.Project)

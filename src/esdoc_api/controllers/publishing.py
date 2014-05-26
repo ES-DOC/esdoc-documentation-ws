@@ -13,14 +13,14 @@ from pylons.decorators import rest
 from pylons import request
 from esdoc_api.lib.controllers import *
 from esdoc_api.lib.utils.xml_utils import *
-import esdoc_api.lib.repo.cache as cache
-import esdoc_api.lib.repo.dao as dao
-import esdoc_api.lib.repo.session as session
-import esdoc_api.lib.repo.utils as utils
+import esdoc_api.db.cache as cache
+import esdoc_api.db.dao as dao
+import esdoc_api.db.session as session
+import esdoc_api.db.utils as utils
 import esdoc_api.lib.utils.runtime as rt
-import esdoc_api.lib.pyesdoc as pyesdoc
+import esdoc_api.pyesdoc as pyesdoc
 import esdoc_api.lib.utils.http_utils as http
-import esdoc_api.models as models
+import esdoc_api.db.models as models
 
 
 
