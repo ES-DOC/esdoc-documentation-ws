@@ -246,6 +246,7 @@ class SearchController(BaseAPIController):
                         cache.get_doc_encoding(request.params['encoding'])
         self.encoding_id = None if self.encoding is None else self.encoding.ID
         self.json_encoding = cache.get_doc_encoding('json')
+        self.html_encoding = cache.get_doc_encoding('html')
         if self.encoding is None:
             self.encoding = self.json_encoding
             self.encoding_id = self.json_encoding.ID
@@ -269,29 +270,6 @@ class SearchController(BaseAPIController):
         self.ontology_id = None if self.ontology is None else self.ontology.ID
 
 
-    def __load_representation(self, document):
-        """Loads a document representation.
-
-        :param document: document being loaded.
-        :type document: db.models.Document
-
-        :returns: A document representation.
-        :rtype: str
-
-        """
-        r = utils.get_doc_representation(document,
-                                         self.ontology,
-                                         self.json_encoding,
-                                         self.language)
-
-        if self.encoding != self.json_encoding:
-            r = pyesdoc.decode(r, 'json')
-            r = pyesdoc.extend(r)
-            r = pyesdoc.encode(r, self.encoding.Encoding)
-
-        return r
-
-
     def __load_representation_set(self, document_set):
         """Loads a document representation set.
 
@@ -302,11 +280,42 @@ class SearchController(BaseAPIController):
         :rtype: string list
 
         """
-        representation_set = []
-        if document_set is not None:
-            representation_set = [self.__load_representation(d) for d in document_set]
+        def load(document):
+            return utils.get_doc_representation(document,
+                                                self.ontology,
+                                                self.json_encoding,
+                                                self.language)
 
-        return [r for r in representation_set if r is not None]
+        def convert(doc_set):
+            result = []
+            for doc in doc_set:
+                doc = pyesdoc.decode(doc, 'json')
+                doc = pyesdoc.extend(doc)
+                doc = pyesdoc.encode(doc, self.encoding.Encoding)
+                result.append(doc)
+
+            return result
+
+        def convert_to_html(doc_set):
+            result = []
+            for doc in doc_set:
+                doc = pyesdoc.decode(doc, 'json')
+                doc = pyesdoc.extend(doc)
+                result.append(doc)
+
+            return pyesdoc.encode(result, self.encoding.Encoding)
+
+        # Load representation set.
+        result = [] if document_set is None else \
+                 [r for r in [load(d) for d in document_set] if r is not None]
+
+        # Convert when necessary.
+        if self.encoding == self.json_encoding:
+            return result
+        elif self.encoding == self.html_encoding:
+            return convert_to_html(result)
+        else:
+            return convert(result)
 
 
     def __load_children(self, document_set):
@@ -370,14 +379,19 @@ class SearchController(BaseAPIController):
         :rtype: list
 
         """
-        # Apply transformations.
-        transformations = [
+        transformers = [
             self.__initialise_ds,
             self.__load_children,
             self.__apply_type_filters,
             self.__load_representation_set
         ]
-        return reduce(lambda ds, f : f(ds), transformations, load())
+
+        print "Loading documents"
+
+        document_set = load()
+        print "Loaded documents"
+
+        return reduce(lambda dset, func : func(dset), transformers, document_set)
 
 
     def __get_documentset_by_id(self):
@@ -520,9 +534,7 @@ class SearchController(BaseAPIController):
             return data
 
         def as_html(data):
-            r = reduce(lambda r, h: r + h, data, "")
-
-            return "<div class='esdoc-document-set'>{0}</div>".format(r)
+            return "<div class='esdoc-document-set'>{0}</div>".format(data)
 
         # Set of handlers.
         handlers = {
@@ -541,12 +553,14 @@ class SearchController(BaseAPIController):
         }
 
         # Validate URL query parameters.
+        print "validating params"
         _validate_url_params(_params_do)
 
         # Set response content type.
         response.content_type = self.get_response_content_type()
 
         # Get search results.
+        print "getting resutls"
         results = handlers[request.params['searchType']]()
 
         # Return in relevant encoding.
