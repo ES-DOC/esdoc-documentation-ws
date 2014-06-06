@@ -29,17 +29,17 @@ class Ingestor(FeedIngestorBase):
     """Manages ingestion from a dcmip 2012 atom feed.
 
     :ivar endpoint: Ingestion endpoint being processed.
-    
+
     """
     def __init__(self, endpoint):
         """Constructor.
 
         :param endpoint: Ingestion endpoint being processed (i.e. QED-2013 feed).
         :type endpoint: esdoc_api.db.models.IngestEndpoint
-        
+
         """
         super(Ingestor, self).__init__(endpoint, _PROJECT, _ONTOLOGY)
-    
+
 
     def ingest_feed_entry(self, content):
         """Ingests feed entry currently being processed.

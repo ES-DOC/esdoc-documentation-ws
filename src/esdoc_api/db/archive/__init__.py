@@ -9,25 +9,25 @@
 """
 # Module imports.
 from . import (
-	feed_parser,
-	uploader
+	write_organized,
+	write_pulled
 	)
 
 
 
-def build(throttle=0):
-	"""Builds document archive from documents pulled from atom feeds.
+def seed(throttle=0):
+	"""Seeds document archive with documents pulled from atom feeds.
 
-    :param int throttle: Limits number of documents to be pulled.
-
-	"""
-	feed_parser.execute(throttle)
-
-
-def upload(throttle=0):
-	"""Uploads document archive to db.
-
-    :param int throttle: Limits number of documents to be uploaded.
+    :param int throttle: Limits number of documents to be processed.
 
 	"""
-	uploader.execute(throttle)
+	write_pulled.execute(throttle)
+
+
+def organize(throttle=0):
+	"""Organizes archived documents in readiness for further processing.
+
+    :param int throttle: Limits number of documents to be processed.
+
+	"""
+	write_organized.execute(throttle)

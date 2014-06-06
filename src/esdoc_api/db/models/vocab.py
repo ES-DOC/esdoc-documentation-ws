@@ -11,6 +11,7 @@
 """
 # Module imports.
 from sqlalchemy import (
+    Boolean,
     Column,
     Integer,
     Unicode,
@@ -197,6 +198,7 @@ class DocumentType(Entity):
     # Field set.
     Key = Column(Unicode(255), nullable=False)
     DisplayName = Column(Unicode(63), nullable=False)
+    IsSearchTarget = Column(Boolean, nullable=False, default=True)
 
 
     @property

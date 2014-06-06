@@ -33,6 +33,8 @@ _template = _loader.load("core/document_set.html")
 _document_templates = {
     "cim.1.activity.ensemble": _loader.load("cim_1/activity_ensemble.html"),
     "cim.1.activity.numericalexperiment": _loader.load("cim_1/activity_numerical_experiment.html"),
+    "cim.1.activity.simulationrun": _loader.load("cim_1/activity_simulation_run.html"),
+    "cim.1.misc.documentset": _loader.load("cim_1/misc_document_set.html"),
     "cim.1.data.dataobject": _loader.load("cim_1/data_data_object.html"),
     "cim.1.grids.gridspec": _loader.load("cim_1/grids_grid_spec.html"),
     "cim.1.shared.platform": _loader.load("cim_1/shared_platform.html"),
@@ -146,6 +148,7 @@ class _TemplateInfo():
                  fieldset=[],
                  fieldset_type="namevalue",
                  tag_id=None,
+                 tag_css=None,
                  template=None,
                  previous=None,
                  depth=0):
@@ -159,6 +162,7 @@ class _TemplateInfo():
         self.fieldset = fieldset
         self.fieldset_type = fieldset_type
         self.previous = previous
+        self.tag_css = tag_css
         self.template = template
         self._set_tag_id(tag_id)
         self._set_dataset(data)
@@ -281,8 +285,8 @@ def _get_group_set(document_set):
         return document.ext.full_display_name.lower()
 
     def get_group_key(document):
-        return "{0}-{1}".format(document.ext.type_sortkey,
-                                document.ext.type_display_name)
+        return "{0}-{1}".format(document.meta.type_sort_key,
+                                document.meta.type_display_name)
 
     group_set = {}
     for document in document_set:
@@ -308,7 +312,7 @@ def encode(doc):
     """
     def get_sort_key(document):
         """Returns key used for document sorting."""
-        return document.meta.type_sortkey
+        return document.meta.type_sort_key
 
     # Convert to sorted iterable.
     try:

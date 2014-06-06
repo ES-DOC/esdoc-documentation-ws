@@ -2,7 +2,8 @@
 {% comment Emit doc section   %}
 {% comment ****************** %}
 {% if len(ctx.dataset) %}
-	<section id="{% raw '' if not ctx.tag_id else ctx.tag_id %}">
+	<section id="{% raw '' if not ctx.tag_id else ctx.tag_id %}"
+			 class="{% raw '' if not ctx.tag_css else ctx.tag_css %}">
 		<header>
 		{% if ctx.depth == 0 %}
 			<h3>{{ ctx.header }}</h3>
@@ -25,6 +26,12 @@
 
 			{% elif ctx.template == "cim_1_activity_ensemble_member.html" %}
 				{% include ../cim_1/activity_ensemble_member.html %}
+
+			{% elif ctx.template == "cim_1_activity_simulation_input.html" %}
+				{% include ../cim_1/activity_simulation_input.html %}
+
+			{% elif ctx.template == "cim_1_activity_simulation_conformance.html" %}
+				{% include ../cim_1/activity_simulation_conformance.html %}
 
 			{% end %}
 		{% end %}

@@ -386,12 +386,7 @@ class SearchController(BaseAPIController):
             self.__load_representation_set
         ]
 
-        print "Loading documents"
-
-        document_set = load()
-        print "Loaded documents"
-
-        return reduce(lambda dset, func : func(dset), transformers, document_set)
+        return reduce(lambda dset, func : func(dset), transformers, load())
 
 
     def __get_documentset_by_id(self):
@@ -553,14 +548,12 @@ class SearchController(BaseAPIController):
         }
 
         # Validate URL query parameters.
-        print "validating params"
         _validate_url_params(_params_do)
 
         # Set response content type.
         response.content_type = self.get_response_content_type()
 
         # Get search results.
-        print "getting resutls"
         results = handlers[request.params['searchType']]()
 
         # Return in relevant encoding.

@@ -32,7 +32,6 @@ def _log(msg):
 
 def _log_stats():
     """Writes facet stats to log."""
-    print type(models.NodeField), dao.get_count(models.NodeField)
     for ntype in models.NODE_TYPES:
         print ntype, dao.get_node_count(type_of=ntype)
 

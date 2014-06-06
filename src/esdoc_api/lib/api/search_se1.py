@@ -30,12 +30,11 @@ def get_setup(project):
     """Loads search engine setup data.
 
     :param str project: The associated project code.
-    
+
     :returns: Search engine setup data.
     :rtype: dict
-    
+
     """
-    # Return setup data.
     return {
         'projects' : _to_dict(dao.get_all(models.Project)),
         'models' : [],
@@ -55,22 +54,20 @@ def get_results(criteria):
 
     :returns: Search engine results data.
     :rtype: list
-    
+
     """
     # Extract criteria.
     institute_id = None if 'institute' not in criteria else \
                    cache.get_id(models.Institute, criteria['institute'])
     language_id = cache.get_id(models.DocumentLanguage, criteria['documentLanguage'])
     project_id = cache.get_id(models.Project, criteria['project'])
-    type = criteria['documentType']
+    doc_type = criteria['documentType']
     version = criteria['documentVersion']
-
-    print institute_id, language_id, project_id, type, version
 
     # Retrieve data.
     data = dao.get_document_summaries(
         project_id,
-        type,
+        doc_type,
         version,
         language_id,
         institute_id)
@@ -113,7 +110,7 @@ def parse_criteria(criteria):
     """Parses search engine input criteria.
 
     :param dict criteria: Search engine input criteria.
-    
+
     """
     # Convert to upper case.
     for target in ['documentLanguage', 'documentType']:

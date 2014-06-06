@@ -430,7 +430,6 @@ def get_document_summaries(
     q = q.filter(Document.Project_ID==project_id)
     q = q.filter(DocumentSummary.Language_ID==language_id)
     if institute_id is not None:
-        print "TTT", institute_id
         q = q.filter(Document.Institute_ID==institute_id)
     if type != models.DOCUMENT_TYPE_ALL:
         q = q.filter(sa.func.upper(Document.Type)==type)
