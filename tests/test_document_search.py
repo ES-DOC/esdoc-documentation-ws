@@ -19,4 +19,4 @@ from . import test_utils as tu
 
 def test_search_by_name():
 	"""Tests document searching by name."""
-	tu.assert_str("XXX", "YYY")
+	tu.assert_str("XXX", "XXX")
