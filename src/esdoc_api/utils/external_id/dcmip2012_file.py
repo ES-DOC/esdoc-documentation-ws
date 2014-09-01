@@ -1,9 +1,9 @@
 """
-.. module:: esdoc_api.lib.ajax.external_id_dcmip2012_dataset.py
+.. module:: dcmip2012_dataset.py
    :copyright: Copyright "Jul 26, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Encapsulates CMIP5 file id handling.
+   :synopsis: Encapsulates DCMIP-2012 file id handling.
 
 .. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 

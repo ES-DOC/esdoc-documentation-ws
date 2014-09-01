@@ -1,5 +1,5 @@
 """
-.. module:: esdoc_api.lib.ajax.external_id_cmip5_simulation.py
+.. module:: cmip5_simulation.py
    :copyright: Copyright "Jul 26, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
