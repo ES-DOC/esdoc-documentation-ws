@@ -65,8 +65,8 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """Sets output data to be returned to client."""
         self.output = {
             'projects' : _load(models.Project),
-            'models' : [],
-            'experiments' : [],
+            'models' : dao.get_summary_model_set(),
+            'experiments' : dao.get_summary_eperiment_set(),
             'institutes' : _load(models.Institute),
             'instituteCounts' : dao.get_project_institute_counts(),
             'documentTypes' : _load(models.DocumentType),

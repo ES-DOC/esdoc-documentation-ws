@@ -46,10 +46,16 @@ def _get_params():
             'required': True,
             'whitelist': lambda : models.DOCUMENT_VERSIONS
         },
+        'experiment': {
+            'required': False
+        },
         'institute': {
             'required': False,
             'model_type': models.Institute,
             'value_formatter': lambda v : v.lower()
+        },
+        'model': {
+            'required': False
         },
         'project': {
             'required': True,
@@ -94,7 +100,9 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
             self.document_type.Key,
             self.document_version,
             self.document_language.ID,
-            self.institute.ID if self.institute else None)
+            self.institute.ID if self.institute else None,
+            self.model if self.model else None,
+            self.experiment if self.experiment else None)
 
 
     def _set_total(self):
