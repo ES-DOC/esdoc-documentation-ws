@@ -21,6 +21,7 @@ from pyesdoc.db import (
     )
 
 from ... import utils
+from ...utils import config
 
 
 def _get_params():
@@ -82,7 +83,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
     def prepare(self):
         """Prepare handler state for processing."""
         # Start db session.
-        session.start(utils.config.db.connection)
+        session.start(config.db)
 
         # Load cache.
         cache.load()

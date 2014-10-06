@@ -163,6 +163,10 @@ class _JSONEncoder(json.JSONEncoder):
             raise TypeError(repr(obj) + " is not JSON serializable")
 
 
+# Expose encoder for use elsewhere.
+JSONEncoder  = _JSONEncoder
+
+
 class _JSONDecoder(json.JSONDecoder):
     """Extends json decoder so as to handle extended types.
 

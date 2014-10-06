@@ -3,83 +3,109 @@
    :copyright: Copyright "Jun 12, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Web-service entry point.
+   :synopsis: API entry point.
 
 .. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
 # -*- coding: utf-8 -*-
+import json
+import wsgiref.simple_server as wsgi
 
-# Module imports.
-import os
+import tornado.web
+import tornado.wsgi
 
-import tornado
-from tornado.web import Application
 import pyesdoc
 
-from . import handlers, utils
+import handlers
+from utils import config, convert
+from utils.runtime import log_api as log
 
 
 
-def _get_path_to_front_end():
-    """Return path to the front end javascript application."""
-    # N.B. deriving path on assumption that software
-    # has been installed using the prodiguer bootstrapper.
+# Ensure that tornado will encode json correctly (i.e. handle dates/UUID's)..
+json._default_encoder = convert.JSONEncoder()
 
-    # Get directory to ES-DOC repos.
-    repos = os.path.dirname(__file__)
-    for i in range(4):
-        repos = os.path.dirname(repos)
+# Set of valid container types.
+_CONTAINER_TYPE_IOLOOP = 'ioloop'
+_CONTAINER_TYPE_WSGI = 'wsgi'
+_CONTAINER_TYPES = set([_CONTAINER_TYPE_IOLOOP, _CONTAINER_TYPE_WSGI])
 
-    # Get directory to front end source code.
-    path = os.path.join(repos, 'esdoc-fe')
-    path = os.path.join(path, 'src')
-    utils.rt.log_api("Front-end @ {0}".format(path))
-
-    return path
+# Default application instance container type.
+_DEFAULT_CONTAINER_TYPE = _CONTAINER_TYPE_IOLOOP
 
 
-def _get_app_routes():
-    """Returns supported app routes."""
-    return (
-        (r'/1/document/create', handlers.publishing.DocumentCreateRequestHandler),
-        (r'/1/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
-        (r'/1/document/retrieve', handlers.publishing.DocumentRetrieveRequestHandler),
-        (r'/1/document/update', handlers.publishing.DocumentUpdateRequestHandler),
-        (r'/1/document/search', handlers.search.DocumentSearchRequestHandler),
-        (r'/1/summary/search', handlers.search.SummarySearchRequestHandler),
-        (r'/1/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),
-        (r'/1/ops/heartbeat', handlers.ops.HeartbeatRequestHandler),
+def _get_endpoints():
+    """Returns map of application endpoints to handlers."""
+    endpoints = (
+        (r'/2/document/create', handlers.publishing.DocumentCreateRequestHandler),
+        (r'/2/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
+        (r'/2/document/retrieve', handlers.publishing.DocumentRetrieveRequestHandler),
+        (r'/2/document/update', handlers.publishing.DocumentUpdateRequestHandler),
+        (r'/2/document/search', handlers.search.DocumentSearchRequestHandler),
+        (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
+        (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),
+        (r'/2/ops/heartbeat', handlers.ops.HeartbeatRequestHandler),
     )
 
+    log("Endpoint to handler mappings:")
+    for url, handler in endpoints:
+        log("{0} ---> {1}".format(url, handler))
 
-def _get_app_settings():
-    """Returns app settings."""
+    return endpoints
+
+
+def _get_settings():
+    """Returns application settings."""
     return {
-        "cookie_secret": utils.config.api.cookie_secret,
-        # "static_path": _get_path_to_front_end()
+        "cookie_secret": config.cookie_secret
     }
 
 
-def run():
-    """Runs the web service process."""
-    utils.rt.log_api("Initializing")
+def _get_app():
+    """Returns application instance."""
+    return tornado.web.Application(_get_endpoints(),
+                                   debug=(config.port==5000),
+                                   **_get_settings())
 
-    # Build routes.
-    routes = _get_app_routes()
-    utils.rt.log_api("URL to handler mapping:")
-    for url, handler in routes:
-        utils.rt.log_api("{0} ---> {1}".format(url, handler))
 
-    # Instantiate.
-    app = Application(routes,
-                      debug=not utils.config.core.mode=='prod',
-                      **_get_app_settings())
-
-    # Listen.
-    app.listen(utils.config.api.port)
-    utils.rt.log_api("Ready")
-
-    # Start io loop.
+def _run_in_ioloop(app):
+    """Runs application instance in an ioloop."""
+    app.listen(config.port)
+    log("Ready")
     tornado.ioloop.IOLoop.instance().start()
+
+
+def _run_in_wsgi(app):
+    """Runs application instance in a wsgi container."""
+    wsgi_app = tornado.wsgi.WSGIAdapter(app)
+    wsgi_server = wsgi.make_server('', config.port, wsgi_app)
+    log("Ready")
+    wsgi_server.serve_forever()
+
+
+# Map of container types to containers.
+_CONTAINERS = {
+    _CONTAINER_TYPE_IOLOOP: _run_in_ioloop,
+    _CONTAINER_TYPE_WSGI: _run_in_wsgi
+}
+
+
+def run(container_type=_DEFAULT_CONTAINER_TYPE):
+    """Runs web service.
+
+    :param str container_type: Type of container within which to run the application instance.
+
+    """
+    # Validate inputs.
+    if container_type not in _CONTAINER_TYPES:
+        msg = "Invalid API application container type.  Valid types are: {0}."
+        msg = msg.format(", ".join(_CONTAINER_TYPES))
+        raise ValueError(msg)
+
+    log("Initializing")
+
+    # Run application instance in container.
+    container = _CONTAINERS[container_type]
+    container(_get_app())

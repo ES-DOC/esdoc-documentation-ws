@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
+from .config import data as config
 from . import (
-	# Configuration utilities
-	config,
 	# Type conversion utilities
 	convert,
 	# External ID resolution utilities

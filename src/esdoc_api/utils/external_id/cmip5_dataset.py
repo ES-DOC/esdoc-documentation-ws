@@ -45,7 +45,6 @@ def get_parsed(dataset_id):
     :rtype: object
 
     """
-
     class DatasetID(object):
         """A CMIP5 dataset id wrapper."""
         def __init__(self):
@@ -66,7 +65,7 @@ def do_search(project_id, parsed_id):
     :rtype: generator
 
     """
-    def get_by_drs_keys():
+    def _get_by_drs_keys():
         """Searches by DRS keys."""
         yield dao.get_document_by_drs_keys(project_id,
                                            parsed_id.institute,
@@ -74,24 +73,21 @@ def do_search(project_id, parsed_id):
                                            parsed_id.experiment,
                                            parsed_id.ensemble)
 
-    def get_by_name():
+    def _get_by_name():
         """Searches by name."""
         for doc_type, doc_name in _yield_doc_by_name_criteria(parsed_id):
-            doc = dao.get_document_by_name(project_id,
+            yield dao.get_document_by_name(project_id,
                                            doc_type,
                                            doc_name)
-            if doc:
-                yield doc
 
-    def get_by_dataset_id():
+    def _get_by_dataset_id():
         """Searches by dataset id."""
-        return dao.get_documents_by_external_id(project_id,
-                                                parsed_id.id)
+        return dao.get_documents_by_external_id(project_id, parsed_id.id)
 
     for func in (
-        get_by_drs_keys,
-        get_by_name,
-        get_by_dataset_id
+        _get_by_drs_keys,
+        _get_by_name,
+        _get_by_dataset_id
         ):
         for doc in (d for d in func() if d):
             yield doc

@@ -21,6 +21,7 @@ from pyesdoc.db import (
     )
 
 from ... import utils
+from ...utils import config
 
 from . import (
     document_by_drs,
@@ -29,6 +30,10 @@ from . import (
     document_by_name
     )
 
+
+
+# Default document encoding.
+_DEFAULT_ENCODING = pyesdoc.ESDOC_ENCODING_JSON
 
 
 # Map of search types to sub-handlers.
@@ -77,82 +82,47 @@ def _get_default_params():
     }
 
 
-def _format_docs(docs, encoding):
-    """Helper function to format documents."""
-
-    def set_html():
-        """HTML formatter."""
-        result = "<div class='esdoc-document-set'>{0}</div>"
-        result = result.format("".join(docs))
-
-        return result
-
-    def set_json():
-        """JSON formatter."""
-        return {
-            'documents': docs
-        }
-
-    def set_xml():
-        """XML formatter."""
-        return "<documents>{0}</documents>".format("".join(docs))
-
-    # No documents.
-    if not len(docs):
-        return None
-
-    # Single document.
-    elif len(docs) == 1:
-        return docs[0]
-
-    # Multiple html documents.
-    elif encoding == pyesdoc.ESDOC_ENCODING_HTML:
-        return set_html()
-
-    # Multiple html documents.
-    elif encoding == pyesdoc.ESDOC_ENCODING_JSON:
-        return set_json()
-
-    # Multiple html documents.
-    elif encoding == pyesdoc.ESDOC_ENCODING_XML:
-        return set_xml()
-
-    # Other error.
-    else:
-        raise ValueError("Unsupported encoding [{0}].".format(encoding))
-
-
 class DocumentSearchRequestHandler(tornado.web.RequestHandler):
     """Document search request handler.
 
     """
     def set_default_headers(self):
-        """Set HTTP headers at the beginning of the request."""
+        """Set HTTP headers at the beginning of the request.
+
+        """
         self.set_header(utils.h.HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
     def prepare(self):
-        """Prepare handler state for processing."""
+        """Prepare handler state for processing.
+
+        """
         # Start db session.
-        session.start(utils.config.db.connection)
+        session.start(config.db)
 
         # Load cache.
         cache.load()
 
 
-    def _parse_default_params(self):
-        """Parses url parameters common to all search types."""
+    def _parse_params_default(self):
+        """Parses url parameters common to all search types.
+
+        """
         params = _get_default_params()
         utils.up.parse(self, params, apply_whitelist=False)
 
 
     def _set_sub_handler(self):
-        """Sets search sub-handler."""
+        """Sets search sub-handler.
+
+        """
         self.sub_handler = _SUB_HANDLERS[self.search_type]
 
 
-    def _parse_custom_params(self):
-        """Parses search type specific url parameters."""
+    def _parse_params_custom(self):
+        """Parses search type specific url parameters.
+
+        """
         # Set params to be parsed.
         params = _get_default_params()
         params.update(self.sub_handler.get_url_params())
@@ -161,61 +131,138 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         utils.up.parse(self, params)
 
         # Do sub-handler specific parsing.
-        if hasattr(self.sub_handler, "parse_url_params"):
+        try:
             self.sub_handler.parse_url_params(self)
+        except AttributeError:
+            pass
 
 
     def _do_search(self):
-        """Performs document search against db."""
+        """Performs document search against db.
+
+        """
         self.docs = [d for d in self.sub_handler.do_search(self) if d]
 
 
     def _load_docs(self):
-        """Loads documents from pyesdoc archive."""
+        """Loads documents from pyesdoc archive.
 
-        def load(doc):
-            """Loads a document."""
-            document = pyesdoc.archive.get(doc.UID, doc.Version)
-            if document:
-                return document
-            else:
-                raise RuntimeError("""Document is indexed in db but no longer
-                                      exists within archive.""")
+        """
+        def _load(doc):
+            """Loads a document from archive."""
+            return pyesdoc.archive.get(doc.UID, doc.Version, must_exist=True)
 
-        self.docs =  [load(d) for d in self.docs]
+        self.docs =  [_load(d) for d in self.docs]
+
+
+    def _decode_docs(self):
+        """Decodes documents loaded from pyesdoc archive.
+
+        """
+        self.docs =  [pyesdoc.decode(d, _DEFAULT_ENCODING) for d in self.docs]
+
+
+    def _extend_docs(self):
+        """Extends documents loaded from pyesdoc archive.
+
+        """
+        self.docs = [pyesdoc.extend(d) for d in self.docs]
+
+
+    def _set_child_docs(self):
+        """Sets child documents derived from main documents.
+
+        """
+        self.child_docs = []
+        for doc in self.docs:
+            self.child_docs += doc.ext.children
+
+
+    def _override_main_docs(self):
+        """Overrides main documents with child documents.
+
+        """
+        for child in self.child_docs:
+            for doc in self.docs:
+                if type(doc) == type(child) and \
+                   doc.meta.id == child.meta.id:
+                    self.docs.remove(doc)
+
+
+    def _set_docs_for_output(self):
+        """Sets final collection to be encoded."""
+        # Set target encoding.
+        encoding = self.encoding.Encoding
+
+        # HTML documents require a sorted merge.
+        if encoding == pyesdoc.ESDOC_ENCODING_HTML:
+            self.docs = self.docs + self.child_docs
+            self.docs = sorted(self.docs, key=lambda d: d.meta.sort_key)
 
 
     def _encode_docs(self):
-        """Encodes loaded documents."""
-        # Escape if converting to default encoding.
-        encoding = self.encoding.Encoding
-        if encoding == pyesdoc.ESDOC_ENCODING_JSON:
-            return
+        """Encodes documents loaded from pyesdoc archive.
 
-        def encode(doc):
-            """Returns an encoded document."""
-            doc = pyesdoc.decode(doc, pyesdoc.ESDOC_ENCODING_JSON)
-            doc = pyesdoc.extend(doc)
+        """
+        # Set target encoding.
+        if self.encoding.Encoding != pyesdoc.ESDOC_ENCODING_JSON:
+            encoding = self.encoding.Encoding
+        else:
+            # N.B. Tornado auto-encodes dict's to json.
+            encoding = pyesdoc.ESDOC_ENCODING_DICT
 
-            return pyesdoc.encode(doc, encoding)
+        if encoding == pyesdoc.ESDOC_ENCODING_HTML:
+            self.docs =  [pyesdoc.encode(self.docs, encoding)]
+        else:
+            self.docs =  [pyesdoc.encode(d, encoding) for d in self.docs]
 
-        self.docs =  [encode(d) for d in self.docs]
 
 
     def _set_response(self):
-        """Sets response."""
-        self.output = _format_docs(self.docs, self.encoding.Encoding)
-        self.output_encoding = self.encoding.Encoding
+        """Sets response.
+
+        """
+        # Set encoding.
+        self.output_encoding = encoding = self.encoding.Encoding
+
+        # No documents.
+        if not len(self.docs):
+            self.output = None
+
+        # Multiple html documents - already wrapped by pyesdoc.
+        elif encoding == pyesdoc.ESDOC_ENCODING_HTML:
+            self.output = "<div>{0}</div>".format(self.docs[0])
+
+        # Single document.
+        elif len(self.docs) == 1:
+            self.output = self.docs[0]
+
+        # Multiple json documents - create wrapper.
+        elif encoding == pyesdoc.ESDOC_ENCODING_JSON:
+            self.output = {
+                'documents': self.docs
+            }
+
+        # Multiple xml documents - create wrapper.
+        elif encoding == pyesdoc.ESDOC_ENCODING_XML:
+            self.output = "<documents>{0}</documents>".format("".join(self.docs))
 
 
     def get(self):
-        """HTTP GET handler."""
+        """HTTP GET handler.
+
+        """
         utils.h.invoke(self, (
-            self._parse_default_params,
+            self._parse_params_default,
             self._set_sub_handler,
-            self._parse_custom_params,
+            self._parse_params_custom,
             self._do_search,
             self._load_docs,
+            self._decode_docs,
+            self._extend_docs,
+            self._set_child_docs,
+            self._override_main_docs,
+            self._set_docs_for_output,
             self._encode_docs,
             self._set_response
             ))
