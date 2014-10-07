@@ -92,12 +92,15 @@ _CONTAINERS = {
 }
 
 
-def run(container_type=_DEFAULT_CONTAINER_TYPE):
+def run(container_type=None):
     """Runs web service.
 
     :param str container_type: Type of container within which to run the application instance.
 
     """
+    # Set defaults params.
+    container_type = container_type or _DEFAULT_CONTAINER_TYPE
+
     # Validate inputs.
     if container_type not in _CONTAINER_TYPES:
         msg = "Invalid API application container type.  Valid types are: {0}."
