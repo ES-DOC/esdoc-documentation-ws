@@ -112,3 +112,24 @@ def run(container_type=None):
     # Run application instance in container.
     container = _CONTAINERS[container_type]
     container(_get_app())
+
+
+def stop(container_type=None):
+    """Stops web service.
+
+    :param str container_type: Type of container within which to run the application instance.
+
+    """
+    # Set defaults params.
+    container_type = container_type or _DEFAULT_CONTAINER_TYPE
+
+    # Validate inputs.
+    if container_type not in _CONTAINER_TYPES:
+        msg = "Invalid API application container type.  Valid types are: {0}."
+        msg = msg.format(", ".join(_CONTAINER_TYPES))
+        raise ValueError(msg)
+
+    # Stop accordingly.
+    if container_type == _CONTAINER_TYPE_IOLOOP:
+        ioloop = tornado.ioloop.IOLoop.instance()
+        ioloop.add_callback(lambda x: x.stop(), ioloop)
