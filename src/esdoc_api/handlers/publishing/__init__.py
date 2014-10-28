@@ -12,7 +12,7 @@
 
 """
 # Module imports.
-from .create import DocumentCreateRequestHandler
-from .delete import DocumentDeleteRequestHandler
-from .retrieve import DocumentRetrieveRequestHandler
-from .update import DocumentUpdateRequestHandler
+from create import DocumentCreateRequestHandler
+from delete import DocumentDeleteRequestHandler
+from retrieve import DocumentRetrieveRequestHandler
+from update import DocumentUpdateRequestHandler

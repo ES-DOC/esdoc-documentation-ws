@@ -310,7 +310,7 @@ class SearchController(BaseAPIController):
 
         """
         def load(document):
-            return pyesdoc.archive.get(document.UID, document.Version)
+            return pyesdoc.archive.load(document.UID, document.Version)
 
 
         def convert(doc_set):

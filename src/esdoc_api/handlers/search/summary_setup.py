@@ -64,6 +64,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
 
     def _set_output(self):
         """Sets output data to be returned to client."""
+        self.output_encoding = 'json'
         self.output = {
             'projects' : _load(models.Project),
             'models' : dao.get_summary_model_set(),

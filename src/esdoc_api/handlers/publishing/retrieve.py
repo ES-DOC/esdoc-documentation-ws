@@ -12,15 +12,83 @@
 
 """
 import tornado
+import pyesdoc
+from pyesdoc.db import (
+    cache,
+    models,
+    session
+    )
+
+from ... import utils
+from ...utils import config
 
 
+
+def _get_params():
+    """Returns query parameter validation specification."""
+    return {
+        'encoding': {
+            'required': True,
+            'model_type': models.DocumentEncoding,
+            'value_formatter': lambda v : v.lower()
+        },
+        'document_id': {
+            'required': True,
+            'value_formatter': lambda v : v.lower()
+        },
+        'document_version': {
+            'required' : True,
+            'value_formatter': lambda v : v.lower()
+        }
+    }
 
 
 class DocumentRetrieveRequestHandler(tornado.web.RequestHandler):
     """Publishing retrieve document request handler.
 
     """
+    def prepare(self):
+        """Prepare handler state for processing.
+
+        """
+        # Start db session.
+        session.start(config.db)
+
+        # Load cache.
+        cache.load()
+
+
+    def _parse_request_params(self):
+        """Parses url query parameters.
+
+        """
+        utils.up.parse(self, _get_params())
+
+
+    def _read_from_archive(self):
+        """Loads document from archive.
+
+        """
+        self.doc = pyesdoc.archive.read(self.document_id,
+                                        self.document_version,
+                                        False)
+
+
+    def _set_response(self):
+        """Sets response.
+
+        """
+        if self.doc:
+            self.output_encoding = encoding = self.encoding.Encoding
+            self.output = pyesdoc.encode(self.doc, encoding)
+        else:
+            self.set_status(404)
+
+
     def get(self):
         """HTTP GET handler."""
-        print "TODO retrieve instance"
-
+        utils.h.invoke(self, (
+            self._parse_request_params,
+            self._read_from_archive,
+            self._set_response
+            ))

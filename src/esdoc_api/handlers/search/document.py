@@ -150,7 +150,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         """
         def _load(doc):
             """Loads a document from archive."""
-            return pyesdoc.archive.get(doc.UID, doc.Version, must_exist=True)
+            return pyesdoc.archive.load(doc.UID, doc.Version, must_exist=True)
 
         self.docs =  [_load(d) for d in self.docs]
 

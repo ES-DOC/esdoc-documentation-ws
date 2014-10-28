@@ -10,8 +10,7 @@
 
 """
 # -*- coding: utf-8 -*-
-
-# Module imports.
+import inspect
 from . import (
     config,
     convert,
@@ -20,18 +19,35 @@ from . import (
 
 
 
-# HTTP header names.
+# HTTP header - Content-Type.
+_HTTP_HEADER_CONTENT_TYPE = "Content-Type"
+
+# HTTP CORS header.
 HTTP_HEADER_Access_Control_Allow_Origin = "Access-Control-Allow-Origin"
 
 
-def _write_error(handler, error):
-    """Writes an error response."""
-    handler.clear()
-    handler.write({
-        'status': 1,
-        'errorType': unicode(type(error)),
-        'error': unicode(error)
-        })
+
+
+class API_Exception(Exception):
+    """API exception class.
+
+    """
+
+    def __init__(self, msg):
+        """Contructor.
+
+        :param msg: Exception message.
+        :type msg: str
+
+        """
+        self.message = msg() if inspect.isfunction(msg) else str(msg)
+
+
+    def __str__(self):
+        """Returns a string representation.
+
+        """
+        return "ES-DOC API EXCEPTION : {0}".format(repr(self.message))
 
 
 def _get_mime_type(encoding):
@@ -49,21 +65,29 @@ def _get_mime_type(encoding):
 
 def _set_response_content(handler, encoding):
     """Sets response content."""
-    # Get raw content.
-    content = None if not hasattr(handler, 'output') else \
-              getattr(handler, 'output')
+    # Set response content.
+    try:
+        content = handler.output
+    except AttributeError:
+        content = None
 
-    # Write html/csv/xml.
-    if encoding in ('csv', 'html', 'xml'):
-        content = content.strip() if content else ""
+    # Format html/xml.
+    if content and encoding in ('html', 'xml'):
+        content = content.strip() if content else str()
 
-    # Write json/json-p.
-    elif encoding == 'json':
+    # Format json.
+    if encoding == 'json':
         content = content if content else {}
         if 'status' not in content:
             content['status'] = 0
-        if hasattr(handler, 'on_jsonp_load') and handler.on_jsonp_load:
-            content = "{0}({1});".format(handler.on_jsonp_load, content)
+
+    # Format json-p.
+    if content and encoding == 'json':
+        try:
+            if handler.on_jsonp_load:
+                content = "{0}({1});".format(handler.on_jsonp_load, content)
+        except AttributeError:
+            pass
 
     # Write.
     handler.write(content)
@@ -71,16 +95,20 @@ def _set_response_content(handler, encoding):
 
 def _write(handler):
     """Writes a response."""
-    # Derive content type.
-    encoding = 'json' if not hasattr(handler, 'output_encoding') else \
-               getattr(handler, 'output_encoding')
-    encoding = encoding.lower()
+    # Set response content type.
+    try:
+        encoding = handler.output_encoding
+    except AttributeError:
+        encoding = None
 
-    # Set HTTP response header.
-    handler.set_header('Content-Type', _get_mime_type(encoding))
+    # Set HTTP response Content-Type header.
+    if encoding:
+        encoding = encoding.lower()
+        handler.set_header('Content-Type', _get_mime_type(encoding))
 
     # Set HTTP response content.
-    _set_response_content(handler, encoding)
+    if encoding:
+        _set_response_content(handler, encoding)
 
 
 def _log(handler, error=None):
@@ -125,6 +153,15 @@ def invoke(handler, tasks=None, error_tasks=None):
     except Exception as fault:
         for task in _get_tasks(error_tasks):
             task(fault)
-        _write_error(handler, fault)
+        raise API_Exception(fault)
     finally:
         _log(handler, fault)
+
+
+def validate_http_content_type(handler, expected_types):
+    """Validates HTTP Content-Type request header."""
+    if _HTTP_HEADER_CONTENT_TYPE not in handler.request.headers:
+        raise ValueError("Content-Type HTTP header is required")
+    header = handler.request.headers[_HTTP_HEADER_CONTENT_TYPE]
+    if not header in expected_types:
+        raise ValueError("Content-Type is unsupported")

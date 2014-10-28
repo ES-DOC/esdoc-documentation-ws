@@ -12,15 +12,48 @@
 
 """
 import tornado
+import pyesdoc
+
+from ... import utils
 
 
+
+def _get_params():
+    """Returns query parameter validation specification."""
+    return {
+        'document_id': {
+            'required': True,
+            'value_formatter': lambda v : v.lower()
+        },
+        'document_version': {
+            'required' : True,
+            'value_formatter': lambda v : v.lower()
+        }
+    }
 
 
 class DocumentDeleteRequestHandler(tornado.web.RequestHandler):
     """Publishing delete document request handler.
 
     """
-    def post(self):
-        """HTTP POST handler."""
-        print "TODO delete instance"
+    def _parse_request_params(self):
+        """Parses url query parameters.
+
+        """
+        utils.up.parse(self, _get_params())
+
+
+    def _delete_from_archive(self):
+    	"""Deletes document from archive.
+
+    	"""
+    	pyesdoc.archive.delete(self.document_id, self.document_version)
+
+
+    def delete(self):
+        """HTTP DELETE handler."""
+        utils.h.invoke(self, (
+            self._parse_request_params,
+            self._delete_from_archive
+            ))
 

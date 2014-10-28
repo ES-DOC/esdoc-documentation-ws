@@ -115,6 +115,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
 
     def _set_output(self):
         """Sets output data to be returned to client."""
+        self.output_encoding = 'json'
         self.output = {
             'count': len(self.data),
             'project': self.project.Name.lower(),

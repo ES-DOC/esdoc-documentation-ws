@@ -66,7 +66,7 @@ def _get_settings():
 def _get_app():
     """Returns application instance."""
     return tornado.web.Application(_get_endpoints(),
-                                   debug=(config.port==5000),
+                                   debug=(config.mode=='dev'),
                                    **_get_settings())
 
 
