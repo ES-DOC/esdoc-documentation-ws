@@ -20,7 +20,7 @@ from esdoc_api.db.ingest import (
     set_summary,
     validate
     )
-
+from esdoc_api.utils import runtime as rt
 
 
 class _DocumentProcessingInfo(object):
@@ -100,7 +100,7 @@ def _write_error(ctx):
             output.write(u"\tERROR = {0};\n".format(unicode(ctx.error)))
             output.write(u"\tERROR TYPE = {0}.".format(type(ctx.error)))
     except IOError as err:
-        pyesdoc.rt.log_warning("Document processing error handler failed: {0}".format(err))
+        rt.log_warning("Document processing error handler failed: {0}".format(err))
 
 
 def _log_error(ctx):
@@ -111,7 +111,7 @@ def _log_error(ctx):
     if isinstance(ctx.error, StopIteration):
         return
 
-    pyesdoc.rt.log("INGEST ERROR :: {0} :: {1} :: {2}".format(ctx, ctx.error, type(ctx.error)))
+    rt.log("INGEST ERROR :: {0} :: {1} :: {2}".format(ctx, ctx.error, type(ctx.error)))
 
 
 def _write_ingested(ctx):

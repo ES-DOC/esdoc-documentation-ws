@@ -310,3 +310,19 @@ def throw(msg):
 
     raise WebServiceException(msg)
 
+
+def invoke(ctx, actions, error_actions):
+    """Invokes a set of actions.
+
+    :param object ctx: Processing context information.
+    :param iterable actions: Set of actions to perform.
+    :param iterable error_actions: Set of error actions to perform.
+
+    """
+    try:
+        for action in actions:
+            action(ctx)
+    except Exception as exc:
+        ctx.error = exc
+        for action in error_actions:
+            action(ctx)

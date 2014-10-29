@@ -104,7 +104,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
         """Sets total of all records returnable from db."""
         self.total = \
             db.dao.get_document_type_count(self.project.ID,
-                                        self.document_type.Key)
+                                           self.document_type.Key)
 
 
     def _set_output(self):
