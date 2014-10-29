@@ -11,9 +11,9 @@
 """
 import inspect
 
-from pyesdoc.db import cache
+from esdoc_api import db
+from esdoc_api.utils import convert
 
-from . import convert
 
 
 # Map of text to boolean conversions.
@@ -23,7 +23,6 @@ _BOOLEAN_MAP = {
     'false': False,
     'False': False
 }
-
 
 
 def _validate_whitelisted_param(name, value, white_list):
@@ -50,7 +49,7 @@ def _get_param_value(handler, name, info):
 def _get_param_white_list(info):
     """Returns parameter white list."""
     if 'model_type' in info:
-        return cache.get_names(info['model_type'])
+        return db.cache.get_names(info['model_type'])
     elif 'whitelist' in info:
         if inspect.isfunction(info['whitelist']):
             return info['whitelist']()
@@ -83,7 +82,7 @@ def _parse_param(handler, name, info):
 
     # Set value to domain model.
     if value and 'model_type' in info:
-        value = cache.get(info['model_type'], value)
+        value = db.cache.get(info['model_type'], value)
 
     info['value'] = value
 

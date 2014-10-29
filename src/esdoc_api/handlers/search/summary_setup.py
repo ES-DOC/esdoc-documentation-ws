@@ -13,14 +13,8 @@
 """
 import tornado
 
-from pyesdoc.db import (
-    cache,
-    dao,
-    models,
-    session
-    )
-from ... import utils
-from ...utils import config
+from esdoc_api import db, utils
+from esdoc_api.utils import config
 
 
 
@@ -38,7 +32,7 @@ def _get_params():
 
 def _load(mtype):
     """Helper function to load collection from db."""
-    return models.to_dict_for_json(cache.get(mtype))
+    return db.models.to_dict_for_json(db.cache.get(mtype))
 
 
 class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
@@ -53,10 +47,10 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
     def prepare(self):
         """Prepare handler state for processing."""
         # Start db session.
-        session.start(config.db)
+        db.session.start(config.db)
 
-        # Load cache.
-        cache.load()
+        # Load db.cache.
+        db.cache.load()
 
         # Parse incoming url parameters.
         utils.up.parse(self, _get_params())
@@ -66,14 +60,14 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """Sets output data to be returned to client."""
         self.output_encoding = 'json'
         self.output = {
-            'projects' : _load(models.Project),
-            'models' : dao.get_summary_model_set(),
-            'experiments' : dao.get_summary_eperiment_set(),
-            'institutes' : _load(models.Institute),
-            'instituteCounts' : dao.get_project_institute_counts(),
-            'documentTypes' : _load(models.DocumentType),
-            'documentTypeCounts' : dao.get_project_document_type_counts(),
-            'documentLanguages' : _load(models.DocumentLanguage)
+            'projects' : _load(db.models.Project),
+            'models' : db.dao.get_summary_model_set(),
+            'experiments' : db.dao.get_summary_eperiment_set(),
+            'institutes' : _load(db.models.Institute),
+            'instituteCounts' : db.dao.get_project_institute_counts(),
+            'documentTypes' : _load(db.models.DocumentType),
+            'documentTypeCounts' : db.dao.get_project_document_type_counts(),
+            'documentLanguages' : _load(db.models.DocumentLanguage)
         }
 
 

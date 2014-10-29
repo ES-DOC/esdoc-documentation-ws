@@ -11,7 +11,7 @@
 
 
 """
-from ... import utils
+from esdoc_api import utils
 
 
 
@@ -49,7 +49,7 @@ def do_search(criteria):
     :param object: Search criteria.
 
     :returns: Search result.
-    :rtype: pyesdoc.db.models.Document | None
+    :rtype: db.models.Document | None
 
     """
     handler = utils.external_id.get(criteria.project.Name,

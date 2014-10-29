@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: cmip5_simulation.py
    :copyright: Copyright "Jul 26, 2013", Earth System Documentation
@@ -9,7 +10,7 @@
 
 
 """
-from pyesdoc.db import dao
+from esdoc_api import db
 
 
 
@@ -73,26 +74,27 @@ def do_search(project_id, parsed_id):
     """
     def get_by_drs_keys():
         """Searches by DRS keys."""
-        yield dao.get_document_by_drs_keys(project_id,
-                                           parsed_id.institute,
-                                           parsed_id.model,
-                                           parsed_id.experiment,
-                                           parsed_id.ensemble,
-                                           parsed_id.start_year)
+        yield db.dao.get_document_by_drs_keys(
+            project_id,
+            parsed_id.institute,
+            parsed_id.model,
+            parsed_id.experiment,
+            parsed_id.ensemble,
+            parsed_id.start_year)
 
     def get_by_name():
         """Searches by name."""
         for doc_type, doc_name in _yield_doc_by_name_criteria(parsed_id):
-            doc = dao.get_document_by_name(project_id,
-                                           doc_type,
-                                           doc_name)
+            doc = db.dao.get_document_by_name(project_id,
+                                              doc_type,
+                                              doc_name)
             if doc:
                 yield doc
 
     def get_by_dataset_id():
         """Searches by dataset id."""
-        return dao.get_documents_by_external_id(project_id,
-                                                parsed_id.id)
+        return db.dao.get_documents_by_external_id(project_id,
+                                                   parsed_id.id)
 
     for func in (
         get_by_drs_keys,

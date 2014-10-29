@@ -12,9 +12,10 @@
 
 """
 import datetime
+
 import tornado
 
-from ... import utils
+from esdoc_api import utils
 
 
 
@@ -24,9 +25,9 @@ class HeartbeatRequestHandler(tornado.web.RequestHandler):
     """
     def get(self):
         """HTTP GET handler."""
-        # Set response output.
-        msg = "ES-DOC web service is operational @ {0}"
+        msg = "ES-DOC web service API is operational @ {0}"
         msg = msg.format(datetime.datetime.now())
+
         self.output = {
             "message": msg
         }

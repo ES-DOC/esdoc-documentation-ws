@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: utils.handler.py
    :copyright: Copyright "Feb 7, 2013", Earth System Documentation
@@ -9,9 +10,9 @@
 
 
 """
-# -*- coding: utf-8 -*-
 import inspect
-from . import (
+
+from esdoc_api.utils import (
     config,
     convert,
     runtime as rt

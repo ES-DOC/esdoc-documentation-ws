@@ -11,12 +11,9 @@
 
 
 """
-# Module imports.
-from . import (
+from esdoc_api.handlers import (
 	ops,
 	publishing,
 	search
 	)
-from .. import utils
-
 

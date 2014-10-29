@@ -11,7 +11,6 @@
 
 
 """
-# Module imports.
-from .document import DocumentSearchRequestHandler
-from .summary import SummarySearchRequestHandler
-from .summary_setup import SummarySearchSetupRequestHandler
+from esdoc_api.handlers.search.document import DocumentSearchRequestHandler
+from esdoc_api.handlers.search.summary import SummarySearchRequestHandler
+from esdoc_api.handlers.search.summary_setup import SummarySearchSetupRequestHandler

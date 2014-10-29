@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 .. module:: pyesdoc.utils.convert.py
    :copyright: Copyright "Feb 7, 2013", Earth System Documentation
@@ -11,7 +10,6 @@
 
 
 """
-# Module imports.
 import collections
 import csv
 import datetime

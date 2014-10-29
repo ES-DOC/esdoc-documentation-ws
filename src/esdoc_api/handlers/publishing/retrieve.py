@@ -12,15 +12,11 @@
 
 """
 import tornado
-import pyesdoc
-from pyesdoc.db import (
-    cache,
-    models,
-    session
-    )
 
-from ... import utils
-from ...utils import config
+import pyesdoc
+
+from esdoc_api import db, utils
+from esdoc_api.utils import config
 
 
 
@@ -29,7 +25,7 @@ def _get_params():
     return {
         'encoding': {
             'required': True,
-            'model_type': models.DocumentEncoding,
+            'model_type': db.models.DocumentEncoding,
             'value_formatter': lambda v : v.lower()
         },
         'document_id': {
@@ -52,10 +48,10 @@ class DocumentRetrieveRequestHandler(tornado.web.RequestHandler):
 
         """
         # Start db session.
-        session.start(config.db)
+        db.session.start(config.db)
 
         # Load cache.
-        cache.load()
+        db.cache.load()
 
 
     def _parse_request_params(self):

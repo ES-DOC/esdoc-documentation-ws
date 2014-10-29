@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: handler.py
    :platform: Unix, Windows
@@ -7,9 +8,7 @@
 
 
 """
-
-# Module imports.
-from . import (
+from esdoc_api.utils.external_id import (
     cmip5_dataset,
     cmip5_file,
     cmip5_simulation,

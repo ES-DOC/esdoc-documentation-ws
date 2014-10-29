@@ -11,5 +11,4 @@
 
 
 """
-# Module imports.
-from .heartbeat import HeartbeatRequestHandler
+from esdoc_api.handlers.ops.heartbeat import HeartbeatRequestHandler

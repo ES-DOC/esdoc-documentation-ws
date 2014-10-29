@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: dcmip2012_dataset.py
    :copyright: Copyright "Jul 26, 2013", Earth System Documentation
@@ -9,7 +10,7 @@
 
 
 """
-from pyesdoc.db import dao
+from esdoc_api import db
 
 
 
@@ -64,4 +65,4 @@ def do_search(project_id, parsed_id):
 
     """
     for doc_type, doc_name in _yield_doc_by_name_criteria(parsed_id):
-        yield dao.get_document_by_name(project_id, doc_type, doc_name)
+        yield db.dao.get_document_by_name(project_id, doc_type, doc_name)

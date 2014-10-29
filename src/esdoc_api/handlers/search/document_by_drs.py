@@ -11,8 +11,7 @@
 
 
 """
-from pyesdoc.db import dao
-
+from esdoc_api import db
 
 
 # Maximum number of DRS keys allowed ina path declaration.
@@ -59,16 +58,18 @@ def do_search(criteria):
     :param object: Search criteria.
 
     :returns: Search result.
-    :rtype: pyesdoc.db.models.Document | None
+    :rtype: db.models.Document | None
 
     """
     keys = _get_drs_keys(criteria.project.Name, criteria.drs_path)
-    yield dao.get_document_by_drs_keys(criteria.project.ID,
-                                       keys[0] if len(keys) > 0 else None,
-                                       keys[1] if len(keys) > 1 else None,
-                                       keys[2] if len(keys) > 2 else None,
-                                       keys[3] if len(keys) > 3 else None,
-                                       keys[4] if len(keys) > 4 else None,
-                                       keys[5] if len(keys) > 5 else None,
-                                       keys[6] if len(keys) > 6 else None,
-                                       keys[7] if len(keys) > 7 else None)
+    yield db.dao.get_document_by_drs_keys(
+      criteria.project.ID,
+      keys[0] if len(keys) > 0 else None,
+      keys[1] if len(keys) > 1 else None,
+      keys[2] if len(keys) > 2 else None,
+      keys[3] if len(keys) > 3 else None,
+      keys[4] if len(keys) > 4 else None,
+      keys[5] if len(keys) > 5 else None,
+      keys[6] if len(keys) > 6 else None,
+      keys[7] if len(keys) > 7 else None
+      )

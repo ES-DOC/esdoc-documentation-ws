@@ -11,7 +11,7 @@
 
 
 """
-from pyesdoc.db import dao
+from esdoc_api import db
 
 
 
@@ -35,9 +35,9 @@ def do_search(criteria):
     :param object: Search criteria.
 
     :returns: Search result.
-    :rtype: pyesdoc.db.models.Document | None
+    :rtype: db.models.Document | None
 
     """
-    yield dao.get_document(criteria.project.ID,
-                           criteria.id,
-                           criteria.version)
+    yield db.dao.get_document(criteria.project.ID,
+                              criteria.id,
+                              criteria.version)

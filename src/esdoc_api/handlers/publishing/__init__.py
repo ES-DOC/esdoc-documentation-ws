@@ -11,8 +11,7 @@
 
 
 """
-# Module imports.
-from create import DocumentCreateRequestHandler
-from delete import DocumentDeleteRequestHandler
-from retrieve import DocumentRetrieveRequestHandler
-from update import DocumentUpdateRequestHandler
+from esdoc_api.handlers.publishing.create import DocumentCreateRequestHandler
+from esdoc_api.handlers.publishing.delete import DocumentDeleteRequestHandler
+from esdoc_api.handlers.publishing.retrieve import DocumentRetrieveRequestHandler
+from esdoc_api.handlers.publishing.update import DocumentUpdateRequestHandler

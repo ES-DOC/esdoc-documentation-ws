@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: cmip5_utils.py
    :copyright: Copyright "Jul 26, 2013", Earth System Documentation

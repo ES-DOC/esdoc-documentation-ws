@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from .config import data as config
-from . import (
+
+from esdoc_api.utils.config import data as config
+from esdoc_api.utils import (
 	# Type conversion utilities
 	convert,
 	# External ID resolution utilities

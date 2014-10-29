@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: dcmip2012_dataset.py
    :copyright: Copyright "Jul 26, 2013", Earth System Documentation

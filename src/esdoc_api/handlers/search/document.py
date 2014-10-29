@@ -14,16 +14,10 @@
 import tornado
 
 import pyesdoc
-from pyesdoc.db import (
-    cache,
-    models,
-    session
-    )
 
-from ... import utils
-from ...utils import config
-
-from . import (
+from esdoc_api import db, utils
+from esdoc_api.utils import config
+from esdoc_api.handlers.search import (
     document_by_drs,
     document_by_external_id,
     document_by_id,
@@ -50,12 +44,12 @@ def _get_default_params():
     return {
         'encoding': {
             'required': True,
-            'model_type': models.DocumentEncoding,
+            'model_type': db.models.DocumentEncoding,
             'value_formatter': lambda v : v.lower()
         },
         'language': {
             'required': True,
-            'model_type': models.DocumentLanguage,
+            'model_type': db.models.DocumentLanguage,
             'value_formatter': lambda v : v.lower()
         },
         'onJSONPLoad': {
@@ -63,12 +57,12 @@ def _get_default_params():
         },
         'ontology': {
             'required': True,
-            'model_type': models.DocumentOntology,
+            'model_type': db.models.DocumentOntology,
             'value_formatter': lambda v : v.lower()
         },
         'project': {
             'required': True,
-            'model_type': models.Project,
+            'model_type': db.models.Project,
             'value_formatter': lambda v : v.lower(),
         },
         'searchType': {
@@ -98,10 +92,10 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         # Start db session.
-        session.start(config.db)
+        db.session.start(config.db)
 
         # Load cache.
-        cache.load()
+        db.cache.load()
 
 
     def _parse_params_default(self):

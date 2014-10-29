@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: app.py
    :copyright: Copyright "Jun 12, 2013", Earth System Documentation
@@ -18,9 +19,9 @@ import tornado.wsgi
 
 import pyesdoc
 
-import handlers
-from utils import config, convert
-from utils.runtime import log_api as log
+from esdoc_api import handlers
+from esdoc_api.utils import config, convert
+from esdoc_api.utils.runtime import log_api as log
 
 
 
@@ -46,7 +47,7 @@ def _get_endpoints():
         (r'/2/document/search', handlers.search.DocumentSearchRequestHandler),
         (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
         (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),
-        (r'/2/ops/heartbeat', handlers.ops.HeartbeatRequestHandler),
+        (r'/heartbeat', handlers.ops.HeartbeatRequestHandler),
     )
 
     log("Endpoint to handler mappings:")

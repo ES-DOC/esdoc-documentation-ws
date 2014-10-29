@@ -13,15 +13,9 @@
 """
 import tornado
 
-from pyesdoc.db import (
-    cache,
-    dao,
-    models,
-    session
-    )
+from esdoc_api import db, utils
+from esdoc_api.utils import config
 
-from ... import utils
-from ...utils import config
 
 
 def _get_params():
@@ -35,24 +29,24 @@ def _get_params():
         },
         'documentLanguage': {
             'required': True,
-            'model_type': models.DocumentLanguage,
+            'model_type': db.models.DocumentLanguage,
             'value_formatter': lambda v : v.lower()
         },
         'documentType': {
             'required': True,
-            'model_type': models.DocumentType,
+            'model_type': db.models.DocumentType,
             'value_formatter': lambda v : v.lower()
         },
         'documentVersion': {
             'required': True,
-            'whitelist': lambda : models.DOCUMENT_VERSIONS
+            'whitelist': lambda : db.models.DOCUMENT_VERSIONS
         },
         'experiment': {
             'required': False
         },
         'institute': {
             'required': False,
-            'model_type': models.Institute,
+            'model_type': db.models.Institute,
             'value_formatter': lambda v : v.lower()
         },
         'model': {
@@ -60,7 +54,7 @@ def _get_params():
         },
         'project': {
             'required': True,
-            'model_type': models.Project,
+            'model_type': db.models.Project,
             'value_formatter': lambda v : v.lower(),
         }
     }
@@ -68,7 +62,7 @@ def _get_params():
 
 def _get_collection(mtype):
     """Helper function to load collection from db."""
-    return models.to_dict_for_json(dao.get_all(mtype))
+    return db.models.to_dict_for_json(db.dao.get_all(mtype))
 
 
 class SummarySearchRequestHandler(tornado.web.RequestHandler):
@@ -83,10 +77,10 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
     def prepare(self):
         """Prepare handler state for processing."""
         # Start db session.
-        session.start(config.db)
+        db.session.start(config.db)
 
-        # Load cache.
-        cache.load()
+        # Load db.cache.
+        db.cache.load()
 
 
     def _parse_params(self):
@@ -96,7 +90,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
 
     def _set_data(self):
         """Sets data returned from db."""
-        self.data = dao.get_document_summaries(
+        self.data = db.dao.get_document_summaries(
             self.project.ID,
             self.document_type.Key,
             self.document_version,
@@ -109,7 +103,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
     def _set_total(self):
         """Sets total of all records returnable from db."""
         self.total = \
-            dao.get_document_type_count(self.project.ID,
+            db.dao.get_document_type_count(self.project.ID,
                                         self.document_type.Key)
 
 
@@ -119,7 +113,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
         self.output = {
             'count': len(self.data),
             'project': self.project.Name.lower(),
-            'results': models.to_dict_for_json(self.data),
+            'results': db.models.to_dict_for_json(self.data),
             'timestamp': self.timestamp,
             'total': self.total
         }
