@@ -172,5 +172,7 @@ def process_archived(throttle=0):
     :param int throttle: Limits the number of documents to process.
 
     """
+    pyesdoc.archive.delete_files(pyesdoc.archive.DIR_INGESTED_ERROR)
+
     for ctx in _get_documents(throttle):
         process(ctx)

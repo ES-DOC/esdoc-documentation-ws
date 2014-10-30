@@ -9,14 +9,12 @@
 .. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
 
 """
-
-# Module imports.
 import datetime
 import os
 import random
 import uuid
 
-import dateutil.parser as dateutil_parser
+import arrow
 
 
 
@@ -277,9 +275,9 @@ def assert_date(actual, expected):
 
     """
     if not isinstance(actual, datetime.datetime):
-        actual = dateutil_parser.parse(actual)
+        actual = arrow.get(actual)
     if not isinstance(expected, datetime.datetime):
-        expected = dateutil_parser.parse(expected)
+        expected = arrow.get(expected)
 
     assert actual == expected, \
            "Date mismatch : actual = {0} :: expected = {1}" \
