@@ -10,9 +10,40 @@
 
 
 """
-import pyesdoc
+import os
+
+from esdoc_api.utils.convert import json_file_to_namedtuple
 
 
 
-# Exposes only the api section of the main .esdoc config file.
-data = pyesdoc.config.api
+# Default configuration file path.
+_CONFIG_FPATH = "ops/config/api.conf"
+
+# Configuration data.
+data = None
+
+
+
+def _init():
+	"""Initializes configuration."""
+	global data
+
+	# Scan up file system hierarchy until reaching ops/config directory.
+	dpath = os.path.dirname(os.path.abspath(__file__))
+	while dpath != '/':
+		fpath = os.path.join(dpath, _CONFIG_FPATH)
+		if os.path.exists(fpath):
+			break
+		dpath = os.path.dirname(dpath)
+
+	# If still not found then exception.
+	if not os.path.exists(fpath):
+		msg = "ESDOC-API configuration file ({0}) could not be found".format(_CONFIG_FPATH)
+		raise RuntimeError(msg)
+
+	# Config data wrapper.
+	data = json_file_to_namedtuple(fpath)
+
+
+# Auto-initialize.
+_init()
