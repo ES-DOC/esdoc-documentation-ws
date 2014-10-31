@@ -48,3 +48,10 @@ def execute():
     i.Description = "2013 Statistical Downscaling Dynamical Core Model Intercomparison Project"
     i.URL = "http://earthsystemcog.org/projects/downscaling-2013/"
     session.insert(i)
+
+    # ESPS
+    i = models.Project()
+    i.Name = "ESPS"
+    i.Description = "Earth System Prediction Suite"
+    i.URL = "https://www.earthsystemcog.org/projects/esps/"
+    session.insert(i)
