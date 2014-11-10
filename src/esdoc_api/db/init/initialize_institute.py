@@ -270,3 +270,10 @@ def execute():
     i.URL = "http://www.cicero.uio.no/"
     session.insert(i)
 
+    # NESII.
+    i = models.Institute()
+    i.Name = "NESII"
+    i.LongName = "NOAA Environmental Software Infrastructure and Interoperability Group"
+    i.CountryCode = "US"
+    i.URL = "http://www.esrl.noaa.gov/nesii"
+    session.insert(i)
