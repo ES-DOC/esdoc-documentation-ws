@@ -20,7 +20,10 @@ from esdoc_api import utils
 
 
 # Supported content types.
-_CONTENT_TYPE_JSON = ["application/json", "application/json; charset=UTF-8"]
+_CONTENT_TYPE_JSON = [
+    "application/json",
+    "application/json; charset=UTF-8"
+]
 
 
 class DocumentCreateRequestHandler(tornado.web.RequestHandler):
@@ -28,12 +31,16 @@ class DocumentCreateRequestHandler(tornado.web.RequestHandler):
 
     """
     def _validate_request_headers(self):
-        """Validates request headers."""
+        """Validates request headers.
+
+        """
         utils.h.validate_http_content_type(self, _CONTENT_TYPE_JSON)
 
 
     def _validate_request_payload(self):
-        """Validates request payload."""
+        """Validates request payload.
+
+        """
         # Decode document.
         doc = pyesdoc.decode(self.request.body, 'json')
 
@@ -50,21 +57,28 @@ class DocumentCreateRequestHandler(tornado.web.RequestHandler):
 
 
     def _validate_publication_status(self):
-    	"""Validates whether document has not already been published."""
+    	"""Validates whether document has not already been published.
+
+        """
     	if pyesdoc.archive.exists(self.doc.meta.id, self.doc.meta.version):
         	raise utils.h.API_Exception("Document already published.")
 
 
     def _write_to_archive(self):
-    	"""Archives document so that it is available for ingestion."""
+    	"""Archives document so that it is available for ingestion.
+
+        """
         pyesdoc.archive.write(self.doc)
 
 
     def post(self):
-        """HTTP POST handler."""
+        """HTTP POST handler.
+
+        """
         utils.h.invoke(self, (
             self._validate_request_headers,
             self._validate_request_payload,
             self._validate_publication_status,
             self._write_to_archive
             ))
+
