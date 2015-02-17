@@ -50,14 +50,16 @@ def _reduce_properties(memo, c, p_tree, parent=None):
 
 
 def _reduce_components(memo, c_tree, parent=None):
-    """Reduces a set of components."""
+    """Reduces a set of components.
+
+    """
     # Set parent hierarchy.
     for c in c_tree:
         c.parent = parent
 
     # Reduce component tree.
     for c in filter(_component_predicate, c_tree):
-        memo.append((c, _reduce_properties([], c, c._properties)))
+        memo.append((c, _reduce_properties([], c, c.ext.properties)))
         if len(c.sub_components) > 0:
             _reduce_components(memo, c.sub_components, c)
 

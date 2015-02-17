@@ -48,7 +48,8 @@ class DocumentDeleteRequestHandler(tornado.web.RequestHandler):
     	"""Deletes document from archive.
 
     	"""
-    	pyesdoc.archive.delete(self.document_id, self.document_version)
+    	pyesdoc.archive.delete(self.document_id,
+                               self.document_version)
 
 
     def delete(self):

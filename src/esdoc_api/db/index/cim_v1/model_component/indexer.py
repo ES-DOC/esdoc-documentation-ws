@@ -77,9 +77,9 @@ def _get_model_fieldset(ctx):
 def _get_component_fieldset(ctx):
     """Returns model component fields."""
     fieldset = []
-    if ctx.c._depth > 1:
-        fieldset.append(ctx.nodes[ctx.c._parent])
-    fieldset.append(utils.create_node_field(ctx.c._long_display_name))
+    if ctx.c.ext.depth > 1:
+        fieldset.append(ctx.nodes[ctx.c.ext.parent])
+    fieldset.append(utils.create_node_field(ctx.c.ext.long_display_name))
 
     return tuple(fieldset)
 
@@ -87,9 +87,9 @@ def _get_component_fieldset(ctx):
 def _get_property_fieldset(ctx):
     """Returns model component property fields."""
     fieldset = []
-    if ctx.p._parent:
-        fieldset.append(ctx.nodes[ctx.p._parent])
-    fieldset.append(utils.create_node_field(ctx.p._long_display_name))
+    if ctx.p.ext.parent:
+        fieldset.append(ctx.nodes[ctx.p.ext.parent])
+    fieldset.append(utils.create_node_field(ctx.p.ext.long_display_name))
 
     return tuple(fieldset)
 
