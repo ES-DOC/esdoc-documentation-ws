@@ -10,9 +10,9 @@
 """
 import sqlalchemy
 
+import pyesdoc
 from pyesdoc.ontologies import cim
 
-from esdoc_api import constants
 from esdoc_api.db import cache, models, session
 
 
@@ -42,7 +42,7 @@ def execute(ctx):
     idx.Description = ctx.doc.ext.description
     idx.Document_ID = ctx.primary.ID
     idx.Language_ID = cache.get_id(models.DocumentLanguage,
-                                   constants.ESDOC_DEFAULT_LANGUAGE)
+                                   pyesdoc.ESDOC_DEFAULT_LANGUAGE)
 
     # Set fields.
     fields = [f for f in ctx.doc.ext.summary_fields if f is not None]

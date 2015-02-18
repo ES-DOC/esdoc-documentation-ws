@@ -1,3 +1,14 @@
+"""
+.. module:: esdoc_api.db.index.execute_cmip5.py
+
+   :copyright: @2013 Earth System Documentation (http://es-doc.org)
+   :license: GPL / CeCILL
+   :platform: Unix, Windows
+   :synopsis: Indexes archived CMIP5 documents.
+
+.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
+
+"""
 # -*- coding: utf-8 -*-
 from esdoc_api.db import (
     cache,
@@ -51,13 +62,17 @@ def _load_docs(ctx):
     """Loads documents to be indexed."""
 
     def get_docs(doc_type):
-        """Gets documents filtered by document type."""
+        """Gets documents filtered by document type.
+
+        """
         # return dao.get_document_by_type(ctx.project.ID, doc_type, False)[:1]
         return dao.get_document_by_type(ctx.project.ID, doc_type, False)
 
 
     def decode(docs):
-        """Gets decoded document collection."""
+        """Gets decoded document collection.
+
+        """
         docs = map(lambda doc: utils.get_pyesdoc(
             doc,
             ctx.ontology,
@@ -68,7 +83,9 @@ def _load_docs(ctx):
 
 
     def get_collection(doc_type, key_formatter):
-        """Gets document collection for processing."""
+        """Gets document collection for processing.
+
+        """
         collection = {}
         for doc in get_docs(doc_type):
             key = key_formatter(doc)
@@ -80,7 +97,9 @@ def _load_docs(ctx):
 
 
     def get_key(doc):
-        """Returns document key."""
+        """Returns document key.
+
+        """
         institute = cache.get_name(models.Institute, doc.Institute_ID)
         name = doc.Name.upper()
 

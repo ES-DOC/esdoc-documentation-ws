@@ -10,6 +10,8 @@
 """
 import sqlalchemy as sa
 
+import pyesdoc
+
 from esdoc_api.db import session
 from esdoc_api.db.dao.core import get_by_facet
 from esdoc_api.db.models import (
@@ -17,7 +19,6 @@ from esdoc_api.db.models import (
     DocumentLanguage,
     DocumentOntology,
 )
-from esdoc_api import constants
 
 
 
@@ -54,7 +55,7 @@ def get_doc_ontology(name, version=None):
     return qry.first()
 
 
-def get_doc_language(code=constants.ESDOC_DEFAULT_LANGUAGE):
+def get_doc_language(code=None):
     """Returns a DocumentLanguage instance by it's code.
 
     :param type: A supported entity type.
@@ -67,6 +68,9 @@ def get_doc_language(code=constants.ESDOC_DEFAULT_LANGUAGE):
     :rtype: db.models.DocumentLanguage
 
     """
+    if code is None:
+        code = pyesdoc.ESDOC_DEFAULT_LANGUAGE
+
     return get_by_facet(DocumentLanguage,
                         DocumentLanguage.Code==code.lower())
 

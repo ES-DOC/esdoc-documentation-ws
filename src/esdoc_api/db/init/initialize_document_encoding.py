@@ -8,8 +8,9 @@
 
 
 """
+import pyesdoc
+
 from esdoc_api.db import models, session
-from esdoc_api import constants
 
 
 
@@ -17,7 +18,7 @@ def execute():
     """Initializes collection of supported document encodings.
 
     """
-    for encoding in (constants.ESDOC_ENCODINGS + constants.ESDOC_ENCODINGS_CUSTOM):
+    for encoding in (pyesdoc.ESDOC_ENCODINGS + pyesdoc.ESDOC_ENCODINGS_CUSTOM):
         # Create.
         i = models.DocumentEncoding()
         i.Encoding = encoding

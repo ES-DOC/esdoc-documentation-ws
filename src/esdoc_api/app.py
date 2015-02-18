@@ -12,10 +12,8 @@
 """
 # -*- coding: utf-8 -*-
 import json
-import wsgiref.simple_server as wsgi
 
 import tornado.web
-import tornado.wsgi
 
 import pyesdoc
 
@@ -25,7 +23,7 @@ from esdoc_api.utils.runtime import log_api as log
 
 
 
-# Ensure that tornado will encode json correctly (i.e. handle dates/UUID's)..
+# Ensure that tornado will encode json correctly (i.e. handle dates/UUID's).
 json._default_encoder = convert.JSONEncoder()
 
 

@@ -1,3 +1,14 @@
+"""
+.. module:: esdoc_api.db.index.execute_core.py
+
+   :copyright: @2013 Earth System Documentation (http://es-doc.org)
+   :license: GPL / CeCILL
+   :platform: Unix, Windows
+   :synopsis: Indexes core entities.
+
+.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
+
+"""
 # -*- coding: utf-8 -*-
 from esdoc_api.db import (
     dao,

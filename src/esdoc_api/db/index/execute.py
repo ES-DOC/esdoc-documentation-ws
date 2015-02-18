@@ -1,3 +1,14 @@
+"""
+.. module:: esdoc_api.db.index.execute.py
+
+   :copyright: @2013 Earth System Documentation (http://es-doc.org)
+   :license: GPL / CeCILL
+   :platform: Unix, Windows
+   :synopsis: Indexes archived documents.
+
+.. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
+
+"""
 # -*- coding: utf-8 -*-
 from esdoc_api.db.index import (
     execute_cmip5,
@@ -26,18 +37,24 @@ _indexers = {
 
 
 def _log(msg):
-    """Writes a log message."""
+    """Writes a log message.
+
+    """
     rt.log("INDEXING :: {0} ...".format(msg))
 
 
 def _log_stats():
-    """Writes facet stats to log."""
+    """Writes facet stats to log.
+
+    """
     for ntype in models.NODE_TYPES:
         print ntype, dao.get_node_count(type_of=ntype)
 
 
 def _reset():
-    """Resets data."""
+    """Resets data.
+
+    """
     for mtype in _MODEL_TYPES:
         dao.delete_by_type(mtype)
 
@@ -58,7 +75,6 @@ def do(reset=False):
         _reset()
 
     _log("building new facets")
-    # for indexer in [execute_core]:
     for indexer in [execute_core] + _indexers.values():
         indexer.execute()
 
