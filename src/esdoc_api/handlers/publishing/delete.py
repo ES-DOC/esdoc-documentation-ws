@@ -15,7 +15,8 @@ import tornado
 
 import pyesdoc
 
-from esdoc_api import utils
+from esdoc_api import db, utils
+from esdoc_api.utils import config
 
 
 
@@ -52,10 +53,24 @@ class DocumentDeleteRequestHandler(tornado.web.RequestHandler):
                                self.document_version)
 
 
+    def _delete_from_db(self):
+        """Deletes document from database.
+
+        """
+        db.session.start(config.db)
+        try:
+            db.ingest.undo(self.document_id, self.document_version)
+            db.session.commit()
+        finally:
+            db.session.end()
+
+
     def delete(self):
-        """HTTP DELETE handler."""
+        """HTTP DELETE handler.
+
+        """
         utils.h.invoke(self, (
             self._parse_request_params,
-            self._delete_from_archive
+            self._delete_from_archive,
+            self._delete_from_db
             ))
-

@@ -82,7 +82,9 @@ class DocumentRetrieveRequestHandler(tornado.web.RequestHandler):
 
 
     def get(self):
-        """HTTP GET handler."""
+        """HTTP GET handler.
+
+        """
         utils.h.invoke(self, (
             self._parse_request_params,
             self._read_from_archive,

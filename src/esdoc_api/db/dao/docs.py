@@ -60,19 +60,12 @@ __all__ = [
 
 
 
-def get_document(project_id,
-                 uid,
-                 version=models.DOCUMENT_VERSION_LATEST):
+def get_document(uid, version, project_id=None):
     """Returns a Document instance by it's project, UID & version.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param uid: Document unique identifier.
-    :type uid: str
-
-    :param version: Document version.
-    :type version: str
+    :param int project_id: ID of a Project instance.
+    :param str uid: Document unique identifier.
+    :param str version: Document version.
 
     :returns: First matching document.
     :rtype: db.models.Document
@@ -449,7 +442,6 @@ def delete_document(document_id):
     """
     delete_document_drs(document_id)
     delete_document_external_ids(document_id)
-    delete_document_representations(document_id)
     delete_document_summaries(document_id)
     delete_by_id(Document, document_id)
 

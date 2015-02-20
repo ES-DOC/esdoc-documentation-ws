@@ -14,4 +14,3 @@
 from esdoc_api.handlers.publishing.create import DocumentCreateRequestHandler
 from esdoc_api.handlers.publishing.delete import DocumentDeleteRequestHandler
 from esdoc_api.handlers.publishing.retrieve import DocumentRetrieveRequestHandler
-from esdoc_api.handlers.publishing.update import DocumentUpdateRequestHandler

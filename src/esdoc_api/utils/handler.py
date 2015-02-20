@@ -125,7 +125,9 @@ def _log(handler, error=None):
 
 
 def _get_tasks(tasks):
-    """Returns a set of tasks for execution."""
+    """Returns a set of tasks for execution.
+
+    """
     if tasks is None:
         return ()
     try:

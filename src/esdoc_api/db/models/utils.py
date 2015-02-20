@@ -74,7 +74,7 @@ class BaseEntity(object):
         """Debugging representation.
 
         """
-        return self.as_json()
+        return unicode(self.as_dict())
 
 
     def as_dict(self):

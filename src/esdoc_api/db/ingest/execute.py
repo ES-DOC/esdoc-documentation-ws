@@ -27,11 +27,15 @@ class _DocumentProcessingInfo(object):
     """Encapsulates document processing information.
 
     """
-    def __init__(self, organized, ingestable, index):
+    def __init__(self,
+                 organized,
+                 ingestable,
+                 index,
+                 doc=None):
         """Object constructor.
 
         """
-        self.doc = None
+        self.doc = doc
         self.error = None
         self.fpath_error = ingestable.path.replace("ingested", "ingested_error")
         self.index = index
@@ -67,15 +71,17 @@ def _set_document(ctx):
     """Sets document prior to processing.
 
     """
-    try:
-        ctx.doc = pyesdoc.read(ctx.organized.path, ctx.organized.encoding)
-    except Exception as err:
-        raise _DecodingException(err)
+    if not ctx.doc:
+        try:
+            ctx.doc = pyesdoc.read(ctx.organized.path, ctx.organized.encoding)
+        except Exception as err:
+            raise _DecodingException(err)
 
-    try:
-        pyesdoc.extend(ctx.doc)
-    except Exception as err:
-        raise _ExtendingException(err)
+    if not hasattr(ctx.doc, 'ext'):
+        try:
+            pyesdoc.extend(ctx.doc)
+        except Exception as err:
+            raise _ExtendingException(err)
 
 
 def _write_error(ctx):
@@ -142,7 +148,7 @@ def _get_documents(throttle=0):
             break
 
 
-def process(ctx):
+def _process(ctx):
     """Ingests a document.
 
     """
@@ -166,6 +172,18 @@ def process(ctx):
     rt.invoke(ctx, tasks, error_tasks)
 
 
+def process_doc(doc):
+    """Ingests a single document.
+
+    """
+    organized = \
+        pyesdoc.archive.get_doc_file(doc, pyesdoc.archive.DIR_ORGANIZED)
+    ingestable = \
+        pyesdoc.archive.get_doc_file(doc, pyesdoc.archive.DIR_INGESTED)
+
+    _process(_DocumentProcessingInfo(organized, ingestable, 1, doc))
+
+
 def process_archived(throttle=0):
     """Ingests files from archive.
 
@@ -173,6 +191,5 @@ def process_archived(throttle=0):
 
     """
     pyesdoc.archive.delete_files(pyesdoc.archive.DIR_INGESTED_ERROR)
-
     for ctx in _get_documents(throttle):
-        process(ctx)
+        _process(ctx)

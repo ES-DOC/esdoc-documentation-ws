@@ -15,7 +15,8 @@ import tornado
 
 import pyesdoc
 
-from esdoc_api import utils
+from esdoc_api import db, utils
+from esdoc_api.utils import config
 
 
 
@@ -43,8 +44,10 @@ class DocumentCreateRequestHandler(tornado.web.RequestHandler):
         """
         # Decode document.
         doc = pyesdoc.decode(self.request.body, 'json')
+        if not doc:
+            raise utils.h.API_Exception("Document could not be decoded.")
 
-        # Validate document.
+        # Minimally validate document.
         if not pyesdoc.is_valid(doc):
         	raise utils.h.API_Exception("Document is invalid.")
 
@@ -65,10 +68,21 @@ class DocumentCreateRequestHandler(tornado.web.RequestHandler):
 
 
     def _write_to_archive(self):
-    	"""Archives document so that it is available for ingestion.
+    	"""Archives document.
 
         """
         pyesdoc.archive.write(self.doc)
+
+
+    def _write_to_db(self):
+        """Uploads document to db.
+
+        """
+        db.session.start(config.db)
+        try:
+            db.ingest.ingest_doc(self.doc)
+        finally:
+            db.session.end()
 
 
     def post(self):
@@ -79,6 +93,6 @@ class DocumentCreateRequestHandler(tornado.web.RequestHandler):
             self._validate_request_headers,
             self._validate_request_payload,
             self._validate_publication_status,
-            self._write_to_archive
+            self._write_to_archive,
+            self._write_to_db
             ))
-

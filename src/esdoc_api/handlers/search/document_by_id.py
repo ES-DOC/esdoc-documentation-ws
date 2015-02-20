@@ -38,6 +38,6 @@ def do_search(criteria):
     :rtype: db.models.Document | None
 
     """
-    yield db.dao.get_document(criteria.project.ID,
-                              criteria.id,
-                              criteria.version)
+    yield db.dao.get_document(criteria.id,
+                              criteria.version,
+                              criteria.project.ID)

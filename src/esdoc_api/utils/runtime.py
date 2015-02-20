@@ -90,6 +90,15 @@ def log_db(msg, level=LOG_LEVEL_INFO, app=_DEFAULT_APP):
     log(msg, module="DB", level=level, app=app)
 
 
+def log_warning(msg):
+    """Logs a runtime warning.
+
+    :param str msg: Message for writing to log.
+
+    """
+    log(msg, level=LOG_LEVEL_WARNING)
+
+
 def log_api(msg, level=LOG_LEVEL_INFO, app=_DEFAULT_APP):
     """Logs api related events.
 

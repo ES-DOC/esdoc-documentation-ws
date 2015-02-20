@@ -71,7 +71,7 @@ def create_doc_from_json(doc_json):
         rt.raise_error("Project {0} is unsupported".format(doc.meta.project))
 
     # Verify document does not already exist.
-    if dao.get_document(project.ID, doc.meta.id, doc.meta.version) is not None:
+    if dao.get_document(doc.meta.id, doc.meta.version, project.ID) is not None:
         rt.raise_error("Document already exists")
 
     # Derive institute.
@@ -190,9 +190,9 @@ def create_doc(doc, project, institute=None):
     rt.assert_optional_var('institute', institute, models.Institute)
 
     # Instantiate & assign attributes.
-    instance = dao.get_document(project.ID,
-                                str(doc.meta.id),
-                                str(doc.meta.version))
+    instance = dao.get_document(str(doc.meta.id),
+                                str(doc.meta.version),
+                                project.ID)
     if instance is None:
         instance = create(models.Document)
         instance.as_obj = doc
@@ -219,7 +219,7 @@ def set_doc_is_latest_flag(document):
     rt.assert_var('document', document, models.Document)
 
     # Get all related documents and update IsLatest flag accordingly.
-    all = dao.get_document(document.Project_ID, document.UID, models.DOCUMENT_VERSION_ALL)
+    all = dao.get_document(document.UID, models.DOCUMENT_VERSION_ALL, document.Project_ID)
     for i in range(len(all)):
         all[i].IsLatest = (i == 0)
         if all[i].Version == document.Version:
@@ -339,7 +339,7 @@ def delete_doc(uid, version):
     :type version: str
 
     """
-    docs = dao.get_document(None, uid, version)
+    docs = dao.get_document(uid, version, None)
     if docs is None:
         return
 
