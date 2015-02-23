@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Encapsulates xml utility functions.
 
 """

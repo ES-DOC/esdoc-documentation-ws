@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 .. module:: esdoc_api.controllers.error
    :platform: Unix, Windows

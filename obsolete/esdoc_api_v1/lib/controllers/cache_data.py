@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Data structure representing site level cache data.
 """

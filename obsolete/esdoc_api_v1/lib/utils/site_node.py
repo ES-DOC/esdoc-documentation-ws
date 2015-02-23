@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Encapsulates a node within the site.
 """

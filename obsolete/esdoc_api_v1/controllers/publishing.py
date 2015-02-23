@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 .. module:: esdoc_api.controllers.publishing.py
    :platform: Unix, Windows

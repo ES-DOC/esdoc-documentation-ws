@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Encapsulates site level meta-info typicallly used in the master page.
 """

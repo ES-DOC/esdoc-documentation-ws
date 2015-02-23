@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from esdoc_api.lib.controllers.base_controller import *
 
 

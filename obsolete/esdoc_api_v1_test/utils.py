@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 .. module:: prodiguer_shared_tests.test_utils.py
 

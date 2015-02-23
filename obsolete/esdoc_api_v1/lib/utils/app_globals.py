@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """The application's Globals object"""
 
 from beaker.cache import CacheManager

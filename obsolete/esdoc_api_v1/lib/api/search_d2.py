@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 .. module:: esdoc_api.lib.search_engine_d1.py
    :copyright: Copyright "Jun 5, 2013", Earth System Documentation

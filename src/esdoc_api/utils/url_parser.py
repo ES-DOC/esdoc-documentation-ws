@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 .. module:: url_parser.py
    :copyright: Copyright "Jul 31, 2013", Earth System Documentation

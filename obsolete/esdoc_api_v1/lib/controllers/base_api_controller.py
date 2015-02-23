@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pyesdoc
 
 from esdoc_api.lib.controllers.base_controller import BaseController

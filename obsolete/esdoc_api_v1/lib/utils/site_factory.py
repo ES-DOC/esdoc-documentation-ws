@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Creates & returns set of node supported across the site.
 """

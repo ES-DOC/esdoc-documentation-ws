@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 A set of unit tests utility functions/constants.
 """

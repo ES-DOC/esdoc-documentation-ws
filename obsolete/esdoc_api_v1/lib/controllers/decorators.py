@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Controller decorator functions
 
 Consists of functions to typically be used within templates, but also
