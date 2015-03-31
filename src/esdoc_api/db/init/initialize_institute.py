@@ -277,3 +277,11 @@ def execute():
     i.CountryCode = "US"
     i.URL = "http://www.esrl.noaa.gov/nesii"
     session.insert(i)
+
+    # DOE.
+    i = models.Institute()
+    i.Name = "DOE"
+    i.LongName = "Department of Energy"
+    i.CountryCode = "US"
+    i.URL = "http://energy.gov"
+    session.insert(i)
