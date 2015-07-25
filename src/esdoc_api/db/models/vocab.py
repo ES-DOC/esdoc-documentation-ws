@@ -50,7 +50,7 @@ class DocumentEncoding(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblDocumentEncoding'
+    __tablename__ = 'tbl_document_encoding'
     __table_args__ = (
         {'schema' : _DOMAIN_PARTITION}
     )
@@ -80,7 +80,7 @@ class DocumentLanguage(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblDocumentLanguage'
+    __tablename__ = 'tbl_document_language'
     __table_args__ = (
         {'schema' : _DOMAIN_PARTITION}
     )
@@ -111,7 +111,7 @@ class DocumentOntology(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblDocumentOntology'
+    __tablename__ = 'tbl_document_ontology'
     __table_args__ = (
         UniqueConstraint('Name' ,'Version'),
         {'schema' : _DOMAIN_PARTITION}
@@ -146,14 +146,14 @@ class DocumentType(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblDocumentType'
+    __tablename__ = 'tbl_document_type'
     __table_args__ = (
         UniqueConstraint('Key'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    Ontology_ID = create_fk('vocab.tblDocumentOntology.ID', required=True)
+    Ontology_ID = create_fk('vocab.tbl_document_ontology.ID', required=True)
 
     # Field set.
     Key = Column(Unicode(255), nullable=False)
@@ -174,7 +174,7 @@ class Institute(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblInstitute'
+    __tablename__ = 'tbl_institute'
     __table_args__ = (
         {'schema' : _DOMAIN_PARTITION}
     )
@@ -207,13 +207,13 @@ class Project(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblProject'
+    __tablename__ = 'tbl_project'
     __table_args__ = (
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Field set.
-    Name =  Column(Unicode(16), nullable=False, unique=True)
+    Name =  Column(Unicode(63), nullable=False, unique=True)
     Description =  Column(Unicode(1023))
     URL =  Column(Unicode(1023))
 

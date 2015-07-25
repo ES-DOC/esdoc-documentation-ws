@@ -17,13 +17,15 @@ from esdoc_api.db import cache
 
 
 # Set of document types that do not need to be associated with an institute.
-_INSTITUTE_VALIDATION_EXCEPIONS = (
+_INSTITUTE_VALIDATION_EXCEPIONS = {
     pyesdoc.ontologies.cim.v1.NumericalExperiment,
-    )
+    }
 
 
 def _validate_id(ctx):
-    """Validates document id."""
+    """Validates document id.
+
+    """
     # Is mandatory.
     if not ctx.doc.meta.id:
         raise ValueError("Document ID is mandatory")
@@ -39,7 +41,9 @@ def _validate_id(ctx):
 
 
 def _validate_version(ctx):
-    """Validates document version."""
+    """Validates document version.
+
+    """
     # Is mandatory.
     if not ctx.doc.meta.version:
         raise ValueError("Document version is mandatory")
@@ -57,7 +61,9 @@ def _validate_version(ctx):
 
 
 def _validate_project(ctx):
-    """Validates project code."""
+    """Validates project code.
+
+    """
     # Is mandatory.
     if not ctx.doc.meta.project:
         raise ValueError("Document project code is mandatory")
@@ -69,7 +75,9 @@ def _validate_project(ctx):
 
 
 def _validate_institute(ctx):
-    """Validates institute code."""
+    """Validates institute code.
+
+    """
     # Is sometimes mandatory.
     if not ctx.doc.meta.institute:
         if type(ctx.doc) not in _INSTITUTE_VALIDATION_EXCEPIONS:
@@ -84,20 +92,12 @@ def _validate_institute(ctx):
 
 
 def _validate_name(ctx):
-    """Validates name."""
+    """Validates name.
+
+    """
     # Is mandatory.
     if not ctx.doc.ext.display_name:
         raise ValueError("Document name is mandatory")
-
-
-# Set of validators to apply.
-_VALIDATORS = (
-    _validate_id,
-    _validate_version,
-    _validate_institute,
-    _validate_project,
-    _validate_name
-    )
 
 
 def execute(ctx):
@@ -106,7 +106,12 @@ def execute(ctx):
     :param object ctx: Document processing context information.
 
     """
-    # Validate
-    for func in _VALIDATORS:
+    for func in (
+        _validate_id,
+        _validate_version,
+        _validate_institute,
+        _validate_project,
+        _validate_name
+        ):
         func(ctx)
 

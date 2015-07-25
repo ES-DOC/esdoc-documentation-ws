@@ -40,7 +40,9 @@ _SUB_HANDLERS = {
 
 
 def _get_default_params():
-    """Returns default document search parameter specification."""
+    """Returns default document search parameter specification.
+
+    """
     return {
         'encoding': {
             'required': True,
@@ -135,32 +137,16 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         """Performs document search against db.
 
         """
-        self.docs = [d for d in self.sub_handler.do_search(self) if d]
+        self.docs = [d for d in self.sub_handler.do_search(self)
+                     if d is not None]
 
 
-    def _load_docs(self):
-        """Loads documents from pyesdoc archive.
-
-        """
-        def _load(doc):
-            """Loads a document from archive."""
-            return pyesdoc.archive.load(doc.UID, doc.Version, must_exist=True)
-
-        self.docs =  [_load(d) for d in self.docs]
-
-
-    def _decode_docs(self):
-        """Decodes documents loaded from pyesdoc archive.
+    def _read_docs_from_archive(self):
+        """Reads documents from pyesdoc archive.
 
         """
-        self.docs =  [pyesdoc.decode(d, _DEFAULT_ENCODING) for d in self.docs]
-
-
-    def _extend_docs(self):
-        """Extends documents loaded from pyesdoc archive.
-
-        """
-        self.docs = [pyesdoc.extend(d) for d in self.docs]
+        self.docs =  [pyesdoc.archive.read(d.UID, d.Version) for d in self.docs]
+        self.docs = [d for d in self.docs if d is not None]
 
 
     def _set_child_docs(self):
@@ -178,8 +164,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         """
         for child in self.child_docs:
             for doc in self.docs:
-                if type(doc) == type(child) and \
-                   doc.meta.id == child.meta.id:
+                if type(doc) == type(child) and doc.meta.id == child.meta.id:
                     self.docs.remove(doc)
 
 
@@ -205,11 +190,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
             # N.B. Tornado auto-encodes dict's to json.
             encoding = pyesdoc.ESDOC_ENCODING_DICT
 
-        if encoding == pyesdoc.ESDOC_ENCODING_HTML:
-            self.docs =  [pyesdoc.encode(self.docs, encoding)]
-        else:
-            self.docs =  [pyesdoc.encode(d, encoding) for d in self.docs]
-
+        self.docs =  pyesdoc.encode(self.docs, encoding)
 
 
     def _set_response(self):
@@ -251,9 +232,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
             self._set_sub_handler,
             self._parse_params_custom,
             self._do_search,
-            self._load_docs,
-            self._decode_docs,
-            self._extend_docs,
+            self._read_docs_from_archive,
             self._set_child_docs,
             self._override_main_docs,
             self._set_docs_for_output,

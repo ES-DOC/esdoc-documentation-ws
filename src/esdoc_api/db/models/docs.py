@@ -62,15 +62,15 @@ class Document(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblDocument'
+    __tablename__ = 'tbl_document'
     __table_args__ = (
         UniqueConstraint('Project_ID' ,'UID', 'Version'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    Project_ID = create_fk('vocab.tblProject.ID', required=True)
-    Institute_ID = create_fk('vocab.tblInstitute.ID')
+    Project_ID = create_fk('vocab.tbl_project.ID', required=True)
+    Institute_ID = create_fk('vocab.tbl_institute.ID')
 
     # Relationships.
     ExternalIDs = relationship("DocumentExternalID", backref="Document")
@@ -119,15 +119,15 @@ class DocumentDRS(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblDocumentDRS'
+    __tablename__ = 'tbl_document_drs'
     __table_args__ = (
         UniqueConstraint('Project_ID' ,'Document_ID', 'Path'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    Project_ID = create_fk('vocab.tblProject.ID', required=True)
-    Document_ID = create_fk('docs.tblDocument.ID', required=True)
+    Project_ID = create_fk('vocab.tbl_project.ID', required=True)
+    Document_ID = create_fk('docs.tbl_document.ID', required=True)
 
     # Field set.
     Path = Column(Unicode(511))
@@ -189,15 +189,15 @@ class DocumentExternalID(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblDocumentExternalID'
+    __tablename__ = 'tbl_document_external_id'
     __table_args__ = (
         UniqueConstraint('Project_ID' ,'Document_ID', 'ExternalID'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    Project_ID = create_fk('vocab.tblProject.ID', required=True)
-    Document_ID = create_fk('docs.tblDocument.ID', required=True)
+    Project_ID = create_fk('vocab.tbl_project.ID', required=True)
+    Document_ID = create_fk('docs.tbl_document.ID', required=True)
 
     # Field set.
     ExternalID = Column(Unicode(255), nullable=False)
@@ -208,15 +208,15 @@ class DocumentSummary(Entity):
 
     """
     # SQLAlchemy directives.
-    __tablename__ = 'tblDocumentSummary'
+    __tablename__ = 'tbl_document_summary'
     __table_args__ = (
         UniqueConstraint('Document_ID' ,'Language_ID'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    Document_ID = create_fk('docs.tblDocument.ID', required=True)
-    Language_ID = create_fk('vocab.tblDocumentLanguage.ID', required=True)
+    Document_ID = create_fk('docs.tbl_document.ID', required=True)
+    Language_ID = create_fk('vocab.tbl_document_language.ID', required=True)
 
     # Field set.
     ShortName = Column(Unicode(1023))

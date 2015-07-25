@@ -32,8 +32,8 @@ def execute():
     for row in _get_data():
         # Create.
         i = models.DocumentOntology()
-        i.Name = row[0]
-        i.Version = row[1]
+        i.Name = unicode(row[0])
+        i.Version = unicode(row[1])
 
         # Persist.
         session.insert(i)

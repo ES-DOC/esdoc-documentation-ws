@@ -18,270 +18,270 @@ def execute():
     """
     # Undefined.
     i = models.Institute()
-    i.Name = "--"
-    i.LongName = "Placeholder for scenario when an institute is undefined"
-    i.CountryCode = "--"
+    i.Name = u"--"
+    i.LongName = u"Placeholder for scenario when an institute is undefined"
+    i.CountryCode = u"--"
     session.insert(i)
 
     # Test.
     i = models.Institute()
-    i.Name = "TEST"
-    i.LongName = "Placeholder for test scenrarios"
-    i.CountryCode = "--"
+    i.Name = u"TEST"
+    i.LongName = u"Placeholder for test scenrarios"
+    i.CountryCode = u"--"
     session.insert(i)
 
     # BADC.
     i = models.Institute()
-    i.Name = "BADC"
-    i.LongName = "British Atmospheric Data Centre"
-    i.CountryCode = "UK"
-    i.URL = "http://badc.nerc.ac.uk/home/index.html"
+    i.Name = u"BADC"
+    i.LongName = u"British Atmospheric Data Centre"
+    i.CountryCode = u"UK"
+    i.URL = u"http://badc.nerc.ac.uk/home/index.html"
     session.insert(i)
 
     # COLA-CFS.
     i = models.Institute()
-    i.Name = "COLA-CFS"
-    i.LongName = "Center for Ocean-Land-Atmosphere Studies"
-    i.CountryCode = "US"
-    i.URL = "http://grads.iges.org/colablurb.html"
+    i.Name = u"COLA-CFS"
+    i.LongName = u"Center for Ocean-Land-Atmosphere Studies"
+    i.CountryCode = u"US"
+    i.URL = u"http://grads.iges.org/colablurb.html"
     session.insert(i)
 
     # CSIRO-BOM.
     i = models.Institute()
-    i.Name = "CSIRO-BOM"
-    i.LongName = "Commonwealth Scientific and Industrial Research Organization (CSIRO) and Bureau of Meteorology (BOM), Australia"
-    i.CountryCode = "AU"
-    i.URL = "http://www.csiro.au/"
+    i.Name = u"CSIRO-BOM"
+    i.LongName = u"Commonwealth Scientific and Industrial Research Organization (CSIRO) and Bureau of Meteorology (BOM), Australia"
+    i.CountryCode = u"AU"
+    i.URL = u"http://www.csiro.au/"
     session.insert(i)
 
     # BCC.
     i = models.Institute()
-    i.Name = "BCC"
-    i.LongName = "Beijing Climate Center, China Meteorological Administration"
-    i.CountryCode = "CN"
-    i.URL = "http://bcc.cma.gov.cn/en/"
+    i.Name = u"BCC"
+    i.LongName = u"Beijing Climate Center, China Meteorological Administration"
+    i.CountryCode = u"CN"
+    i.URL = u"http://bcc.cma.gov.cn/en/"
     session.insert(i)
 
     # GCESS.
     i = models.Institute()
-    i.Name = "GCESS"
-    i.LongName = "College of Global Change and Earth System Science, Beijing Normal University"
-    i.CountryCode = "CN"
-    i.URL = "http://www.bnu.edu.cn/gces/"
+    i.Name = u"GCESS"
+    i.LongName = u"College of Global Change and Earth System Science, Beijing Normal University"
+    i.CountryCode = u"CN"
+    i.URL = u"http://www.bnu.edu.cn/gces/"
     session.insert(i)
 
     # CCCMA.
     i = models.Institute()
-    i.Name = "CCCMA"
-    i.LongName = "Canadian Centre for Climate Modelling and Analysis"
-    i.CountryCode = "CA"
-    i.URL = "http://www.ec.gc.ca/ccmac-cccma/"
+    i.Name = u"CCCMA"
+    i.LongName = u"Canadian Centre for Climate Modelling and Analysis"
+    i.CountryCode = u"CA"
+    i.URL = u"http://www.ec.gc.ca/ccmac-cccma/"
     session.insert(i)
 
     # RSMAS.
     i = models.Institute()
-    i.Name = "RSMAS"
-    i.LongName = "University of Miami - RSMAS"
-    i.CountryCode = "US"
-    i.URL = "http://www.rsmas.miami.edu/"
+    i.Name = u"RSMAS"
+    i.LongName = u"University of Miami - RSMAS"
+    i.CountryCode = u"US"
+    i.URL = u"http://www.rsmas.miami.edu/"
     session.insert(i)
 
     # NCAR.
     i = models.Institute()
-    i.Name = "NCAR"
-    i.LongName = "National Center for Atmospheric Research"
-    i.CountryCode = "US"
-    i.URL = "http://ncar.ucar.edu/"
+    i.Name = u"NCAR"
+    i.LongName = u"National Center for Atmospheric Research"
+    i.CountryCode = u"US"
+    i.URL = u"http://ncar.ucar.edu/"
     session.insert(i)
 
     # NSF-DOE-NCAR.
     i = models.Institute()
-    i.Name = "NSF-DOE-NCAR"
-    i.LongName = "Community Earth System Model Contributors"
-    i.CountryCode = "US"
-    i.URL = "http://www.cesm.ucar.edu/"
+    i.Name = u"NSF-DOE-NCAR"
+    i.LongName = u"Community Earth System Model Contributors"
+    i.CountryCode = u"US"
+    i.URL = u"http://www.cesm.ucar.edu/"
     session.insert(i)
 
     # NCEP.
     i = models.Institute()
-    i.Name = "NCEP"
-    i.LongName = "National Centers for Environmental Prediction"
-    i.CountryCode = "US"
-    i.URL = "http://www.ncep.noaa.gov/"
+    i.Name = u"NCEP"
+    i.LongName = u"National Centers for Environmental Prediction"
+    i.CountryCode = u"US"
+    i.URL = u"http://www.ncep.noaa.gov/"
     session.insert(i)
 
     # CMCC.
     i = models.Institute()
-    i.Name = "CMCC"
-    i.LongName = "Centro Euro-Mediterraneo per I Cambiamenti Climatici"
-    i.CountryCode = "IT"
-    i.URL = "http://www.cmcc.it/"
+    i.Name = u"CMCC"
+    i.LongName = u"Centro Euro-Mediterraneo per I Cambiamenti Climatici"
+    i.CountryCode = u"IT"
+    i.URL = u"http://www.cmcc.it/"
     session.insert(i)
 
     # CNRM-CERFACS.
     i = models.Institute()
-    i.Name = "CNRM-CERFACS"
-    i.LongName = "Centre National de Recherches Meteorologiques / Centre Europeen de Recherche et de Formation Avancee en Calcul Scientifique"
-    i.CountryCode = "FR"
-    i.URL = "http://www.cerfacs.fr/"
+    i.Name = u"CNRM-CERFACS"
+    i.LongName = u"Centre National de Recherches Meteorologiques / Centre Europeen de Recherche et de Formation Avancee en Calcul Scientifique"
+    i.CountryCode = u"FR"
+    i.URL = u"http://www.cerfacs.fr/"
     session.insert(i)
 
     # CSIRO-QCCCE.
     i = models.Institute()
-    i.Name = "CSIRO-QCCCE"
-    i.LongName = "Commonwealth Scientific and Industrial Research Organisation / Queensland Climate Change Centre of Excellence"
-    i.CountryCode = "AU"
-    i.URL = "http://www.csiro.au/"
+    i.Name = u"CSIRO-QCCCE"
+    i.LongName = u"Commonwealth Scientific and Industrial Research Organisation / Queensland Climate Change Centre of Excellence"
+    i.CountryCode = u"AU"
+    i.URL = u"http://www.csiro.au/"
     session.insert(i)
 
     # EC-EARTH.
     i = models.Institute()
-    i.Name = "EC-EARTH"
-    i.LongName = "EC-EARTH"
-    i.CountryCode = "NL"
-    i.URL = "http://ecearth.knmi.nl/"
+    i.Name = u"EC-EARTH"
+    i.LongName = u"EC-EARTH"
+    i.CountryCode = u"NL"
+    i.URL = u"http://ecearth.knmi.nl/"
     session.insert(i)
 
     # LASG-CESS.
     i = models.Institute()
-    i.Name = "LASG-CESS"
-    i.LongName = "LASG, Institute of Atmospheric Physics, Chinese Academy of Sciences and CESS,Tsinghua University"
-    i.CountryCode = "CN"
-    i.URL = "http://www.iap.ac.cn/ http://www.tsinghua.edu.cn/publish/cessen/"
+    i.Name = u"LASG-CESS"
+    i.LongName = u"LASG, Institute of Atmospheric Physics, Chinese Academy of Sciences and CESS,Tsinghua University"
+    i.CountryCode = u"CN"
+    i.URL = u"http://www.iap.ac.cn/ http://www.tsinghua.edu.cn/publish/cessen/"
     session.insert(i)
 
     # LASG-IAP.
     i = models.Institute()
-    i.Name = "LASG-IAP"
-    i.LongName = "LASG, Institute of Atmospheric Physics, Chinese Academy of Sciences"
-    i.CountryCode = "CN"
-    i.URL = "http://www.iap.ac.cn/"
+    i.Name = u"LASG-IAP"
+    i.LongName = u"LASG, Institute of Atmospheric Physics, Chinese Academy of Sciences"
+    i.CountryCode = u"CN"
+    i.URL = u"http://www.iap.ac.cn/"
     session.insert(i)
 
     # FIO.
     i = models.Institute()
-    i.Name = "FIO"
-    i.LongName = "The First Institute of Oceanography, SOA, China"
-    i.CountryCode = "CN"
-    i.URL = "http://www.fio.org.cn/"
+    i.Name = u"FIO"
+    i.LongName = u"The First Institute of Oceanography, SOA, China"
+    i.CountryCode = u"CN"
+    i.URL = u"http://www.fio.org.cn/"
     session.insert(i)
 
     # INPE.
     i = models.Institute()
-    i.Name = "INPE"
-    i.LongName = "Instituto Nacional de Pesquisas Espaciais"
-    i.CountryCode = "BR"
-    i.URL = "http://www.inpe.br/"
+    i.Name = u"INPE"
+    i.LongName = u"Instituto Nacional de Pesquisas Espaciais"
+    i.CountryCode = u"BR"
+    i.URL = u"http://www.inpe.br/"
     session.insert(i)
 
     # NASA GMAO.
     i = models.Institute()
-    i.Name = "NASA-GMAO"
-    i.LongName = "NASA Global Modeling and Assimilation Office"
-    i.CountryCode = "US"
-    i.URL = "https://gmao.gsfc.nasa.gov/"
+    i.Name = u"NASA-GMAO"
+    i.LongName = u"NASA Global Modeling and Assimilation Office"
+    i.CountryCode = u"US"
+    i.URL = u"https://gmao.gsfc.nasa.gov/"
     session.insert(i)
 
     # NOAA-GFDL.
     i = models.Institute()
-    i.Name = "NOAA-GFDL"
-    i.LongName = "NOAA Geophysical Fluid Dynamics Laboratory"
-    i.CountryCode = "US"
-    i.URL = "http://www.gfdl.noaa.gov/"
+    i.Name = u"NOAA-GFDL"
+    i.LongName = u"NOAA Geophysical Fluid Dynamics Laboratory"
+    i.CountryCode = u"US"
+    i.URL = u"http://www.gfdl.noaa.gov/"
     session.insert(i)
 
     # NASA GISS.
     i = models.Institute()
-    i.Name = "NASA-GISS"
-    i.LongName = "NASA Goddard Institute for Space Studies"
-    i.CountryCode = "US"
-    i.URL = "http://www.giss.nasa.gov/"
+    i.Name = u"NASA-GISS"
+    i.LongName = u"NASA Goddard Institute for Space Studies"
+    i.CountryCode = u"US"
+    i.URL = u"http://www.giss.nasa.gov/"
     session.insert(i)
 
     # NIMR-KMA.
     i = models.Institute()
-    i.Name = "NIMR-KMA"
-    i.LongName = "National Institute of Meteorological Research/Korea Meteorological Administration"
-    i.CountryCode = "KR"
-    i.URL = "http://www.nimr.go.kr/MA/main.jsp"
+    i.Name = u"NIMR-KMA"
+    i.LongName = u"National Institute of Meteorological Research/Korea Meteorological Administration"
+    i.CountryCode = u"KR"
+    i.URL = u"http://www.nimr.go.kr/MA/main.jsp"
     session.insert(i)
 
     # MOHC.
     i = models.Institute()
-    i.Name = "MOHC"
-    i.LongName = "Met Office Hadley Centre"
-    i.CountryCode = "UK"
-    i.URL = "http://www.metoffice.gov.uk/climatechange/science/hadleycentre/"
+    i.Name = u"MOHC"
+    i.LongName = u"Met Office Hadley Centre"
+    i.CountryCode = u"UK"
+    i.URL = u"http://www.metoffice.gov.uk/climatechange/science/hadleycentre/"
     session.insert(i)
 
     # INM.
     i = models.Institute()
-    i.Name = "INM"
-    i.LongName = "Institute of Numerical Mathematics"
-    i.CountryCode = "RU"
-    i.URL = "http://www.inm.ras.ru/"
+    i.Name = u"INM"
+    i.LongName = u"Institute of Numerical Mathematics"
+    i.CountryCode = u"RU"
+    i.URL = u"http://www.inm.ras.ru/"
     session.insert(i)
 
     # IPSL.
     i = models.Institute()
-    i.Name = "IPSL"
-    i.LongName = "Institut Pierre Simon Laplace"
-    i.CountryCode = "FR"
-    i.URL = "http://www.ipsl.fr/"
+    i.Name = u"IPSL"
+    i.LongName = u"Institut Pierre Simon Laplace"
+    i.CountryCode = u"FR"
+    i.URL = u"http://www.ipsl.fr/"
     session.insert(i)
 
     # MIROC.
     i = models.Institute()
-    i.Name = "MIROC"
-    i.LongName = "Japan Agency for Marine-Earth Science and Technology, Atmosphere and Ocean Research Institute (The University of Tokyo), and National Institute for Environmental Studies"
-    i.CountryCode = "JP"
-    i.URL = "http://www.ccsr.u-tokyo.ac.jp/"
+    i.Name = u"MIROC"
+    i.LongName = u"Japan Agency for Marine-Earth Science and Technology, Atmosphere and Ocean Research Institute (The University of Tokyo), and National Institute for Environmental Studies"
+    i.CountryCode = u"JP"
+    i.URL = u"http://www.ccsr.u-tokyo.ac.jp/"
     session.insert(i)
 
     # MPI-M.
     i = models.Institute()
-    i.Name = "MPI-M"
-    i.LongName = "Max Planck Institute for Meteorology"
-    i.CountryCode = "DE"
-    i.URL = "http://www.mpimet.mpg.de/"
+    i.Name = u"MPI-M"
+    i.LongName = u"Max Planck Institute for Meteorology"
+    i.CountryCode = u"DE"
+    i.URL = u"http://www.mpimet.mpg.de/"
     session.insert(i)
 
     # MRI.
     i = models.Institute()
-    i.Name = "MRI"
-    i.LongName = "Meteorological Research Institute"
-    i.CountryCode = "JP"
-    i.URL = "http://www.mri-jma.go.jp/"
+    i.Name = u"MRI"
+    i.LongName = u"Meteorological Research Institute"
+    i.CountryCode = u"JP"
+    i.URL = u"http://www.mri-jma.go.jp/"
     session.insert(i)
 
     # NICAM.
     i = models.Institute()
-    i.Name = "NICAM"
-    i.LongName = "Nonhydrostatic Icosahedral Atmospheric Model Group"
-    i.CountryCode = "JP"
-    i.URL = "http://www.ccsr.u-tokyo.ac.jp/~satoh/nicam/index.html"
+    i.Name = u"NICAM"
+    i.LongName = u"Nonhydrostatic Icosahedral Atmospheric Model Group"
+    i.CountryCode = u"JP"
+    i.URL = u"http://www.ccsr.u-tokyo.ac.jp/~satoh/nicam/index.html"
     session.insert(i)
 
     # NCC.
     i = models.Institute()
-    i.Name = "NCC"
-    i.LongName = "Norwegian Climate Centre"
-    i.CountryCode = "NO"
-    i.URL = "http://www.cicero.uio.no/"
+    i.Name = u"NCC"
+    i.LongName = u"Norwegian Climate Centre"
+    i.CountryCode = u"NO"
+    i.URL = u"http://www.cicero.uio.no/"
     session.insert(i)
 
     # NESII.
     i = models.Institute()
-    i.Name = "NESII"
-    i.LongName = "NOAA Environmental Software Infrastructure and Interoperability Group"
-    i.CountryCode = "US"
-    i.URL = "http://www.esrl.noaa.gov/nesii"
+    i.Name = u"NESII"
+    i.LongName = u"NOAA Environmental Software Infrastructure and Interoperability Group"
+    i.CountryCode = u"US"
+    i.URL = u"http://www.esrl.noaa.gov/nesii"
     session.insert(i)
 
     # DOE.
     i = models.Institute()
-    i.Name = "DOE"
-    i.LongName = "Department of Energy"
-    i.CountryCode = "US"
-    i.URL = "http://energy.gov"
+    i.Name = u"DOE"
+    i.LongName = u"Department of Energy"
+    i.CountryCode = u"US"
+    i.URL = u"http://energy.gov"
     session.insert(i)

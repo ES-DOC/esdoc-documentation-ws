@@ -12,7 +12,7 @@ from esdoc_api.db import dao
 
 
 
-def execute(uid, version):
+def main(uid, version):
 	"""Executes the uningest process for a single document.
 
     :param str|uuid.UUID uid: Document unique identifier.

@@ -81,7 +81,7 @@ class Node(Entity):
     )
 
     # Foreign keys.
-    project_id = create_fk('vocab.tblProject.ID', required=True, default=1)
+    project_id = create_fk('vocab.tbl_project.ID', required=True, default=1)
 
     # Field set.
     type_of = Column(NodeTypeEnum, nullable=False)

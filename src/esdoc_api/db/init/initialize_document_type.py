@@ -12,7 +12,6 @@ from esdoc_api.db import dao, models, session
 
 
 
-
 # CIM v1 type keys.
 _TYPE_KEY_DATA_OBJECT = 'cim.1.data.DataObject'
 _TYPE_KEY_DOCUMENT_SET = 'cim.1.misc.DocumentSet'
@@ -84,8 +83,8 @@ def execute():
         # Create.
         i = models.DocumentType()
         i.Ontology_ID = ontologies[ontology].ID
-        i.Key = type_key
-        i.DisplayName = _DISPLAY_NAMES[type_key]
+        i.Key = unicode(type_key)
+        i.DisplayName = unicode(_DISPLAY_NAMES[type_key])
         i.SearchTarget = type_key in _SEARCH_TYPES
 
         # Persist.

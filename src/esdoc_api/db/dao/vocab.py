@@ -18,6 +18,7 @@ from esdoc_api.db.models import (
     Document,
     DocumentLanguage,
     DocumentOntology,
+    Project
 )
 
 
@@ -26,7 +27,8 @@ from esdoc_api.db.models import (
 __all__ = [
     'get_doc_language',
     'get_doc_ontology',
-    'get_project_institute_counts'
+    'get_project_institute_counts',
+    'create_project'
 ]
 
 
@@ -47,10 +49,11 @@ def get_doc_ontology(name, version=None):
     if version is not None:
         name += '.'
         name += str(version)
+    name = unicode(name).lower()
 
     qry = session.query(DocumentOntology)
 
-    qry = qry.filter(DocumentOntology.Name==name.lower())
+    qry = qry.filter(DocumentOntology.Name==name)
 
     return qry.first()
 
@@ -70,9 +73,10 @@ def get_doc_language(code=None):
     """
     if code is None:
         code = pyesdoc.ESDOC_DEFAULT_LANGUAGE
+    code = unicode(code).lower()
 
     return get_by_facet(DocumentLanguage,
-                        DocumentLanguage.Code==code.lower())
+                        DocumentLanguage.Code==code)
 
 
 def get_project_institute_counts():
@@ -90,3 +94,39 @@ def get_project_institute_counts():
     qry = qry.group_by(Document.Institute_ID)
 
     return qry.all()
+
+
+def create_project(name, description, homepage):
+    """Creates & returns a project instance.
+
+    :param str name: Project name.
+    :param str description: Project description.
+    :param str homepage: Project home page.
+
+    :returns: Newly created project instance.
+    :rtype: db.models.Project
+
+    """
+    def _parse_param(param_val, param_name):
+        """Parses an input parameter.
+
+        """
+        if param_val is None:
+            raise ValueError(param_name)
+        param_val = unicode(param_val).strip()
+        if not param_val:
+            raise ValueError(param_name)
+        return param_val
+
+    # Parse input params.
+    name = _parse_param(name, 'name')
+    description = _parse_param(description, 'description')
+    homepage = _parse_param(homepage, 'homepage')
+
+    # Instantiate new project.
+    instance = Project()
+    instance.Name =  name
+    instance.Description =  description
+    instance.URL =  homepage
+
+    return instance

@@ -20,24 +20,21 @@ def execute(ctx):
     :param object ctx: Document processing context information.
 
     """
-    # Unpack helper vars.
-    doc = ctx.doc
-
     # Instantiate.
-    idx = models.Document()
-    idx.Institute_ID = cache.get_institute_id(doc.meta.institute)
-    idx.Name = doc.ext.display_name
-    idx.Project_ID = cache.get_project_id(doc.meta.project)
-    idx.Source_Key = doc.meta.source_key
-    idx.Type = doc.meta.type
-    idx.UID = unicode(doc.meta.id)
-    idx.Version = doc.meta.version
+    instance = models.Document()
+    instance.Institute_ID = cache.get_institute_id(ctx.doc.meta.institute)
+    instance.Name = unicode(ctx.doc.ext.display_name)
+    instance.Project_ID = cache.get_project_id(ctx.doc.meta.project)
+    instance.Source_Key = unicode(ctx.doc.meta.source_key)
+    instance.Type = unicode(ctx.doc.meta.type)
+    instance.UID = unicode(ctx.doc.meta.id)
+    instance.Version = ctx.doc.meta.version
 
-    # Insert.
+    # Persist.
     try:
-        session.insert(idx)
+        session.insert(instance)
     except sqlalchemy.exc.IntegrityError:
         session.rollback()
         raise StopIteration("Document already ingested")
     else:
-        ctx.primary = idx
+        ctx.primary = instance

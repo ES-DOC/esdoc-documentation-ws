@@ -21,7 +21,7 @@ def execute():
     for encoding in (pyesdoc.ESDOC_ENCODINGS + pyesdoc.ESDOC_ENCODINGS_CUSTOM):
         # Create.
         i = models.DocumentEncoding()
-        i.Encoding = encoding
+        i.Encoding = unicode(encoding)
 
         # Persist.
         session.insert(i)
