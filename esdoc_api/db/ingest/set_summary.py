@@ -12,6 +12,7 @@ import sqlalchemy
 
 import pyesdoc
 from pyesdoc.ontologies import cim
+from pyesdoc.utils.convert import str_to_unicode
 
 from esdoc_api.db import cache, models, session
 
@@ -41,10 +42,11 @@ def execute(ctx):
     """
     # Initialise.
     idx = models.DocumentSummary()
-    idx.Description = unicode(ctx.doc.ext.description)
+    idx.Description = str_to_unicode(ctx.doc.ext.description)
     idx.Document_ID = ctx.primary.ID
     idx.Language_ID = cache.get_id(models.DocumentLanguage,
                                    pyesdoc.ESDOC_DEFAULT_LANGUAGE)
+
 
     # Set fields.
     fields = [f for f in ctx.doc.ext.summary_fields if f is not None]
@@ -66,3 +68,4 @@ def execute(ctx):
         session.insert(idx)
     except sqlalchemy.exc.IntegrityError:
         session.rollback()
+

@@ -4,49 +4,55 @@
    :copyright: Copyright "Jul 26, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Encapsulates DCMIP-2012 file id handling.
+   :synopsis: Encapsulates DCMIP-2012 dataset id handling.
 
 .. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
+from esdoc_api import db
 
-def is_valid(file_id):
-    """Validates a DCMIP-2012 file id.
 
-    :param str file_id: A DCMIP-2012 file id.
+
+def is_valid(dataset_id):
+    """Validates a DCMIP-2012 dataset id.
+
+    :param str dataset_id: A DCMIP-2012 dataset id.
 
     :returns: A flag indicating whether the id is valid or not.
     :rtype: boolean
 
     """
-    if not file_id or not file_id.strip():
+    if not dataset_id or not dataset_id.strip():
         return False
     else:
-        return False if len(file_id.strip().split('.')) < 1 else True
+        return False if len(dataset_id.strip().split('.')) < 2 else True
 
 
-def get_parsed(file_id):
-    """Returns a parsed a DCMIP-2012 file id.
+def get_parsed(dataset_id):
+    """Returns a parsed a DCMIP-2012 dataset id.
 
-    :param str file_id: DCMIP-2012 file id.
+    :param str dataset_id: DCMIP-2012 dataset id.
 
-    :returns: A parsed DCMIP-2012 file id.
+    :returns: A parsed DCMIP-2012 dataset id.
     :rtype: object
 
     """
 
-    class FileID(object):
+    class DatasetID(object):
         def __init__(self):
-            self.id = file_id.upper()
-            self.drs = self.id.split('.')
-            self.model = self.drs[0]
+            self.dataset_id = dataset_id.upper()
+            self.drs = self.dataset_id.split('.')
+            self.project = self.drs[0]
+            self.model = self.drs[1]
 
-    return FileID(id)
+    return DatasetID()
 
 
 def _yield_doc_by_name_criteria(parsed_id):
-    """Yeilds document by name search criteria."""
+    """Yeilds document by name search criteria.
+
+    """
     yield 'cim.1.software.modelcomponent', parsed_id.model
 
 
@@ -61,4 +67,4 @@ def do_search(project_id, parsed_id):
 
     """
     for doc_type, doc_name in _yield_doc_by_name_criteria(parsed_id):
-        yield dao.get_document_by_name(project_id, doc_type, doc_name)
+        yield db.dao.get_document_by_name(project_id, doc_type, doc_name)

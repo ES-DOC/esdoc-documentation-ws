@@ -38,3 +38,4 @@ def execute(ctx):
         raise StopIteration("Document already ingested")
     else:
         ctx.primary = instance
+

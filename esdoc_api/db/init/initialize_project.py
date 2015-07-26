@@ -62,3 +62,10 @@ def execute():
     i.Description = u"Downscaling Metadata"
     i.URL = u"https://www.earthsystemcog.org/projects/downscalingmetadata/"
     session.insert(i)
+
+    # ES-FDL
+    i = models.Project()
+    i.Name = u"ES-FDL"
+    i.Description = u"Earth System Framework Description Lanaguage"
+    i.URL = u"https://earthsystemcog.org/projects/es-fdl"
+    session.insert(i)

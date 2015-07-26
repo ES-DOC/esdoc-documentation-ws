@@ -152,7 +152,7 @@ def _yield_documents(cfg):
 
     """
     yielded = 0
-    for file_ in archive.yield_files(cfg.project, cfg.source, cfg.type):
+    for file_ in archive.yield_files(cfg.project, cfg.source, cfg.type if cfg.type else None):
         yielded += 1
         yield _DocumentProcessingInfo(file_, yielded, cfg.reset)
         if cfg.throttle and cfg.throttle == yielded:

@@ -26,3 +26,5 @@ def execute(ctx):
     if doc:
         dao.delete_document(doc.ID)
         session.commit()
+
+

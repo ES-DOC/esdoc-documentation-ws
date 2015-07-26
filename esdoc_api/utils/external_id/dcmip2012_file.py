@@ -4,7 +4,7 @@
    :copyright: Copyright "Jul 26, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Encapsulates DCMIP-2012 dataset id handling.
+   :synopsis: Encapsulates DCMIP-2012 file id handling.
 
 .. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
@@ -14,39 +14,37 @@ from esdoc_api import db
 
 
 
-def is_valid(dataset_id):
-    """Validates a DCMIP-2012 dataset id.
+def is_valid(file_id):
+    """Validates a DCMIP-2012 file id.
 
-    :param str dataset_id: A DCMIP-2012 dataset id.
+    :param str file_id: A DCMIP-2012 file id.
 
     :returns: A flag indicating whether the id is valid or not.
     :rtype: boolean
 
     """
-    if not dataset_id or not dataset_id.strip():
+    if not file_id or not file_id.strip():
         return False
     else:
-        return False if len(dataset_id.strip().split('.')) < 2 else True
+        return False if len(file_id.strip().split('.')) < 1 else True
 
 
-def get_parsed(dataset_id):
-    """Returns a parsed a DCMIP-2012 dataset id.
+def get_parsed(file_id):
+    """Returns a parsed a DCMIP-2012 file id.
 
-    :param str dataset_id: DCMIP-2012 dataset id.
+    :param str file_id: DCMIP-2012 file id.
 
-    :returns: A parsed DCMIP-2012 dataset id.
+    :returns: A parsed DCMIP-2012 file id.
     :rtype: object
 
     """
-
-    class DatasetID(object):
+    class FileID(object):
         def __init__(self):
-            self.dataset_id = dataset_id.upper()
-            self.drs = self.dataset_id.split('.')
-            self.project = self.drs[0]
-            self.model = self.drs[1]
+            self.id = file_id.upper()
+            self.drs = self.id.split('.')
+            self.model = self.drs[0]
 
-    return DatasetID()
+    return FileID()
 
 
 def _yield_doc_by_name_criteria(parsed_id):
