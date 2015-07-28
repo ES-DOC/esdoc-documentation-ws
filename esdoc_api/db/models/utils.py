@@ -182,7 +182,11 @@ class EntityConvertor(object):
                 result[key] = value
 
             # Allow entity to perform custom formatting.
-            if hasattr(entity, 'format_dict'):
+            try:
+                entity.format_dict
+            except AttributeError:
+                pass
+            else:
                 entity.format_dict(result, key_formatter, json_formatting)
 
             return result
