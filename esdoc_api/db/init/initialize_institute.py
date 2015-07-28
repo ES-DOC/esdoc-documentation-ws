@@ -182,6 +182,14 @@ def execute():
     i.URL = u"https://gmao.gsfc.nasa.gov/"
     session.insert(i)
 
+    # NOAA.
+    i = models.Institute()
+    i.Name = u"NOAA"
+    i.LongName = u"National Oceanic and Atmospheric Administration"
+    i.CountryCode = u"US"
+    i.URL = u"http://www.noaa.gov/"
+    session.insert(i)
+
     # NOAA-GFDL.
     i = models.Institute()
     i.Name = u"NOAA-GFDL"

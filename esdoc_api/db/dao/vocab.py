@@ -14,23 +14,24 @@ import pyesdoc
 
 from esdoc_api.db import session
 from esdoc_api.db.dao.core import get_by_facet
-from esdoc_api.db.models import (
-    Document,
-    DocumentLanguage,
-    DocumentOntology,
-    Project
-)
+from esdoc_api.db.models import Document
+from esdoc_api.db.models import DocumentLanguage
+from esdoc_api.db.models import DocumentOntology
+from esdoc_api.db.models import Institute
+from esdoc_api.db.models import Project
 
 
 
-# Module exports.
-__all__ = [
-    'get_doc_language',
-    'get_doc_ontology',
-    'get_project_institute_counts',
-    'create_project'
-]
+def _parse_param(param_val, param_name):
+    """Parses an input parameter.
 
+    """
+    if param_val is None:
+        raise ValueError(param_name)
+    param_val = unicode(param_val).strip()
+    if not param_val:
+        raise ValueError(param_name)
+    return param_val
 
 
 def get_doc_ontology(name, version=None):
@@ -96,6 +97,27 @@ def get_project_institute_counts():
     return qry.all()
 
 
+def create_institute(name, long_name, country_code, homepage):
+    """Creates & returns an institute instance.
+
+    :param str name: Institute name.
+    :param str long_name: Institute long name.
+    :param str country_code: Institute country code.
+    :param str homepage: Institute home page.
+
+    :returns: Newly created institute instance.
+    :rtype: db.models.Institute
+
+    """
+    instance = Institute()
+    instance.CountryCode = _parse_param(country_code, 'country_code')
+    instance.LongName =  _parse_param(long_name, 'long_name')
+    instance.Name =  _parse_param(name, 'name')
+    instance.URL =  _parse_param(homepage, 'homepage')
+
+    return instance
+
+
 def create_project(name, description, homepage):
     """Creates & returns a project instance.
 
@@ -107,26 +129,9 @@ def create_project(name, description, homepage):
     :rtype: db.models.Project
 
     """
-    def _parse_param(param_val, param_name):
-        """Parses an input parameter.
-
-        """
-        if param_val is None:
-            raise ValueError(param_name)
-        param_val = unicode(param_val).strip()
-        if not param_val:
-            raise ValueError(param_name)
-        return param_val
-
-    # Parse input params.
-    name = _parse_param(name, 'name')
-    description = _parse_param(description, 'description')
-    homepage = _parse_param(homepage, 'homepage')
-
-    # Instantiate new project.
     instance = Project()
-    instance.Name =  name
-    instance.Description =  description
-    instance.URL =  homepage
+    instance.Name =  _parse_param(name, 'name')
+    instance.Description =  _parse_param(description, 'description')
+    instance.URL =  _parse_param(homepage, 'homepage')
 
     return instance
