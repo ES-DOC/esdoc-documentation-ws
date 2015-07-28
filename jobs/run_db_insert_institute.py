@@ -16,7 +16,6 @@ def _main():
     """Main entry point.
 
     """
-    print options.name, options.description, options.country, options.homepage
     # Start session.
     db.session.start(config.db)
 
