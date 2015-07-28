@@ -22,9 +22,7 @@ def _main():
 
     # Insert into db.
     instance = db.dao.create_institute(
-        "NOAA", "National Oceanic and Atmosphere Administration", "US", "http://www.noaa.gov/")
-    # instance = db.dao.create_institute(
-    #     options.name, options.description, options.country, options.homepage)
+        options.name, options.description, options.country, options.homepage)
     db.session.insert(instance)
 
     # End session.
