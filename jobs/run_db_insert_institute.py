@@ -7,8 +7,8 @@ from esdoc_api import db, config
 
 # Setup command line options.
 define("name", help="Institute name", type=unicode)
-define("long_name", help="Institute long name", type=unicode)
-define("country_code", help="Institute country code", type=unicode)
+define("description", help="Institute long name", type=unicode)
+define("country", help="Institute country code", type=unicode)
 define("homepage", help="Institute home page", type=unicode)
 
 
@@ -21,7 +21,7 @@ def _main():
 
     # Insert into db.
     instance = db.dao.create_institute(
-        options.name, options.long_name, options.country_code, options.homepage)
+        options.name, options.description, options.country, options.homepage)
     db.session.insert(instance)
 
     # End session.
