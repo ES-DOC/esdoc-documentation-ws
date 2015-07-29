@@ -188,11 +188,10 @@ def main():
     """Ingests files from archive.
 
     """
-    cfg = config.ingestion
     archive.delete_error_files()
-    if cfg.parallelize:
+    if config.ingestion.parallelize:
         pool = Pool()
-        pool.map(_process, _yield_documents(cfg))
+        pool.map(_process, _yield_documents(config.ingestion))
     else:
-        for ctx in _yield_documents(cfg):
+        for ctx in _yield_documents(config.ingestion):
             _process(ctx)
