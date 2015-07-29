@@ -21,6 +21,7 @@ from esdoc_api.db.ingest import set_external_id
 from esdoc_api.db.ingest import set_primary
 from esdoc_api.db.ingest import set_summary
 from esdoc_api.db.ingest import validate
+from esdoc_api.utils import config
 from esdoc_api.utils import runtime as rt
 
 
@@ -187,7 +188,7 @@ def main():
     """Ingests files from archive.
 
     """
-    cfg = pyesdoc.config.archive.ingestion
+    cfg = config.ingestion
     archive.delete_error_files()
     if cfg.parallelize:
         pool = Pool()
