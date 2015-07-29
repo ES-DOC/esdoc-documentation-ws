@@ -24,12 +24,11 @@ class HeartbeatRequestHandler(tornado.web.RequestHandler):
 
     """
     def get(self):
-        """HTTP GET handler."""
-        msg = "ES-DOC web service API is operational @ {0}"
-        msg = msg.format(datetime.datetime.now())
+        """HTTP GET handler.
 
+        """
+        self.output_encoding = 'json'
         self.output = {
-            "message": msg
+            "message": "ES-DOC web service API is operational @ {}".format(datetime.datetime.now())
         }
-
         utils.h.invoke(self)
