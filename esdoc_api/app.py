@@ -10,7 +10,6 @@
 
 
 """
-# -*- coding: utf-8 -*-
 import json
 
 import tornado.web
@@ -18,7 +17,8 @@ import tornado.web
 import pyesdoc
 
 from esdoc_api import handlers
-from esdoc_api.utils import config, convert
+from esdoc_api.utils import config
+from esdoc_api.utils import convert
 from esdoc_api.utils.runtime import log_api as log
 
 
@@ -31,7 +31,7 @@ def _get_endpoints():
     """Returns map of application endpoints to handlers.
 
     """
-    endpoints = (
+    endpoints = {
         (r'/2/document/create', handlers.publishing.DocumentCreateRequestHandler),
         (r'/2/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
         (r'/2/document/retrieve', handlers.publishing.DocumentRetrieveRequestHandler),
@@ -39,7 +39,7 @@ def _get_endpoints():
         (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
         (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),
         (r'/heartbeat', handlers.ops.HeartbeatRequestHandler),
-    )
+    }
 
     log("Endpoint to handler mappings:")
     for url, handler in endpoints:
@@ -73,7 +73,6 @@ def _run(app):
     app.listen(config.port)
     log("Ready")
     tornado.ioloop.IOLoop.instance().start()
-
 
 
 def run():
