@@ -62,17 +62,8 @@ def _get_app():
 
     """
     return tornado.web.Application(_get_endpoints(),
-                                   debug=(config.mode=='dev'),
+                                   debug=(config.mode == 'dev'),
                                    **_get_settings())
-
-
-def _run(app):
-    """Runs application instance in an ioloop.
-
-    """
-    app.listen(config.port)
-    log("Ready")
-    tornado.ioloop.IOLoop.instance().start()
 
 
 def run():
@@ -81,7 +72,14 @@ def run():
     """
     log("Initializing")
 
-    _run(_get_app())
+    # Initialise archive usage.
+    pyesdoc.archive.init()
+
+    # Run web-service.
+    app = _get_app()
+    app.listen(config.port)
+    log("Ready")
+    tornado.ioloop.IOLoop.instance().start()
 
 
 def stop():
