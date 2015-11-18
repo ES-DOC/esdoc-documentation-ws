@@ -188,6 +188,7 @@ def main():
     """Ingests files from archive.
 
     """
+    archive.init()
     archive.delete_error_files()
     if config.ingestion.parallelize:
         pool = Pool()
