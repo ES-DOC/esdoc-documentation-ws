@@ -29,13 +29,17 @@ from esdoc_api.handlers.search import (
 # Default document encoding.
 _DEFAULT_ENCODING = pyesdoc.ESDOC_ENCODING_JSON
 
-
 # Map of search types to sub-handlers.
 _SUB_HANDLERS = {
     "drs": document_by_drs,
     "externalid": document_by_external_id,
     "id": document_by_id,
     "name": document_by_name,
+}
+
+# Set of child document types to be reloaded from archive.
+_CHILD_DOC_RELOAD_TYPES = {
+    pyesdoc.ontologies.cim.v1.software.ModelComponent
 }
 
 
@@ -168,6 +172,23 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
                     self.docs.remove(doc)
 
 
+    def _reload_child_docs(self):
+        """Reloads child documents from archive.
+
+        """
+        reloadable = [d for d in self.child_docs if isinstance(d, tuple(_CHILD_DOC_RELOAD_TYPES))]
+        if not reloadable:
+            return
+
+        for doc in reloadable:
+            self.child_docs.remove(doc)
+            new_doc_version = doc.meta.version
+            while pyesdoc.archive.exists(doc.meta.id, new_doc_version):
+                new_doc_version += 1
+            new_doc = pyesdoc.archive.read(doc.meta.id, new_doc_version - 1)
+            self.child_docs.append(new_doc)
+
+
     def _set_docs_for_output(self):
         """Sets final collection to be encoded."""
         # Set target encoding.
@@ -235,6 +256,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
             self._read_docs_from_archive,
             self._set_child_docs,
             self._override_main_docs,
+            self._reload_child_docs,
             self._set_docs_for_output,
             self._encode_docs,
             self._set_response
