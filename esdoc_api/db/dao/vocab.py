@@ -97,7 +97,7 @@ def get_project_institute_counts():
     return qry.all()
 
 
-def create_institute(name, long_name, country_code, homepage):
+def create_institute(name, long_name=None, country_code=None, homepage=None):
     """Creates & returns an institute instance.
 
     :param str name: Institute name.
@@ -109,16 +109,23 @@ def create_institute(name, long_name, country_code, homepage):
     :rtype: db.models.Institute
 
     """
+    name = name.upper()
+    if not long_name:
+        long_name = name
+    if not country_code:
+        country_code = "--"
+
     instance = Institute()
     instance.CountryCode = _parse_param(country_code, 'country_code')
-    instance.LongName =  _parse_param(long_name, 'long_name')
-    instance.Name =  _parse_param(name, 'name')
-    instance.URL =  _parse_param(homepage, 'homepage')
+    instance.LongName = _parse_param(long_name, 'long_name')
+    instance.Name = _parse_param(name, 'name')
+    if homepage:
+        instance.URL = _parse_param(homepage, 'homepage')
 
     return instance
 
 
-def create_project(name, description, homepage):
+def create_project(name, description=None, homepage=None):
     """Creates & returns a project instance.
 
     :param str name: Project name.
@@ -129,9 +136,14 @@ def create_project(name, description, homepage):
     :rtype: db.models.Project
 
     """
+    name = name.upper()
+    if not description:
+        description = name
+
     instance = Project()
-    instance.Name =  _parse_param(name, 'name')
-    instance.Description =  _parse_param(description, 'description')
-    instance.URL =  _parse_param(homepage, 'homepage')
+    instance.Name = _parse_param(name, 'name')
+    instance.Description = _parse_param(description, 'description')
+    if homepage:
+        instance.URL =  _parse_param(homepage, 'homepage')
 
     return instance

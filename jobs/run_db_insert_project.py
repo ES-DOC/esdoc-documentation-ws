@@ -7,8 +7,6 @@ from esdoc_api import db, config
 
 # Setup command line options.
 define("name", help="Project name", type=unicode)
-define("description", help="Project description", type=unicode)
-define("homepage", help="Project home page", type=unicode)
 
 
 def _main():
@@ -19,7 +17,7 @@ def _main():
     db.session.start(config.db)
 
     # Insert into db.
-    instance = db.dao.create_project(options.name, options.description, options.homepage)
+    instance = db.dao.create_project(options.name)
     db.session.insert(instance)
 
     # End session.

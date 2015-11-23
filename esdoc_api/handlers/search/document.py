@@ -228,6 +228,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         # Multiple html documents - already wrapped by pyesdoc.
         elif encoding == pyesdoc.ESDOC_ENCODING_HTML:
             self.output = "<div>{0}</div>".format(self.docs[0])
+            # self.output = "<div>{0}</div>".format(self.docs)
 
         # Single document.
         elif len(self.docs) == 1:
