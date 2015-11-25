@@ -83,7 +83,6 @@ class Document(Entity):
     UID = Column(Unicode(63), nullable=False, default=uuid.uuid4())
     Version = Column(Integer, nullable=False, default=1)
     IngestDate =  Column(DateTime, default=datetime.datetime.now())
-
     IsLatest = Column(Boolean, nullable=False, default=False)
 
     def __init__(self):
