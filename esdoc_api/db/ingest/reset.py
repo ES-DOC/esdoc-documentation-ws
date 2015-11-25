@@ -14,17 +14,15 @@ from esdoc_api.db import session
 
 
 def execute(ctx):
-    """Resets document ingestion.
+    """Forces document ingestion.
 
     :param object ctx: Document processing context information.
 
     """
-    if not ctx.do_reset:
+    if not ctx.force:
         return
 
     doc = dao.get_document(ctx.doc.meta.id, ctx.doc.meta.version)
     if doc:
         dao.delete_document(doc.ID)
         session.commit()
-
-

@@ -47,14 +47,14 @@ class _DocumentProcessingInfo(object):
     """Encapsulates document processing information.
 
     """
-    def __init__(self, file_, index, do_reset):
+    def __init__(self, file_, index, force):
         """Object constructor.
 
         """
         self.file = file_
         self.error = None
         self.index = index
-        self.do_reset = do_reset
+        self.force = force
 
 
     def __repr__(self):
@@ -155,7 +155,7 @@ def _yield_documents(cfg):
     yielded = 0
     for file_ in archive.yield_files(cfg.project, cfg.source, cfg.type if cfg.type else None):
         yielded += 1
-        yield _DocumentProcessingInfo(file_, yielded, cfg.reset)
+        yield _DocumentProcessingInfo(file_, yielded, cfg.force)
         if cfg.throttle and cfg.throttle == yielded:
             break
 

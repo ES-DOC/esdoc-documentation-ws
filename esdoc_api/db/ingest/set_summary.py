@@ -44,9 +44,7 @@ def execute(ctx):
     idx = models.DocumentSummary()
     idx.Description = str_to_unicode(ctx.doc.ext.description)
     idx.Document_ID = ctx.primary.ID
-    idx.Language_ID = cache.get_id(models.DocumentLanguage,
-                                   pyesdoc.ESDOC_DEFAULT_LANGUAGE)
-
+    idx.Language_ID = cache.get_id(models.DocumentLanguage, pyesdoc.ESDOC_DEFAULT_LANGUAGE)
 
     # Set fields.
     fields = [f for f in ctx.doc.ext.summary_fields if f is not None]
@@ -60,8 +58,12 @@ def execute(ctx):
             setattr(idx, 'Field_0' + str(index - 1), field)
 
     # Invoke parser if supported.
-    if type(ctx.doc) in _PARSERS:
-        _PARSERS[type(ctx.doc)](idx, ctx.doc)
+    try:
+        parser = _PARSERS[type(ctx.doc)]
+    except KeyError:
+        pass
+    else:
+        parser(idx, ctx.doc)
 
     # Insert.
     try:
