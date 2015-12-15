@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: utils.py
-   :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Domain model utility classes and functions.

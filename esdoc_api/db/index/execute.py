@@ -1,7 +1,6 @@
 """
 .. module:: esdoc_api.db.index.execute.py
 
-   :copyright: @2013 Earth System Documentation (http://es-doc.org)
    :license: GPL / CeCILL
    :platform: Unix, Windows
    :synopsis: Indexes archived documents.

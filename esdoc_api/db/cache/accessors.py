@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: accessors.py
-   :copyright: Copyright "Jun 12, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Cache accessor functions.

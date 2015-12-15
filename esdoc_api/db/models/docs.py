@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: docs.py
-   :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: ES-DOC API db models - docs domain partition.

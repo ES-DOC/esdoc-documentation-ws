@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: __init__.py
-   :copyright: Copyright "Jun 29, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Set of database models supported by ES-DOC API.

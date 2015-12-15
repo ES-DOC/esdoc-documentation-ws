@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: db.utils.py
-   :copyright: Copyright "Jul 2, 2013", Earth System models.Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Database utility functions.

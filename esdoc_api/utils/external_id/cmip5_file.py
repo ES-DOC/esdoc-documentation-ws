@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: cmip5_file.py
-   :copyright: Copyright "Jul 26, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: A CMIP5 file id handler.

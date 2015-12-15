@@ -2,7 +2,7 @@
 
 """
 .. module:: url_parser.py
-   :copyright: Copyright "Jul 31, 2013", Earth System Documentation
+
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Set of url parsing related utility functions.

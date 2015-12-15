@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: cmip5_dataset.py
-   :copyright: Copyright "Jul 26, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: A CMIP5 dataset id handler.

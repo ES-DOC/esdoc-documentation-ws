@@ -2,7 +2,6 @@
 
 """
 .. module:: handlers.search.summary_setup.py
-   :copyright: Copyright "Feb 7, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Document summary search setup request handler.

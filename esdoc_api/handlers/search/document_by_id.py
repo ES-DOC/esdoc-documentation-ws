@@ -2,7 +2,6 @@
 
 """
 .. module:: handlers.search.document_by_id.py
-   :copyright: Copyright "Feb 7, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Document by id search request handler.

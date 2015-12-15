@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: dcmip2012_dataset.py
-   :copyright: Copyright "Jul 26, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Encapsulates DCMIP-2012 dataset id handling.

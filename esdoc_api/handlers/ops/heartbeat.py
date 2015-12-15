@@ -2,7 +2,6 @@
 
 """
 .. module:: handlers.ops.heartbeat.py
-   :copyright: Copyright "Feb 7, 2013", Earth System Documentation
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Operations heartbeat request handler.
