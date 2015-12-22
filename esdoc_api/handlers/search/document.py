@@ -189,7 +189,9 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
 
     def _set_docs_for_output(self):
-        """Sets final collection to be encoded."""
+        """Sets final collection to be encoded.
+
+        """
         # Set target encoding.
         encoding = self.encoding.Encoding
 
@@ -203,14 +205,11 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         """Encodes documents loaded from pyesdoc archive.
 
         """
-        # Set target encoding.
+        # N.B. Tornado auto-encodes dict's to json.
         if self.encoding.Encoding != pyesdoc.ESDOC_ENCODING_JSON:
-            encoding = self.encoding.Encoding
+            self.docs =  pyesdoc.encode(self.docs, self.encoding.Encoding)
         else:
-            # N.B. Tornado auto-encodes dict's to json.
-            encoding = pyesdoc.ESDOC_ENCODING_DICT
-
-        self.docs =  pyesdoc.encode(self.docs, encoding)
+            self.docs =  pyesdoc.encode(self.docs, pyesdoc.ESDOC_ENCODING_DICT)
 
 
     def _set_response(self):
@@ -219,6 +218,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         """
         # Set encoding.
         self.output_encoding = encoding = self.encoding.Encoding
+
 
         # No documents.
         if not len(self.docs):
@@ -242,6 +242,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         # Multiple xml documents - create wrapper.
         elif encoding == pyesdoc.ESDOC_ENCODING_XML:
             self.output = "<documents>{0}</documents>".format("".join(self.docs))
+
 
 
     def get(self):
