@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: run_db_uningest.py
+.. module:: run_db_flush.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Uningests documents from database.
+   :synopsis: Deletes (flushes) documents from database.
 
 .. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
@@ -82,10 +82,14 @@ def _main(project_code, source):
     """Main entry point.
 
     """
+    if source == "*" or len(source) == 0:
+    	source = None
+
     session.start(config.db)
     try:
         _execute(project_code, source)
     except Exception as err:
+    	print err
         session.rollback()
         rt.log_db_error(err)
     else:
@@ -98,3 +102,4 @@ def _main(project_code, source):
 if __name__ == '__main__':
     args = _parser.parse_args()
     _main(args.project, args.source)
+
