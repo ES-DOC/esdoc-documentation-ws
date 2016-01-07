@@ -54,7 +54,8 @@ def _execute(project_code, source):
     # Map project code to project entry in db.
     project = dao.get_by_name(Project, project_code)
     if project is None:
-        raise ValueError("Project code is unrecognized: {}".format(project_code))
+        rt.log("Project code [{}] is unsupported".format(project_code))
+        return
 
     # Build queries.
     qry1 = session.query(Document.ID)

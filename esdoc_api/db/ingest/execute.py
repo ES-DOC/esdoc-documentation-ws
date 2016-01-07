@@ -14,7 +14,6 @@ from multiprocessing import Pool
 import pyesdoc
 from pyesdoc import archive
 
-from esdoc_api.db.ingest import reset
 from esdoc_api.db.ingest import set_drs
 from esdoc_api.db.ingest import set_is_latest
 from esdoc_api.db.ingest import set_external_id
@@ -47,14 +46,13 @@ class _DocumentProcessingInfo(object):
     """Encapsulates document processing information.
 
     """
-    def __init__(self, file_, index, force):
+    def __init__(self, file_, index):
         """Object constructor.
 
         """
         self.file = file_
         self.error = None
         self.index = index
-        self.force = force
 
 
     def __repr__(self):
@@ -153,11 +151,13 @@ def _yield_documents(cfg):
 
     """
     yielded = 0
-    for file_ in archive.yield_files(cfg.project, cfg.source, cfg.type if cfg.type else None):
-        yielded += 1
-        yield _DocumentProcessingInfo(file_, yielded, cfg.force)
-        if cfg.throttle and cfg.throttle == yielded:
-            break
+    for project in cfg.projects.split(","):
+        project = project.strip().lower()
+        for file_ in archive.yield_files(project, "*", None):
+            yielded += 1
+            yield _DocumentProcessingInfo(file_, yielded)
+            if cfg.throttle and cfg.throttle == yielded:
+                break
 
 
 def _process(ctx):
@@ -166,7 +166,6 @@ def _process(ctx):
     """
     tasks = (
         _set_document,
-        reset.execute,
         validate.execute,
         set_primary.execute,
         set_is_latest.execute,
