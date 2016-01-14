@@ -53,7 +53,7 @@ class API_Exception(Exception):
 def _get_mime_type(encoding):
     """Maps and returns an encoding to an HTTP mime type."""
     encoding = encoding.lower()
-    if encoding in ('csv', 'json', 'xml'):
+    if encoding in ('csv', 'json', 'pdf', 'xml'):
         return 'application/{0}; charset=utf-8'.format(encoding)
     elif encoding == 'html':
         return 'text/html; charset=utf-8'

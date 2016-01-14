@@ -158,6 +158,7 @@ class DocumentType(Entity):
     Key = Column(Unicode(255), nullable=False)
     DisplayName = Column(Unicode(63), nullable=False)
     IsSearchTarget = Column(Boolean, nullable=False, default=True)
+    IsPdfTarget = Column(Boolean, nullable=False, default=True)
 
 
     @property

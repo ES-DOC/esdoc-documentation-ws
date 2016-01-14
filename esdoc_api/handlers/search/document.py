@@ -103,7 +103,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         db.cache.load()
 
 
-    def _parse_params_default(self):
+    def _parse_default_params(self):
         """Parses url parameters common to all search types.
 
         """
@@ -118,7 +118,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         self.sub_handler = _SUB_HANDLERS[self.search_type]
 
 
-    def _parse_params_custom(self):
+    def _parse_custom_params(self):
         """Parses search type specific url parameters.
 
         """
@@ -136,7 +136,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
             pass
 
 
-    def _do_search(self):
+    def _exec_search(self):
         """Performs document search against db.
 
         """
@@ -250,10 +250,10 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         utils.h.invoke(self, (
-            self._parse_params_default,
+            self._parse_default_params,
             self._set_sub_handler,
-            self._parse_params_custom,
-            self._do_search,
+            self._parse_custom_params,
+            self._exec_search,
             self._read_docs_from_archive,
             self._set_child_docs,
             self._override_main_docs,
