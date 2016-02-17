@@ -244,7 +244,6 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
             self.output = "<documents>{0}</documents>".format("".join(self.docs))
 
 
-
     def get(self):
         """HTTP GET handler.
 

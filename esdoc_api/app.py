@@ -37,6 +37,7 @@ def _get_endpoints():
         (r'/2/document/search', handlers.search.DocumentSearchRequestHandler),
         (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
         (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),
+        (r'/', handlers.ops.HeartbeatRequestHandler),
         (r'/heartbeat', handlers.ops.HeartbeatRequestHandler),
     }
 
