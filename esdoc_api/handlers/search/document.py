@@ -47,6 +47,10 @@ def _get_default_params():
 
     """
     return {
+        'client': {
+            'required': True,
+            'value_formatter': lambda v : v.lower()
+        },
         'encoding': {
             'required': True,
             'model_type': db.models.DocumentEncoding,
