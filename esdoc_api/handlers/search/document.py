@@ -26,7 +26,7 @@ from esdoc_api.handlers.search import (
 
 
 # Default document encoding.
-_DEFAULT_ENCODING = pyesdoc.ESDOC_ENCODING_JSON
+_DEFAULT_ENCODING = pyesdoc.ENCODING_JSON
 
 # Map of search types to sub-handlers.
 _SUB_HANDLERS = {
@@ -200,7 +200,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         encoding = self.encoding.Encoding
 
         # HTML documents require a sorted merge.
-        if encoding == pyesdoc.ESDOC_ENCODING_HTML:
+        if encoding == pyesdoc.ENCODING_HTML:
             self.docs = self.docs + self.child_docs
             self.docs = sorted(self.docs, key=lambda d: d.meta.sort_key)
 
@@ -210,10 +210,10 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         # N.B. Tornado auto-encodes dict's to json.
-        if self.encoding.Encoding != pyesdoc.ESDOC_ENCODING_JSON:
+        if self.encoding.Encoding != pyesdoc.ENCODING_JSON:
             self.docs =  pyesdoc.encode(self.docs, self.encoding.Encoding)
         else:
-            self.docs =  pyesdoc.encode(self.docs, pyesdoc.ESDOC_ENCODING_DICT)
+            self.docs =  pyesdoc.encode(self.docs, pyesdoc.ENCODING_DICT)
 
 
     def _set_response(self):
@@ -229,7 +229,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
             self.output = None
 
         # Multiple html documents - already wrapped by pyesdoc.
-        elif encoding == pyesdoc.ESDOC_ENCODING_HTML:
+        elif encoding == pyesdoc.ENCODING_HTML:
             self.output = "<div>{0}</div>".format(self.docs[0])
             # self.output = "<div>{0}</div>".format(self.docs)
 
@@ -238,13 +238,13 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
             self.output = self.docs[0]
 
         # Multiple json documents - create wrapper.
-        elif encoding == pyesdoc.ESDOC_ENCODING_JSON:
+        elif encoding == pyesdoc.ENCODING_JSON:
             self.output = {
                 'documents': self.docs
             }
 
         # Multiple xml documents - create wrapper.
-        elif encoding == pyesdoc.ESDOC_ENCODING_XML:
+        elif encoding == pyesdoc.ENCODING_XML:
             self.output = "<documents>{0}</documents>".format("".join(self.docs))
 
 

@@ -18,7 +18,7 @@ def execute():
     """Initializes collection of supported document encodings.
 
     """
-    for encoding in (pyesdoc.ESDOC_ENCODINGS + pyesdoc.ESDOC_ENCODINGS_CUSTOM):
+    for encoding in (pyesdoc.ENCODINGS + pyesdoc.ENCODINGS_CUSTOM):
         # Create.
         i = models.DocumentEncoding()
         i.Encoding = unicode(encoding)

@@ -73,7 +73,7 @@ def get_doc_language(code=None):
 
     """
     if code is None:
-        code = pyesdoc.ESDOC_DEFAULT_LANGUAGE
+        code = pyesdoc.DEFAULT_LANGUAGE
     code = unicode(code).lower()
 
     return get_by_facet(DocumentLanguage,

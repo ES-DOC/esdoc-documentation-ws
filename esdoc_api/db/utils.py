@@ -60,7 +60,7 @@ def create_doc_from_json(doc_json):
 
     """
     # Decode document from json.
-    doc = pyesdoc.decode(doc_json, pyesdoc.ESDOC_ENCODING_JSON)
+    doc = pyesdoc.decode(doc_json, pyesdoc.ENCODING_JSON)
     if doc is None:
         rt.raise_error("Document could not be deserialized")
 
@@ -82,7 +82,7 @@ def create_doc_from_json(doc_json):
         rt.raise_error("Language {0} is unsupported".format(doc.meta.language))
 
     # Derive encoding.
-    encoding = cache.get_doc_encoding(pyesdoc.ESDOC_ENCODING_JSON)
+    encoding = cache.get_doc_encoding(pyesdoc.ENCODING_JSON)
 
     # Derive ontology.
     ontology = get_doc_ontology(doc)
@@ -121,7 +121,7 @@ def update_doc_from_json(doc_json):
 
     """
     # Decode document from json.
-    doc = pyesdoc.decode(doc_json, pyesdoc.ESDOC_ENCODING_JSON)
+    doc = pyesdoc.decode(doc_json, pyesdoc.ENCODING_JSON)
     if doc is None:
         rt.raise_error("Document could not be deserialized")
 
@@ -139,7 +139,7 @@ def update_doc_from_json(doc_json):
         rt.raise_error("Language {0} is unsupported".format(doc.meta.language))
 
     # Derive encoding.
-    encoding = cache.get_doc_encoding(pyesdoc.ESDOC_ENCODING_JSON)
+    encoding = cache.get_doc_encoding(pyesdoc.ENCODING_JSON)
 
     # Derive ontology.
     ontology = get_doc_ontology(doc)
