@@ -174,7 +174,7 @@ def get_by_id(type, id):
     :rtype: Sub-class of db.models.Entity
 
     """
-    return get_by_facet(type, type.ID==id)
+    return get_by_facet(type, type.id==id)
 
 
 def get_by_name(type, name):
@@ -190,7 +190,7 @@ def get_by_name(type, name):
     :rtype: Sub-class of db.models.Entity
 
     """
-    return get_by_facet(type, sa.func.upper(type.Name)==name.upper())
+    return get_by_facet(type, sa.func.upper(type.name)==name.upper())
 
 
 def get_count(mtype, filter=None):
@@ -256,10 +256,10 @@ def delete_by_type(mtype, callback=None):
     models.assert_type(mtype)
 
     if callback is None:
-        delete_by_facet(mtype, mtype.ID>0)
+        delete_by_facet(mtype, mtype.id>0)
     else:
         for instance in get_all(mtype):
-            callback(instance.ID)
+            callback(instance.id)
 
 
 def delete_by_facet(type, filter):
@@ -293,7 +293,7 @@ def delete_by_id(type, id):
     :type id: int
 
     """
-    delete_by_facet(type, type.ID==id)
+    delete_by_facet(type, type.id==id)
 
 
 def delete_by_name(type, name):
@@ -306,4 +306,4 @@ def delete_by_name(type, name):
     :type name: str
 
     """
-    delete_by_facet(type, type.Name==name)
+    delete_by_facet(type, type.name==name)

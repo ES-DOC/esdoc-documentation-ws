@@ -70,7 +70,7 @@ def create_doc_from_json(doc_json):
         rt.raise_error("Project {0} is unsupported".format(doc.meta.project))
 
     # Verify document does not already exist.
-    if dao.get_document(doc.meta.id, doc.meta.version, project.ID) is not None:
+    if dao.get_document(doc.meta.id, doc.meta.version, project.id) is not None:
         rt.raise_error("Document already exists")
 
     # Derive institute.
@@ -103,10 +103,10 @@ def create_doc_from_json(doc_json):
 
     # Log.
     rt.log("CREATED DOC :: T={0} ID={1} UID={2} V={3}.".format(
-        document.Type, document.ID, document.UID, document.Version))
+        document.type, document.id, document.uid, document.version))
 
     return {
-        id : document.ID
+        id : document.id
     }
 
 
@@ -160,10 +160,10 @@ def update_doc_from_json(doc_json):
 
     # Log.
     rt.log("CREATED DOC :: T={0} ID={1} UID={2} V={3}.".format(
-        document.Type, document.ID, document.UID, document.Version))
+        document.type, document.id, document.uid, document.version))
 
     return {
-        id : document.ID
+        id : document.id
     }
 
 
@@ -191,17 +191,17 @@ def create_doc(doc, project, institute=None):
     # Instantiate & assign attributes.
     instance = dao.get_document(str(doc.meta.id),
                                 str(doc.meta.version),
-                                project.ID)
+                                project.id)
     if instance is None:
         instance = create(models.Document)
         instance.as_obj = doc
         if institute is not None:
-            instance.Institute_ID = institute.ID
-        instance.Name = get_doc_name(doc)
-        instance.Project_ID = project.ID
-        instance.Type = doc.type_key
-        instance.UID = str(doc.meta.id)
-        instance.Version = int(doc.meta.version)
+            instance.institute_id = institute.id
+        instance.name = get_doc_name(doc)
+        instance.project_id = project.id
+        instance.type = doc.type_key
+        instance.uid = str(doc.meta.id)
+        instance.version = int(doc.meta.version)
         set_doc_is_latest_flag(instance)
 
     return instance
@@ -218,11 +218,11 @@ def set_doc_is_latest_flag(document):
     rt.assert_var('document', document, models.Document)
 
     # Get all related documents and update IsLatest flag accordingly.
-    all = dao.get_document(document.UID, models.DOCUMENT_VERSION_ALL, document.Project_ID)
+    all = dao.get_document(document.uid, models.DOCUMENT_VERSION_ALL, document.project_id)
     for i in range(len(all)):
-        all[i].IsLatest = (i == 0)
-        if all[i].Version == document.Version:
-            document.IsLatest == all[i].IsLatest
+        all[i].is_latest = (i == 0)
+        if all[i].version == document.version:
+            document.is_latest == all[i].is_latest
 
 
 def create_doc_drs(document, keys):
@@ -246,17 +246,17 @@ def create_doc_drs(document, keys):
     path = _DRS_SPLIT.join(keys).upper()
 
     # Create (only if necessary).
-    instance = dao.get_document_drs(document.Project_ID, document.ID, path)
+    instance = dao.get_document_drs(document.project_id, document.id, path)
     if instance is None:
         instance = create(models.DocumentDRS)
-        instance.Document_ID = document.ID
-        instance.Path = path
-        instance.Project_ID = document.Project_ID
+        instance.document_id = document.id
+        instance.path = path
+        instance.project_id = document.project_id
         for i in range(len(keys)):
             if i > 7:
                 break
             elif keys[i] is not None:
-                setattr(instance, "Key_0" + str(i + 1), keys[i].upper())
+                setattr(instance, "key_0" + str(i + 1), keys[i].upper())
 
     return instance
 
@@ -280,18 +280,18 @@ def create_doc_external_ids(document, first_only=False):
     rt.assert_doc('document.as_obj', document.as_obj)
 
     for id in document.as_obj.meta.external_ids:
-        instance = dao.get_document_external_id(document.Project_ID,
-                                                document.ID,
+        instance = dao.get_document_external_id(document.project_id,
+                                                document.id,
                                                 id.value.upper())
         if instance is None:
             instance = create(models.DocumentExternalID)
-            instance.Project_ID = document.Project_ID
-            instance.Document_ID = document.ID
-            instance.ExternalID = id.value.upper()
+            instance.project_id = document.project_id
+            instance.document_id = document.id
+            instance.external_id = id.value.upper()
         if first_only:
             break
 
-    return dao.get_document_external_ids(document.ID, document.Project_ID)
+    return dao.get_document_external_ids(document.id, document.project_id)
 
 
 def create_doc_summary(document, language):
@@ -312,17 +312,17 @@ def create_doc_summary(document, language):
     rt.assert_var('language', language, models.DocumentLanguage)
 
     # Create.
-    instance = dao.get_document_summary(document.ID, language.ID)
+    instance = dao.get_document_summary(document.id, language.id)
     if instance is None:
         instance = create(models.DocumentSummary)
-        instance.Document_ID = document.ID
-        instance.Language_ID = language.ID
+        instance.document_id = document.id
+        instance.language_id = language.id
 
     # Set attributes derived from document.
     set_doc_summary(document.as_obj, instance)
 
     # Rebuild collection.
-    document.Summaries = [s for s in document.Summaries if s.ID != instance.ID]
+    document.Summaries = [s for s in document.Summaries if s.id != instance.id]
     document.Summaries.append(instance)
 
     return instance
@@ -346,7 +346,7 @@ def delete_doc(uid, version):
         docs = [docs]
 
     for doc in docs:
-        dao.delete_document(doc.ID)
+        dao.delete_document(doc.id)
 
     # Persist.
     session.commit()
@@ -396,14 +396,14 @@ def set_doc_summary(doc, summary):
     rt.assert_doc('doc', doc)
     rt.assert_var('summary', summary, models.DocumentSummary)
 
-    summary.Description = get_doc_description(doc)
+    summary.description = get_doc_description(doc)
     for i, field in enumerate(get_doc_summary_fields(doc)):
         if i == 0:
-            summary.ShortName = str(field)
+            summary.short_name = str(field)
         elif i == 1:
-            summary.LongName = str(field)
+            summary.long_name = str(field)
         else:
-            setattr(summary, 'Field_0' + str(i - 1), str(field))
+            setattr(summary, 'field_0' + str(i - 1), str(field))
 
 
 def write_doc_stats():
@@ -475,9 +475,9 @@ def create_node(type_of,
     def get_field_id(fld):
         """Parses a field representation and returns the field id."""
         if isinstance(fld, models.Node):
-            return u'n' + unicode(fld.ID)
+            return u'n' + unicode(fld.id)
         elif isinstance(fld, models.NodeField):
-            return unicode(fld.ID)
+            return unicode(fld.id)
         else:
             return unicode(fld)
 
@@ -508,7 +508,7 @@ def create_node(type_of,
 
     # Set sort value (if necessary).
     if sort_text is not None:
-        field = unicode(create_node_field(sort_text).ID)
+        field = unicode(create_node_field(sort_text).id)
         if node.sort_field != field:
             node.sort_field = field
             session.commit()
@@ -581,7 +581,7 @@ def create_node_combination(type_of, nodeset, project_id=1):
     for index, node in enumerate(nodeset):
         if index > 0:
             vector += u"-"
-        vector += unicode(node.ID)
+        vector += unicode(node.id)
 
     # Create.
     combo = models.NodeCombination()
@@ -612,7 +612,7 @@ def get_node_value_set(project_id):
     """
     def reduce_value(values, value):
         """The value reducer."""
-        return values + [value.ID, value.text]
+        return values + [value.id, value.text]
 
     return reduce(reduce_value, dao.get_node_value_set(project_id), [])
 
@@ -629,7 +629,7 @@ def get_node_set(project_id):
     def reduce_node(nodes, node):
         """The node reducer."""
         return nodes + [
-            node.ID,
+            node.id,
             models.NODE_TYPES.index(node.type_of),
             node.field
             ]
@@ -649,7 +649,7 @@ def get_node_field_set(project_id):
     def reduce_field(fields, field):
         """The node reducer."""
         return fields + [
-            field.ID,
+            field.id,
             field.text
             ]
 
@@ -672,4 +672,4 @@ def get_pyesdoc(document, ontology, encoding, language):
     :rtype: object
 
     """
-    return pyesdoc.archive.read(document.UID, document.Version)
+    return pyesdoc.archive.read(document.uid, document.version)

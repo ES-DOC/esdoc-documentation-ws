@@ -64,8 +64,7 @@ def _load_docs(ctx):
         """Gets documents filtered by document type.
 
         """
-        # return dao.get_document_by_type(ctx.project.ID, doc_type, False)[:1]
-        return dao.get_document_by_type(ctx.project.ID, doc_type, False)
+        return dao.get_document_by_type(ctx.project.id, doc_type, False)
 
 
     def decode(docs):
@@ -89,7 +88,7 @@ def _load_docs(ctx):
         for doc in get_docs(doc_type):
             key = key_formatter(doc)
             if key not in collection or \
-               doc.Version > collection[key].Version:
+               doc.version > collection[key].version:
                 collection[key] = doc
 
         return decode(collection.values())
@@ -99,8 +98,8 @@ def _load_docs(ctx):
         """Returns document key.
 
         """
-        institute = cache.get_name(models.Institute, doc.Institute_ID)
-        name = doc.Name.upper()
+        institute = cache.get_name(models.Institute, doc.institute_id)
+        name = doc.name.upper()
 
         return "{0}--{1}".format(institute, name)
 
@@ -114,7 +113,7 @@ def _index(ctx):
     def build(collection, indexer):
         """Builds index."""
         for doc in collection:
-            indexer(ctx.project.ID, doc)
+            indexer(ctx.project.id, doc)
 
     build(ctx.experiments, index_experiment)
     build(ctx.models, index_model)

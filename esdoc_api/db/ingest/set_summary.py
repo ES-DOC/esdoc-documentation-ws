@@ -23,9 +23,9 @@ def parse_cim_1_misc_documentset(idx, doc):
 
     """
     if doc.model:
-        idx.Model = unicode(doc.model.short_name)
+        idx.model = unicode(doc.model.short_name)
     if doc.experiment:
-        idx.Experiment = unicode(doc.experiment.short_name)
+        idx.experiment = unicode(doc.experiment.short_name)
 
 
 # Set of summary field parsers.
@@ -42,20 +42,20 @@ def execute(ctx):
     """
     # Initialise.
     idx = models.DocumentSummary()
-    idx.Description = str_to_unicode(ctx.doc.ext.description)
-    idx.Document_ID = ctx.primary.ID
-    idx.Language_ID = cache.get_id(models.DocumentLanguage, pyesdoc.DEFAULT_LANGUAGE)
+    idx.description = str_to_unicode(ctx.doc.ext.description)
+    idx.document_id = ctx.primary.id
+    idx.language_id = cache.get_id(models.DocumentLanguage, pyesdoc.DEFAULT_LANGUAGE)
 
     # Set fields.
     fields = [f for f in ctx.doc.ext.summary_fields if f is not None]
     for index, field in enumerate(fields):
         field = unicode(field)
         if index == 0:
-            idx.ShortName = field
+            idx.short_name = field
         elif index == 1:
-            idx.LongName = field
+            idx.long_name = field
         else:
-            setattr(idx, 'Field_0' + str(index - 1), field)
+            setattr(idx, 'field_0' + str(index - 1), field)
 
     # Invoke parser if supported.
     try:

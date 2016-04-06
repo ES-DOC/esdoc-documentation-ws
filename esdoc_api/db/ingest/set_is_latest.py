@@ -19,13 +19,13 @@ def execute(ctx):
 
     """
     # Get related documents (sorted by version).
-    documents = dao.get_document(ctx.primary.UID,
+    documents = dao.get_document(ctx.primary.uid,
                                  models.DOCUMENT_VERSION_ALL,
-                                 ctx.primary.Project_ID)
+                                 ctx.primary.project_id)
 
     # Uodate flag accordingly.
     for index, document in enumerate(documents):
-        document.IsLatest = (index == 0)
+        document.is_latest = (index == 0)
 
     # Commit changes.
     session.commit()

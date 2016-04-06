@@ -90,11 +90,11 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
     def _set_data(self):
         """Sets data returned from db."""
         self.data = db.dao.get_document_summaries(
-            self.project.ID,
-            self.document_type.Key,
+            self.project.id,
+            self.document_type.key,
             self.document_version,
-            self.document_language.ID,
-            self.institute.ID if self.institute else None,
+            self.document_language.id,
+            self.institute.id if self.institute else None,
             self.model if self.model else None,
             self.experiment if self.experiment else None)
 
@@ -102,8 +102,8 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
     def _set_total(self):
         """Sets total of all records returnable from db."""
         self.total = \
-            db.dao.get_document_type_count(self.project.ID,
-                                           self.document_type.Key)
+            db.dao.get_document_type_count(self.project.id,
+                                           self.document_type.key)
 
 
     def _set_output(self):
@@ -111,11 +111,12 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
         self.output_encoding = 'json'
         self.output = {
             'count': len(self.data),
-            'project': self.project.Name.lower(),
+            'project': self.project.name.lower(),
             'results': db.models.to_dict_for_json(self.data),
             'timestamp': self.timestamp,
             'total': self.total
         }
+
 
 
     def get(self):

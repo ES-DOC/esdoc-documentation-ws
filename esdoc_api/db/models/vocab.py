@@ -12,15 +12,13 @@
 from sqlalchemy import (
     Boolean,
     Column,
+    ForeignKey,
     Integer,
     Unicode,
     UniqueConstraint,
 )
 
-from esdoc_api.db.models.utils import (
-    create_fk,
-    Entity
-    )
+from esdoc_api.db.models.utils import Entity
 
 
 
@@ -55,7 +53,7 @@ class DocumentEncoding(Entity):
     )
 
     # Field set.
-    Encoding = Column(Unicode(63), nullable=False, unique=True)
+    encoding = Column('Encoding', Unicode(63), nullable=False, unique=True)
 
 
     @property
@@ -63,7 +61,7 @@ class DocumentEncoding(Entity):
         """Gets instance cache key name.
 
         """
-        return self.Encoding
+        return self.encoding
 
 
     @classmethod
@@ -71,7 +69,7 @@ class DocumentEncoding(Entity):
         """
         Gets default sort key.
         """
-        return lambda instance: instance.Encoding
+        return lambda instance: instance.encoding
 
 
 class DocumentLanguage(Entity):
@@ -85,8 +83,8 @@ class DocumentLanguage(Entity):
     )
 
     # Field set.
-    Code = Column(Unicode(2), nullable=False)
-    Name =  Column(Unicode(127), nullable=False, unique=True)
+    code = Column('Code', Unicode(2), nullable=False)
+    name = Column('Name', Unicode(127), nullable=False, unique=True)
 
 
     @property
@@ -94,7 +92,7 @@ class DocumentLanguage(Entity):
         """Gets instance cache key name.
 
         """
-        return self.Code
+        return self.code
 
 
     @property
@@ -102,7 +100,7 @@ class DocumentLanguage(Entity):
         """Gets the full language name derived by concatanation.
 
         """
-        return self.Code + u" - " + self.Name
+        return self.code + u" - " + self.name
 
 
 class DocumentOntology(Entity):
@@ -117,8 +115,8 @@ class DocumentOntology(Entity):
     )
 
     # Field set.
-    Name = Column(Unicode(63), nullable=False)
-    Version = Column(Unicode(31), nullable=False)
+    name = Column('Name', Unicode(63), nullable=False)
+    version = Column('Version', Unicode(31), nullable=False)
 
 
     @property
@@ -126,7 +124,7 @@ class DocumentOntology(Entity):
         """Gets instance cache key name.
 
         """
-        return self.Name
+        return self.name
 
 
     @property
@@ -134,9 +132,9 @@ class DocumentOntology(Entity):
         """Gets the full ontology name.
 
         """
-        result = self.Name
+        result = self.name
         result += '-v'
-        result += self.Version
+        result += self.version
         return result
 
 
@@ -152,13 +150,13 @@ class DocumentType(Entity):
     )
 
     # Foreign keys.
-    Ontology_ID = create_fk('vocab.tbl_document_ontology.ID', required=True)
+    ontology_id = Column('Ontology_ID', Integer, ForeignKey('vocab.tbl_document_ontology.ID'), nullable=False)
 
     # Field set.
-    Key = Column(Unicode(255), nullable=False)
-    DisplayName = Column(Unicode(63), nullable=False)
-    IsSearchTarget = Column(Boolean, nullable=False, default=True)
-    IsPdfTarget = Column(Boolean, nullable=False, default=True)
+    key = Column('Key', Unicode(255), nullable=False)
+    display_name = Column('DisplayName', Unicode(63), nullable=False)
+    is_search_target = Column('IsSearchTarget', Boolean, nullable=False, default=True)
+    is_pdf_target = Column('IsPdfTarget', Boolean, nullable=False, default=True)
 
 
     @property
@@ -166,7 +164,7 @@ class DocumentType(Entity):
         """Gets instance cache key name.
 
         """
-        return self.Key
+        return self.key
 
 
 class Institute(Entity):
@@ -180,10 +178,10 @@ class Institute(Entity):
     )
 
     # Field set.
-    Name =  Column(Unicode(16), nullable=False, unique=True)
-    LongName =  Column(Unicode(512), nullable=False)
-    CountryCode = Column(Unicode(2), nullable=False)
-    URL =  Column(Unicode(256))
+    name = Column('Name', Unicode(16), nullable=False, unique=True)
+    long_name = Column('LongName', Unicode(512), nullable=False)
+    country_code = Column('CountryCode', Unicode(2), nullable=False)
+    url = Column('URL', Unicode(256))
 
 
     @property
@@ -191,7 +189,7 @@ class Institute(Entity):
         """Gets instance cache key name.
 
         """
-        return self.Name
+        return self.name
 
 
     @property
@@ -199,7 +197,7 @@ class Institute(Entity):
         """Gets the full institute name derived by concatanation.
 
         """
-        return self.CountryCode + u" - " + self.Name + u" - " + self.LongName
+        return self.country_code + u" - " + self.name + u" - " + self.long_name
 
 
 class Project(Entity):
@@ -213,9 +211,9 @@ class Project(Entity):
     )
 
     # Field set.
-    Name =  Column(Unicode(63), nullable=False, unique=True)
-    Description =  Column(Unicode(1023))
-    URL =  Column(Unicode(1023))
+    name = Column('Name', Unicode(63), nullable=False, unique=True)
+    description = Column('Description', Unicode(1023))
+    url = Column('URL', Unicode(1023))
 
 
     @property
@@ -223,4 +221,4 @@ class Project(Entity):
         """Gets instance cache key name.
 
         """
-        return self.Name
+        return self.name

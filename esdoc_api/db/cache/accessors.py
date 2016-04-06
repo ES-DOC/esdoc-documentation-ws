@@ -58,7 +58,7 @@ def get_doc_ontology(name=None, version=None):
         name += str(version)
 
     for ontology in core.get(models.DocumentOntology):
-        if ontology.Name.upper() == name.upper():
+        if ontology.name.upper() == name.upper():
             return ontology
 
     return None

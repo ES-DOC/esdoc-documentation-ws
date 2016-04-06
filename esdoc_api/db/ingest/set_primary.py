@@ -22,13 +22,13 @@ def execute(ctx):
     """
     # Instantiate.
     instance = models.Document()
-    instance.Institute_ID = cache.get_institute_id(ctx.doc.meta.institute)
-    instance.Name = unicode(ctx.doc.ext.display_name)
-    instance.Project_ID = cache.get_project_id(ctx.doc.meta.project)
-    instance.Source_Key = unicode(ctx.doc.meta.source_key)
-    instance.Type = unicode(ctx.doc.meta.type)
-    instance.UID = unicode(ctx.doc.meta.id)
-    instance.Version = ctx.doc.meta.version
+    instance.institute_id = cache.get_institute_id(ctx.doc.meta.institute)
+    instance.name = unicode(ctx.doc.ext.display_name)
+    instance.project_id = cache.get_project_id(ctx.doc.meta.project)
+    instance.source = unicode(ctx.doc.meta.source_key)
+    instance.type = unicode(ctx.doc.meta.type)
+    instance.uid = unicode(ctx.doc.meta.id)
+    instance.version = ctx.doc.meta.version
 
     # Persist.
     try:

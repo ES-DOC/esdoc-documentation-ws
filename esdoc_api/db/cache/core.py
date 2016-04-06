@@ -58,7 +58,7 @@ def exists(mtype, item_id):
     if mtype not in _cache or item_id is None:
         return False
     elif isinstance(item_id, int):
-        return len([i for i in _cache[mtype] if i.ID == item_id]) == 1
+        return len([i for i in _cache[mtype] if i.id == item_id]) == 1
     else:
         item_id = str(item_id).upper()
         return len([i for i in _cache[mtype] if i.cache_name.upper() == item_id]) == 1
@@ -83,7 +83,7 @@ def get(mtype, item_id=None):
     elif not exists(mtype, item_id):
         return None
     elif isinstance(item_id, int):
-        return [i for i in _cache[mtype] if i.ID == item_id][0]
+        return [i for i in _cache[mtype] if i.id == item_id][0]
     else:
         item_id = str(item_id).upper()
         return [i for i in _cache[mtype] if i.cache_name.upper() == item_id][0]
@@ -128,7 +128,7 @@ def get_id(mtype, item_id):
     item = get(mtype, item_id)
 
     if isinstance(item, mtype):
-        return item.ID
+        return item.id
     else:
         return None
 
@@ -169,7 +169,7 @@ def get_random_id(mtype):
     :rtype: int
 
     """
-    return get_random(mtype).ID
+    return get_random(mtype).id
 
 
 def add(item):

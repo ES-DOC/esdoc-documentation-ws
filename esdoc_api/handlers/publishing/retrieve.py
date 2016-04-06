@@ -74,7 +74,7 @@ class DocumentRetrieveRequestHandler(tornado.web.RequestHandler):
 
         """
         if self.doc:
-            self.output_encoding = encoding = self.encoding.Encoding
+            self.output_encoding = encoding = self.encoding.encoding
             self.output = pyesdoc.encode(self.doc, encoding)
         else:
             self.set_status(404)

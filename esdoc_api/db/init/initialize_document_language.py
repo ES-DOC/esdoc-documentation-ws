@@ -161,8 +161,8 @@ def execute():
     for lang in _DATA.splitlines():
         # Create.
         i = models.DocumentLanguage()
-        i.Code = unicode(lang[0:2])
-        i.Name = unicode(lang[3:])
+        i.code = unicode(lang[0:2])
+        i.name = unicode(lang[3:])
 
         # Persist.
         session.insert(i)

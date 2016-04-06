@@ -21,4 +21,4 @@ def main(uid, version):
 	"""
 	doc = dao.get_document(uid, version)
 	if doc:
-		dao.delete_document(doc.ID)
+		dao.delete_document(doc.id)

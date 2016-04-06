@@ -95,11 +95,11 @@ def execute():
 
         # Create.
         i = models.DocumentType()
-        i.Ontology_ID = ontologies[ontology].ID
-        i.Key = unicode(type_key)
-        i.DisplayName = unicode(_DISPLAY_NAMES[type_key])
-        i.SearchTarget = type_key in _SEARCH_TYPES
-        i.IsPdfTarget = type_key in _PDF_TYPES
+        i.ontology_id = ontologies[ontology].id
+        i.key = unicode(type_key)
+        i.display_name = unicode(_DISPLAY_NAMES[type_key])
+        i.is_search_target = type_key in _SEARCH_TYPES
+        i.is_pdf_target = type_key in _PDF_TYPES
 
         # Persist.
         session.insert(i)

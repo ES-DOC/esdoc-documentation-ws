@@ -27,7 +27,6 @@ from esdoc_api.utils import convert
 # Module exports.
 __all__ = [
     'metadata',
-    'create_fk',
     'Entity',
     'EntityConvertor'
 ]
@@ -38,28 +37,12 @@ metadata = MetaData()
 
 
 
-def create_fk(name, required=False, default=None):
-    """Factory function to return a foreign key
-
-    """
-    if default is None:
-        return Column(Integer,
-                      ForeignKey(name),
-                      nullable=not required)
-    else:
-        return Column(Integer,
-                      ForeignKey(name),
-                      nullable=not required,
-                      default=default)
-
-
-
 class BaseEntity(object):
     """Base entity sub-classed from all Prodiguer models.
 
     """
     # Entity attributes.
-    ID = Column(Integer, primary_key=True)
+    id = Column('ID', Integer, primary_key=True)
 
 
     def __init__(self):
@@ -102,7 +85,7 @@ class BaseEntity(object):
         """Returns a flag indicating whether the entity instance is new or not.
 
         """
-        return True if self.ID is None else False
+        return True if self.id is None else False
 
 
     @classmethod
@@ -113,11 +96,11 @@ class BaseEntity(object):
         if hasattr(cls, 'FullName'):
             return lambda instance: instance.FullName.upper()
         elif hasattr(cls, 'Name'):
-            return lambda instance: instance.Name.upper()
+            return lambda instance: instance.name.upper()
         elif hasattr(cls, 'OrdinalPosition'):
             return lambda instance: str(instance.OrdinalPosition)
         else:
-            lambda instance: instance.ID
+            lambda instance: instance.id
 
 
     @classmethod
@@ -173,9 +156,9 @@ class EntityConvertor(object):
 
             # Build a dictionary from entity ORM spec.
             result = {}
-            for col in entity.__table__.columns:
-                key = key_formatter(col.name) if key_formatter else col.name
-                value = getattr(entity, col.name)
+            for attr in entity.__mapper__.column_attrs:
+                key = key_formatter(attr.key) if key_formatter else attr.key
+                value = getattr(entity, attr.key)
                 if json_formatting:
                     value = _format_for_json(value)
                 result[key] = value

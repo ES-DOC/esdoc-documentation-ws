@@ -15,16 +15,15 @@ import uuid
 from sqlalchemy import (
     Boolean,
     Column,
+    ForeignKey,
     DateTime,
     Integer,
-    Text,
     Unicode,
     UniqueConstraint
     )
 from sqlalchemy.orm import relationship
 
 from esdoc_api.db.models.utils import (
-    create_fk,
     Entity,
     EntityConvertor
     )
@@ -68,21 +67,26 @@ class Document(Entity):
     )
 
     # Foreign keys.
-    Project_ID = create_fk('vocab.tbl_project.ID', required=True)
-    Institute_ID = create_fk('vocab.tbl_institute.ID')
+    project_id = Column('Project_ID', Integer, ForeignKey('vocab.tbl_project.ID'), nullable=False)
+    institute_id = Column('Institute_ID', Integer, ForeignKey('vocab.tbl_institute.ID'), nullable=True)
 
     # Relationships.
     ExternalIDs = relationship("DocumentExternalID", backref="Document")
     Summaries = relationship("DocumentSummary", backref="Document", lazy='joined')
 
     # Field set.
-    Source_Key =  Column(Unicode(255), nullable=True)
-    Type =  Column(Unicode(255), nullable=False)
-    Name =  Column(Unicode(255), nullable=False)
-    UID = Column(Unicode(63), nullable=False, default=uuid.uuid4())
-    Version = Column(Integer, nullable=False, default=1)
-    IngestDate =  Column(DateTime, default=datetime.datetime.now())
-    IsLatest = Column(Boolean, nullable=False, default=False)
+    source = Column('Source_Key', Unicode(255), nullable=True)
+    type = Column('Type', Unicode(255), nullable=False)
+    name = Column('Name', Unicode(255), nullable=False)
+    uid = Column('UID', Unicode(63), nullable=False, default=uuid.uuid4())
+    version = Column('Version', Integer, nullable=False, default=1)
+    ingest_date = Column('IngestDate', DateTime, default=datetime.datetime.now())
+    is_latest = Column('IsLatest', Boolean, nullable=False, default=False)
+
+    # project = Column(Unicode(255), required=True)
+    sub_project = Column(Unicode(255), nullable=True)
+    # institute = Column(Unicode(255), nullable=True)
+
 
     def __init__(self):
         """Constructor.
@@ -109,7 +113,7 @@ class Document(Entity):
         """Gets default sort key.
 
         """
-        return lambda instance: instance.UID + str(instance.Version)
+        return lambda instance: instance.uid + str(instance.version)
 
 
 class DocumentDRS(Entity):
@@ -124,19 +128,19 @@ class DocumentDRS(Entity):
     )
 
     # Foreign keys.
-    Project_ID = create_fk('vocab.tbl_project.ID', required=True)
-    Document_ID = create_fk('docs.tbl_document.ID', required=True)
+    project_id = Column('Project_ID', Integer, ForeignKey('vocab.tbl_project.ID'), nullable=False)
+    document_id = Column('Document_ID', Integer, ForeignKey('docs.tbl_document.ID'), nullable=False)
 
     # Field set.
-    Path = Column(Unicode(511))
-    Key_01 = Column(Unicode(63))
-    Key_02 = Column(Unicode(63))
-    Key_03 = Column(Unicode(63))
-    Key_04 = Column(Unicode(63))
-    Key_05 = Column(Unicode(63))
-    Key_06 = Column(Unicode(63))
-    Key_07 = Column(Unicode(63))
-    Key_08 = Column(Unicode(63))
+    path = Column('Path', Unicode(511))
+    key_01 = Column('Key_01', Unicode(63))
+    key_02 = Column('Key_02', Unicode(63))
+    key_03 = Column('Key_03', Unicode(63))
+    key_04 = Column('Key_04', Unicode(63))
+    key_05 = Column('Key_05', Unicode(63))
+    key_06 = Column('Key_06', Unicode(63))
+    key_07 = Column('Key_07', Unicode(63))
+    key_08 = Column('Key_08', Unicode(63))
 
 
     def clone(self):
@@ -145,17 +149,17 @@ class DocumentDRS(Entity):
         """
         result = DocumentDRS()
 
-        result.Document_ID = self.Document_ID
-        result.Key_01 = self.Key_01
-        result.Key_02 = self.Key_02
-        result.Key_03 = self.Key_03
-        result.Key_04 = self.Key_04
-        result.Key_05 = self.Key_05
-        result.Key_06 = self.Key_06
-        result.Key_07 = self.Key_07
-        result.Key_08 = self.Key_08
-        result.Path = self.Path
-        result.Project_ID = self.Project_ID
+        result.document_id = self.document_id
+        result.key_01 = self.key_01
+        result.key_02 = self.key_02
+        result.key_03 = self.key_03
+        result.key_04 = self.key_04
+        result.key_05 = self.key_05
+        result.key_06 = self.key_06
+        result.key_07 = self.key_07
+        result.key_08 = self.key_08
+        result.path = self.path
+        result.project_id = self.project_id
 
         return result
 
@@ -166,12 +170,12 @@ class DocumentDRS(Entity):
         """
         path = ''
         for i in range(8):
-            key = getattr(self, "Key_0" + str(i + 1))
+            key = getattr(self, "key_0" + str(i + 1))
             if key is not None:
                 if i > 0:
                     path += _DRS_SPLIT
                 path += key.upper()
-        self.Path = path
+        self.path = path
 
 
     @classmethod
@@ -179,7 +183,7 @@ class DocumentDRS(Entity):
         """
         Gets default sort key.
         """
-        return lambda instance: instance.Path
+        return lambda instance: instance.path
 
 
 class DocumentExternalID(Entity):
@@ -194,11 +198,11 @@ class DocumentExternalID(Entity):
     )
 
     # Foreign keys.
-    Project_ID = create_fk('vocab.tbl_project.ID', required=True)
-    Document_ID = create_fk('docs.tbl_document.ID', required=True)
+    project_id = Column('Project_ID', Integer, ForeignKey('vocab.tbl_project.ID'), nullable=False)
+    document_id = Column('Document_ID', Integer, ForeignKey('docs.tbl_document.ID'), nullable=False)
 
     # Field set.
-    ExternalID = Column(Unicode(255), nullable=False)
+    external_id = Column('ExternalID', Unicode(255), nullable=False)
 
 
 class DocumentSummary(Entity):
@@ -213,23 +217,23 @@ class DocumentSummary(Entity):
     )
 
     # Foreign keys.
-    Document_ID = create_fk('docs.tbl_document.ID', required=True)
-    Language_ID = create_fk('vocab.tbl_document_language.ID', required=True)
+    document_id = Column('Document_ID', Integer, ForeignKey('docs.tbl_document.ID'), nullable=False)
+    language_id = Column('Language_ID', Integer, ForeignKey('vocab.tbl_document_language.ID'), nullable=False)
 
     # Field set.
-    ShortName = Column(Unicode(1023))
-    LongName = Column(Unicode(1023))
-    Description = Column(Unicode(1023))
-    Field_01 = Column(Unicode(1023))
-    Field_02 = Column(Unicode(1023))
-    Field_03 = Column(Unicode(1023))
-    Field_04 = Column(Unicode(1023))
-    Field_05 = Column(Unicode(1023))
-    Field_06 = Column(Unicode(1023))
-    Field_07 = Column(Unicode(1023))
-    Field_08 = Column(Unicode(1023))
-    Model = Column(Unicode(1023))
-    Experiment = Column(Unicode(1023))
+    short_name = Column('ShortName', Unicode(1023))
+    long_name = Column('LongName', Unicode(1023))
+    description = Column('Description', Unicode(1023))
+    field_01 = Column('Field_01', Unicode(1023))
+    field_02 = Column('Field_02', Unicode(1023))
+    field_03 = Column('Field_03', Unicode(1023))
+    field_04 = Column('Field_04', Unicode(1023))
+    field_05 = Column('Field_05', Unicode(1023))
+    field_06 = Column('Field_06', Unicode(1023))
+    field_07 = Column('Field_07', Unicode(1023))
+    field_08 = Column('Field_08', Unicode(1023))
+    model = Column('Model', Unicode(1023))
+    experiment = Column('Experiment', Unicode(1023))
 
 
     def format_dict(self, as_dict, key_formatter=None, json_formatting=False):
@@ -245,5 +249,5 @@ class DocumentSummary(Entity):
         """
         Gets default sort key.
         """
-        return lambda instance: instance.ShortName
+        return lambda instance: instance.short_name
 

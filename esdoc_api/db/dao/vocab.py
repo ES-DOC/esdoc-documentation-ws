@@ -54,7 +54,7 @@ def get_doc_ontology(name, version=None):
 
     qry = session.query(DocumentOntology)
 
-    qry = qry.filter(DocumentOntology.Name==name)
+    qry = qry.filter(DocumentOntology.name==name)
 
     return qry.first()
 
@@ -77,7 +77,7 @@ def get_doc_language(code=None):
     code = unicode(code).lower()
 
     return get_by_facet(DocumentLanguage,
-                        DocumentLanguage.Code==code)
+                        DocumentLanguage.code==code)
 
 
 def get_project_institute_counts():
@@ -87,12 +87,12 @@ def get_project_institute_counts():
     :rtype: list
 
     """
-    qry = session.query(sa.func.count(Document.Institute_ID),
-                        Document.Project_ID,
-                        Document.Institute_ID)
+    qry = session.query(sa.func.count(Document.institute_id),
+                        Document.project_id,
+                        Document.institute_id)
 
-    qry = qry.group_by(Document.Project_ID)
-    qry = qry.group_by(Document.Institute_ID)
+    qry = qry.group_by(Document.project_id)
+    qry = qry.group_by(Document.institute_id)
 
     return qry.all()
 
@@ -116,11 +116,11 @@ def create_institute(name, long_name=None, country_code=None, homepage=None):
         country_code = "--"
 
     instance = Institute()
-    instance.CountryCode = _parse_param(country_code, 'country_code')
-    instance.LongName = _parse_param(long_name, 'long_name')
-    instance.Name = _parse_param(name, 'name')
+    instance.country_code = _parse_param(country_code, 'country_code')
+    instance.long_name = _parse_param(long_name, 'long_name')
+    instance.name = _parse_param(name, 'name')
     if homepage:
-        instance.URL = _parse_param(homepage, 'homepage')
+        instance.url = _parse_param(homepage, 'homepage')
 
     return instance
 
@@ -141,9 +141,9 @@ def create_project(name, description=None, homepage=None):
         description = name
 
     instance = Project()
-    instance.Name = _parse_param(name, 'name')
-    instance.Description = _parse_param(description, 'description')
+    instance.name = _parse_param(name, 'name')
+    instance.description = _parse_param(description, 'description')
     if homepage:
-        instance.URL =  _parse_param(homepage, 'homepage')
+        instance.url = _parse_param(homepage, 'homepage')
 
     return instance

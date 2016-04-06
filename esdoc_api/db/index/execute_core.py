@@ -36,7 +36,7 @@ def _index(ctx):
     def build(collection, type_of):
         """Builds index."""
         for instance in collection:
-            utils.create_node(type_of, instance.Name)
+            utils.create_node(type_of, instance.name)
 
     build(ctx.institutes, models.NODE_TYPE_INSTITUTE)
     build(ctx.projects, models.NODE_TYPE_PROJECT)

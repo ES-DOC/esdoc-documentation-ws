@@ -24,5 +24,5 @@ def execute(ctx):
 
     doc = dao.get_document(ctx.doc.meta.id, ctx.doc.meta.version)
     if doc:
-        dao.delete_document(doc.ID)
+        dao.delete_document(doc.id)
         session.commit()

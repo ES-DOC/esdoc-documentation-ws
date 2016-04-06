@@ -152,7 +152,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         """Reads documents from pyesdoc archive.
 
         """
-        self.docs =  [pyesdoc.archive.read(d.UID, d.Version) for d in self.docs]
+        self.docs = [pyesdoc.archive.read(d.uid, d.version) for d in self.docs]
         self.docs = [d for d in self.docs if d is not None]
 
 
@@ -197,7 +197,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         # Set target encoding.
-        encoding = self.encoding.Encoding
+        encoding = self.encoding.encoding
 
         # HTML documents require a sorted merge.
         if encoding == pyesdoc.ENCODING_HTML:
@@ -210,10 +210,10 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         # N.B. Tornado auto-encodes dict's to json.
-        if self.encoding.Encoding != pyesdoc.ENCODING_JSON:
-            self.docs =  pyesdoc.encode(self.docs, self.encoding.Encoding)
+        if self.encoding.encoding != pyesdoc.ENCODING_JSON:
+            self.docs = pyesdoc.encode(self.docs, self.encoding.encoding)
         else:
-            self.docs =  pyesdoc.encode(self.docs, pyesdoc.ENCODING_DICT)
+            self.docs = pyesdoc.encode(self.docs, pyesdoc.ENCODING_DICT)
 
 
     def _set_response(self):
@@ -221,7 +221,7 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         # Set encoding.
-        self.output_encoding = encoding = self.encoding.Encoding
+        self.output_encoding = encoding = self.encoding.encoding
 
 
         # No documents.

@@ -26,9 +26,9 @@ def execute(ctx):
 
     # Instantiate.
     idx = models.DocumentDRS()
-    idx.Document_ID = ctx.primary.ID
-    idx.Path = unicode(ctx.doc.meta.drs_path)
-    idx.Project_ID = ctx.primary.Project_ID
+    idx.document_id = ctx.primary.id
+    idx.path = unicode(ctx.doc.meta.drs_path)
+    idx.project_id = ctx.primary.project_id
 
     # Set keys.
     for index, key in enumerate(ctx.doc.meta.drs_keys):
@@ -36,7 +36,7 @@ def execute(ctx):
             break
         elif key is not None:
             key = unicode(key).upper()
-            setattr(idx, "Key_0" + str(index + 1), key)
+            setattr(idx, "key_0" + str(index + 1), key)
 
     # Insert.
     try:

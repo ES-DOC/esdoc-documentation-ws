@@ -40,9 +40,9 @@ def do_search(criteria):
     :rtype: db.models.Document | None
 
     """
-    institute_id = None if not criteria.institute else criteria.institute.ID
+    institute_id = None if not criteria.institute else criteria.institute.id
 
-    yield db.dao.get_document_by_name(criteria.project.ID,
+    yield db.dao.get_document_by_name(criteria.project.id,
                                       criteria.type,
                                       criteria.name,
                                       institute_id)

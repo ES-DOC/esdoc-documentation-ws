@@ -74,12 +74,12 @@ def get_document(uid, version, project_id=None):
     q = session.query(Document)
 
     if project_id is not None:
-        q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(Document.UID==unicode(uid))
+        q = q.filter(Document.project_id==project_id)
+    q = q.filter(Document.uid==unicode(uid))
     if version is None or version in models.DOCUMENT_VERSIONS:
-        q = q.order_by(Document.Version.desc())
+        q = q.order_by(Document.version.desc())
     else:
-        q = q.filter(Document.Version==int(version))
+        q = q.filter(Document.version==int(version))
 
     return q.all() if version == models.DOCUMENT_VERSION_ALL else q.first()
 
@@ -112,13 +112,13 @@ def get_document_by_name(project_id,
     """
     q = session.query(Document)
 
-    q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(sa.func.upper(Document.Type)==type.upper())
-    q = q.filter(sa.func.upper(Document.Name)==name.upper())
+    q = q.filter(Document.project_id==project_id)
+    q = q.filter(sa.func.upper(Document.type)==type.upper())
+    q = q.filter(sa.func.upper(Document.name)==name.upper())
     if institute_id is not None:
-        q = q.filter(Document.Institute_ID==institute_id)
+        q = q.filter(Document.institute_id==institute_id)
     if latest_only == True:
-        q = q.filter(Document.IsLatest==True)
+        q = q.filter(Document.is_latest==True)
 
     return q.first()
 
@@ -143,10 +143,10 @@ def get_document_by_type(project_id,
     """
     q = session.query(Document)
 
-    q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(sa.func.upper(Document.Type)==type.upper())
+    q = q.filter(Document.project_id==project_id)
+    q = q.filter(sa.func.upper(Document.type)==type.upper())
     if latest_only == True:
-        q = q.filter(Document.IsLatest==True)
+        q = q.filter(Document.is_latest==True)
 
     return q.all()
 
@@ -199,25 +199,25 @@ def get_document_by_drs_keys(project_id,
     """
     q = session.query(Document).join(DocumentDRS)
 
-    q = q.filter(Document.Project_ID==project_id)
+    q = q.filter(Document.project_id==project_id)
     if key_01 is not None:
-        q = q.filter(DocumentDRS.Key_01==key_01.upper())
+        q = q.filter(DocumentDRS.key_01==key_01.upper())
     if key_02 is not None:
-        q = q.filter(DocumentDRS.Key_02==key_02.upper())
+        q = q.filter(DocumentDRS.key_02==key_02.upper())
     if key_03 is not None:
-        q = q.filter(DocumentDRS.Key_03==key_03.upper())
+        q = q.filter(DocumentDRS.key_03==key_03.upper())
     if key_04 is not None:
-        q = q.filter(DocumentDRS.Key_04==key_04.upper())
+        q = q.filter(DocumentDRS.key_04==key_04.upper())
     if key_05 is not None:
-        q = q.filter(DocumentDRS.Key_05==key_05.upper())
+        q = q.filter(DocumentDRS.key_05==key_05.upper())
     if key_06 is not None:
-        q = q.filter(DocumentDRS.Key_06==key_06.upper())
+        q = q.filter(DocumentDRS.key_06==key_06.upper())
     if key_07 is not None:
-        q = q.filter(DocumentDRS.Key_07==key_07.upper())
+        q = q.filter(DocumentDRS.key_07==key_07.upper())
     if key_08 is not None:
-        q = q.filter(DocumentDRS.Key_08==key_08.upper())
+        q = q.filter(DocumentDRS.key_08==key_08.upper())
     if latest_only == True:
-        q = q.filter(Document.IsLatest==True)
+        q = q.filter(Document.is_latest==True)
 
     return q.first()
 
@@ -237,8 +237,8 @@ def get_documents_by_external_id(project_id, external_id):
     """
     q = session.query(Document).join(DocumentExternalID)
 
-    q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(DocumentExternalID.ExternalID.like('%' + external_id.upper() + '%'))
+    q = q.filter(Document.project_id==project_id)
+    q = q.filter(DocumentExternalID.external_id.like('%' + external_id.upper() + '%'))
 
     return q.all()
 
@@ -261,9 +261,9 @@ def get_document_drs(project_id, document_id, path):
     """
     q = session.query(DocumentDRS)
 
-    q = q.filter(DocumentDRS.Project_ID==project_id)
-    q = q.filter(DocumentDRS.Document_ID==document_id)
-    q = q.filter(DocumentDRS.Path==path.upper())
+    q = q.filter(DocumentDRS.project_id==project_id)
+    q = q.filter(DocumentDRS.document_id==document_id)
+    q = q.filter(DocumentDRS.path==path.upper())
 
     return q.first()
 
@@ -286,9 +286,9 @@ def get_document_external_id(project_id, document_id, external_id):
     """
     q = session.query(DocumentExternalID)
 
-    q = q.filter(DocumentExternalID.Project_ID==project_id)
-    q = q.filter(DocumentExternalID.Document_ID==document_id)
-    q = q.filter(DocumentExternalID.ExternalID==external_id)
+    q = q.filter(DocumentExternalID.project_id==project_id)
+    q = q.filter(DocumentExternalID.document_id==document_id)
+    q = q.filter(DocumentExternalID.external_id==external_id)
 
     return q.first()
 
@@ -311,9 +311,9 @@ def get_document_external_ids(document_id, project_id=None):
     """
     q = session.query(DocumentExternalID)
 
-    q = q.filter(DocumentExternalID.Document_ID==document_id)
+    q = q.filter(DocumentExternalID.document_id==document_id)
     if project_id is not None:
-        q = q.filter(DocumentExternalID.Project_ID==project_id)
+        q = q.filter(DocumentExternalID.project_id==project_id)
 
     return q.all()
 
@@ -333,8 +333,8 @@ def get_document_summary(document_id, language_id):
     """
     q = session.query(DocumentSummary)
 
-    q = q.filter(DocumentSummary.Document_ID==document_id)
-    q = q.filter(DocumentSummary.Language_ID==language_id)
+    q = q.filter(DocumentSummary.document_id==document_id)
+    q = q.filter(DocumentSummary.language_id==language_id)
 
     return q.first()
 
@@ -371,18 +371,18 @@ def get_document_summaries(
     q = session.query(DocumentSummary).join(Document)
 
     # Set mandatory params.
-    q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(DocumentSummary.Language_ID==language_id)
+    q = q.filter(Document.project_id==project_id)
+    q = q.filter(DocumentSummary.language_id==language_id)
     if type != models.DOCUMENT_TYPE_ALL:
-        q = q.filter(sa.func.upper(Document.Type)==type)
+        q = q.filter(sa.func.upper(Document.type)==type)
     if version == models.DOCUMENT_VERSION_LATEST:
-        q = q.filter(Document.IsLatest==True)
+        q = q.filter(Document.is_latest==True)
     if experiment is not None:
-        q = q.filter(sa.func.upper(DocumentSummary.Experiment)==experiment)
+        q = q.filter(sa.func.upper(DocumentSummary.experiment)==experiment)
     if institute_id is not None:
-        q = q.filter(Document.Institute_ID==institute_id)
+        q = q.filter(Document.institute_id==institute_id)
     if model is not None:
-        q = q.filter(sa.func.upper(DocumentSummary.Model)==model)
+        q = q.filter(sa.func.upper(DocumentSummary.model)==model)
 
     # Apply query limit.
     q = q.limit(session.QUERY_LIMIT)
@@ -400,7 +400,7 @@ def _delete_document_relation(document_id, type):
     :type type: class
 
     """
-    delete_by_facet(type, type.Document_ID==document_id)
+    delete_by_facet(type, type.document_id==document_id)
 
 
 def delete_document_summaries(document_id):
@@ -460,12 +460,12 @@ def get_project_document_type_counts():
     :rtype: list
 
     """
-    q = session.query(sa.func.count(Document.Type),
-                      Document.Project_ID,
-                      Document.Type)
+    q = session.query(sa.func.count(Document.type),
+                      Document.project_id,
+                      Document.type)
 
-    q = q.group_by(Document.Project_ID)
-    q = q.group_by(Document.Type)
+    q = q.group_by(Document.project_id)
+    q = q.group_by(Document.type)
 
     return q.all()
 
@@ -477,18 +477,18 @@ def get_document_counts():
     :rtype: list
 
     """
-    q = session.query(sa.func.count(Document.Institute_ID),
-                      Project.Name,
-                      Institute.Name,
-                      Document.Type)
+    q = session.query(sa.func.count(Document.institute_id),
+                      Project.name,
+                      Institute.name,
+                      Document.type)
     q = q.join(Project)
     q = q.join(Institute)
 
-    q = q.group_by(Project.ID)
-    q = q.group_by(Institute.ID)
-    q = q.group_by(Document.Type)
+    q = q.group_by(Project.id)
+    q = q.group_by(Institute.id)
+    q = q.group_by(Document.type)
 
-    q = q.order_by(Document.Type.desc())
+    q = q.order_by(Document.type.desc())
 
     return q.all()
 
@@ -506,11 +506,11 @@ def get_document_type_count(project_id, type):
     :rtype: list
 
     """
-    q = session.query(sa.func.count(Document.Type))
+    q = session.query(sa.func.count(Document.type))
 
-    q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(sa.func.upper(Document.Type)==type.upper())
-    q = q.group_by(Document.Type)
+    q = q.filter(Document.project_id==project_id)
+    q = q.filter(sa.func.upper(Document.type)==type.upper())
+    q = q.group_by(Document.type)
 
     counts = q.all()
 
@@ -533,20 +533,20 @@ def get_doc_descriptions(project_id, language_id, type):
     :rtype: dict
 
     """
-    q = session.query(Document.Name, DocumentSummary.Description)
+    q = session.query(Document.name, DocumentSummary.description)
     q = q.join(DocumentSummary)
 
-    q = q.filter(Document.IsLatest==True)
-    q = q.filter(Document.Project_ID==project_id)
-    q = q.filter(Document.Type==type)
-    q = q.filter(DocumentSummary.Language_ID==language_id)
+    q = q.filter(Document.is_latest==True)
+    q = q.filter(Document.project_id==project_id)
+    q = q.filter(Document.type==type)
+    q = q.filter(DocumentSummary.language_id==language_id)
 
     return q.all()
 
 
 def _get_summary_fieldset(field):
     """Returns set of unique document summary field values."""
-    q = session.query(Document.Project_ID, field)
+    q = session.query(Document.project_id, field)
     q = q.join(DocumentSummary)
     q = q.filter(field!='None')
     q = q.distinct()
@@ -556,9 +556,9 @@ def _get_summary_fieldset(field):
 
 def get_summary_model_set():
     """Returns set of unique document summary model names."""
-    return _get_summary_fieldset(DocumentSummary.Model)
+    return _get_summary_fieldset(DocumentSummary.model)
 
 
 def get_summary_eperiment_set():
     """Returns set of unique document summary experiment names."""
-    return _get_summary_fieldset(DocumentSummary.Experiment)
+    return _get_summary_fieldset(DocumentSummary.experiment)
