@@ -20,8 +20,8 @@ def _get_nodeset():
     # Load from db.
     db.session.start(config.db)
     try:
-        nodeset = { i.ID:i for i in db.dao.get_all(db.models.Node) }
-        valueset = { i.ID:i for i in db.dao.get_all(db.models.NodeField) }
+        nodeset = { i.id: i for i in db.dao.get_all(db.models.Node) }
+        valueset = { i.id: i for i in db.dao.get_all(db.models.NodeField) }
     finally:
         db.session.end()
 

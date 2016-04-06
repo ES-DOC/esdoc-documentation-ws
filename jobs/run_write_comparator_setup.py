@@ -46,7 +46,7 @@ def _get_project_id(code):
         msg = msg.format(code)
         rt.throw(msg)
 
-    return project.ID
+    return project.id
 
 
 def _get_setup_data(project, comparator):

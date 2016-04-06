@@ -58,19 +58,19 @@ def _execute(project_code, source):
         return
 
     # Build queries.
-    qry1 = session.query(Document.ID)
-    qry1 = qry1.filter(Document.Project_ID == project.ID)
+    qry1 = session.query(Document.id)
+    qry1 = qry1.filter(Document.project_id == project.id)
     if source is not None:
-        qry1 = qry1.filter(Document.Source_Key == source)
+        qry1 = qry1.filter(Document.source == source)
 
     qry2 = session.query(DocumentDRS)
-    qry2 = qry2.filter(DocumentDRS.Document_ID.in_(qry1.subquery()))
+    qry2 = qry2.filter(DocumentDRS.document_id.in_(qry1.subquery()))
 
     qry3 = session.query(DocumentExternalID)
-    qry3 = qry3.filter(DocumentExternalID.Document_ID.in_(qry1.subquery()))
+    qry3 = qry3.filter(DocumentExternalID.document_id.in_(qry1.subquery()))
 
     qry4 = session.query(DocumentSummary)
-    qry4 = qry4.filter(DocumentSummary.Document_ID.in_(qry1.subquery()))
+    qry4 = qry4.filter(DocumentSummary.document_id.in_(qry1.subquery()))
 
     # Delete data.
     qry4.delete(synchronize_session=False)
