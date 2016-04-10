@@ -79,7 +79,10 @@ class Node(Entity):
     )
 
     # Foreign keys.
-    project_id = Column(Integer, ForeignKey('vocab.tbl_project.id'), nullable=False, default=1)
+    project_id = Column(Integer,
+                        ForeignKey('vocab.tbl_project.id'),
+                        nullable=False,
+                        default=1)
 
     # Field set.
     type_of = Column(NodeTypeEnum, nullable=False)
