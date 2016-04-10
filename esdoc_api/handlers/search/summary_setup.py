@@ -29,9 +29,16 @@ def _get_params():
     }
 
 
-def _load(mtype):
-    """Helper function to load collection from db."""
-    return db.models.to_dict_for_json(db.cache.get(mtype))
+def _load(mtype, sort_key=None):
+    """Helper function to load a collection from db.
+
+    """
+    collection = db.cache.get(mtype)
+    collection = db.models.to_dict_for_json(collection)
+    if sort_key:
+        collection = sorted(collection, key=lambda i: i[sort_key].lower())
+
+    return collection
 
 
 class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
@@ -39,12 +46,16 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
 
     """
     def set_default_headers(self):
-        """Set HTTP headers at the beginning of the request."""
+        """Set HTTP headers at the beginning of the request.
+
+        """
         self.set_header(utils.h.HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
     def prepare(self):
-        """Prepare handler state for processing."""
+        """Prepare handler state for processing.
+
+        """
         # Start db session.
         db.session.start(config.db)
 
@@ -56,10 +67,12 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
 
 
     def _set_output(self):
-        """Sets output data to be returned to client."""
+        """Sets output data to be returned to client.
+
+        """
         self.output_encoding = 'json'
         self.output = {
-            'projects' : _load(db.models.Project),
+            'projects' : _load(db.models.Project, sort_key='name'),
             'models' : db.dao.get_summary_model_set(),
             'experiments' : db.dao.get_summary_eperiment_set(),
             'institutes' : _load(db.models.Institute),
@@ -71,5 +84,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
 
 
     def get(self):
-        """HTTP GET handler."""
+        """HTTP GET handler.
+
+        """
         utils.h.invoke(self, self._set_output)

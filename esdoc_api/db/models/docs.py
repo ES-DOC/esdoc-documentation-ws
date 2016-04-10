@@ -62,30 +62,29 @@ class Document(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document'
     __table_args__ = (
-        UniqueConstraint('Project_ID' ,'UID', 'Version'),
+        UniqueConstraint('project_id' ,'uid', 'version'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    project_id = Column('Project_ID', Integer, ForeignKey('vocab.tbl_project.ID'), nullable=False)
-    institute_id = Column('Institute_ID', Integer, ForeignKey('vocab.tbl_institute.ID'), nullable=True)
+    project_id = Column(Integer,
+                        ForeignKey('vocab.tbl_project.ID'), nullable=False)
+    institute_id = Column(Integer,
+                          ForeignKey('vocab.tbl_institute.ID'))
 
     # Relationships.
     ExternalIDs = relationship("DocumentExternalID", backref="Document")
     Summaries = relationship("DocumentSummary", backref="Document", lazy='joined')
 
     # Field set.
-    source = Column('Source_Key', Unicode(255), nullable=True)
-    type = Column('Type', Unicode(255), nullable=False)
-    name = Column('Name', Unicode(255), nullable=False)
-    uid = Column('UID', Unicode(63), nullable=False, default=uuid.uuid4())
-    version = Column('Version', Integer, nullable=False, default=1)
-    ingest_date = Column('IngestDate', DateTime, default=datetime.datetime.now())
-    is_latest = Column('IsLatest', Boolean, nullable=False, default=False)
-
-    # project = Column(Unicode(255), required=True)
-    sub_project = Column(Unicode(255), nullable=True)
-    # institute = Column(Unicode(255), nullable=True)
+    source = Column(Unicode(255))
+    type = Column(Unicode(255), nullable=False)
+    name = Column(Unicode(255), nullable=False)
+    uid = Column(Unicode(63), nullable=False, default=uuid.uuid4())
+    version = Column(Integer, nullable=False, default=1)
+    ingest_date = Column(DateTime, default=datetime.datetime.now())
+    is_latest = Column(Boolean, nullable=False, default=False)
+    sub_project = Column(Unicode(255))
 
 
     def __init__(self):
@@ -123,24 +122,26 @@ class DocumentDRS(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_drs'
     __table_args__ = (
-        UniqueConstraint('Project_ID' ,'Document_ID', 'Path'),
+        UniqueConstraint('project_id' ,'document_id', 'path'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    project_id = Column('Project_ID', Integer, ForeignKey('vocab.tbl_project.ID'), nullable=False)
-    document_id = Column('Document_ID', Integer, ForeignKey('docs.tbl_document.ID'), nullable=False)
+    project_id = Column(Integer,
+                        ForeignKey('vocab.tbl_project.ID'), nullable=False)
+    document_id = Column(Integer,
+                         ForeignKey('docs.tbl_document.ID'), nullable=False)
 
     # Field set.
-    path = Column('Path', Unicode(511))
-    key_01 = Column('Key_01', Unicode(63))
-    key_02 = Column('Key_02', Unicode(63))
-    key_03 = Column('Key_03', Unicode(63))
-    key_04 = Column('Key_04', Unicode(63))
-    key_05 = Column('Key_05', Unicode(63))
-    key_06 = Column('Key_06', Unicode(63))
-    key_07 = Column('Key_07', Unicode(63))
-    key_08 = Column('Key_08', Unicode(63))
+    path = Column(Unicode(511))
+    key_01 = Column(Unicode(63))
+    key_02 = Column(Unicode(63))
+    key_03 = Column(Unicode(63))
+    key_04 = Column(Unicode(63))
+    key_05 = Column(Unicode(63))
+    key_06 = Column(Unicode(63))
+    key_07 = Column(Unicode(63))
+    key_08 = Column(Unicode(63))
 
 
     def clone(self):
@@ -193,16 +194,18 @@ class DocumentExternalID(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_external_id'
     __table_args__ = (
-        UniqueConstraint('Project_ID' ,'Document_ID', 'ExternalID'),
+        UniqueConstraint('project_id' ,'document_id', 'external_id'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    project_id = Column('Project_ID', Integer, ForeignKey('vocab.tbl_project.ID'), nullable=False)
-    document_id = Column('Document_ID', Integer, ForeignKey('docs.tbl_document.ID'), nullable=False)
+    project_id = Column(Integer,
+                        ForeignKey('vocab.tbl_project.ID'), nullable=False)
+    document_id = Column(Integer,
+                         ForeignKey('docs.tbl_document.ID'), nullable=False)
 
     # Field set.
-    external_id = Column('ExternalID', Unicode(255), nullable=False)
+    external_id = Column(Unicode(255), nullable=False)
 
 
 class DocumentSummary(Entity):
@@ -212,28 +215,30 @@ class DocumentSummary(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_summary'
     __table_args__ = (
-        UniqueConstraint('Document_ID' ,'Language_ID'),
+        UniqueConstraint('document_id' ,'language_id'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    document_id = Column('Document_ID', Integer, ForeignKey('docs.tbl_document.ID'), nullable=False)
-    language_id = Column('Language_ID', Integer, ForeignKey('vocab.tbl_document_language.ID'), nullable=False)
+    document_id = Column(Integer,
+                         ForeignKey('docs.tbl_document.ID'), nullable=False)
+    language_id = Column(Integer,
+                         ForeignKey('vocab.tbl_document_language.ID'), nullable=False)
 
     # Field set.
-    short_name = Column('ShortName', Unicode(1023))
-    long_name = Column('LongName', Unicode(1023))
-    description = Column('Description', Unicode(1023))
-    field_01 = Column('Field_01', Unicode(1023))
-    field_02 = Column('Field_02', Unicode(1023))
-    field_03 = Column('Field_03', Unicode(1023))
-    field_04 = Column('Field_04', Unicode(1023))
-    field_05 = Column('Field_05', Unicode(1023))
-    field_06 = Column('Field_06', Unicode(1023))
-    field_07 = Column('Field_07', Unicode(1023))
-    field_08 = Column('Field_08', Unicode(1023))
-    model = Column('Model', Unicode(1023))
-    experiment = Column('Experiment', Unicode(1023))
+    short_name = Column(Unicode(1023))
+    long_name = Column(Unicode(1023))
+    description = Column(Unicode(1023))
+    field_01 = Column(Unicode(1023))
+    field_02 = Column(Unicode(1023))
+    field_03 = Column(Unicode(1023))
+    field_04 = Column(Unicode(1023))
+    field_05 = Column(Unicode(1023))
+    field_06 = Column(Unicode(1023))
+    field_07 = Column(Unicode(1023))
+    field_08 = Column(Unicode(1023))
+    model = Column(Unicode(1023))
+    experiment = Column(Unicode(1023))
 
 
     def format_dict(self, as_dict, key_formatter=None, json_formatting=False):

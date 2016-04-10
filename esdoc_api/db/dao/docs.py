@@ -14,9 +14,6 @@ from esdoc_api.db.dao.core import (
     delete_by_type,
     delete_by_id,
     delete_by_facet,
-    get_by_id,
-    get_by_facet,
-    get_by_name,
     sort
     )
 from esdoc_api.db import models, session
@@ -24,39 +21,10 @@ from esdoc_api.db.models import (
     Document,
     DocumentDRS,
     DocumentExternalID,
-    DocumentLanguage,
-    DocumentOntology,
     DocumentSummary,
     Institute,
     Project
 )
-
-
-
-# Module exports.
-__all__ = [
-    'delete_all_documents',
-    'delete_document',
-    'delete_document_drs',
-    'delete_document_external_ids',
-    'delete_document_summaries',
-    'get_document',
-    'get_document_by_drs_keys',
-    'get_document_by_name',
-    'get_document_by_type',
-    'get_document_counts',
-    'get_doc_descriptions',
-    'get_document_drs',
-    'get_document_external_id',
-    'get_document_external_ids',
-    'get_document_summaries',
-    'get_document_summary',
-    'get_document_type_count',
-    'get_documents_by_external_id',
-    'get_project_document_type_counts',
-    'get_summary_eperiment_set',
-    'get_summary_model_set',
-]
 
 
 
@@ -71,272 +39,219 @@ def get_document(uid, version, project_id=None):
     :rtype: db.models.Document
 
     """
-    q = session.query(Document)
+    qry = session.query(Document)
 
     if project_id is not None:
-        q = q.filter(Document.project_id==project_id)
-    q = q.filter(Document.uid==unicode(uid))
+        qry = qry.filter(Document.project_id == project_id)
+    qry = qry.filter(Document.uid == unicode(uid))
     if version is None or version in models.DOCUMENT_VERSIONS:
-        q = q.order_by(Document.version.desc())
+        qry = qry.order_by(Document.version.desc())
     else:
-        q = q.filter(Document.version==int(version))
+        qry = qry.filter(Document.version == int(version))
 
-    return q.all() if version == models.DOCUMENT_VERSION_ALL else q.first()
+    return qry.all() if version == models.DOCUMENT_VERSION_ALL else qry.first()
 
 
-def get_document_by_name(project_id,
-                         type,
-                         name,
-                         institute_id=None,
-                         latest_only=True):
+def get_document_by_name(
+    project_id,
+    typeof,
+    name,
+    institute_id=None,
+    latest_only=True
+    ):
     """Retrieves a single document by it's name.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param type: Document type.
-    :type type: str
-
-    :param name: Document name.
-    :type name: str
-
-    :param institute_id: ID of an Institute instance.
-    :type institute_id: int
-
-    :param latest_only: Project with which document is associated.
-    :type latest_only: boolean
+    :param int project_id: ID of a Project instance.
+    :param str typeof: Document type.
+    :param str name: Document name.
+    :param int institute_id: ID of an Institute instance.
+    :param boolean latest_only: Project with which document is associated.
 
     :returns: First matching document.
     :rtype: db.models.Document
 
     """
-    q = session.query(Document)
+    qry = session.query(Document)
 
-    q = q.filter(Document.project_id==project_id)
-    q = q.filter(sa.func.upper(Document.type)==type.upper())
-    q = q.filter(sa.func.upper(Document.name)==name.upper())
+    qry = qry.filter(Document.project_id == project_id)
+    qry = qry.filter(sa.func.upper(Document.type) == typeof.upper())
+    qry = qry.filter(sa.func.upper(Document.name) == name.upper())
     if institute_id is not None:
-        q = q.filter(Document.institute_id==institute_id)
+        qry = qry.filter(Document.institute_id == institute_id)
     if latest_only == True:
-        q = q.filter(Document.is_latest==True)
+        qry = qry.filter(Document.is_latest == True)
 
-    return q.first()
+    return qry.first()
 
 
-def get_document_by_type(project_id,
-                         type,
-                         latest_only=True):
+def get_document_by_type(project_id, typeof, latest_only=True):
     """Retrieves documents by type.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param type: Document type.
-    :type type: str
-
-    :param latest_only: Flag indicating whether to return only the latest documents.
-    :type latest_only: boolean
+    :param int project_id: ID of a Project instance.
+    :param str typeof: Document type.
+    :param boolean latest_only: Flag indicating whether to return only the latest documents.
 
     :returns: Matching documents.
     :rtype: list
 
     """
-    q = session.query(Document)
+    qry = session.query(Document)
 
-    q = q.filter(Document.project_id==project_id)
-    q = q.filter(sa.func.upper(Document.type)==type.upper())
+    qry = qry.filter(Document.project_id == project_id)
+    qry = qry.filter(sa.func.upper(Document.type) == typeof.upper())
     if latest_only == True:
-        q = q.filter(Document.is_latest==True)
+        qry = qry.filter(Document.is_latest == True)
 
-    return q.all()
+    return qry.all()
 
 
-def get_document_by_drs_keys(project_id,
-                             key_01=None,
-                             key_02=None,
-                             key_03=None,
-                             key_04=None,
-                             key_05=None,
-                             key_06=None,
-                             key_07=None,
-                             key_08=None,
-                             latest_only = True):
+def get_document_by_drs_keys(
+    project_id,
+    key_01=None,
+    key_02=None,
+    key_03=None,
+    key_04=None,
+    key_05=None,
+    key_06=None,
+    key_07=None,
+    key_08=None,
+    latest_only = True
+    ):
     """Retrieves a single document by it's drs keys.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param key_01: DRS key 1.
-    :type key_01: str
-
-    :param key_02: DRS key 2.
-    :type key_02: str
-
-    :param key_03: DRS key 3.
-    :type key_03: str
-
-    :param key_04: DRS key 4.
-    :type key_04: str
-
-    :param key_05: DRS key 5.
-    :type key_05: str
-
-    :param key_06: DRS key 6.
-    :type key_06: str
-
-    :param key_07: DRS key 7.
-    :type key_07: str
-
-    :param key_08: DRS key 8.
-    :type key_08: str
-
-    :param latest_only: Flag indicating whether only the latest document is to be returned.
-    :type latest_only: boolean
+    :param int project_id: ID of a Project instance.
+    :param str key_01: DRS key 1.
+    :param str key_02: DRS key 2.
+    :param str key_03: DRS key 3.
+    :param str key_04: DRS key 4.
+    :param str key_05: DRS key 5.
+    :param str key_06: DRS key 6.
+    :param str key_07: DRS key 7.
+    :param str key_08: DRS key 8.
+    :param boolean latest_only: Flag indicating whether only the latest document is to be returned.
 
     :returns: First matching document.
     :rtype: db.models.Document
 
     """
-    q = session.query(Document).join(DocumentDRS)
+    qry = session.query(Document).join(DocumentDRS)
 
-    q = q.filter(Document.project_id==project_id)
+    qry = qry.filter(Document.project_id == project_id)
     if key_01 is not None:
-        q = q.filter(DocumentDRS.key_01==key_01.upper())
+        qry = qry.filter(DocumentDRS.key_01 == key_01.upper())
     if key_02 is not None:
-        q = q.filter(DocumentDRS.key_02==key_02.upper())
+        qry = qry.filter(DocumentDRS.key_02 == key_02.upper())
     if key_03 is not None:
-        q = q.filter(DocumentDRS.key_03==key_03.upper())
+        qry = qry.filter(DocumentDRS.key_03 == key_03.upper())
     if key_04 is not None:
-        q = q.filter(DocumentDRS.key_04==key_04.upper())
+        qry = qry.filter(DocumentDRS.key_04 == key_04.upper())
     if key_05 is not None:
-        q = q.filter(DocumentDRS.key_05==key_05.upper())
+        qry = qry.filter(DocumentDRS.key_05 == key_05.upper())
     if key_06 is not None:
-        q = q.filter(DocumentDRS.key_06==key_06.upper())
+        qry = qry.filter(DocumentDRS.key_06 == key_06.upper())
     if key_07 is not None:
-        q = q.filter(DocumentDRS.key_07==key_07.upper())
+        qry = qry.filter(DocumentDRS.key_07 == key_07.upper())
     if key_08 is not None:
-        q = q.filter(DocumentDRS.key_08==key_08.upper())
+        qry = qry.filter(DocumentDRS.key_08 == key_08.upper())
     if latest_only == True:
-        q = q.filter(Document.is_latest==True)
+        qry = qry.filter(Document.is_latest == True)
 
-    return q.first()
+    return qry.first()
 
 
 def get_documents_by_external_id(project_id, external_id):
     """Retrieves a list of documents with a matching external ID.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param external_id: External ID to be resolved to a document.
-    :type external_id: str
+    :param int project_id: ID of a Project instance.
+    :param str external_id: External ID to be resolved to a document.
 
     :returns: List of Document instances with matching external ID.
     :rtype: list
 
     """
-    q = session.query(Document).join(DocumentExternalID)
+    qry = session.query(Document).join(DocumentExternalID)
 
-    q = q.filter(Document.project_id==project_id)
-    q = q.filter(DocumentExternalID.external_id.like('%' + external_id.upper() + '%'))
+    qry = qry.filter(Document.project_id == project_id)
+    qry = qry.filter(DocumentExternalID.external_id.like('%' + external_id.upper() + '%'))
 
-    return q.all()
+    return qry.all()
 
 
 def get_document_drs(project_id, document_id, path):
     """Returns a DocumentDRS instance with matching document & drs path.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param document_id: ID of a Document instance.
-    :type document_id: int
-
-    :param path: DRS path.
-    :type path: str
+    :param int project_id: ID of a Project instance.
+    :param int document_id: ID of a Document instance.
+    :param str path: DRS path.
 
     :returns: First DocumentDRS instance with matching document & drs path.
     :rtype: db.models.DocumentDRS
 
     """
-    q = session.query(DocumentDRS)
+    qry = session.query(DocumentDRS)
 
-    q = q.filter(DocumentDRS.project_id==project_id)
-    q = q.filter(DocumentDRS.document_id==document_id)
-    q = q.filter(DocumentDRS.path==path.upper())
+    qry = qry.filter(DocumentDRS.project_id == project_id)
+    qry = qry.filter(DocumentDRS.document_id == document_id)
+    qry = qry.filter(DocumentDRS.path == path.upper())
 
-    return q.first()
+    return qry.first()
 
 
 def get_document_external_id(project_id, document_id, external_id):
     """Returns a DocumentExternalID instance with matching document & external id.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param document_id: ID of a Document instance.
-    :type document_id: int
-
-    :param external_id: An external ID.
-    :type external_id: str
+    :param int project_id: ID of a Project instance.
+    :param int document_id: ID of a Document instance.
+    :param str external_id: An external ID.
 
     :returns: First DocumentExternalID instance with matching document & external id.
     :rtype: db.models.DocumentExternalID
 
     """
-    q = session.query(DocumentExternalID)
+    qry = session.query(DocumentExternalID)
 
-    q = q.filter(DocumentExternalID.project_id==project_id)
-    q = q.filter(DocumentExternalID.document_id==document_id)
-    q = q.filter(DocumentExternalID.external_id==external_id)
+    qry = qry.filter(DocumentExternalID.project_id == project_id)
+    qry = qry.filter(DocumentExternalID.document_id == document_id)
+    qry = qry.filter(DocumentExternalID.external_id == external_id)
 
-    return q.first()
+    return qry.first()
 
 
 def get_document_external_ids(document_id, project_id=None):
     """Returns a DocumentExternalID instance with matching document & external id.
 
-    :param document_id: ID of a Document instance.
-    :type document_id: int
-
-    :param project_id: ID of a Project instance.
-    :type project_id: int or None
-
-    :param external_id: An external ID.
-    :type external_id: str
+    :param int document_id: ID of a Document instance.
+    :param int project_id: ID of a Project instance.
 
     :returns: First DocumentExternalID instance with matching document & external id.
     :rtype: db.models.DocumentExternalID
 
     """
-    q = session.query(DocumentExternalID)
+    qry = session.query(DocumentExternalID)
 
-    q = q.filter(DocumentExternalID.document_id==document_id)
+    qry = qry.filter(DocumentExternalID.document_id == document_id)
     if project_id is not None:
-        q = q.filter(DocumentExternalID.project_id==project_id)
+        qry = qry.filter(DocumentExternalID.project_id == project_id)
 
-    return q.all()
+    return qry.all()
 
 
 def get_document_summary(document_id, language_id):
     """Returns a DocumentSummary instance with matching document & language.
 
-    :param document_id: ID of a Document instance.
-    :type document_id: int
-
-    :param language_id: ID of a DocumentLanguage instance.
-    :type language_id: int
+    :param int document_id: ID of a Document instance.
+    :param int language_id: ID of a DocumentLanguage instance.
 
     :returns: First DocumentSummary instance with matching document & language.
     :rtype: db.models.DocumentSummary
 
     """
-    q = session.query(DocumentSummary)
+    qry = session.query(DocumentSummary)
 
-    q = q.filter(DocumentSummary.document_id==document_id)
-    q = q.filter(DocumentSummary.language_id==language_id)
+    qry = qry.filter(DocumentSummary.document_id == document_id)
+    qry = qry.filter(DocumentSummary.language_id == language_id)
 
-    return q.first()
+    return qry.first()
 
 
 def get_document_summaries(
@@ -346,7 +261,8 @@ def get_document_summaries(
     language_id,
     institute_id=None,
     model=None,
-    experiment=None):
+    experiment=None
+    ):
     """Returns a list of DocumentSummary instance with matching criteria.
 
     :param int project_id: ID of a Project instance.
@@ -368,46 +284,42 @@ def get_document_summaries(
         experiment = experiment.upper()
 
     # Set query.
-    q = session.query(DocumentSummary).join(Document)
+    qry = session.query(DocumentSummary).join(Document)
 
     # Set mandatory params.
-    q = q.filter(Document.project_id==project_id)
-    q = q.filter(DocumentSummary.language_id==language_id)
+    qry = qry.filter(Document.project_id == project_id)
+    qry = qry.filter(DocumentSummary.language_id == language_id)
     if type != models.DOCUMENT_TYPE_ALL:
-        q = q.filter(sa.func.upper(Document.type)==type)
+        qry = qry.filter(sa.func.upper(Document.type) == type)
     if version == models.DOCUMENT_VERSION_LATEST:
-        q = q.filter(Document.is_latest==True)
+        qry = qry.filter(Document.is_latest == True)
     if experiment is not None:
-        q = q.filter(sa.func.upper(DocumentSummary.experiment)==experiment)
+        qry = qry.filter(sa.func.upper(DocumentSummary.experiment) == experiment)
     if institute_id is not None:
-        q = q.filter(Document.institute_id==institute_id)
+        qry = qry.filter(Document.institute_id == institute_id)
     if model is not None:
-        q = q.filter(sa.func.upper(DocumentSummary.model)==model)
+        qry = qry.filter(sa.func.upper(DocumentSummary.model) == model)
 
     # Apply query limit.
-    q = q.limit(session.QUERY_LIMIT)
+    qry = qry.limit(session.QUERY_LIMIT)
 
-    return sort(DocumentSummary, q.all())
+    return sort(DocumentSummary, qry.all())
 
 
-def _delete_document_relation(document_id, type):
+def _delete_document_relation(document_id, typeof):
     """Deletes all document relations of passed type.
 
-    :param document_id: ID of a Document instance.
-    :type document_id: int
-
-    :param type: Type of relation.
-    :type type: class
+    :param int document_id: ID of a Document instance.
+    :param class typeof: Type of relation.
 
     """
-    delete_by_facet(type, type.document_id==document_id)
+    delete_by_facet(typeof, typeof.document_id == document_id)
 
 
 def delete_document_summaries(document_id):
     """Deletes a list of DocumentSummary instances filtered by their Document ID.
 
-    :param document_id: ID of a Document instance.
-    :type document_id: int
+    :param int document_id: ID of a Document instance.
 
     """
     _delete_document_relation(document_id, DocumentSummary)
@@ -416,8 +328,7 @@ def delete_document_summaries(document_id):
 def delete_document_external_ids(document_id):
     """Deletes a list of DocumentExternalID instances filtered by their Document ID.
 
-    :param document_id: ID of a Document instance.
-    :type document_id: int
+    :param int document_id: ID of a Document instance.
 
     """
     _delete_document_relation(document_id, DocumentExternalID)
@@ -426,8 +337,7 @@ def delete_document_external_ids(document_id):
 def delete_document_drs(document_id):
     """Deletes a list of DocumentDRS instances filtered by their Document ID.
 
-    :param document_id: ID of a Document instance.
-    :type document_id: int
+    :param int document_id: ID of a Document instance.
 
     """
     _delete_document_relation(document_id, DocumentDRS)
@@ -436,8 +346,7 @@ def delete_document_drs(document_id):
 def delete_document(document_id):
     """Deletes a document.
 
-    :param document_id: ID of a Document instance.
-    :type document_id: int
+    :param int document_id: ID of a Document instance.
 
     """
     delete_document_drs(document_id)
@@ -460,14 +369,14 @@ def get_project_document_type_counts():
     :rtype: list
 
     """
-    q = session.query(sa.func.count(Document.type),
-                      Document.project_id,
-                      Document.type)
+    qry = session.query(sa.func.count(Document.type),
+                        Document.project_id,
+                        Document.type)
 
-    q = q.group_by(Document.project_id)
-    q = q.group_by(Document.type)
+    qry = qry.group_by(Document.project_id)
+    qry = qry.group_by(Document.type)
 
-    return q.all()
+    return qry.all()
 
 
 def get_document_counts():
@@ -477,88 +386,86 @@ def get_document_counts():
     :rtype: list
 
     """
-    q = session.query(sa.func.count(Document.institute_id),
-                      Project.name,
-                      Institute.name,
-                      Document.type)
-    q = q.join(Project)
-    q = q.join(Institute)
+    qry = session.query(sa.func.count(Document.institute_id),
+                        Project.name,
+                        Institute.name,
+                        Document.type)
+    qry = qry.join(Project)
+    qry = qry.join(Institute)
 
-    q = q.group_by(Project.id)
-    q = q.group_by(Institute.id)
-    q = q.group_by(Document.type)
+    qry = qry.group_by(Project.id)
+    qry = qry.group_by(Institute.id)
+    qry = qry.group_by(Document.type)
 
-    q = q.order_by(Document.type.desc())
+    qry = qry.order_by(Document.type.desc())
 
-    return q.all()
+    return qry.all()
 
 
-def get_document_type_count(project_id, type):
+def get_document_type_count(project_id, typeof):
     """Returns count over a project's document type.
 
-    :param type: Document type.
-    :type type: str
-
-    :param project_id: ID of a Project instance.
-    :type project_id: int
+    :param str typeof: Document type.
+    :param int project_id: ID of a Project instance.
 
     :returns: List of counts over a project's document types.
     :rtype: list
 
     """
-    q = session.query(sa.func.count(Document.type))
+    qry = session.query(sa.func.count(Document.type))
 
-    q = q.filter(Document.project_id==project_id)
-    q = q.filter(sa.func.upper(Document.type)==type.upper())
-    q = q.group_by(Document.type)
+    qry = qry.filter(Document.project_id == project_id)
+    qry = qry.filter(sa.func.upper(Document.type) == typeof.upper())
+    qry = qry.group_by(Document.type)
 
-    counts = q.all()
+    counts = qry.all()
 
     return 0 if not len(counts) else counts[0][0]
 
 
-def get_doc_descriptions(project_id, language_id, type):
+def get_doc_descriptions(project_id, language_id, typeof):
     """Returns document descriptions.
 
-    :param project_id: ID of a Project instance.
-    :type project_id: int
-
-    :param language_id: ID of a DocumentLanguage instance.
-    :type language_id: int
-
-    :param type: Type of Document instance.
-    :type type: str
+    :param int project_id: ID of a Project instance.
+    :param int language_id: ID of a DocumentLanguage instance.
+    :param str typeof: Type of Document instance.
 
     :returns: Dictionary of project document desciptions.
     :rtype: dict
 
     """
-    q = session.query(Document.name, DocumentSummary.description)
-    q = q.join(DocumentSummary)
+    qry = session.query(Document.name, DocumentSummary.description)
+    qry = qry.join(DocumentSummary)
 
-    q = q.filter(Document.is_latest==True)
-    q = q.filter(Document.project_id==project_id)
-    q = q.filter(Document.type==type)
-    q = q.filter(DocumentSummary.language_id==language_id)
+    qry = qry.filter(Document.is_latest == True)
+    qry = qry.filter(Document.project_id == project_id)
+    qry = qry.filter(Document.type == typeof)
+    qry = qry.filter(DocumentSummary.language_id == language_id)
 
-    return q.all()
+    return qry.all()
 
 
 def _get_summary_fieldset(field):
-    """Returns set of unique document summary field values."""
-    q = session.query(Document.project_id, field)
-    q = q.join(DocumentSummary)
-    q = q.filter(field!='None')
-    q = q.distinct()
+    """Returns set of unique document summary field values.
 
-    return q.all()
+    """
+    qry = session.query(Document.project_id, field)
+    qry = qry.join(DocumentSummary)
+    qry = qry.filter(field != 'None')
+    qry = qry.distinct()
+
+    return qry.all()
 
 
 def get_summary_model_set():
-    """Returns set of unique document summary model names."""
+    """Returns set of unique document summary model names.
+
+    """
     return _get_summary_fieldset(DocumentSummary.model)
 
 
 def get_summary_eperiment_set():
-    """Returns set of unique document summary experiment names."""
+    """Returns set of unique document summary experiment names.
+
+    """
     return _get_summary_fieldset(DocumentSummary.experiment)

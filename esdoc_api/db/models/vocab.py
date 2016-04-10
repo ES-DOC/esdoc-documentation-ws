@@ -53,7 +53,7 @@ class DocumentEncoding(Entity):
     )
 
     # Field set.
-    encoding = Column('Encoding', Unicode(63), nullable=False, unique=True)
+    encoding = Column(Unicode(63), nullable=False, unique=True)
 
 
     @property
@@ -83,8 +83,8 @@ class DocumentLanguage(Entity):
     )
 
     # Field set.
-    code = Column('Code', Unicode(2), nullable=False)
-    name = Column('Name', Unicode(127), nullable=False, unique=True)
+    code = Column(Unicode(2), nullable=False)
+    name = Column(Unicode(127), nullable=False, unique=True)
 
 
     @property
@@ -110,13 +110,13 @@ class DocumentOntology(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_ontology'
     __table_args__ = (
-        UniqueConstraint('Name' ,'Version'),
+        UniqueConstraint('name' ,'version'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Field set.
-    name = Column('Name', Unicode(63), nullable=False)
-    version = Column('Version', Unicode(31), nullable=False)
+    name = Column(Unicode(63), nullable=False)
+    version = Column(Unicode(31), nullable=False)
 
 
     @property
@@ -145,18 +145,19 @@ class DocumentType(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_type'
     __table_args__ = (
-        UniqueConstraint('Key'),
+        UniqueConstraint('key'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    ontology_id = Column('Ontology_ID', Integer, ForeignKey('vocab.tbl_document_ontology.ID'), nullable=False)
+    ontology_id = Column(Integer,
+                         ForeignKey('vocab.tbl_document_ontology.ID'), nullable=False)
 
     # Field set.
-    key = Column('Key', Unicode(255), nullable=False)
-    display_name = Column('DisplayName', Unicode(63), nullable=False)
-    is_search_target = Column('IsSearchTarget', Boolean, nullable=False, default=True)
-    is_pdf_target = Column('IsPdfTarget', Boolean, nullable=False, default=True)
+    key = Column(Unicode(255), nullable=False)
+    display_name = Column(Unicode(63), nullable=False)
+    is_search_target = Column(Boolean, nullable=False, default=True)
+    is_pdf_target = Column(Boolean, nullable=False, default=True)
 
 
     @property
@@ -178,10 +179,10 @@ class Institute(Entity):
     )
 
     # Field set.
-    name = Column('Name', Unicode(16), nullable=False, unique=True)
-    long_name = Column('LongName', Unicode(512), nullable=False)
-    country_code = Column('CountryCode', Unicode(2), nullable=False)
-    url = Column('URL', Unicode(256))
+    name = Column(Unicode(16), nullable=False, unique=True)
+    long_name = Column(Unicode(512), nullable=False)
+    country_code = Column(Unicode(2), nullable=False)
+    url = Column(Unicode(256))
 
 
     @property
@@ -211,9 +212,9 @@ class Project(Entity):
     )
 
     # Field set.
-    name = Column('Name', Unicode(63), nullable=False, unique=True)
-    description = Column('Description', Unicode(1023))
-    url = Column('URL', Unicode(1023))
+    name = Column(Unicode(63), nullable=False, unique=True)
+    description = Column(Unicode(1023))
+    url = Column(Unicode(1023))
 
 
     @property
