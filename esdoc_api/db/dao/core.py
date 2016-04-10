@@ -17,200 +17,162 @@ from esdoc_api.utils import runtime as rt
 
 
 
-# Module exports.
-__all__ = [
-    'delete',
-    'delete_by_type',
-    'delete_by_facet',
-    'delete_by_id',
-    'delete_by_name',
-    'get_active',
-    'get_all',
-    'get_by_facet',
-    'get_by_id',
-    'get_by_name',
-    'get_count',
-    'get_inactive',
-    'insert',
-    'sort'
-]
-
-
-
-def sort(type, collection):
+def sort(etype, collection):
     """Sorts collection via type sort key.
 
-    :param type: A supported entity type.
-    :type type: class
-
-    :param collection: Collection of entities.
-    :type collection: list
+    :param class etype: A supported entity type.
+    :param list collection: Collection of entities.
 
     :returns: Sorted collection.
     :rtype: list
 
     """
     # Defensive programming.
-    models.assert_type(type)
+    models.assert_type(etype)
 
-    return [] if collection is None else type.get_sorted(collection)
+    return [] if collection is None else etype.get_sorted(collection)
 
 
-def _get_active(type, is_active_state):
+def _get_active(etype, is_active_state):
     """Gets instances filtered by their IsActive state.
 
-    :param type: A supported entity type.
-    :type type: class
-
-    :param is_active_state: Entity IsActive field value.
-    :type is_active_state: bool
+    :param etype: A supported entity type.
+    :param bool is_active_state: Entity IsActive field value.
 
     :returns: Entity collection.
     :rtype: list
 
     """
     # Defensive programming.
-    models.assert_type(type)
+    models.assert_type(etype)
 
-    return get_by_facet(type, type.IsActive==is_active_state, get_iterable=True)
+    return get_by_facet(etype, etype.IsActive == is_active_state, get_iterable=True)
 
 
-def get_active(type):
+def get_active(etype):
     """Gets all active instances.
 
-    :param type: A supported entity type.
-    :type type: class
+    :param class etype: A supported entity type.
 
     :returns: Active entity collection.
     :rtype: list
 
     """
-    return _get_active(type, True)
+    return _get_active(etype, True)
 
 
-def get_inactive(type):
+def get_inactive(etype):
     """Gets all inactive instances.
 
-    :param type: A supported entity type.
-    :type type: class
+    :param class etype: A supported entity type.
 
     :returns: Inactive entity collection.
     :rtype: list
 
     """
-    return _get_active(type, False)
+    return _get_active(etype, False)
 
 
-def get_all(mtype):
+def get_all(etype):
     """Gets all instances of the entity.
 
-    :param class mtype: A supported entity type.
+    :param class etype: A supported entity type.
 
     :returns: Entity collection.
     :rtype: list
 
     """
-    return get_by_facet(mtype, None, get_iterable=True)
+    return get_by_facet(etype, None, get_iterable=True)
 
 
-def get_by_facet(mtype,
-                 filter,
-                 order_by=None,
-                 get_iterable=False):
+def get_by_facet(
+    etype,
+    efilter,
+    order_by=None,
+    get_iterable=False
+    ):
     """Gets entity instance by facet.
 
-    :param class mtype: A supported entity type.
-
-    :param filter: Filter expression.
-    :type filter: expression
-
-    :param order_by: Sort expression.
-    :type order_by: expression
-
-    :param get_iterable: Flag indicating whether to return an iterable or not.
-    :type get_iterable: bool
+    :param class etype: A supported entity type.
+    :param expression efilter: Entity filter expression.
+    :param expression order_by: Sort expression.
+    :param bool get_iterable: Flag indicating whether to return an iterable or not.
 
     :returns: Entity or entity collection.
     :rtype: Sub-class of db.models.Entity
 
     """
     # Defensive programming.
-    models.assert_type(mtype)
+    models.assert_type(etype)
 
-    q = session.query(mtype)
-    if filter is not None:
-        if inspect.isfunction(filter):
-            filter(q)
+    qry = session.query(etype)
+    if efilter is not None:
+        if inspect.isfunction(efilter):
+            efilter(qry)
         else:
-            q = q.filter(filter)
+            qry = qry.filter(efilter)
     if order_by is not None:
         if inspect.isfunction(order_by):
-            order_by(q)
+            order_by(qry)
         else:
-            q = q.order_by(order_by)
+            qry = qry.order_by(order_by)
 
     # Return accordingly.
     # ... first
     if not get_iterable:
-        return q.first()
+        return qry.first()
     # ... sorted collection
     elif order_by is None:
-        return sort(mtype, q.all())
+        return sort(etype, qry.all())
     # ... ordered collection
     else:
-        return q.all()
+        return qry.all()
 
 
-def get_by_id(type, id):
+def get_by_id(etype, eid):
     """Gets entity instance by id.
 
-    :param type: A supported entity type.
-    :type type: class
-
-    :param id: ID of entity.
-    :type id: int
+    :param etype: A supported entity type.
+    :param int id: ID of entity.
 
     :returns: Entity with matching ID.
     :rtype: Sub-class of db.models.Entity
 
     """
-    return get_by_facet(type, type.id==id)
+    return get_by_facet(etype, etype.id == eid)
 
 
-def get_by_name(type, name):
+def get_by_name(etype, name):
     """Gets an entity instance by it's name.
 
-    :param type: A supported entity type.
-    :type type: class
-
-    :param name: Name of entity.
-    :type name: str
+    :param class etype: A supported entity type.
+    :param str name: Name of entity.
 
     :returns: Entity with matching name.
     :rtype: Sub-class of db.models.Entity
 
     """
-    return get_by_facet(type, sa.func.upper(type.name)==name.upper())
+    return get_by_facet(etype, sa.func.upper(etype.name) == name.upper())
 
 
-def get_count(mtype, filter=None):
+def get_count(etype, efilter=None):
     """Gets count of entity instances.
 
-    :param class mtype: A supported entity type.
-    :param function filter: A filter function to be applied.
+    :param class etype: A supported entity type.
+    :param function efilter: A filter function to be applied.
 
     :returns: Entity collection count.
     :rtype: int
 
     """
     # Defensive programming.
-    models.assert_type(mtype)
+    models.assert_type(etype)
 
-    q = session.query(mtype)
-    if filter is not None:
-        q = q.filter(filter)
+    qry = session.query(etype)
+    if efilter:
+        qry = qry.filter(efilter)
 
-    return q.count()
+    return qry.count()
 
 
 def insert(target):
@@ -245,65 +207,56 @@ def delete(target):
         session.delete(target)
 
 
-def delete_by_type(mtype, callback=None):
+def delete_by_type(etype, callback=None):
     """Deletes all entities of passed type.
 
-    :param class mtype: A supported entity type.
+    :param class etype: A supported entity type.
     :param function callback: Pointer to a function that will perform callback.
 
     """
     # Defensive programming.
-    models.assert_type(mtype)
+    models.assert_type(etype)
 
     if callback is None:
-        delete_by_facet(mtype, mtype.id>0)
+        delete_by_facet(etype, etype.id > 0)
     else:
-        for instance in get_all(mtype):
+        for instance in get_all(etype):
             callback(instance.id)
 
 
-def delete_by_facet(type, filter):
+def delete_by_facet(etype, efilter):
     """Delete entity instance by id.
 
-    :param type: A supported entity type.
-    :type type: class
-
-    :param filter: Filter to apply.
-    :type filter: expression or functino pointer
+    :param class etype: A supported entity type.
+    :param expression|func efilter: Filter to apply.
 
     """
     # Defensive programming.
-    models.assert_type(type)
+    models.assert_type(etype)
 
-    q = session.query(type)
-    if inspect.isfunction(filter):
-        filter(q)
+    qry = session.query(etype)
+    if inspect.isfunction(efilter):
+        efilter(qry)
     else:
-        q = q.filter(filter)
-    q.delete()
+        qry = qry.filter(efilter)
+    qry.delete()
 
 
-def delete_by_id(type, id):
+def delete_by_id(etype, eid):
     """Delete entity instance by id.
 
-    :param type: A supported entity type.
-    :type type: class
-
-    :param id: ID of entity.
-    :type id: int
+    :param class type: A supported entity type.
+    :param int eid: ID of entity.
 
     """
-    delete_by_facet(type, type.id==id)
+    delete_by_facet(etype, etype.id == eid)
 
 
-def delete_by_name(type, name):
+def delete_by_name(etype, name):
     """Deletes an entity instance by it's name.
 
-    :param type: A supported entity type.
-    :type type: class
-
-    :param name: Name of entity.
-    :type name: str
+    :param class etype: A supported entity type.
+    :param str name: Name of entity.
 
     """
-    delete_by_facet(type, type.name==name)
+    delete_by_facet(etype, etype.name == name)

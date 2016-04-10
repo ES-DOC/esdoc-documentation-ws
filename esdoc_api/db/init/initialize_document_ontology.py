@@ -8,32 +8,23 @@
 
 
 """
-from esdoc_api.db import models, session
+from esdoc_api.db import models
+from esdoc_api.db import session
 
-
-
-# Data to be inserted into db.
-_DATA = u'''cim.1 | 1'''
-
-
-
-def _get_data():
-    """Yields rows to be uploaded to db."""
-    for row in [l.split('|') for l in _DATA.splitlines()]:
-        for i in range(len(row)):
-            row[i] = row[i].strip()
-        yield row
 
 
 def execute():
     """Initializes collection of document ontologies.
 
     """
-    for row in _get_data():
-        # Create.
-        i = models.DocumentOntology()
-        i.name = unicode(row[0])
-        i.version = unicode(row[1])
+    # CIM v1.
+    i = models.DocumentOntology()
+    i.name = u"cim.1"
+    i.version = u"1"
+    session.insert(i)
 
-        # Persist.
-        session.insert(i)
+    # CIM v2.
+    i = models.DocumentOntology()
+    i.name = u"cim.2"
+    i.version = u"2"
+    session.insert(i)

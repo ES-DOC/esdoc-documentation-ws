@@ -16,20 +16,6 @@ from esdoc_api.db import session
 
 
 
-# Module exports.
-__all__ = [
-    'get_node',
-    'get_node_count',
-    'get_node_field',
-    'get_node_field_set',
-    'get_node_combination',
-    'get_node_combination_set',
-    'get_node_set',
-    'get_node_value',
-    'get_node_value_set',
-]
-
-
 def get_node(project_id, type_of, field):
     """Returns a facet node.
 
@@ -44,11 +30,11 @@ def get_node(project_id, type_of, field):
     qry = session.query(Node)
 
     if project_id is not None:
-        qry = qry.filter(Node.project_id==project_id)
+        qry = qry.filter(Node.project_id == project_id)
     if type_of is not None:
-        qry = qry.filter(Node.type_of==str(type_of))
+        qry = qry.filter(Node.type_of == str(type_of))
     if field is not None:
-        qry = qry.filter(Node.field==field)
+        qry = qry.filter(Node.field == field)
 
     return qry.first()
 
@@ -66,9 +52,9 @@ def get_node_count(project_id=None, type_of=None):
     qry = session.query(Node)
 
     if project_id is not None:
-        qry = qry.filter(Node.project_id==project_id)
+        qry = qry.filter(Node.project_id == project_id)
     if type_of is not None:
-        qry = qry.filter(Node.type_of==str(type_of))
+        qry = qry.filter(Node.type_of == str(type_of))
 
     return qry.count()
 
@@ -84,7 +70,7 @@ def get_node_field(text):
     """
     qry = session.query(NodeField)
 
-    qry = qry.filter(NodeField.text==text)
+    qry = qry.filter(NodeField.text == text)
 
     return qry.first()
 
@@ -100,7 +86,7 @@ def get_node_value(text):
     """
     qry = session.query(NodeValue)
 
-    qry = qry.filter(NodeValue.text==text)
+    qry = qry.filter(NodeValue.text == text)
 
     return qry.first()
 
@@ -131,7 +117,7 @@ def get_node_set(project_id=None):
     qry = session.query(Node)
 
     if project_id is not None:
-        qry = qry.filter(Node.project_id==project_id)
+        qry = qry.filter(Node.project_id == project_id)
 
     return qry.all()
 
@@ -164,9 +150,9 @@ def get_node_combination(project_id, type_of, vector):
     """
     qry = session.query(NodeCombination)
 
-    qry = qry.filter(NodeCombination.project_id==project_id)
-    qry = qry.filter(NodeCombination.type_of==str(type_of))
-    qry = qry.filter(NodeCombination.combination==vector)
+    qry = qry.filter(NodeCombination.project_id == project_id)
+    qry = qry.filter(NodeCombination.type_of == str(type_of))
+    qry = qry.filter(NodeCombination.combination == vector)
 
     return qry.first()
 
@@ -182,6 +168,6 @@ def get_node_combination_set(project_id):
     """
     qry = session.query(NodeCombination)
 
-    qry = qry.filter(NodeCombination.project_id==project_id)
+    qry = qry.filter(NodeCombination.project_id == project_id)
 
     return qry.all()

@@ -24,17 +24,8 @@ from esdoc_api.utils import convert
 
 
 
-# Module exports.
-__all__ = [
-    'metadata',
-    'Entity',
-    'EntityConvertor'
-]
-
-
 # Common sqlalchemy metadata container.
 metadata = MetaData()
-
 
 
 class BaseEntity(object):
@@ -42,7 +33,7 @@ class BaseEntity(object):
 
     """
     # Entity attributes.
-    id = Column('ID', Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
 
 
     def __init__(self):

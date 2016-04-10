@@ -37,11 +37,8 @@ def _parse_param(param_val, param_name):
 def get_doc_ontology(name, version=None):
     """Returns a DocumentOntology instance with matching name & version.
 
-    :param name: Ontology name.
-    :type name: str
-
-    :param version: Ontology version.
-    :type version: str
+    :param str name: Ontology name.
+    :param str version: Ontology version.
 
     :returns: First DocumentOntology instance with matching name & version.
     :rtype: db.models.DocumentOntology
@@ -54,7 +51,7 @@ def get_doc_ontology(name, version=None):
 
     qry = session.query(DocumentOntology)
 
-    qry = qry.filter(DocumentOntology.name==name)
+    qry = qry.filter(DocumentOntology.name == name)
 
     return qry.first()
 
@@ -62,11 +59,7 @@ def get_doc_ontology(name, version=None):
 def get_doc_language(code=None):
     """Returns a DocumentLanguage instance by it's code.
 
-    :param type: A supported entity type.
-    :type type: class
-
-    :param name: Entity code.
-    :type name: str
+    :param str code: Language code.
 
     :returns: First DocumentLanguage with matching code.
     :rtype: db.models.DocumentLanguage
@@ -77,7 +70,7 @@ def get_doc_language(code=None):
     code = unicode(code).lower()
 
     return get_by_facet(DocumentLanguage,
-                        DocumentLanguage.code==code)
+                        DocumentLanguage.code == code)
 
 
 def get_project_institute_counts():

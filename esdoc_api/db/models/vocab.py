@@ -22,19 +22,6 @@ from esdoc_api.db.models.utils import Entity
 
 
 
-# Module exports.
-__all__ = [
-    'DocumentEncoding',
-    'DocumentLanguage',
-    'DocumentOntology',
-    'DocumentType',
-    'DOCUMENT_TYPE_ALL',
-    'Institute',
-    'Project'
-]
-
-
-
 # Constants pertaining to document types.
 DOCUMENT_TYPE_ALL = '*'
 
@@ -151,7 +138,7 @@ class DocumentType(Entity):
 
     # Foreign keys.
     ontology_id = Column(Integer,
-                         ForeignKey('vocab.tbl_document_ontology.ID'), nullable=False)
+                         ForeignKey('vocab.tbl_document_ontology.id'), nullable=False)
 
     # Field set.
     key = Column(Unicode(255), nullable=False)

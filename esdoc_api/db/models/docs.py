@@ -30,19 +30,6 @@ from esdoc_api.db.models.utils import (
 
 
 
-# Module exports.
-__all__ = [
-    'Document',
-    'DocumentDRS',
-    'DocumentExternalID',
-    'DocumentSummary',
-    'DOCUMENT_VERSIONS',
-    'DOCUMENT_VERSION_LATEST',
-    'DOCUMENT_VERSION_ALL'
-]
-
-
-
 # Domain model partition.
 _DOMAIN_PARTITION = 'docs'
 
@@ -68,9 +55,9 @@ class Document(Entity):
 
     # Foreign keys.
     project_id = Column(Integer,
-                        ForeignKey('vocab.tbl_project.ID'), nullable=False)
+                        ForeignKey('vocab.tbl_project.id'), nullable=False)
     institute_id = Column(Integer,
-                          ForeignKey('vocab.tbl_institute.ID'))
+                          ForeignKey('vocab.tbl_institute.id'))
 
     # Relationships.
     ExternalIDs = relationship("DocumentExternalID", backref="Document")
@@ -128,9 +115,9 @@ class DocumentDRS(Entity):
 
     # Foreign keys.
     project_id = Column(Integer,
-                        ForeignKey('vocab.tbl_project.ID'), nullable=False)
+                        ForeignKey('vocab.tbl_project.id'), nullable=False)
     document_id = Column(Integer,
-                         ForeignKey('docs.tbl_document.ID'), nullable=False)
+                         ForeignKey('docs.tbl_document.id'), nullable=False)
 
     # Field set.
     path = Column(Unicode(511))
@@ -200,9 +187,9 @@ class DocumentExternalID(Entity):
 
     # Foreign keys.
     project_id = Column(Integer,
-                        ForeignKey('vocab.tbl_project.ID'), nullable=False)
+                        ForeignKey('vocab.tbl_project.id'), nullable=False)
     document_id = Column(Integer,
-                         ForeignKey('docs.tbl_document.ID'), nullable=False)
+                         ForeignKey('docs.tbl_document.id'), nullable=False)
 
     # Field set.
     external_id = Column(Unicode(255), nullable=False)
@@ -221,9 +208,9 @@ class DocumentSummary(Entity):
 
     # Foreign keys.
     document_id = Column(Integer,
-                         ForeignKey('docs.tbl_document.ID'), nullable=False)
+                         ForeignKey('docs.tbl_document.id'), nullable=False)
     language_id = Column(Integer,
-                         ForeignKey('vocab.tbl_document_language.ID'), nullable=False)
+                         ForeignKey('vocab.tbl_document_language.id'), nullable=False)
 
     # Field set.
     short_name = Column(Unicode(1023))
