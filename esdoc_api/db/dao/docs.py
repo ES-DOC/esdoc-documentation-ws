@@ -343,6 +343,15 @@ def delete_document_drs(document_id):
     _delete_document_relation(document_id, DocumentDRS)
 
 
+def delete_document_sub_project(document_id):
+    """Deletes a list of DocumentSubProject instances filtered by their Document ID.
+
+    :param int document_id: ID of a Document instance.
+
+    """
+    _delete_document_relation(document_id, DocumentSubProject)
+
+
 def delete_document(document_id):
     """Deletes a document.
 
@@ -351,6 +360,7 @@ def delete_document(document_id):
     """
     delete_document_drs(document_id)
     delete_document_external_ids(document_id)
+    delete_document_sub_project(document_id)
     delete_document_summaries(document_id)
     delete_by_id(Document, document_id)
 

@@ -243,3 +243,20 @@ class DocumentSummary(Entity):
         """
         return lambda instance: instance.short_name
 
+
+class DocumentSubProject(Entity):
+    """Set of document sub-project references.
+
+    """
+    # SQLAlchemy directives.
+    __tablename__ = 'tbl_document_sub_project'
+    __table_args__ = (
+        UniqueConstraint('document_id', 'project', 'sub_project'),
+        {'schema' : _DOMAIN_PARTITION}
+    )
+
+    # Foreign keys.
+    document_id = Column(Integer,
+                         ForeignKey('docs.tbl_document.id'), nullable=False)
+    project = Column(Unicode(63), nullable=False)
+    sub_project = Column(Unicode(63), nullable=False)

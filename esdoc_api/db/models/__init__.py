@@ -18,6 +18,7 @@ from esdoc_api.db.models.docs import (
     Document,
     DocumentDRS,
     DocumentExternalID,
+    DocumentSubProject,
     DocumentSummary,
     DOCUMENT_VERSIONS,
     DOCUMENT_VERSION_LATEST,
@@ -63,6 +64,7 @@ SUPPORTED_TYPES = (
     Document,
     DocumentDRS,
     DocumentExternalID,
+    DocumentSubProject,
     DocumentSummary,
     # ... facets
     Node,
