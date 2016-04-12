@@ -43,20 +43,16 @@ class _ProcessingContextInfo(object):
     def __init__(self):
         self.encoding = None
         self.experiments = []
-        self.language = None
         self.models = []
-        self.ontology = None
-        self.project = None
+        self.ontology = _ONTOLOGY
+        self.project = _PROJECT.lower()
 
 
 def _init(ctx):
     """Initializes processing context.
 
     """
-    ctx.project = _PROJECT.lower()
     ctx.encoding = cache.get_doc_encoding(_ENCODING)
-    ctx.language = cache.get_doc_language(_LANGUAGE)
-    ctx.ontology = cache.get_doc_ontology(_ONTOLOGY)
 
 
 def _load_docs(ctx):
@@ -73,11 +69,7 @@ def _load_docs(ctx):
         """Gets decoded document collection.
 
         """
-        docs = map(lambda doc: utils.get_pyesdoc(
-            doc,
-            ctx.ontology,
-            ctx.encoding,
-            ctx.language), docs)
+        docs = map(lambda doc: utils.get_archived_document(doc), docs)
 
         return sorted(docs, key=lambda doc: doc.short_name.upper())
 

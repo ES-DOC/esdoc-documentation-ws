@@ -44,7 +44,7 @@ def execute(ctx):
     idx = models.DocumentSummary()
     idx.description = str_to_unicode(ctx.doc.ext.description)
     idx.document_id = ctx.primary.id
-    idx.language_id = cache.get_id(models.DocumentLanguage, pyesdoc.DEFAULT_LANGUAGE)
+    idx.language = pyesdoc.DEFAULT_LANGUAGE
 
     # Set fields.
     fields = [f for f in ctx.doc.ext.summary_fields if f is not None]

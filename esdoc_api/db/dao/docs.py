@@ -10,6 +10,8 @@
 """
 import sqlalchemy as sa
 
+import pyesdoc
+
 from esdoc_api.db.dao.core import delete_by_type
 from esdoc_api.db.dao.core import delete_by_id
 from esdoc_api.db.dao.core import delete_by_facet
@@ -173,7 +175,6 @@ def get_document_summaries(
     project,
     type,
     version,
-    language_id,
     institute=None,
     model=None,
     experiment=None
@@ -183,10 +184,9 @@ def get_document_summaries(
     :param str project: Project code.
     :param str type: Document type.
     :param str version: Document version (latest | all).
-    :param int language_id: ID of a DocumentLanguage instance.
     :param str institute: Institute code.
 
-    :returns: First DocumentSummary instance with matching document & language.
+    :returns: First DocumentSummary instance with matching document.
     :rtype: db.models.DocumentSummary
 
     """
@@ -203,7 +203,6 @@ def get_document_summaries(
 
     # Set mandatory params.
     qry = text_filter(qry, Document.project, project)
-    qry = qry.filter(DocumentSummary.language_id == language_id)
     if type != models.DOCUMENT_TYPE_ALL:
         qry = text_filter(qry, Document.type, type)
     if version == models.DOCUMENT_VERSION_LATEST:

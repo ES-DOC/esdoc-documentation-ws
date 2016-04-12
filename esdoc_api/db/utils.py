@@ -176,25 +176,15 @@ def get_node_field_set(project):
     """
     def reduce_field(fields, field):
         """The node reducer."""
-        return fields + [
-            field.id,
-            field.text
-            ]
+        return fields + [field.id, field.text]
 
     return reduce(reduce_field, dao.get_node_field_set(project), [])
 
 
-def get_pyesdoc(document, ontology, encoding, language):
+def get_archived_document(document):
     """Loads a pyesdoc document.
 
-    :param document: A document.
-    :type document: esdoc_api.db.models.Document
-    :param ontology: models.Document ontology.
-    :type ontology: esdoc_api.db.models.DocumentOntology
-    :param encoding: Associated document encoding.
-    :type encoding: esdoc_api.db.models.DocumentEncoding
-    :param language: Associated document language.
-    :type language: esdoc_api.db.models.DocumentLanguage
+    :param models.Document document: A document.
 
     :returns: A pyesdoc document.
     :rtype: object

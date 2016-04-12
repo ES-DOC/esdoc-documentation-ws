@@ -9,11 +9,9 @@
 
 
 """
-from esdoc_api.db.models.utils import (
-    Entity,
-    EntityConvertor,
-    metadata
-    )
+from esdoc_api.db.models.utils import Entity
+from esdoc_api.db.models.utils import EntityConvertor
+from esdoc_api.db.models.utils import metadata
 from esdoc_api.db.models.docs import (
     Document,
     DocumentDRS,
@@ -38,15 +36,11 @@ from esdoc_api.db.models.facets import (
     NODE_TYPE_MODEL_PROPERTY,
     NODE_TYPE_MODEL_PROPERTY_VALUE,
     )
-from esdoc_api.db.models.vocab import (
-    DocumentEncoding,
-    DocumentLanguage,
-    DocumentOntology,
-    DocumentType,
-    DOCUMENT_TYPE_ALL,
-    Institute,
-    Project
-)
+from esdoc_api.db.models.vocab import DocumentEncoding
+from esdoc_api.db.models.vocab import DocumentType
+from esdoc_api.db.models.vocab import DOCUMENT_TYPE_ALL
+from esdoc_api.db.models.vocab import Institute
+from esdoc_api.db.models.vocab import Project
 from esdoc_api.utils import runtime as rt
 
 
@@ -71,8 +65,6 @@ SUPPORTED_TYPES = (
     NodeField,
     # ... vocab
     DocumentEncoding,
-    DocumentLanguage,
-    DocumentOntology,
     DocumentType,
     Institute,
     Project
@@ -81,8 +73,6 @@ SUPPORTED_TYPES = (
 # Supported cacheable types.
 CACHEABLE_TYPES = (
     DocumentEncoding,
-    DocumentLanguage,
-    DocumentOntology,
     DocumentType,
     Institute,
     Project,

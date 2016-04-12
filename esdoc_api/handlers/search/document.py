@@ -49,39 +49,23 @@ def _get_default_params():
     return {
         'client': {
             'required': True,
-            'value_formatter': lambda v : v.lower()
+            'value_formatter': lambda v: v.lower()
         },
         'encoding': {
             'required': True,
             'model_type': db.models.DocumentEncoding,
-            'value_formatter': lambda v : v.lower()
-        },
-        'language': {
-            'required': True,
-            'model_type': db.models.DocumentLanguage,
-            'value_formatter': lambda v : v.lower()
-        },
-        'onJSONPLoad': {
-            'required' : False,
-        },
-        'ontology': {
-            'required': True,
-            'model_type': db.models.DocumentOntology,
-            'value_formatter': lambda v : v.lower()
+            'value_formatter': lambda v: v.lower()
         },
         'project': {
             'required': True,
             'model_type': db.models.Project,
-            'value_formatter': lambda v : v.lower(),
+            'value_formatter': lambda v: v.lower()
         },
         'searchType': {
             'required': True,
             'whitelist': _SUB_HANDLERS.keys(),
-            'value_formatter': lambda v : v.lower()
-        },
-        'timestamp': {
-            'required': False
-        },
+            'value_formatter': lambda v: v.lower()
+        }
     }
 
 

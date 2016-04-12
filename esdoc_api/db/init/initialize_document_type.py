@@ -8,7 +8,8 @@
 
 
 """
-from esdoc_api.db import dao, models, session
+from esdoc_api.db import models
+from esdoc_api.db import session
 
 
 
@@ -82,20 +83,14 @@ def execute():
     """Initializes collection of cim document schema types.
 
     """
-    ontologies = {}
-
     for type_key in _ACTIVE_TYPES:
-        # Unpack type info.
-        ontology, version, package, typeof = type_key.split(".")
-        ontology = ontology + "." + version
-
-        # Cache.
-        if ontology not in ontologies:
-            ontologies[ontology] = dao.get_doc_ontology(ontology)
+        # Set ontology.
+        ontology, version, _, _ = type_key.split(".")
+        ontology = "{}.{}".format(ontology, version).lower()
 
         # Create.
         i = models.DocumentType()
-        i.ontology_id = ontologies[ontology].id
+        i.ontology = ontology
         i.key = unicode(type_key)
         i.display_name = unicode(_DISPLAY_NAMES[type_key])
         i.is_search_target = type_key in _SEARCH_TYPES

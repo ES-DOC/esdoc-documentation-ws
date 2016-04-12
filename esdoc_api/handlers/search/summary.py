@@ -20,39 +20,31 @@ from esdoc_api.utils import config
 def _get_params():
     """Returns url parameter specification."""
     return {
-        'onJSONPLoad': {
-            'required': False
-        },
         'timestamp': {
             'required': True
-        },
-        'documentLanguage': {
-            'required': True,
-            'model_type': db.models.DocumentLanguage,
-            'value_formatter': lambda v : v.lower()
         },
         'documentType': {
             'required': True,
             'model_type': db.models.DocumentType,
-            'value_formatter': lambda v : v.lower()
+            'value_formatter': lambda v: v.lower()
         },
         'documentVersion': {
             'required': True,
-            'whitelist': lambda : db.models.DOCUMENT_VERSIONS
+            'whitelist': lambda: db.models.DOCUMENT_VERSIONS
         },
         'experiment': {
             'required': False
         },
         'institute': {
             'required': False,
-            'value_formatter': lambda v : v.lower()
+            'value_formatter': lambda v: v.lower()
         },
         'model': {
             'required': False
         },
         'project': {
             'required': True,
-            'value_formatter': lambda v : v.lower(),
+            'value_formatter': lambda v: v.lower(),
         }
     }
 
@@ -91,7 +83,6 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
             self.project,
             self.document_type.key,
             self.document_version,
-            self.document_language.id,
             self.institute,
             self.model if self.model else None,
             self.experiment if self.experiment else None

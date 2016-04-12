@@ -15,8 +15,6 @@ import pyesdoc
 from esdoc_api.db import session
 from esdoc_api.db.dao.core import get_by_facet
 from esdoc_api.db.models import Document
-from esdoc_api.db.models import DocumentLanguage
-from esdoc_api.db.models import DocumentOntology
 from esdoc_api.db.models import Institute
 from esdoc_api.db.models import Project
 
@@ -32,45 +30,6 @@ def _parse_param(param_val, param_name):
     if not param_val:
         raise ValueError(param_name)
     return param_val
-
-
-def get_doc_ontology(name, version=None):
-    """Returns a DocumentOntology instance with matching name & version.
-
-    :param str name: Ontology name.
-    :param str version: Ontology version.
-
-    :returns: First DocumentOntology instance with matching name & version.
-    :rtype: db.models.DocumentOntology
-
-    """
-    if version is not None:
-        name += '.'
-        name += str(version)
-    name = unicode(name).lower()
-
-    qry = session.query(DocumentOntology)
-
-    qry = qry.filter(DocumentOntology.name == name)
-
-    return qry.first()
-
-
-def get_doc_language(code=None):
-    """Returns a DocumentLanguage instance by it's code.
-
-    :param str code: Language code.
-
-    :returns: First DocumentLanguage with matching code.
-    :rtype: db.models.DocumentLanguage
-
-    """
-    if code is None:
-        code = pyesdoc.DEFAULT_LANGUAGE
-    code = unicode(code).lower()
-
-    return get_by_facet(DocumentLanguage,
-                        DocumentLanguage.code == code)
 
 
 def get_project_institute_counts():

@@ -59,72 +59,6 @@ class DocumentEncoding(Entity):
         return lambda instance: instance.encoding
 
 
-class DocumentLanguage(Entity):
-    """A language with which a document is associated.
-
-    """
-    # SQLAlchemy directives.
-    __tablename__ = 'tbl_document_language'
-    __table_args__ = (
-        {'schema' : _DOMAIN_PARTITION}
-    )
-
-    # Field set.
-    code = Column(Unicode(2), nullable=False)
-    name = Column(Unicode(127), nullable=False, unique=True)
-
-
-    @property
-    def cache_name(self):
-        """Gets instance cache key name.
-
-        """
-        return self.code
-
-
-    @property
-    def FullName(self):
-        """Gets the full language name derived by concatanation.
-
-        """
-        return self.code + u" - " + self.name
-
-
-class DocumentOntology(Entity):
-    """An ontology with which a document is associated.
-
-    """
-    # SQLAlchemy directives.
-    __tablename__ = 'tbl_document_ontology'
-    __table_args__ = (
-        UniqueConstraint('name' ,'version'),
-        {'schema' : _DOMAIN_PARTITION}
-    )
-
-    # Field set.
-    name = Column(Unicode(63), nullable=False)
-    version = Column(Unicode(31), nullable=False)
-
-
-    @property
-    def cache_name(self):
-        """Gets instance cache key name.
-
-        """
-        return self.name
-
-
-    @property
-    def FullName(self):
-        """Gets the full ontology name.
-
-        """
-        result = self.name
-        result += '-v'
-        result += self.version
-        return result
-
-
 class DocumentType(Entity):
     """Meta-information regarding the type of document.
 
@@ -136,11 +70,8 @@ class DocumentType(Entity):
         {'schema' : _DOMAIN_PARTITION}
     )
 
-    # Foreign keys.
-    ontology_id = Column(Integer,
-                         ForeignKey('vocab.tbl_document_ontology.id'), nullable=False)
-
     # Field set.
+    ontology = Column(Unicode(63), nullable=False)
     key = Column(Unicode(255), nullable=False)
     display_name = Column(Unicode(63), nullable=False)
     is_search_target = Column(Boolean, nullable=False, default=True)

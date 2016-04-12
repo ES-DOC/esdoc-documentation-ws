@@ -195,17 +195,16 @@ class DocumentSummary(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_summary'
     __table_args__ = (
-        UniqueConstraint('document_id' ,'language_id'),
+        UniqueConstraint('document_id' ,'language'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
     document_id = Column(Integer,
                          ForeignKey('docs.tbl_document.id'), nullable=False)
-    language_id = Column(Integer,
-                         ForeignKey('vocab.tbl_document_language.id'), nullable=False)
 
     # Field set.
+    language = Column(Unicode(2))
     short_name = Column(Unicode(1023))
     long_name = Column(Unicode(1023))
     description = Column(Unicode(1023))

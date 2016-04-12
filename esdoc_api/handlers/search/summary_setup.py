@@ -19,14 +19,7 @@ from esdoc_api.utils import config
 
 def _get_params():
     """Returns url parameter specification."""
-    return {
-        'onJSONPLoad': {
-            'required': False
-        },
-        'timestamp': {
-            'required': False
-        }
-    }
+    return dict()
 
 
 def _load(mtype, sort_key=None):
@@ -70,8 +63,6 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """Sets output data to be returned to client.
 
         """
-        print db.dao.get_document_projects()
-
         self.output_encoding = 'json'
         self.output = {
             'projects' : _load(db.models.Project, sort_key='name'),
@@ -80,8 +71,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
             'institutes' : _load(db.models.Institute),
             'instituteCounts' : db.dao.get_project_institute_counts(),
             'documentTypes' : _load(db.models.DocumentType),
-            'documentTypeCounts' : db.dao.get_project_document_type_counts(),
-            'documentLanguages' : _load(db.models.DocumentLanguage)
+            'documentTypeCounts' : db.dao.get_project_document_type_counts()
         }
 
 

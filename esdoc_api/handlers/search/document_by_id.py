@@ -19,11 +19,11 @@ def get_url_params():
     return {
         'id': {
             'required': True,
-            'value_formatter': lambda v : v.lower()
+            'value_formatter': lambda v: v.lower()
         },
         'version': {
             'required' : True,
-            'value_formatter': lambda v : v.lower()
+            'value_formatter': lambda v: v.lower()
         }
     }
 
