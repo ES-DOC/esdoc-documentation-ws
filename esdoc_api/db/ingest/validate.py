@@ -69,9 +69,7 @@ def _validate_project(ctx):
         raise ValueError("Document project code is mandatory")
 
     # Is controlled vocabulary.
-    if not cache.get_project(ctx.doc.meta.project):
-        err = "Project code is unsupported: {0}"
-        raise ValueError(err.format(ctx.doc.meta.project))
+    # TODO: use pyessv
 
 
 def _validate_institute(ctx):
@@ -86,9 +84,7 @@ def _validate_institute(ctx):
             return
 
     # Is controlled vocabulary.
-    if not cache.get_institute(ctx.doc.meta.institute):
-        err = "Institute code is unsupported: {0}"
-        raise ValueError(err.format(ctx.doc.meta.institute))
+    # TODO: use pyessv
 
 
 def _validate_name(ctx):

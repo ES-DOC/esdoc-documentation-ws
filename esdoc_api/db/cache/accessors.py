@@ -102,28 +102,3 @@ def get_institute_id(item_id):
     """
     return core.get_id(models.Institute, item_id)
 
-
-def get_project(item_id=None):
-    """Returns either all projects or first project with matching name.
-
-    :param item_id: Project identifier.
-    :type item_id: str | int
-
-    :returns: Either a project list or an instance.
-    :rtype: list | models.Project
-
-    """
-    return core.get(models.Project, item_id)
-
-
-def get_project_id(item_id):
-    """Returns ID of first project with matching name.
-
-    :param item_id: Project identifier.
-    :type item_id: str | int
-
-    :returns: A project instance identifier or None.
-    :rtype: None | int
-
-    """
-    return core.get_id(models.Project, item_id)

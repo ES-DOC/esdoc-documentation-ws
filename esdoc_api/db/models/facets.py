@@ -74,17 +74,12 @@ class Node(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_node'
     __table_args__ = (
-        UniqueConstraint('project_id', 'type_of', 'field'),
+        UniqueConstraint('project', 'type_of', 'field'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
-    # Foreign keys.
-    project_id = Column(Integer,
-                        ForeignKey('vocab.tbl_project.id'),
-                        nullable=False,
-                        default=1)
-
     # Field set.
+    project = Column(Unicode(63), nullable=False, default='cmip5')
     type_of = Column(NodeTypeEnum, nullable=False)
     field = Column(Unicode(511), nullable=False)
     sort_field = Column(Unicode(511), nullable=True)

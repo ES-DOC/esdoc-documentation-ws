@@ -30,7 +30,7 @@ def execute(ctx):
 
     # Insert.
     idx = models.DocumentExternalID()
-    idx.project_id = ctx.primary.project_id
+    idx.project = ctx.primary.project
     idx.document_id = ctx.primary.id
     idx.external_id = external_id
 

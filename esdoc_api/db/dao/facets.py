@@ -16,10 +16,10 @@ from esdoc_api.db import session
 
 
 
-def get_node(project_id, type_of, field):
+def get_node(project, type_of, field):
     """Returns a facet node.
 
-    :param str project_id: Project with which a node is associated.
+    :param str project: Project with which a node is associated.
     :param str type_of: Node type.
     :param str field: Node field.
 
@@ -29,8 +29,8 @@ def get_node(project_id, type_of, field):
     """
     qry = session.query(Node)
 
-    if project_id is not None:
-        qry = qry.filter(Node.project_id == project_id)
+    if project is not None:
+        qry = qry.filter(Node.project == project)
     if type_of is not None:
         qry = qry.filter(Node.type_of == str(type_of))
     if field is not None:
@@ -39,10 +39,10 @@ def get_node(project_id, type_of, field):
     return qry.first()
 
 
-def get_node_count(project_id=None, type_of=None):
+def get_node_count(project=None, type_of=None):
     """Returns a facet node count.
 
-    :param str project_id: Project with which a node is associated.
+    :param str project: Project with which a node is associated.
     :param str type_of: Node type.
 
     :returns: A facet node count.
@@ -51,8 +51,8 @@ def get_node_count(project_id=None, type_of=None):
     """
     qry = session.query(Node)
 
-    if project_id is not None:
-        qry = qry.filter(Node.project_id == project_id)
+    if project is not None:
+        qry = qry.filter(Node.project == project)
     if type_of is not None:
         qry = qry.filter(Node.type_of == str(type_of))
 
@@ -91,10 +91,10 @@ def get_node_value(text):
     return qry.first()
 
 
-def get_node_value_set(project_id=None, type_of=None):
+def get_node_value_set(project=None, type_of=None):
     """Returns set of facet node values filtered by project id.
 
-    :param str project_id: Project with which facet node values are associated.
+    :param str project: Project with which facet node values are associated.
 
     :returns: Set of facet node values.
     :rtype: list
@@ -105,42 +105,44 @@ def get_node_value_set(project_id=None, type_of=None):
     return qry.all()
 
 
-def get_node_set(project_id=None):
+def get_node_set(project=None):
     """Returns set of facet nodes filtered by project id.
 
-    :param str project_id: Project with which facet nodes are associated.
+    :param str project: Project with which facet nodes are associated.
 
     :returns: Set of facet nodes.
     :rtype: list
 
     """
     qry = session.query(Node)
-
-    if project_id is not None:
-        qry = qry.filter(Node.project_id == project_id)
+    if project is not None:
+        qry = qry.filter(Node.project == project)
 
     return qry.all()
 
 
-def get_node_field_set(project_id=None, type_of=None):
+def get_node_field_set(project=None, type_of=None):
     """Returns set of facet nodes filtered by project id.
 
-    :param str project_id: Project with which facet nodes are associated.
+    :param str project: Project with which facet nodes are associated.
 
     :returns: Set of facet nodes.
     :rtype: list
 
     """
     qry = session.query(NodeField)
-
+    if project:
+        qry = qry.filter(NodeField.project == project)
+    if type_of:
+        qry = qry.filter(NodeField.type_of == str(type_of))
 
     return qry.all()
 
 
-def get_node_combination(project_id, type_of, vector):
+def get_node_combination(project, type_of, vector):
     """Returns a facet combination.
 
-    :param str project_id: Project with which a facet combination is associated.
+    :param str project: Project with which a facet combination is associated.
     :param str type_of: Facet combination type.
     :param str vector: Facet combination vector.
 
@@ -149,25 +151,23 @@ def get_node_combination(project_id, type_of, vector):
 
     """
     qry = session.query(NodeCombination)
-
-    qry = qry.filter(NodeCombination.project_id == project_id)
+    qry = qry.filter(NodeCombination.project == project)
     qry = qry.filter(NodeCombination.type_of == str(type_of))
     qry = qry.filter(NodeCombination.combination == vector)
 
     return qry.first()
 
 
-def get_node_combination_set(project_id):
+def get_node_combination_set(project):
     """Returns a facet combination set.
 
-    :param str project_id: Project with which a facet combination set is associated.
+    :param str project: Project with which a facet combination set is associated.
 
     :returns: A facet combination set.
     :rtype: list
 
     """
     qry = session.query(NodeCombination)
-
-    qry = qry.filter(NodeCombination.project_id == project_id)
+    qry = qry.filter(NodeCombination.project == project)
 
     return qry.all()

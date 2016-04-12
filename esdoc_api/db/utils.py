@@ -20,10 +20,10 @@ from esdoc_api.utils import runtime as rt
 
 
 
-def create_node(type_of, field, project_id=1, sort_text=None):
+def create_node(type_of, field, project='cmip5', sort_text=None):
     """Creates a facet node (if necessary).
 
-    :param str project_id: Project with which facet node is associated.
+    :param str project: Project with which facet node is associated.
     :param str type_of: Facet node type.
     :param str field: Facet node field.
     :param str sort_text: Text used in sort scenarios.
@@ -53,7 +53,7 @@ def create_node(type_of, field, project_id=1, sort_text=None):
 
     # Create node.
     node = models.Node()
-    node.project_id = project_id
+    node.project = project
     node.type_of = type_of
     node.field = field
 
@@ -62,7 +62,7 @@ def create_node(type_of, field, project_id=1, sort_text=None):
         session.insert(node)
     except sqlalchemy.exc.IntegrityError:
         session.rollback()
-        node = dao.get_node(project_id, type_of, field)
+        node = dao.get_node(project, type_of, field)
     else:
         rt.log("INDEXING :: CORE :: created node {0}".format(node))
 
@@ -93,12 +93,12 @@ def create_node_field(text):
     return field
 
 
-def create_node_combination(type_of, nodeset, project_id=1):
+def create_node_combination(type_of, nodeset, project='cmip5'):
     """Creates a node combination (if necessary).
 
     :param str type_of: Facet combination type.
     :param str nodeset: Set of nodes acting as a vector.
-    :param str project_id: Project with which a facet combination is associated.
+    :param str project: Project with which a facet combination is associated.
 
     :returns: A facet node combination.
     :rtype: models.NodeCombination
@@ -114,7 +114,7 @@ def create_node_combination(type_of, nodeset, project_id=1):
     # Create.
     combo = models.NodeCombination()
     combo.combination = vector
-    combo.project_id = project_id
+    combo.project = project
     combo.type_of = type_of
 
     # Insert.
@@ -122,17 +122,17 @@ def create_node_combination(type_of, nodeset, project_id=1):
         session.insert(combo)
     except sqlalchemy.exc.IntegrityError:
         session.rollback()
-        combo = dao.get_node_combination(project_id, type_of, vector)
+        combo = dao.get_node_combination(project, type_of, vector)
     else:
         rt.log("INDEXING :: CORE :: created combination {0}".format(combo))
 
     return combo
 
 
-def get_node_value_set(project_id):
+def get_node_value_set(project):
     """Returns set of facet node values filtered by project.
 
-    :param int project_id: Project with which facet node values are associated.
+    :param str project: Project with which facet node values are associated.
 
     :returns: Set of facet node values.
     :rtype: list
@@ -142,13 +142,13 @@ def get_node_value_set(project_id):
         """The value reducer."""
         return values + [value.id, value.text]
 
-    return reduce(reduce_value, dao.get_node_value_set(project_id), [])
+    return reduce(reduce_value, dao.get_node_value_set(project), [])
 
 
-def get_node_set(project_id):
+def get_node_set(project):
     """Returns set of facet nodes filtered by project.
 
-    :param int project_id: Project with which facet nodes are associated.
+    :param str project: Project with which facet nodes are associated.
 
     :returns: Set of facet nodes.
     :rtype: list
@@ -162,13 +162,13 @@ def get_node_set(project_id):
             node.field
             ]
 
-    return reduce(reduce_node, dao.get_node_set(project_id), [])
+    return reduce(reduce_node, dao.get_node_set(project), [])
 
 
-def get_node_field_set(project_id):
+def get_node_field_set(project):
     """Returns set of facet fields filtered by project.
 
-    :param int project_id: Project with which facet nodes are associated.
+    :param str project: Project with which facet nodes are associated.
 
     :returns: Set of facet fields.
     :rtype: list
@@ -181,7 +181,7 @@ def get_node_field_set(project_id):
             field.text
             ]
 
-    return reduce(reduce_field, dao.get_node_field_set(project_id), [])
+    return reduce(reduce_field, dao.get_node_field_set(project), [])
 
 
 def get_pyesdoc(document, ontology, encoding, language):

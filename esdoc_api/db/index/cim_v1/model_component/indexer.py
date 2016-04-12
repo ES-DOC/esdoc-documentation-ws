@@ -27,8 +27,8 @@ from esdoc_api.db.models import (
 
 class _ProcessingContextInfo(object):
     """Encapsulates contextual information used during mapping."""
-    def __init__(self, project_id, m):
-        self.project_id = project_id
+    def __init__(self, project, m):
+        self.project = project
         self.m, self.c_list = reduce_model(m)
         self.nodes = {}
         self.combinations = {}
@@ -37,7 +37,7 @@ class _ProcessingContextInfo(object):
 def _create_node(ctx, key, typeof, fieldset):
     """Creates & caches a node."""
     ctx.nodes[key] = \
-        utils.create_node(typeof, fieldset, ctx.project_id)
+        utils.create_node(typeof, fieldset, ctx.project)
 
 
 def _set_model_node(ctx):
@@ -108,7 +108,7 @@ def _create_node_combination(ctx, typeof, nodeset):
     """Creates & caches a node combination."""
     if nodeset not in ctx.combinations:
         ctx.combinations[nodeset] = \
-            utils.create_node_combination(typeof, nodeset, ctx.project_id)
+            utils.create_node_combination(typeof, nodeset, ctx.project)
 
     return ctx.combinations[nodeset]
 
@@ -148,10 +148,10 @@ def _set_value_combination(ctx):
     _create_node_combination(ctx, NODE_COMBINATION_01, nodeset)
 
 
-def index(project_id, m):
+def index(project, m):
     """Indexes a cim v1 model component document.
 
-    :param int project_id: ID of associated project.
+    :param str project: Associated project code.
     :param m: A model component.
     :type m: ontologies.cim.v1.software.ModelComponent
 
@@ -178,4 +178,4 @@ def index(project_id, m):
         """Index model component property value."""
         _set_value_node(ctx)
 
-    index_model(_ProcessingContextInfo(project_id, m))
+    index_model(_ProcessingContextInfo(project, m))

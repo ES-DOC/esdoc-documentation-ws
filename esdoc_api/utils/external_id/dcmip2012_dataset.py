@@ -55,10 +55,10 @@ def _yield_doc_by_name_criteria(parsed_id):
     yield 'cim.1.software.modelcomponent', parsed_id.model
 
 
-def do_search(project_id, parsed_id):
+def do_search(project, parsed_id):
     """Executes document search against db.
 
-    :param int project_id: CMIP5 project identifier.
+    :param str project: Project code.
     :param object parsed_id: A parsed CMIP5 dataset identifier
 
     :returns: A sequence of returned documents.
@@ -66,4 +66,4 @@ def do_search(project_id, parsed_id):
 
     """
     for doc_type, doc_name in _yield_doc_by_name_criteria(parsed_id):
-        yield db.dao.get_document_by_name(project_id, doc_type, doc_name)
+        yield db.dao.get_document_by_name(project, doc_type, doc_name)

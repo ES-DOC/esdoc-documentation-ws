@@ -49,13 +49,11 @@ class Document(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document'
     __table_args__ = (
-        UniqueConstraint('project_id' ,'uid', 'version'),
+        UniqueConstraint('project' ,'uid', 'version'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    project_id = Column(Integer,
-                        ForeignKey('vocab.tbl_project.id'), nullable=False)
     institute_id = Column(Integer,
                           ForeignKey('vocab.tbl_institute.id'))
 
@@ -110,17 +108,16 @@ class DocumentDRS(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_drs'
     __table_args__ = (
-        UniqueConstraint('project_id' ,'document_id', 'path'),
+        UniqueConstraint('project' ,'document_id', 'path'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    project_id = Column(Integer,
-                        ForeignKey('vocab.tbl_project.id'), nullable=False)
     document_id = Column(Integer,
                          ForeignKey('docs.tbl_document.id'), nullable=False)
 
     # Field set.
+    project = Column(Unicode(63))
     path = Column(Unicode(511))
     key_01 = Column(Unicode(63))
     key_02 = Column(Unicode(63))
@@ -182,17 +179,16 @@ class DocumentExternalID(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_external_id'
     __table_args__ = (
-        UniqueConstraint('project_id' ,'document_id', 'external_id'),
+        UniqueConstraint('project' ,'document_id', 'external_id'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
     # Foreign keys.
-    project_id = Column(Integer,
-                        ForeignKey('vocab.tbl_project.id'), nullable=False)
     document_id = Column(Integer,
                          ForeignKey('docs.tbl_document.id'), nullable=False)
 
     # Field set.
+    project = Column(Unicode(63))
     external_id = Column(Unicode(255), nullable=False)
 
 

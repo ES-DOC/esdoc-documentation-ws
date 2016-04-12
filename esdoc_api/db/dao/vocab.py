@@ -81,10 +81,10 @@ def get_project_institute_counts():
 
     """
     qry = session.query(sa.func.count(Document.institute_id),
-                        Document.project_id,
+                        Document.project,
                         Document.institute_id)
 
-    qry = qry.group_by(Document.project_id)
+    qry = qry.group_by(Document.project)
     qry = qry.group_by(Document.institute_id)
 
     return qry.all()

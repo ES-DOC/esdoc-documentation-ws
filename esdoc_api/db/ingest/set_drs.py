@@ -28,7 +28,7 @@ def execute(ctx):
     idx = models.DocumentDRS()
     idx.document_id = ctx.primary.id
     idx.path = unicode(ctx.doc.meta.drs_path)
-    idx.project_id = ctx.primary.project_id
+    idx.project = ctx.primary.project
 
     # Set keys.
     for index, key in enumerate(ctx.doc.meta.drs_keys):

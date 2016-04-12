@@ -17,6 +17,13 @@ from esdoc_api.utils import runtime as rt
 
 
 
+def text_filter(qry, field, key):
+    """Applies a text based filter expression.
+
+    """
+    return qry.filter(sa.func.upper(field) == unicode(key).strip().upper())
+
+
 def sort(etype, collection):
     """Sorts collection via type sort key.
 

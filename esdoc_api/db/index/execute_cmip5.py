@@ -50,8 +50,10 @@ class _ProcessingContextInfo(object):
 
 
 def _init(ctx):
-    """Initializes processing context."""
-    ctx.project = cache.get_project(_PROJECT)
+    """Initializes processing context.
+
+    """
+    ctx.project = _PROJECT.lower()
     ctx.encoding = cache.get_doc_encoding(_ENCODING)
     ctx.language = cache.get_doc_language(_LANGUAGE)
     ctx.ontology = cache.get_doc_ontology(_ONTOLOGY)

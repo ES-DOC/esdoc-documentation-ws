@@ -12,14 +12,12 @@ from esdoc_api.db import models, utils
 
 
 
-def index(project_id, e):
+def index(project, e):
     """Indexes a cim v1 numerical experiment document.
 
-    :param int project_id: ID of associated project.
+    :param str project: Associated project code.
     :param e: A numerical experiment document.
     :type e: ontologies.cim.v1.activity.NumericalExperiment
 
     """
-    utils.create_node(models.NODE_TYPE_EXPERIMENT,
-                      e.short_name,
-                      project_id)
+    utils.create_node(models.NODE_TYPE_EXPERIMENT, e.short_name, project)

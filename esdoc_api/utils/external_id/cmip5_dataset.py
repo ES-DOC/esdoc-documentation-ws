@@ -54,10 +54,10 @@ def get_parsed(dataset_id):
     return DatasetID()
 
 
-def do_search(project_id, parsed_id):
+def do_search(project, parsed_id):
     """Executes document search against db.
 
-    :param int project_id: CMIP5 project identifier.
+    :param str project: Project code.
     :param object parsed_id: A parsed CMIP5 dataset identifier
 
     :returns: A sequence of returned documents.
@@ -67,7 +67,7 @@ def do_search(project_id, parsed_id):
     def _get_by_drs_keys():
         """Searches by DRS keys."""
         yield db.dao.get_document_by_drs_keys(
-            project_id,
+            project,
             parsed_id.institute,
             parsed_id.model,
             parsed_id.experiment,
@@ -77,13 +77,13 @@ def do_search(project_id, parsed_id):
         """Searches by name."""
         for doc_type, doc_name in _yield_doc_by_name_criteria(parsed_id):
             yield db.dao.get_document_by_name(
-                project_id,
+                project,
                 doc_type,
                 doc_name)
 
     def _get_by_dataset_id():
         """Searches by dataset id."""
-        return db.dao.get_documents_by_external_id(project_id, parsed_id.id)
+        return db.dao.get_documents_by_external_id(project, parsed_id.id)
 
     for func in (
         _get_by_drs_keys,

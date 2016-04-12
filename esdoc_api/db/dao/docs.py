@@ -13,6 +13,7 @@ import sqlalchemy as sa
 from esdoc_api.db.dao.core import delete_by_type
 from esdoc_api.db.dao.core import delete_by_id
 from esdoc_api.db.dao.core import delete_by_facet
+from esdoc_api.db.dao.core import text_filter
 from esdoc_api.db.dao.core import sort
 from esdoc_api.db import models, session
 from esdoc_api.db.models import Document
@@ -38,7 +39,7 @@ def get_document(uid, version, project=None):
     qry = session.query(Document)
 
     if project is not None:
-        qry = qry.filter(sa.func.upper(Document.project) == project.upper())
+        qry = text_filter(Document.project, project)
     qry = qry.filter(Document.uid == unicode(uid))
     if version is None or version in models.DOCUMENT_VERSIONS:
         qry = qry.order_by(Document.version.desc())
@@ -69,9 +70,9 @@ def get_document_by_name(
     """
     qry = session.query(Document)
 
-    qry = qry.filter(sa.func.upper(Document.project) == project.upper())
-    qry = qry.filter(sa.func.upper(Document.type) == typeof.upper())
-    qry = qry.filter(sa.func.upper(Document.name) == name.upper())
+    qry = text_filter(Document.project, project)
+    qry = text_filter(Document.type, typeof)
+    qry = text_filter(Document.name, name)
     if institute_id is not None:
         qry = qry.filter(Document.institute_id == institute_id)
     if latest_only == True:
@@ -93,8 +94,8 @@ def get_document_by_type(project, typeof, latest_only=True):
     """
     qry = session.query(Document)
 
-    qry = qry.filter(sa.func.upper(Document.project) == project.upper())
-    qry = qry.filter(sa.func.upper(Document.type) == typeof.upper())
+    qry = text_filter(Document.project, project)
+    qry = text_filter(Document.type, typeof)
     if latest_only == True:
         qry = qry.filter(Document.is_latest == True)
 
@@ -132,23 +133,23 @@ def get_document_by_drs_keys(
     """
     qry = session.query(Document).join(DocumentDRS)
 
-    qry = qry.filter(sa.func.upper(Document.project) == project.upper())
+    qry = text_filter(Document.project, project)
     if key_01 is not None:
-        qry = qry.filter(DocumentDRS.key_01 == key_01.upper())
+        qry = text_filter(DocumentDRS.key_01, key_01)
     if key_02 is not None:
-        qry = qry.filter(DocumentDRS.key_02 == key_02.upper())
+        qry = text_filter(DocumentDRS.key_02, key_02)
     if key_03 is not None:
-        qry = qry.filter(DocumentDRS.key_03 == key_03.upper())
+        qry = text_filter(DocumentDRS.key_03, key_03)
     if key_04 is not None:
-        qry = qry.filter(DocumentDRS.key_04 == key_04.upper())
+        qry = text_filter(DocumentDRS.key_04, key_04)
     if key_05 is not None:
-        qry = qry.filter(DocumentDRS.key_05 == key_05.upper())
+        qry = text_filter(DocumentDRS.key_05, key_05)
     if key_06 is not None:
-        qry = qry.filter(DocumentDRS.key_06 == key_06.upper())
+        qry = text_filter(DocumentDRS.key_06, key_06)
     if key_07 is not None:
-        qry = qry.filter(DocumentDRS.key_07 == key_07.upper())
+        qry = text_filter(DocumentDRS.key_07, key_07)
     if key_08 is not None:
-        qry = qry.filter(DocumentDRS.key_08 == key_08.upper())
+        qry = text_filter(DocumentDRS.key_08, key_08)
     if latest_only == True:
         qry = qry.filter(Document.is_latest == True)
 
@@ -167,7 +168,7 @@ def get_documents_by_external_id(project, external_id):
     """
     qry = session.query(Document).join(DocumentExternalID)
 
-    qry = qry.filter(sa.func.upper(Document.project) == project.upper())
+    qry = text_filter(Document.project, project)
     qry = qry.filter(DocumentExternalID.external_id.like('%' + external_id.upper() + '%'))
 
     return qry.all()
@@ -206,18 +207,18 @@ def get_document_summaries(
     qry = session.query(DocumentSummary).join(Document)
 
     # Set mandatory params.
-    qry = qry.filter(sa.func.upper(Document.project) == project.upper())
+    qry = text_filter(Document.project, project)
     qry = qry.filter(DocumentSummary.language_id == language_id)
     if type != models.DOCUMENT_TYPE_ALL:
-        qry = qry.filter(sa.func.upper(Document.type) == type)
+        qry = text_filter(DocumentSummary.type, type)
     if version == models.DOCUMENT_VERSION_LATEST:
         qry = qry.filter(Document.is_latest == True)
     if experiment is not None:
-        qry = qry.filter(sa.func.upper(DocumentSummary.experiment) == experiment)
+        qry = text_filter(DocumentSummary.experiment, experiment)
     if institute_id is not None:
         qry = qry.filter(Document.institute_id == institute_id)
     if model is not None:
-        qry = qry.filter(sa.func.upper(DocumentSummary.model) == model)
+        qry = text_filter(DocumentSummary.model, model)
 
     # Apply query limit.
     qry = qry.limit(session.QUERY_LIMIT)
@@ -354,9 +355,8 @@ def get_document_type_count(project, typeof):
 
     """
     qry = session.query(sa.func.count(Document.type))
-
-    qry = qry.filter(sa.func.upper(Document.project) == project.upper())
-    qry = qry.filter(sa.func.upper(Document.type) == typeof.upper())
+    qry = text_filter(Document.project, project)
+    qry = text_filter(Document.type, typeof)
     qry = qry.group_by(Document.type)
 
     counts = qry.all()
@@ -368,7 +368,7 @@ def _get_summary_fieldset(field):
     """Returns set of unique document summary field values.
 
     """
-    qry = session.query(Document.project_id, field)
+    qry = session.query(Document.project, field)
     qry = qry.join(DocumentSummary)
     qry = qry.filter(field != 'None')
     qry = qry.distinct()

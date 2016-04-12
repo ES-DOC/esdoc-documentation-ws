@@ -21,7 +21,7 @@ def execute(ctx):
     # Get related documents (sorted by version).
     documents = dao.get_document(ctx.primary.uid,
                                  models.DOCUMENT_VERSION_ALL,
-                                 ctx.primary.project_id)
+                                 ctx.primary.project)
 
     # Uodate flag accordingly.
     for index, document in enumerate(documents):

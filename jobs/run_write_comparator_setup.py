@@ -12,18 +12,18 @@ define("outdir", help="Path to directory to which to write outputs")
 
 
 # Set of project comparators for which to write setup data in json format.
-_PROJECT_COMPARATORS = [
-    ('CMIP5', 'c1')
-    ]
+_PROJECT_COMPARATORS = (
+    ('cmip5', 'c1')
+    )
 
 
-def _get_c1_setup_data(project_id):
+def _get_c1_setup_data(project):
     """Loads setup data for the c1 comparator.
 
     """
     return {
-        'fields' : db.utils.get_node_field_set(project_id),
-        'nodes' : db.utils.get_node_set(project_id),
+        'fields' : db.utils.get_node_field_set(project),
+        'nodes' : db.utils.get_node_set(project),
     }
 
 
@@ -36,31 +36,17 @@ _COMPARATOR_INFO = {
 }
 
 
-def _get_project_id(code):
-    """Returns project id.
-
-    """
-    project = db.dao.get_by_name(db.models.Project, code)
-    if project is None:
-        msg = 'Project code ({0}) is unsupported.'
-        msg = msg.format(code)
-        rt.throw(msg)
-
-    return project.id
-
-
 def _get_setup_data(project, comparator):
     """Returns comparator setup data.
 
     """
-    project_id = _get_project_id(project)
     title = _COMPARATOR_INFO[comparator]['title']
-    data = _COMPARATOR_INFO[comparator]['setup'](project_id)
+    data = _COMPARATOR_INFO[comparator]['setup'](project)
 
     return {
         'comparator' : comparator,
         'title' : title,
-        'project' : project_id,
+        'project' : project,
         'projectCode' : project,
         'data' : data
     }
@@ -90,7 +76,7 @@ def _write(project, comparator):
 
     """
     # Set output file path.
-    fpath = "compare.setup.{0}.{1}.json".format(project.lower(), comparator)
+    fpath = "compare.setup.{0}.{1}.json".format(project, comparator)
     fpath = os.path.join(options.outdir, fpath)
 
     # Set setup data.
