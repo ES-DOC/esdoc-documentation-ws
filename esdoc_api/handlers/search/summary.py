@@ -45,7 +45,6 @@ def _get_params():
         },
         'institute': {
             'required': False,
-            'model_type': db.models.Institute,
             'value_formatter': lambda v : v.lower()
         },
         'model': {
@@ -93,7 +92,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
             self.document_type.key,
             self.document_version,
             self.document_language.id,
-            self.institute.id if self.institute else None,
+            self.institute,
             self.model if self.model else None,
             self.experiment if self.experiment else None
             )

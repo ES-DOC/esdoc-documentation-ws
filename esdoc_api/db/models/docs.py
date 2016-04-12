@@ -53,10 +53,6 @@ class Document(Entity):
         {'schema' : _DOMAIN_PARTITION}
     )
 
-    # Foreign keys.
-    institute_id = Column(Integer,
-                          ForeignKey('vocab.tbl_institute.id'))
-
     # Relationships.
     ExternalIDs = relationship("DocumentExternalID", backref="Document")
     Summaries = relationship("DocumentSummary", backref="Document", lazy='joined')

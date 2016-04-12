@@ -77,28 +77,3 @@ def get_doc_type(item_id=None):
     return core.get(models.DocumentType, item_id)
 
 
-def get_institute(item_id=None):
-    """Returns either all institutes or first institute with matching name.
-
-    :param item_id: Institute identifier.
-    :type item_id: str | int
-
-    :returns: Either an institute list or an instance.
-    :rtype: list | models.Institute
-
-    """
-    return core.get(models.Institute, item_id)
-
-
-def get_institute_id(item_id):
-    """Returns ID of first institute with matching name.
-
-    :param item_id: Institute identifier.
-    :type item_id: str | int
-
-    :returns: An institute instance identifier or None.
-    :rtype: None | int
-
-    """
-    return core.get_id(models.Institute, item_id)
-

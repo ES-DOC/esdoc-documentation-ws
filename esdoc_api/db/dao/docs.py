@@ -37,8 +37,7 @@ def get_document(uid, version, project=None):
 
     """
     qry = session.query(Document)
-
-    if project is not None:
+    if project:
         qry = text_filter(qry, Document.project, project)
     qry = qry.filter(Document.uid == unicode(uid))
     if version is None or version in models.DOCUMENT_VERSIONS:
@@ -53,7 +52,7 @@ def get_document_by_name(
     project,
     typeof,
     name,
-    institute_id=None,
+    institute=None,
     latest_only=True
     ):
     """Retrieves a single document by it's name.
@@ -61,7 +60,7 @@ def get_document_by_name(
     :param str project: Project code.
     :param str typeof: Document type.
     :param str name: Document name.
-    :param int institute_id: ID of an Institute instance.
+    :param str institute: Institute code.
     :param boolean latest_only: Project with which document is associated.
 
     :returns: First matching document.
@@ -69,12 +68,11 @@ def get_document_by_name(
 
     """
     qry = session.query(Document)
-
     qry = text_filter(qry, Document.project, project)
     qry = text_filter(qry, Document.type, typeof)
     qry = text_filter(qry, Document.name, name)
-    if institute_id is not None:
-        qry = qry.filter(Document.institute_id == institute_id)
+    if institute:
+        qry = text_filter(qry, Document.institute, institute)
     if latest_only == True:
         qry = qry.filter(Document.is_latest == True)
 
@@ -93,7 +91,6 @@ def get_document_by_type(project, typeof, latest_only=True):
 
     """
     qry = session.query(Document)
-
     qry = text_filter(qry, Document.project, project)
     qry = text_filter(qry, Document.type, typeof)
     if latest_only == True:
@@ -132,23 +129,22 @@ def get_document_by_drs_keys(
 
     """
     qry = session.query(Document).join(DocumentDRS)
-
     qry = text_filter(qry, Document.project, project)
-    if key_01 is not None:
+    if key_01:
         qry = text_filter(qry, DocumentDRS.key_01, key_01)
-    if key_02 is not None:
+    if key_02:
         qry = text_filter(qry, DocumentDRS.key_02, key_02)
-    if key_03 is not None:
+    if key_03:
         qry = text_filter(qry, DocumentDRS.key_03, key_03)
-    if key_04 is not None:
+    if key_04:
         qry = text_filter(qry, DocumentDRS.key_04, key_04)
-    if key_05 is not None:
+    if key_05:
         qry = text_filter(qry, DocumentDRS.key_05, key_05)
-    if key_06 is not None:
+    if key_06:
         qry = text_filter(qry, DocumentDRS.key_06, key_06)
-    if key_07 is not None:
+    if key_07:
         qry = text_filter(qry, DocumentDRS.key_07, key_07)
-    if key_08 is not None:
+    if key_08:
         qry = text_filter(qry, DocumentDRS.key_08, key_08)
     if latest_only == True:
         qry = qry.filter(Document.is_latest == True)
@@ -167,7 +163,6 @@ def get_documents_by_external_id(project, external_id):
 
     """
     qry = session.query(Document).join(DocumentExternalID)
-
     qry = text_filter(qry, Document.project, project)
     qry = qry.filter(DocumentExternalID.external_id.like('%' + external_id.upper() + '%'))
 
@@ -179,7 +174,7 @@ def get_document_summaries(
     type,
     version,
     language_id,
-    institute_id=None,
+    institute=None,
     model=None,
     experiment=None
     ):
@@ -189,7 +184,7 @@ def get_document_summaries(
     :param str type: Document type.
     :param str version: Document version (latest | all).
     :param int language_id: ID of a DocumentLanguage instance.
-    :param int institute_id: ID of an Institute instance.
+    :param str institute: Institute code.
 
     :returns: First DocumentSummary instance with matching document & language.
     :rtype: db.models.DocumentSummary
@@ -213,11 +208,11 @@ def get_document_summaries(
         qry = text_filter(qry, Document.type, type)
     if version == models.DOCUMENT_VERSION_LATEST:
         qry = qry.filter(Document.is_latest == True)
-    if experiment is not None:
+    if experiment:
         qry = text_filter(qry, DocumentSummary.experiment, experiment)
-    if institute_id is not None:
-        qry = qry.filter(Document.institute_id == institute_id)
-    if model is not None:
+    if institute:
+        qry = text_filter(qry, Document.institute, institute)
+    if model:
         qry = text_filter(qry, DocumentSummary.model, model)
 
     # Apply query limit.
@@ -315,7 +310,6 @@ def get_project_document_type_counts():
     qry = session.query(sa.func.count(Document.type),
                         Document.project,
                         Document.type)
-
     qry = qry.group_by(Document.project)
     qry = qry.group_by(Document.type)
 
@@ -329,16 +323,14 @@ def get_document_counts():
     :rtype: list
 
     """
-    qry = session.query(sa.func.count(Document.institute_id),
+    qry = session.query(sa.func.count(Document.institute),
                         Document.project,
                         Institute.name,
                         Document.type)
     qry = qry.join(Institute)
-
     qry = qry.group_by(Document.project)
     qry = qry.group_by(Institute.id)
     qry = qry.group_by(Document.type)
-
     qry = qry.order_by(Document.type.desc())
 
     return qry.all()

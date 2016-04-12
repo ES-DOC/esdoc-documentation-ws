@@ -100,7 +100,7 @@ def _load_docs(ctx):
         """Returns document key.
 
         """
-        institute = cache.get_name(models.Institute, doc.institute_id)
+        institute = cache.get_name(models.Institute, doc.institute)
         name = doc.name.upper()
 
         return "{0}--{1}".format(institute, name)

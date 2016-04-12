@@ -19,8 +19,7 @@ def get_url_params():
     return {
         'institute': {
             'required' : False,
-            'model_type': db.models.Institute,
-            'value_formatter' : lambda k : k.lower(),
+            'value_formatter' : lambda k: k.lower()
         },
         'name': {
             'required' : True,
@@ -40,9 +39,7 @@ def do_search(criteria):
     :rtype: db.models.Document | None
 
     """
-    institute_id = None if not criteria.institute else criteria.institute.id
-
     yield db.dao.get_document_by_name(criteria.project.name,
                                       criteria.type,
                                       criteria.name,
-                                      institute_id)
+                                      criteria.institute)

@@ -80,12 +80,11 @@ def get_project_institute_counts():
     :rtype: list
 
     """
-    qry = session.query(sa.func.count(Document.institute_id),
+    qry = session.query(sa.func.count(Document.institute),
                         Document.project,
-                        Document.institute_id)
-
+                        Document.institute)
     qry = qry.group_by(Document.project)
-    qry = qry.group_by(Document.institute_id)
+    qry = qry.group_by(Document.institute)
 
     return qry.all()
 
