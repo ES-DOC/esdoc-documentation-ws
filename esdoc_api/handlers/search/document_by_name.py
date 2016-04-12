@@ -42,7 +42,7 @@ def do_search(criteria):
     """
     institute_id = None if not criteria.institute else criteria.institute.id
 
-    yield db.dao.get_document_by_name(criteria.project.id,
+    yield db.dao.get_document_by_name(criteria.project.name,
                                       criteria.type,
                                       criteria.name,
                                       institute_id)

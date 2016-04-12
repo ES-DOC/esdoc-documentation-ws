@@ -51,8 +51,7 @@ def do_search(criteria):
     :rtype: db.models.Document | None
 
     """
-    handler = utils.external_id.get(criteria.project.name,
-                                    criteria.external_type)
+    handler = utils.external_id.get(criteria.project.name, criteria.external_type)
     external_id = handler.get_parsed(criteria.external_id)
-    for doc in handler.do_search(criteria.project.id, external_id):
+    for doc in handler.do_search(criteria.project.name, external_id):
         yield doc

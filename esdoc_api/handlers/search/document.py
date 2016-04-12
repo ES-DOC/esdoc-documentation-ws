@@ -223,7 +223,6 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         # Set encoding.
         self.output_encoding = encoding = self.encoding.encoding
 
-
         # No documents.
         if not len(self.docs):
             self.output = None
