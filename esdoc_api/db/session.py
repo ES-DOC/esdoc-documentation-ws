@@ -217,6 +217,15 @@ def query(*args):
     return _State.sa_session.query(*args)
 
 
+def raw_query(*args):
+    """Initiates a raw query operation against a SQLAlchemy session.
+
+    Avoids having to expose directly the underlying SQLAlchemy session.
+
+    """
+    return _State.sa_session.query(*args)
+
+
 def log():
     print _State.sa_engine
 

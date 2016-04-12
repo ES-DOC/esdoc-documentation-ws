@@ -21,6 +21,7 @@ from esdoc_api.db.models import (
     Document,
     DocumentDRS,
     DocumentExternalID,
+    DocumentSubProject,
     DocumentSummary,
     Institute,
     Project
@@ -304,6 +305,19 @@ def get_document_summaries(
     qry = qry.limit(session.QUERY_LIMIT)
 
     return sort(DocumentSummary, qry.all())
+
+
+def get_document_projects():
+    """Returns set of distinct document project associations.
+
+    """
+    qry = session.query(
+        DocumentSubProject.project,
+        DocumentSubProject.sub_project
+        )
+    qry = qry.distinct()
+
+    return qry.all()
 
 
 def _delete_document_relation(document_id, typeof):

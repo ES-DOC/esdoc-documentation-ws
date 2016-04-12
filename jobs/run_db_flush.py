@@ -41,26 +41,20 @@ _parser.add_argument(
     )
 
 
-def _execute(project_code, source):
+def _execute(project, source):
     """Executes document deletion.
 
     """
     # Format input params.
-    project_code = unicode(project_code).strip().lower()
+    project = unicode(project).strip().lower()
     if source is not None:
         source = unicode(source).strip().lower()
         if len(source) == 0:
             source = None
 
-    # Map project code to project entry in db.
-    project = dao.get_by_name(Project, project_code)
-    if project is None:
-        rt.log("Project code [{}] is unsupported".format(project_code))
-        return
-
     # Build queries.
     qry1 = session.query(Document.id)
-    qry1 = qry1.filter(Document.project_id == project.id)
+    qry1 = qry1.filter(Document.project == project)
     if source is not None:
         qry1 = qry1.filter(Document.source == source)
 

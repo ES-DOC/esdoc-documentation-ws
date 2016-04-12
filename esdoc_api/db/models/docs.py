@@ -64,14 +64,15 @@ class Document(Entity):
     Summaries = relationship("DocumentSummary", backref="Document", lazy='joined')
 
     # Field set.
+    project = Column(Unicode(63))
     source = Column(Unicode(255))
+    institute = Column(Unicode(63))
     type = Column(Unicode(255), nullable=False)
     name = Column(Unicode(255), nullable=False)
     uid = Column(Unicode(63), nullable=False, default=uuid.uuid4())
     version = Column(Integer, nullable=False, default=1)
     ingest_date = Column(DateTime, default=datetime.datetime.now())
     is_latest = Column(Boolean, nullable=False, default=False)
-    sub_project = Column(Unicode(255))
 
 
     def __init__(self):
@@ -147,7 +148,7 @@ class DocumentDRS(Entity):
         result.key_07 = self.key_07
         result.key_08 = self.key_08
         result.path = self.path
-        result.project_id = self.project_id
+        result.project = self.project
 
         return result
 

@@ -70,6 +70,8 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """Sets output data to be returned to client.
 
         """
+        print db.dao.get_document_projects()
+
         self.output_encoding = 'json'
         self.output = {
             'projects' : _load(db.models.Project, sort_key='name'),

@@ -22,9 +22,9 @@ def execute(ctx):
     """
     # Instantiate.
     instance = models.Document()
-    instance.institute_id = cache.get_institute_id(ctx.doc.meta.institute)
+    instance.institute = ctx.doc.meta.institute
     instance.name = unicode(ctx.doc.ext.display_name)
-    instance.project_id = cache.get_project_id(ctx.doc.meta.project)
+    instance.project = ctx.doc.meta.project.strip().lower()
     instance.source = unicode(ctx.doc.meta.source_key)
     instance.type = unicode(ctx.doc.meta.type)
     instance.uid = unicode(ctx.doc.meta.id)
