@@ -9,4 +9,3 @@
 
 """
 from esdoc_api.db.cache.core import *
-from esdoc_api.db.cache.accessors import *
