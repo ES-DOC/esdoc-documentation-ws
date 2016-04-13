@@ -41,18 +41,11 @@ _CIM_V1_MODEL = "cim.1.software.modelcomponent"
 class _ProcessingContextInfo(object):
     """Encapsulates processing context information."""
     def __init__(self):
-        self.encoding = None
+        self.encoding = _ENCODING
         self.experiments = []
         self.models = []
         self.ontology = _ONTOLOGY
         self.project = _PROJECT.lower()
-
-
-def _init(ctx):
-    """Initializes processing context.
-
-    """
-    ctx.encoding = cache.get_doc_encoding(_ENCODING)
 
 
 def _load_docs(ctx):
@@ -117,7 +110,6 @@ def execute():
     """Executes facet indexing from cmip5 project."""
     ctx = _ProcessingContextInfo()
     for func, msg in (
-        (_init, "initializing context"),
         (_load_docs, "loading documents"),
         (_index, "building indexes"),
         ):

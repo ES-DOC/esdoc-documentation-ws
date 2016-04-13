@@ -8,7 +8,6 @@
 
 
 """
-from esdoc_api.db.init import initialize_document_encoding
 from esdoc_api.db.init import initialize_document_type
 from esdoc_api.db.init import initialize_institute
 from esdoc_api.db.init import initialize_project
@@ -18,7 +17,6 @@ from esdoc_api.utils import runtime as rt
 
 # Repository initializing functions (order matters).
 _INITIALIZERS = [
-    initialize_document_encoding,
     initialize_document_type,
     initialize_institute,
     initialize_project,

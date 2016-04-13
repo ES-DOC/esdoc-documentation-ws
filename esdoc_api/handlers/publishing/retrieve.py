@@ -24,7 +24,7 @@ def _get_params():
     return {
         'encoding': {
             'required': True,
-            'model_type': db.models.DocumentEncoding,
+            'whitelist': pyesdoc.ENCODINGS_ALL,
             'value_formatter': lambda v : v.lower()
         },
         'document_id': {
@@ -74,8 +74,8 @@ class DocumentRetrieveRequestHandler(tornado.web.RequestHandler):
 
         """
         if self.doc:
-            self.output_encoding = encoding = self.encoding.encoding
-            self.output = pyesdoc.encode(self.doc, encoding)
+            self.output_encoding = self.encoding
+            self.output = pyesdoc.encode(self.doc, self.encoding)
         else:
             self.set_status(404)
 

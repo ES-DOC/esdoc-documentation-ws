@@ -12,8 +12,6 @@
 from sqlalchemy import (
     Boolean,
     Column,
-    ForeignKey,
-    Integer,
     Unicode,
     UniqueConstraint,
 )
@@ -27,36 +25,6 @@ DOCUMENT_TYPE_ALL = '*'
 
 # Domain model partition.
 _DOMAIN_PARTITION = 'vocab'
-
-
-class DocumentEncoding(Entity):
-    """An encoding with which a document representation maybe associated.
-
-    """
-    # SQLAlchemy directives.
-    __tablename__ = 'tbl_document_encoding'
-    __table_args__ = (
-        {'schema' : _DOMAIN_PARTITION}
-    )
-
-    # Field set.
-    encoding = Column(Unicode(63), nullable=False, unique=True)
-
-
-    @property
-    def cache_name(self):
-        """Gets instance cache key name.
-
-        """
-        return self.encoding
-
-
-    @classmethod
-    def get_default_sort_key(cls):
-        """
-        Gets default sort key.
-        """
-        return lambda instance: instance.encoding
 
 
 class DocumentType(Entity):

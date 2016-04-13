@@ -53,7 +53,7 @@ def _get_default_params():
         },
         'encoding': {
             'required': True,
-            'model_type': db.models.DocumentEncoding,
+            'whitelist': pyesdoc.ENCODINGS_ALL,
             'value_formatter': lambda v: v.lower()
         },
         'project': {
@@ -180,11 +180,8 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         """Sets final collection to be encoded.
 
         """
-        # Set target encoding.
-        encoding = self.encoding.encoding
-
         # HTML documents require a sorted merge.
-        if encoding == pyesdoc.ENCODING_HTML:
+        if self.encoding == pyesdoc.ENCODING_HTML:
             self.docs = self.docs + self.child_docs
             self.docs = sorted(self.docs, key=lambda d: d.meta.sort_key)
 
@@ -194,8 +191,8 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         # N.B. Tornado auto-encodes dict's to json.
-        if self.encoding.encoding != pyesdoc.ENCODING_JSON:
-            self.docs = pyesdoc.encode(self.docs, self.encoding.encoding)
+        if self.encoding != pyesdoc.ENCODING_JSON:
+            self.docs = pyesdoc.encode(self.docs, self.encoding)
         else:
             self.docs = pyesdoc.encode(self.docs, pyesdoc.ENCODING_DICT)
 
@@ -205,14 +202,14 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         # Set encoding.
-        self.output_encoding = encoding = self.encoding.encoding
+        self.output_encoding = self.encoding
 
         # No documents.
         if not len(self.docs):
             self.output = None
 
         # Multiple html documents - already wrapped by pyesdoc.
-        elif encoding == pyesdoc.ENCODING_HTML:
+        elif self.encoding == pyesdoc.ENCODING_HTML:
             self.output = "<div>{0}</div>".format(self.docs[0])
             # self.output = "<div>{0}</div>".format(self.docs)
 
@@ -221,13 +218,13 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
             self.output = self.docs[0]
 
         # Multiple json documents - create wrapper.
-        elif encoding == pyesdoc.ENCODING_JSON:
+        elif self.encoding == pyesdoc.ENCODING_JSON:
             self.output = {
                 'documents': self.docs
             }
 
         # Multiple xml documents - create wrapper.
-        elif encoding == pyesdoc.ENCODING_XML:
+        elif self.encoding == pyesdoc.ENCODING_XML:
             self.output = "<documents>{0}</documents>".format("".join(self.docs))
 
 
