@@ -8,71 +8,87 @@
 
 
 """
+# Token used to indicate that all document types are in scope.
+DOCUMENT_TYPE_ALL = '*'
+
 # Set of document types supported by web-service.
-DOCUMENT_TYPES = {
-	'cim.1.data.DataObject': {
+DOCUMENT_TYPES = [
+	{
 		'display_name': 'Data',
 		'is_search_target': False,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.data.DataObject'
 	},
-	'cim.1.misc.DocumentSet': {
+	{
 		'display_name': 'Simulation',
 		'is_search_target': True,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.misc.DocumentSet'
 	},
-	'cim.1.activity.Ensemble': {
+	{
 		'display_name': 'Ensemble',
 		'is_search_target': False,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.activity.Ensemble'
 	},
-	'cim.1.grids.GridSpec': {
+	{
 		'display_name': 'Grid Spec',
 		'is_search_target': True,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.grids.GridSpec'
 	},
-	'cim.1.software.ModelComponent': {
+	{
 		'display_name': 'Model',
 		'is_search_target': True,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.software.ModelComponent'
 	},
-	'cim.1.activity.NumericalExperiment': {
+	{
 		'display_name': 'Experiment',
 		'is_search_target': True,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.activity.NumericalExperiment'
 	},
-	'cim.1.shared.Platform': {
+	{
 		'display_name': 'Platform',
 		'is_search_target': True,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.shared.Platform'
 	},
-	'cim.1.quality.CimQuality': {
+	{
 		'display_name': 'Quality',
 		'is_search_target': False,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.quality.CimQuality'
 	},
-	'cim.1.activity.SimulationComposite': {
+	{
 		'display_name': 'Simulation',
 		'is_search_target': False,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.activity.SimulationComposite'
 	},
-	'cim.1.activity.SimulationRun': {
+	{
 		'display_name': 'Simulation',
 		'is_search_target': False,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.activity.SimulationRun'
 	},
-	'cim.1.activity.StatisticalModelComponent': {
+	{
 		'display_name': 'Statistical Model',
 		'is_search_target': False,
-		'is_pdf_target': False
+		'is_pdf_target': False,
+		'key': 'cim.1.activity.StatisticalModelComponent'
 	},
-	'cim.2.designing.NumericalExperiment': {
+	{
 		'display_name': 'Experiment',
 		'is_search_target': True,
-		'is_pdf_target': True
-	},
-}
+		'is_pdf_target': True,
+		'key': 'cim.2.designing.NumericalExperiment'
+	}
+]
 
 # Set derived values.
-for _dt, _value in DOCUMENT_TYPES.items():
-	_value['key'] = unicode(_dt)
-	_value['ontology'] = "{}.{}".format(_dt.split('.')[0], _dt.split('.')[1])
+for _dt in DOCUMENT_TYPES:
+	_dt['ontology'] = "{}.{}".format(_dt['key'].split('.')[0],
+									 _dt['key'].split('.')[1])
+

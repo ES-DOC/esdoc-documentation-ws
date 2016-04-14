@@ -36,7 +36,6 @@ from esdoc_api.db.models.facets import (
     NODE_TYPE_MODEL_PROPERTY,
     NODE_TYPE_MODEL_PROPERTY_VALUE,
     )
-from esdoc_api.db.models.vocab import DOCUMENT_TYPE_ALL
 from esdoc_api.db.models.vocab import Institute
 from esdoc_api.db.models.vocab import Project
 from esdoc_api.utils import runtime as rt

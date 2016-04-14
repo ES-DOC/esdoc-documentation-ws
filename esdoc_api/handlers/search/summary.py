@@ -25,7 +25,7 @@ def _get_params():
         },
         'documentType': {
             'required': True,
-            'whitelist' : [dt.lower() for dt in constants.DOCUMENT_TYPES.keys()],
+            'whitelist' : [dt['key'].lower() for dt in constants.DOCUMENT_TYPES],
             'value_formatter': lambda v: v.lower()
         },
         'documentVersion': {

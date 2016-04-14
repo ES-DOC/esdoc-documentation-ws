@@ -9,19 +9,13 @@
 
 
 """
-from sqlalchemy import (
-    Boolean,
-    Column,
-    Unicode,
-    UniqueConstraint,
-)
+from sqlalchemy import Column
+from sqlalchemy import Unicode
+from sqlalchemy import UniqueConstraint
 
 from esdoc_api.db.models.utils import Entity
 
 
-
-# Constants pertaining to document types.
-DOCUMENT_TYPE_ALL = '*'
 
 # Domain model partition.
 _DOMAIN_PARTITION = 'vocab'

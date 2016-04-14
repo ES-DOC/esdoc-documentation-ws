@@ -74,7 +74,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
             'experiments' : db.dao.get_summary_eperiment_set(),
             'institutes' : _load(db.models.Institute),
             'instituteCounts' : db.dao.get_project_institute_counts(),
-            'documentTypes' : convert.dict_keys_to_camel_case(constants.DOCUMENT_TYPES).values(),
+            'documentTypes' : [convert.dict_keys_to_camel_case(dt) for dt in constants.DOCUMENT_TYPES],
             'documentTypeCounts' : db.dao.get_project_document_type_counts()
         }
 

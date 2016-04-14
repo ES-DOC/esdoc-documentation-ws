@@ -12,6 +12,7 @@ import sqlalchemy as sa
 
 import pyesdoc
 
+from esdoc_api import constants
 from esdoc_api.db.dao.core import delete_by_type
 from esdoc_api.db.dao.core import delete_by_id
 from esdoc_api.db.dao.core import delete_by_facet
@@ -203,7 +204,7 @@ def get_document_summaries(
 
     # Set mandatory params.
     qry = text_filter(qry, Document.project, project)
-    if type != models.DOCUMENT_TYPE_ALL:
+    if type != constants.DOCUMENT_TYPE_ALL:
         qry = text_filter(qry, Document.type, type)
     if version == models.DOCUMENT_VERSION_LATEST:
         qry = qry.filter(Document.is_latest == True)
