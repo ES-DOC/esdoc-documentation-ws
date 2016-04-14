@@ -27,33 +27,6 @@ DOCUMENT_TYPE_ALL = '*'
 _DOMAIN_PARTITION = 'vocab'
 
 
-class DocumentType(Entity):
-    """Meta-information regarding the type of document.
-
-    """
-    # SQLAlchemy directives.
-    __tablename__ = 'tbl_document_type'
-    __table_args__ = (
-        UniqueConstraint('key'),
-        {'schema' : _DOMAIN_PARTITION}
-    )
-
-    # Field set.
-    ontology = Column(Unicode(63), nullable=False)
-    key = Column(Unicode(255), nullable=False)
-    display_name = Column(Unicode(63), nullable=False)
-    is_search_target = Column(Boolean, nullable=False, default=True)
-    is_pdf_target = Column(Boolean, nullable=False, default=True)
-
-
-    @property
-    def cache_name(self):
-        """Gets instance cache key name.
-
-        """
-        return self.key
-
-
 class Institute(Entity):
     """Represents an institute with which documents are associated.
 

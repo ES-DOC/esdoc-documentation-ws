@@ -12,7 +12,7 @@
 """
 import tornado
 
-from esdoc_api import db, utils
+from esdoc_api import constants, db, utils
 from esdoc_api.utils import config
 
 
@@ -25,7 +25,7 @@ def _get_params():
         },
         'documentType': {
             'required': True,
-            'model_type': db.models.DocumentType,
+            'whitelist' : [dt.lower() for dt in constants.DOCUMENT_TYPES.keys()],
             'value_formatter': lambda v: v.lower()
         },
         'documentVersion': {
@@ -81,7 +81,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
         """Sets data returned from db."""
         self.data = db.dao.get_document_summaries(
             self.project,
-            self.document_type.key,
+            self.document_type,
             self.document_version,
             self.institute,
             self.model if self.model else None,
@@ -92,7 +92,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
     def _set_total(self):
         """Sets total of all records returnable from db."""
         self.total = \
-            db.dao.get_document_type_count(self.project, self.document_type.key)
+            db.dao.get_document_type_count(self.project, self.document_type)
 
 
     def _set_output(self):

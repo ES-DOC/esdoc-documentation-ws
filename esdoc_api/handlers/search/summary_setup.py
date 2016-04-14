@@ -12,8 +12,12 @@
 """
 import tornado
 
-from esdoc_api import db, utils
+from esdoc_api import constants
+from esdoc_api import db
+from esdoc_api import utils
 from esdoc_api.utils import config
+from esdoc_api.utils import convert
+
 
 
 
@@ -70,7 +74,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
             'experiments' : db.dao.get_summary_eperiment_set(),
             'institutes' : _load(db.models.Institute),
             'instituteCounts' : db.dao.get_project_institute_counts(),
-            'documentTypes' : _load(db.models.DocumentType),
+            'documentTypes' : convert.dict_keys_to_camel_case(constants.DOCUMENT_TYPES).values(),
             'documentTypeCounts' : db.dao.get_project_document_type_counts()
         }
 

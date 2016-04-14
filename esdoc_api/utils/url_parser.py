@@ -30,6 +30,9 @@ _BOOLEAN_MAP = {
 def _validate_whitelisted_param(name, value, white_list):
     """Validates request parameter is a white-list member."""
     if value not in white_list:
+        print value
+        print white_list
+
         msg = "Request parameter {0}: is not in white-list.".format(name)
         raise ValueError(msg)
 
@@ -79,6 +82,8 @@ def _parse_param(handler, name, info):
     if value:
         white_list = _get_param_white_list(info)
         if white_list and value not in white_list:
+            print value
+            print white_list
             msg = "Request parameter {0}: is not in white-list.".format(name)
             raise ValueError(msg)
 
