@@ -69,7 +69,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """
         self.output_encoding = 'json'
         self.output = {
-            'projects' : _load(db.models.Project, sort_key='name'),
+            'projects' : [convert.dict_keys_to_camel_case(dt) for dt in constants.PROJECTS],
             'models' : db.dao.get_summary_model_set(),
             'experiments' : db.dao.get_summary_eperiment_set(),
             'institutes' : _load(db.models.Institute),

@@ -9,10 +9,10 @@
 
 """
 # -*- coding: utf-8 -*-
+from esdoc_api import constants
 from esdoc_api.db import (
     dao,
     models,
-    session,
     utils
     )
 from esdoc_api.utils import runtime as rt
@@ -28,7 +28,7 @@ class _ProcessingContextInfo(object):
 def _init(ctx):
     """Initializes processing context."""
     ctx.institutes = dao.get_all(models.Institute)
-    ctx.projects = dao.get_all(models.Project)
+    ctx.projects = constants.PROJECTS
 
 
 def _index(ctx):

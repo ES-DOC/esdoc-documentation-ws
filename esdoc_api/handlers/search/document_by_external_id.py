@@ -33,7 +33,7 @@ def parse_url_params(params):
 
     """
     # Validate that an external id handler exists.
-    handler = utils.external_id.get(params.project.name, params.external_type)
+    handler = utils.external_id.get(params.project, params.external_type)
     if not handler:
         raise ValueError("External ID type is unsupported.")
 
@@ -51,7 +51,7 @@ def do_search(criteria):
     :rtype: db.models.Document | None
 
     """
-    handler = utils.external_id.get(criteria.project.name, criteria.external_type)
+    handler = utils.external_id.get(criteria.project, criteria.external_type)
     external_id = handler.get_parsed(criteria.external_id)
-    for doc in handler.do_search(criteria.project.name, external_id):
+    for doc in handler.do_search(criteria.project, external_id):
         yield doc

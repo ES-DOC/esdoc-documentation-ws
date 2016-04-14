@@ -39,7 +39,7 @@ def do_search(criteria):
     :rtype: db.models.Document | None
 
     """
-    yield db.dao.get_document_by_name(criteria.project.name,
+    yield db.dao.get_document_by_name(criteria.project,
                                       criteria.type,
                                       criteria.name,
                                       criteria.institute)

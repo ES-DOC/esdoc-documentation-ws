@@ -22,7 +22,7 @@ from esdoc_api.utils import runtime as rt
 
 
 # Project whose facets are being indexed.
-_PROJECT = "CMIP5"
+_PROJECT = "cmip5"
 
 # Encoding used to load documents.
 _ENCODING = "json"
@@ -45,7 +45,7 @@ class _ProcessingContextInfo(object):
         self.experiments = []
         self.models = []
         self.ontology = _ONTOLOGY
-        self.project = _PROJECT.lower()
+        self.project = _PROJECT
 
 
 def _load_docs(ctx):
@@ -55,7 +55,7 @@ def _load_docs(ctx):
         """Gets documents filtered by document type.
 
         """
-        return dao.get_document_by_type(ctx.project.id, doc_type, False)
+        return dao.get_document_by_type(ctx.project, doc_type, False)
 
 
     def decode(docs):
@@ -100,7 +100,7 @@ def _index(ctx):
     def build(collection, indexer):
         """Builds index."""
         for doc in collection:
-            indexer(ctx.project.id, doc)
+            indexer(ctx.project, doc)
 
     build(ctx.experiments, index_experiment)
     build(ctx.models, index_model)
@@ -113,5 +113,5 @@ def execute():
         (_load_docs, "loading documents"),
         (_index, "building indexes"),
         ):
-        rt.log("INDEXING :: {0} :: {1}".format(_PROJECT, msg))
+        rt.log("INDEXING :: {0} :: {1}".format(_PROJECT.upper(), msg))
         func(ctx)

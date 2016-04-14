@@ -39,4 +39,4 @@ def do_search(criteria):
     """
     yield db.dao.get_document(criteria.id,
                               criteria.version,
-                              criteria.project.name)
+                              criteria.project)

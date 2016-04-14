@@ -11,7 +11,6 @@
 """
 from sqlalchemy import Column
 from sqlalchemy import Unicode
-from sqlalchemy import UniqueConstraint
 
 from esdoc_api.db.models.utils import Entity
 
@@ -53,26 +52,3 @@ class Institute(Entity):
         """
         return self.country_code + u" - " + self.name + u" - " + self.long_name
 
-
-class Project(Entity):
-    """Represents a project with which documents are associated.
-
-    """
-    # SQLAlchemy directives.
-    __tablename__ = 'tbl_project'
-    __table_args__ = (
-        {'schema' : _DOMAIN_PARTITION}
-    )
-
-    # Field set.
-    name = Column(Unicode(63), nullable=False, unique=True)
-    description = Column(Unicode(1023))
-    url = Column(Unicode(1023))
-
-
-    @property
-    def cache_name(self):
-        """Gets instance cache key name.
-
-        """
-        return self.name

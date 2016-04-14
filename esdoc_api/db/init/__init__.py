@@ -9,7 +9,6 @@
 
 """
 from esdoc_api.db.init import initialize_institute
-from esdoc_api.db.init import initialize_project
 from esdoc_api.utils import runtime as rt
 
 
@@ -17,7 +16,6 @@ from esdoc_api.utils import runtime as rt
 # Repository initializing functions (order matters).
 _INITIALIZERS = [
     initialize_institute,
-    initialize_project,
 ]
 
 

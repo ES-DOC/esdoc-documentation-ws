@@ -19,8 +19,6 @@ from esdoc_api.db.models import DocumentDRS
 from esdoc_api.db.models import DocumentExternalID
 from esdoc_api.db.models import DocumentSubProject
 from esdoc_api.db.models import DocumentSummary
-from esdoc_api.db.models import Project
-from esdoc_api.db.dao import core as dao
 from esdoc_api.utils import runtime as rt
 
 

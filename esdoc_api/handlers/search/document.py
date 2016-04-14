@@ -14,7 +14,9 @@ import tornado
 
 import pyesdoc
 
-from esdoc_api import db, utils
+from esdoc_api import constants
+from esdoc_api import db
+from esdoc_api import utils
 from esdoc_api.utils import config
 from esdoc_api.handlers.search import (
     document_by_drs,
@@ -58,7 +60,7 @@ def _get_default_params():
         },
         'project': {
             'required': True,
-            'model_type': db.models.Project,
+            'whitelist' : [p['name'].lower() for p in constants.PROJECTS],
             'value_formatter': lambda v: v.lower()
         },
         'searchType': {
@@ -130,6 +132,8 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         """
         self.docs = [d for d in self.sub_handler.do_search(self)
                      if d is not None]
+
+        print self.docs
 
 
     def _read_docs_from_archive(self):

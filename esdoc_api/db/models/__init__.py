@@ -37,7 +37,6 @@ from esdoc_api.db.models.facets import (
     NODE_TYPE_MODEL_PROPERTY_VALUE,
     )
 from esdoc_api.db.models.vocab import Institute
-from esdoc_api.db.models.vocab import Project
 from esdoc_api.utils import runtime as rt
 
 
@@ -61,14 +60,12 @@ SUPPORTED_TYPES = (
     Node,
     NodeField,
     # ... vocab
-    Institute,
-    Project
+    Institute
 )
 
 # Supported cacheable types.
 CACHEABLE_TYPES = (
     Institute,
-    Project,
     NodeField,
     )
 

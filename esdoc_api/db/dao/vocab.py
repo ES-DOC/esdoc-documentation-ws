@@ -16,7 +16,6 @@ from esdoc_api.db import session
 from esdoc_api.db.dao.core import get_by_facet
 from esdoc_api.db.models import Document
 from esdoc_api.db.models import Institute
-from esdoc_api.db.models import Project
 
 
 
@@ -75,26 +74,3 @@ def create_institute(name, long_name=None, country_code=None, homepage=None):
 
     return instance
 
-
-def create_project(name, description=None, homepage=None):
-    """Creates & returns a project instance.
-
-    :param str name: Project name.
-    :param str description: Project description.
-    :param str homepage: Project home page.
-
-    :returns: Newly created project instance.
-    :rtype: db.models.Project
-
-    """
-    name = name.upper()
-    if not description:
-        description = name
-
-    instance = Project()
-    instance.name = _parse_param(name, 'name')
-    instance.description = _parse_param(description, 'description')
-    if homepage:
-        instance.url = _parse_param(homepage, 'homepage')
-
-    return instance

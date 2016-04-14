@@ -60,9 +60,9 @@ def do_search(criteria):
     :rtype: db.models.Document | None
 
     """
-    keys = _get_drs_keys(criteria.project.name, criteria.drs_path)
+    keys = _get_drs_keys(criteria.project, criteria.drs_path)
     yield db.dao.get_document_by_drs_keys(
-      criteria.project.name,
+      criteria.project,
       keys[0] if len(keys) > 0 else None,
       keys[1] if len(keys) > 1 else None,
       keys[2] if len(keys) > 2 else None,

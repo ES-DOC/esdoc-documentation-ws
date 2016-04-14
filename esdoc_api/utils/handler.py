@@ -90,7 +90,8 @@ def _set_response_content(handler, encoding):
             pass
 
     # Write.
-    handler.write(content)
+    if content is not None:
+        handler.write(content)
 
 
 def _write(handler):
