@@ -1,0 +1,54 @@
+{
+    "projects": [
+        {
+            "description": "An application placeholder that acts as a null reference",
+            "name": "global",
+            "url": null
+        },
+        {
+            "description": "A test project plceholder",
+            "name": "test",
+            "url": ""
+        },
+        {
+            "description": "Coupled Model Intercomparison Project Phase 5",
+            "name": "CMIP5",
+            "url": "http://wcrp-climate.org/wgcm-cmip/wgcm-cmip5"
+        },
+        {
+            "description": "Coupled Model Intercomparison Project Phase 6",
+            "name": "CMIP6",
+            "url": "http://wcrp-climate.org/wgcm-cmip/wgcm-cmip6"
+        },
+        {
+            "description": "Coupled Model Intercomparison Project Phase 6",
+            "name": "CMIP6-DRAFT",
+            "url": "http://wcrp-climate.org/wgcm-cmip/wgcm-cmip6"
+        },
+        {
+            "description": "2012 Dynamical Core Model Intercomparison Project",
+            "name": "DCMIP-2012",
+            "url": "http://earthsystemcog.org/projects/dcmip-2012/"
+        },
+        {
+            "description": "2013 Statistical Downscaling Dynamical Core Model Intercomparison Project",
+            "name": "QED-2013",
+            "url": "http://earthsystemcog.org/projects/downscaling-2013"
+        },
+        {
+            "description": "Earth System Prediction Suite",
+            "name": "ESPS",
+            "url": "https://www.earthsystemcog.org/projects/esps"
+        },
+        {
+            "description": "Downscaling Metadata",
+            "name": "DOWNSCALING-METADATA",
+            "url": "https://www.earthsystemcog.org/projects/downscalingmetadata"
+        },
+        {
+            "description": "Earth System Framework Description Language",
+            "name": "ES-FDL",
+            "url": "https://earthsystemcog.org/projects/es-fdl"
+        }
+    ]
+}

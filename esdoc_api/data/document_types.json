@@ -1,0 +1,88 @@
+{
+    "documentTypes": [
+        {
+            "displayName": "Data",
+            "isPdfTarget": false,
+            "isSearchTarget": false,
+            "key": "cim.1.data.DataObject",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Simulation",
+            "isPdfTarget": false,
+            "isSearchTarget": true,
+            "key": "cim.1.misc.DocumentSet",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Ensemble",
+            "isPdfTarget": false,
+            "isSearchTarget": false,
+            "key": "cim.1.activity.Ensemble",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Grid Spec",
+            "isPdfTarget": false,
+            "isSearchTarget": true,
+            "key": "cim.1.grids.GridSpec",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Model",
+            "isPdfTarget": false,
+            "isSearchTarget": true,
+            "key": "cim.1.software.ModelComponent",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Experiment",
+            "isPdfTarget": false,
+            "isSearchTarget": true,
+            "key": "cim.1.activity.NumericalExperiment",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Platform",
+            "isPdfTarget": false,
+            "isSearchTarget": true,
+            "key": "cim.1.shared.Platform",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Quality",
+            "isPdfTarget": false,
+            "isSearchTarget": false,
+            "key": "cim.1.quality.CimQuality",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Simulation",
+            "isPdfTarget": false,
+            "isSearchTarget": false,
+            "key": "cim.1.activity.SimulationComposite",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Simulation",
+            "isPdfTarget": false,
+            "isSearchTarget": false,
+            "key": "cim.1.activity.SimulationRun",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Statistical Model",
+            "isPdfTarget": false,
+            "isSearchTarget": false,
+            "key": "cim.1.activity.StatisticalModelComponent",
+            "ontology": "cim.1"
+        },
+        {
+            "displayName": "Experiment",
+            "isPdfTarget": true,
+            "isSearchTarget": true,
+            "key": "cim.2.designing.NumericalExperiment",
+            "ontology": "cim.2"
+        }
+    ]
+}

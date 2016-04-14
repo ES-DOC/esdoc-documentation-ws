@@ -13,7 +13,6 @@ import sqlalchemy as sa
 import pyesdoc
 
 from esdoc_api.db import session
-from esdoc_api.db.dao.core import get_by_facet
 from esdoc_api.db.models import Document
 from esdoc_api.db.models import Institute
 

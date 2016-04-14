@@ -1,0 +1,256 @@
+{
+    "institutes": [
+        {
+            "countryCode": "--",
+            "id": 1,
+            "longName": "Placeholder for scenario when an institute is undefined",
+            "name": "--",
+            "url": null
+        },
+        {
+            "countryCode": "--",
+            "id": 2,
+            "longName": "Placeholder for test scenrarios",
+            "name": "TEST",
+            "url": null
+        },
+        {
+            "countryCode": "AU",
+            "id": 5,
+            "longName": "Commonwealth Scientific and Industrial Research Organization (CSIRO) and Bureau of Meteorology (BOM), Australia",
+            "name": "CSIRO-BOM",
+            "url": "http://www.csiro.au/"
+        },
+        {
+            "countryCode": "AU",
+            "id": 15,
+            "longName": "Commonwealth Scientific and Industrial Research Organisation / Queensland Climate Change Centre of Excellence",
+            "name": "CSIRO-QCCCE",
+            "url": "http://www.csiro.au/"
+        },
+        {
+            "countryCode": "BR",
+            "id": 20,
+            "longName": "Instituto Nacional de Pesquisas Espaciais",
+            "name": "INPE",
+            "url": "http://www.inpe.br/"
+        },
+        {
+            "countryCode": "CA",
+            "id": 8,
+            "longName": "Canadian Centre for Climate Modelling and Analysis",
+            "name": "CCCMA",
+            "url": "http://www.ec.gc.ca/ccmac-cccma/"
+        },
+        {
+            "countryCode": "CN",
+            "id": 6,
+            "longName": "Beijing Climate Center, China Meteorological Administration",
+            "name": "BCC",
+            "url": "http://bcc.cma.gov.cn/en/"
+        },
+        {
+            "countryCode": "CN",
+            "id": 19,
+            "longName": "The First Institute of Oceanography, SOA, China",
+            "name": "FIO",
+            "url": "http://www.fio.org.cn/"
+        },
+        {
+            "countryCode": "CN",
+            "id": 7,
+            "longName": "College of Global Change and Earth System Science, Beijing Normal University",
+            "name": "GCESS",
+            "url": "http://www.bnu.edu.cn/gces/"
+        },
+        {
+            "countryCode": "CN",
+            "id": 17,
+            "longName": "LASG, Institute of Atmospheric Physics, Chinese Academy of Sciences and CESS,Tsinghua University",
+            "name": "LASG-CESS",
+            "url": "http://www.iap.ac.cn/ http://www.tsinghua.edu.cn/publish/cessen/"
+        },
+        {
+            "countryCode": "CN",
+            "id": 18,
+            "longName": "LASG, Institute of Atmospheric Physics, Chinese Academy of Sciences",
+            "name": "LASG-IAP",
+            "url": "http://www.iap.ac.cn/"
+        },
+        {
+            "countryCode": "DE",
+            "id": 29,
+            "longName": "Max Planck Institute for Meteorology",
+            "name": "MPI-M",
+            "url": "http://www.mpimet.mpg.de/"
+        },
+        {
+            "countryCode": "FR",
+            "id": 14,
+            "longName": "Centre National de Recherches Meteorologiques / Centre Europeen de Recherche et de Formation Avancee en Calcul Scientifique",
+            "name": "CNRM-CERFACS",
+            "url": "http://www.cerfacs.fr/"
+        },
+        {
+            "countryCode": "FR",
+            "id": 27,
+            "longName": "Institut Pierre Simon Laplace",
+            "name": "IPSL",
+            "url": "http://www.ipsl.fr/"
+        },
+        {
+            "countryCode": "IT",
+            "id": 13,
+            "longName": "Centro Euro-Mediterraneo per I Cambiamenti Climatici",
+            "name": "CMCC",
+            "url": "http://www.cmcc.it/"
+        },
+        {
+            "countryCode": "JP",
+            "id": 28,
+            "longName": "Japan Agency for Marine-Earth Science and Technology, Atmosphere and Ocean Research Institute (The University of Tokyo), and National Institute for Environmental Studies",
+            "name": "MIROC",
+            "url": "http://www.ccsr.u-tokyo.ac.jp/"
+        },
+        {
+            "countryCode": "JP",
+            "id": 30,
+            "longName": "Meteorological Research Institute",
+            "name": "MRI",
+            "url": "http://www.mri-jma.go.jp/"
+        },
+        {
+            "countryCode": "JP",
+            "id": 31,
+            "longName": "Nonhydrostatic Icosahedral Atmospheric Model Group",
+            "name": "NICAM",
+            "url": "http://www.ccsr.u-tokyo.ac.jp/~satoh/nicam/index.html"
+        },
+        {
+            "countryCode": "KR",
+            "id": 24,
+            "longName": "National Institute of Meteorological Research/Korea Meteorological Administration",
+            "name": "NIMR-KMA",
+            "url": "http://www.nimr.go.kr/MA/main.jsp"
+        },
+        {
+            "countryCode": "NL",
+            "id": 16,
+            "longName": "EC-EARTH",
+            "name": "EC-EARTH",
+            "url": "http://ecearth.knmi.nl/"
+        },
+        {
+            "countryCode": "NO",
+            "id": 32,
+            "longName": "Norwegian Climate Centre",
+            "name": "NCC",
+            "url": "http://www.cicero.uio.no/"
+        },
+        {
+            "countryCode": "RU",
+            "id": 26,
+            "longName": "Institute of Numerical Mathematics",
+            "name": "INM",
+            "url": "http://www.inm.ras.ru/"
+        },
+        {
+            "countryCode": "UK",
+            "id": 3,
+            "longName": "British Atmospheric Data Centre",
+            "name": "BADC",
+            "url": "http://badc.nerc.ac.uk/home/index.html"
+        },
+        {
+            "countryCode": "UK",
+            "id": 25,
+            "longName": "Met Office Hadley Centre",
+            "name": "MOHC",
+            "url": "http://www.metoffice.gov.uk/climatechange/science/hadleycentre/"
+        },
+        {
+            "countryCode": "US",
+            "id": 4,
+            "longName": "Center for Ocean-Land-Atmosphere Studies",
+            "name": "COLA-CFS",
+            "url": "http://grads.iges.org/colablurb.html"
+        },
+        {
+            "countryCode": "US",
+            "id": 34,
+            "longName": "Department of Energy",
+            "name": "DOE",
+            "url": "http://energy.gov"
+        },
+        {
+            "countryCode": "US",
+            "id": 38,
+            "longName": "ESPS TEAM",
+            "name": "ESPS TEAM",
+            "url": null
+        },
+        {
+            "countryCode": "US",
+            "id": 23,
+            "longName": "NASA Goddard Institute for Space Studies",
+            "name": "NASA-GISS",
+            "url": "http://www.giss.nasa.gov/"
+        },
+        {
+            "countryCode": "US",
+            "id": 21,
+            "longName": "NASA Global Modeling and Assimilation Office",
+            "name": "NASA-GMAO",
+            "url": "https://gmao.gsfc.nasa.gov/"
+        },
+        {
+            "countryCode": "US",
+            "id": 10,
+            "longName": "National Center for Atmospheric Research",
+            "name": "NCAR",
+            "url": "http://ncar.ucar.edu/"
+        },
+        {
+            "countryCode": "US",
+            "id": 12,
+            "longName": "National Centers for Environmental Prediction",
+            "name": "NCEP",
+            "url": "http://www.ncep.noaa.gov/"
+        },
+        {
+            "countryCode": "US",
+            "id": 33,
+            "longName": "NOAA Environmental Software Infrastructure and Interoperability Group",
+            "name": "NESII",
+            "url": "http://www.esrl.noaa.gov/nesii"
+        },
+        {
+            "countryCode": "US",
+            "id": 36,
+            "longName": "NOAA",
+            "name": "NOAA",
+            "url": "www.noaa.gov"
+        },
+        {
+            "countryCode": "US",
+            "id": 22,
+            "longName": "NOAA Geophysical Fluid Dynamics Laboratory",
+            "name": "NOAA-GFDL",
+            "url": "http://www.gfdl.noaa.gov/"
+        },
+        {
+            "countryCode": "US",
+            "id": 11,
+            "longName": "Community Earth System Model Contributors",
+            "name": "NSF-DOE-NCAR",
+            "url": "http://www.cesm.ucar.edu/"
+        },
+        {
+            "countryCode": "US",
+            "id": 9,
+            "longName": "University of Miami - RSMAS",
+            "name": "RSMAS",
+            "url": "http://www.rsmas.miami.edu/"
+        }
+    ]
+}
