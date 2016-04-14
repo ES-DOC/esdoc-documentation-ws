@@ -14,7 +14,6 @@ from esdoc_api.db import (
 	dao,
 	index,
 	ingest,
-	init,
 	models,
 	utils,
 	)

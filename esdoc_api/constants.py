@@ -8,8 +8,6 @@
 
 
 """
-import os
-
 from esdoc_api.data import get_data
 
 
@@ -103,4 +101,3 @@ PROJECTS = get_data('projects')
 
 # Set of institutes loaded from file system.
 INSTITUTES = get_data('institutes')
-
