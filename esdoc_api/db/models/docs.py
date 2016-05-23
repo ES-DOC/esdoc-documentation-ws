@@ -41,6 +41,7 @@ DOCUMENT_VERSION_ALL = '*'
 DOCUMENT_VERSION_LATEST = 'latest'
 DOCUMENT_VERSIONS = [DOCUMENT_VERSION_ALL, DOCUMENT_VERSION_LATEST]
 
+# TODO consider DocumentRelationship table
 
 class Document(Entity):
     """A document ingested into the ES-DOC API repository.

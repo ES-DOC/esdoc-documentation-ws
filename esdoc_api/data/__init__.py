@@ -23,4 +23,4 @@ def get_data(typeof):
 	fpath = "{}.json".format(fpath)
 	data = convert.json_file_to_dict(fpath, convert.str_to_underscore_case)
 
-	return data[convert.str_to_camel_case(typeof)]
+	return data[typeof]

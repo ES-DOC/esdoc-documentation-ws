@@ -26,18 +26,6 @@ def _get_params():
     return dict()
 
 
-def _load(mtype, sort_key=None):
-    """Helper function to load a collection from db.
-
-    """
-    collection = db.cache.get(mtype)
-    collection = db.models.to_dict_for_json(collection)
-    if sort_key:
-        collection = sorted(collection, key=lambda i: i[sort_key].lower())
-
-    return collection
-
-
 class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
     """Document summary search setup request handler.
 
@@ -56,9 +44,6 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         # Start db session.
         db.session.start(config.db)
 
-        # Load db.cache.
-        db.cache.load()
-
         # Parse incoming url parameters.
         utils.up.parse(self, _get_params())
 
@@ -67,12 +52,14 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """Sets output data to be returned to client.
 
         """
+        print db.dao.get_institutes()
+
         self.output_encoding = 'json'
         self.output = {
             'projects' : [convert.dict_keys_to_camel_case(dt) for dt in constants.PROJECTS],
             'models' : db.dao.get_summary_model_set(),
             'experiments' : db.dao.get_summary_eperiment_set(),
-            'institutes' : _load(db.models.Institute),
+            'institutes': db.dao.get_institutes(),
             'instituteCounts' : db.dao.get_project_institute_counts(),
             'documentTypes' : [convert.dict_keys_to_camel_case(dt) for dt in constants.DOCUMENT_TYPES],
             'documentTypeCounts' : db.dao.get_project_document_type_counts()

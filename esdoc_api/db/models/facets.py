@@ -79,7 +79,7 @@ class Node(Entity):
     )
 
     # Field set.
-    project = Column(Unicode(63), nullable=False, default='cmip5')
+    project = Column(Unicode(63), nullable=False, default=u'cmip5')
     type_of = Column(NodeTypeEnum, nullable=False)
     field = Column(Unicode(511), nullable=False)
     sort_field = Column(Unicode(511), nullable=True)
@@ -102,10 +102,3 @@ class NodeField(Entity):
     # Field set.
     text = Column(Text, nullable=False, unique=True)
 
-
-    @property
-    def cache_name(self):
-        """Gets instance cache key name.
-
-        """
-        return self.text

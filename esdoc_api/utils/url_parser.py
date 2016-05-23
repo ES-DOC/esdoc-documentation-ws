@@ -13,7 +13,6 @@
 """
 import inspect
 
-from esdoc_api import db
 from esdoc_api.utils import convert
 
 
@@ -53,9 +52,7 @@ def _get_param_value(handler, name, info):
 
 def _get_param_white_list(info):
     """Returns parameter white list."""
-    if 'model_type' in info:
-        return db.cache.get_names(info['model_type'])
-    elif 'whitelist' in info:
+    if 'whitelist' in info:
         if inspect.isfunction(info['whitelist']):
             return info['whitelist']()
         else:
@@ -86,10 +83,6 @@ def _parse_param(handler, name, info):
             print white_list
             msg = "Request parameter {0}: is not in white-list.".format(name)
             raise ValueError(msg)
-
-    # Set value to domain model.
-    if value and 'model_type' in info:
-        value = db.cache.get(info['model_type'], value)
 
     info['value'] = value
 

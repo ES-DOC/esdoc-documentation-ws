@@ -12,7 +12,9 @@
 """
 import tornado
 
-from esdoc_api import constants, db, utils
+from esdoc_api import constants
+from esdoc_api import db
+from esdoc_api import utils
 from esdoc_api.utils import config
 
 
@@ -67,9 +69,6 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
         """Prepare handler state for processing."""
         # Start db session.
         db.session.start(config.db)
-
-        # Load db.cache.
-        db.cache.load()
 
 
     def _parse_params(self):

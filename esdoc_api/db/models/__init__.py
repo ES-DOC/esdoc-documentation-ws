@@ -12,31 +12,27 @@
 from esdoc_api.db.models.utils import Entity
 from esdoc_api.db.models.utils import EntityConvertor
 from esdoc_api.db.models.utils import metadata
-from esdoc_api.db.models.docs import (
-    Document,
-    DocumentDRS,
-    DocumentExternalID,
-    DocumentSubProject,
-    DocumentSummary,
-    DOCUMENT_VERSIONS,
-    DOCUMENT_VERSION_LATEST,
-    DOCUMENT_VERSION_ALL
-    )
-from esdoc_api.db.models.facets import (
-    Node,
-    NodeField,
-    NODE_TYPES,
-    NODE_TYPE_INSTITUTE,
-    NODE_TYPE_PROJECT,
-    NODE_TYPE_EXPERIMENT,
-    NODE_TYPE_MODEL,
-    NODE_TYPE_MODEL_COMPONENT,
-    NODE_TYPE_MODEL_COMPONENT_PROPERTY,
-    NODE_TYPE_MODEL_COMPONENT_PROPERTY_VALUE,
-    NODE_TYPE_MODEL_PROPERTY,
-    NODE_TYPE_MODEL_PROPERTY_VALUE,
-    )
-from esdoc_api.db.models.vocab import Institute
+from esdoc_api.db.models.docs import Document
+from esdoc_api.db.models.docs import DocumentDRS
+from esdoc_api.db.models.docs import DocumentExternalID
+from esdoc_api.db.models.docs import DocumentSubProject
+from esdoc_api.db.models.docs import DocumentSummary
+from esdoc_api.db.models.docs import DOCUMENT_VERSIONS
+from esdoc_api.db.models.docs import DOCUMENT_VERSION_LATEST
+from esdoc_api.db.models.docs import DOCUMENT_VERSION_ALL
+
+from esdoc_api.db.models.facets import Node
+from esdoc_api.db.models.facets import NodeField
+from esdoc_api.db.models.facets import NODE_TYPES
+from esdoc_api.db.models.facets import NODE_TYPE_INSTITUTE
+from esdoc_api.db.models.facets import NODE_TYPE_PROJECT
+from esdoc_api.db.models.facets import NODE_TYPE_EXPERIMENT
+from esdoc_api.db.models.facets import NODE_TYPE_MODEL
+from esdoc_api.db.models.facets import NODE_TYPE_MODEL_COMPONENT
+from esdoc_api.db.models.facets import NODE_TYPE_MODEL_COMPONENT_PROPERTY
+from esdoc_api.db.models.facets import NODE_TYPE_MODEL_COMPONENT_PROPERTY_VALUE
+from esdoc_api.db.models.facets import NODE_TYPE_MODEL_PROPERTY
+from esdoc_api.db.models.facets import NODE_TYPE_MODEL_PROPERTY_VALUE
 from esdoc_api.utils import runtime as rt
 
 
@@ -44,8 +40,7 @@ from esdoc_api.utils import runtime as rt
 # Set of supported model domain partiions (maps to db schemas).
 PARTITIONS = set([
     'docs',
-    'facets',
-    'vocab'
+    'facets'
     ])
 
 # Set of supported model types - useful for testing scenarios.
@@ -59,15 +54,7 @@ SUPPORTED_TYPES = (
     # ... facets
     Node,
     NodeField,
-    # ... vocab
-    Institute
 )
-
-# Supported cacheable types.
-CACHEABLE_TYPES = (
-    Institute,
-    NodeField,
-    )
 
 # Expose entity conversion methods.
 to_dict = EntityConvertor.to_dict

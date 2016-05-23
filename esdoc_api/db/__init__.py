@@ -9,11 +9,8 @@
 
 
 """
-from esdoc_api.db import (
-	cache,
-	dao,
-	index,
-	ingest,
-	models,
-	utils,
-	)
+from esdoc_api.db import dao
+from esdoc_api.db import index
+from esdoc_api.db import ingest
+from esdoc_api.db import models
+from esdoc_api.db import utils

@@ -11,4 +11,3 @@
 from esdoc_api.db.dao.core import *
 from esdoc_api.db.dao.docs import *
 from esdoc_api.db.dao.facets import *
-from esdoc_api.db.dao.vocab import *

@@ -24,7 +24,6 @@ from esdoc_api.db.models import DocumentDRS
 from esdoc_api.db.models import DocumentExternalID
 from esdoc_api.db.models import DocumentSubProject
 from esdoc_api.db.models import DocumentSummary
-from esdoc_api.db.models import Institute
 
 
 
@@ -234,6 +233,35 @@ def get_document_projects():
     return qry.all()
 
 
+def get_institutes():
+    """Returns institute counts grouped by project.
+
+    :returns: List of counts over a project's institutes.
+    :rtype: list
+
+    """
+    qry = session.query(Document.institute)
+    qry = qry.distinct()
+
+    return sorted([i[0] for i in qry.all() if i[0]])
+
+
+def get_project_institute_counts():
+    """Returns institute counts grouped by project.
+
+    :returns: List of counts over a project's institutes.
+    :rtype: list
+
+    """
+    qry = session.query(sa.func.count(Document.institute),
+                        Document.project,
+                        Document.institute)
+    qry = qry.group_by(Document.project)
+    qry = qry.group_by(Document.institute)
+
+    return qry.all()
+
+
 def _delete_document_relation(document_id, typeof):
     """Deletes all document relations of passed type.
 
@@ -325,11 +353,10 @@ def get_document_counts():
     """
     qry = session.query(sa.func.count(Document.institute),
                         Document.project,
-                        Institute.name,
+                        Document.institute,
                         Document.type)
-    qry = qry.join(Institute)
     qry = qry.group_by(Document.project)
-    qry = qry.group_by(Institute.id)
+    qry = qry.group_by(Document.institute)
     qry = qry.group_by(Document.type)
     qry = qry.order_by(Document.type.desc())
 

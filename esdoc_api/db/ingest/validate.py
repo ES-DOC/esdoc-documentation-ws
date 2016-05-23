@@ -12,8 +12,6 @@ import uuid
 
 import pyesdoc
 
-from esdoc_api.db import cache
-
 
 
 # Set of document types that do not need to be associated with an institute.

@@ -9,12 +9,8 @@
 
 """
 # -*- coding: utf-8 -*-
-from esdoc_api.db import (
-    cache,
-    dao,
-    models,
-    utils
-    )
+from esdoc_api.db import dao
+from esdoc_api.db import utils
 from esdoc_api.db.index.cim_v1.model_component.indexer import index as index_model
 from esdoc_api.db.index.cim_v1.numerical_experiment.indexer import index as index_experiment
 from esdoc_api.utils import runtime as rt
@@ -46,6 +42,7 @@ class _ProcessingContextInfo(object):
         self.models = []
         self.ontology = _ONTOLOGY
         self.project = _PROJECT
+        self.institutes = dao.get_institutes()
 
 
 def _load_docs(ctx):
@@ -85,10 +82,7 @@ def _load_docs(ctx):
         """Returns document key.
 
         """
-        institute = cache.get_name(models.Institute, doc.institute)
-        name = doc.name.upper()
-
-        return "{0}--{1}".format(institute, name)
+        return "{0}--{1}".format(doc.institute, doc.name.upper())
 
 
     ctx.experiments = get_collection(_CIM_V1_EXPERIMENT, get_key)

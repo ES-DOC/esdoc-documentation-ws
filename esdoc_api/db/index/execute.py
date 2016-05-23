@@ -9,16 +9,11 @@
 
 """
 # -*- coding: utf-8 -*-
-from esdoc_api.db.index import (
-    execute_cmip5,
-    execute_core,
-    )
-from esdoc_api.db import (
-    cache,
-    dao,
-    models,
-    session
-    )
+from esdoc_api.db.index import execute_cmip5
+from esdoc_api.db.index import execute_core
+from esdoc_api.db import dao
+from esdoc_api.db import models
+from esdoc_api.db import session
 from esdoc_api.utils import runtime as rt
 
 
@@ -65,9 +60,6 @@ def do(reset=False):
 
     """
     _log("starts")
-
-    _log("initialising cache")
-    cache.load()
 
     if reset:
         _log("resetting existing facets")

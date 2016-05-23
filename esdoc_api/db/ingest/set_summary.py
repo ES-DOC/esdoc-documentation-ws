@@ -14,7 +14,8 @@ import pyesdoc
 from pyesdoc.ontologies import cim
 from pyesdoc.utils.convert import str_to_unicode
 
-from esdoc_api.db import cache, models, session
+from esdoc_api.db import models
+from esdoc_api.db import session
 
 
 

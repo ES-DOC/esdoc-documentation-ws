@@ -49,9 +49,6 @@ class DocumentRetrieveRequestHandler(tornado.web.RequestHandler):
         # Start db session.
         db.session.start(config.db)
 
-        # Load cache.
-        db.cache.load()
-
 
     def _parse_request_params(self):
         """Parses url query parameters.

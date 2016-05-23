@@ -10,7 +10,8 @@
 """
 import sqlalchemy
 
-from esdoc_api.db import cache, models, session
+from esdoc_api.db import models
+from esdoc_api.db import session
 
 
 

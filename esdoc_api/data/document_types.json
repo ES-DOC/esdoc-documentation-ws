@@ -24,7 +24,7 @@
         {
             "displayName": "Grid Spec",
             "isPdfTarget": false,
-            "isSearchTarget": true,
+            "isSearchTarget": false,
             "key": "cim.1.grids.GridSpec",
             "ontology": "cim.1"
         },

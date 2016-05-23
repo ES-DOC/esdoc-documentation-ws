@@ -89,9 +89,6 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         # Start db session.
         db.session.start(config.db)
 
-        # Load cache.
-        db.cache.load()
-
 
     def _parse_default_params(self):
         """Parses url parameters common to all search types.
