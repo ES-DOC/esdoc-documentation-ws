@@ -17,10 +17,6 @@ from esdoc_api.db.models.docs import DocumentDRS
 from esdoc_api.db.models.docs import DocumentExternalID
 from esdoc_api.db.models.docs import DocumentSubProject
 from esdoc_api.db.models.docs import DocumentSummary
-from esdoc_api.db.models.docs import DOCUMENT_VERSIONS
-from esdoc_api.db.models.docs import DOCUMENT_VERSION_LATEST
-from esdoc_api.db.models.docs import DOCUMENT_VERSION_ALL
-
 from esdoc_api.db.models.facets import Node
 from esdoc_api.db.models.facets import NodeField
 from esdoc_api.db.models.facets import NODE_TYPES

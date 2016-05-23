@@ -24,6 +24,13 @@ def text_filter(qry, field, key):
     return qry.filter(sa.func.upper(field) == unicode(key).strip().upper())
 
 
+def like_filter(qry, field, expression):
+    """Applies a like based filter expression.
+
+    """
+    return qry.filter(field.like('%' + expression + '%'))
+
+
 def sort(etype, collection):
     """Sorts collection via type sort key.
 

@@ -32,7 +32,7 @@ def _get_params():
         },
         'documentVersion': {
             'required': True,
-            'whitelist': lambda: db.models.DOCUMENT_VERSIONS
+            'whitelist': lambda: constants.DOCUMENT_VERSIONS
         },
         'experiment': {
             'required': False

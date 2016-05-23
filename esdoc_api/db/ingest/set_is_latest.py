@@ -8,7 +8,10 @@
 
 
 """
-from esdoc_api.db import dao, models, session
+from esdoc_api import constants
+from esdoc_api.db import dao
+from esdoc_api.db import models
+from esdoc_api.db import session
 
 
 
@@ -20,7 +23,7 @@ def execute(ctx):
     """
     # Get related documents (sorted by version).
     documents = dao.get_document(ctx.primary.uid,
-                                 models.DOCUMENT_VERSION_ALL,
+                                 constants.DOCUMENT_VERSION_ALL,
                                  ctx.primary.project)
 
     # Uodate flag accordingly.

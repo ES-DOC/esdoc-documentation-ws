@@ -13,12 +13,13 @@ import sqlalchemy as sa
 import pyesdoc
 
 from esdoc_api import constants
+from esdoc_api.db import session
 from esdoc_api.db.dao.core import delete_by_type
 from esdoc_api.db.dao.core import delete_by_id
 from esdoc_api.db.dao.core import delete_by_facet
+from esdoc_api.db.dao.core import like_filter
 from esdoc_api.db.dao.core import text_filter
 from esdoc_api.db.dao.core import sort
-from esdoc_api.db import models, session
 from esdoc_api.db.models import Document
 from esdoc_api.db.models import DocumentDRS
 from esdoc_api.db.models import DocumentExternalID
@@ -42,12 +43,12 @@ def get_document(uid, version, project=None):
     if project:
         qry = text_filter(qry, Document.project, project)
     qry = qry.filter(Document.uid == unicode(uid))
-    if version is None or version in models.DOCUMENT_VERSIONS:
+    if version is None or version in constants.DOCUMENT_VERSIONS:
         qry = qry.order_by(Document.version.desc())
     else:
         qry = qry.filter(Document.version == int(version))
 
-    return qry.all() if version == models.DOCUMENT_VERSION_ALL else qry.first()
+    return qry.all() if version == constants.DOCUMENT_VERSION_ALL else qry.first()
 
 
 def get_document_by_name(
@@ -166,7 +167,7 @@ def get_documents_by_external_id(project, external_id):
     """
     qry = session.query(Document).join(DocumentExternalID)
     qry = text_filter(qry, Document.project, project)
-    qry = qry.filter(DocumentExternalID.external_id.like('%' + external_id.upper() + '%'))
+    qry = like_filter(qry, DocumentExternalID.external_id, external_id.upper())
 
     return qry.all()
 
@@ -205,7 +206,7 @@ def get_document_summaries(
     qry = text_filter(qry, Document.project, project)
     if type != constants.DOCUMENT_TYPE_ALL:
         qry = text_filter(qry, Document.type, type)
-    if version == models.DOCUMENT_VERSION_LATEST:
+    if version == constants.DOCUMENT_VERSION_LATEST:
         qry = qry.filter(Document.is_latest == True)
     if experiment:
         qry = text_filter(qry, DocumentSummary.experiment, experiment)

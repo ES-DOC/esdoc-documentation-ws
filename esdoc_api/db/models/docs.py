@@ -12,21 +12,17 @@
 import datetime
 import uuid
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    ForeignKey,
-    DateTime,
-    Integer,
-    Unicode,
-    UniqueConstraint
-    )
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import ForeignKey
+from sqlalchemy import DateTime
+from sqlalchemy import Integer
+from sqlalchemy import Unicode
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import relationship
 
-from esdoc_api.db.models.utils import (
-    Entity,
-    EntityConvertor
-    )
+from esdoc_api.db.models.utils import Entity
+from esdoc_api.db.models.utils import EntityConvertor
 
 
 
@@ -36,12 +32,6 @@ _DOMAIN_PARTITION = 'docs'
 # Default drs split.
 _DRS_SPLIT = '/'
 
-# Document version related constants.
-DOCUMENT_VERSION_ALL = '*'
-DOCUMENT_VERSION_LATEST = 'latest'
-DOCUMENT_VERSIONS = [DOCUMENT_VERSION_ALL, DOCUMENT_VERSION_LATEST]
-
-# TODO consider DocumentRelationship table
 
 class Document(Entity):
     """A document ingested into the ES-DOC API repository.
