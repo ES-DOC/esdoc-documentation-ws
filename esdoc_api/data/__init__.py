@@ -15,12 +15,12 @@ from esdoc_api.utils import convert
 
 
 
-def get_data(typeof):
+def get_data(typeof, key_formatter=None):
 	"""Loads a data file from the file system.
 
 	"""
 	fpath = os.path.join(os.path.dirname(__file__), typeof)
 	fpath = "{}.json".format(fpath)
-	data = convert.json_file_to_dict(fpath, convert.str_to_underscore_case)
+	data = convert.json_file_to_dict(fpath, key_formatter)
 
-	return data[typeof]
+	return data[convert.str_to_camel_case(typeof)]

@@ -18,7 +18,6 @@ from esdoc_api.db.models import Document
 from esdoc_api.db.models import DocumentDRS
 from esdoc_api.db.models import DocumentExternalID
 from esdoc_api.db.models import DocumentSubProject
-from esdoc_api.db.models import DocumentSummary
 from esdoc_api.utils import runtime as rt
 
 
@@ -65,11 +64,7 @@ def _execute(project, source):
     qry4 = session.query(DocumentSubProject)
     qry4 = qry4.filter(DocumentSubProject.document_id.in_(qry1.subquery()))
 
-    qry5 = session.query(DocumentSummary)
-    qry5 = qry5.filter(DocumentSummary.document_id.in_(qry1.subquery()))
-
     # Delete data.
-    qry5.delete(synchronize_session=False)
     qry4.delete(synchronize_session=False)
     qry3.delete(synchronize_session=False)
     qry2.delete(synchronize_session=False)

@@ -24,7 +24,6 @@ from esdoc_api.db.models import Document
 from esdoc_api.db.models import DocumentDRS
 from esdoc_api.db.models import DocumentExternalID
 from esdoc_api.db.models import DocumentSubProject
-from esdoc_api.db.models import DocumentSummary
 
 
 
@@ -180,15 +179,17 @@ def get_document_summaries(
     model=None,
     experiment=None
     ):
-    """Returns a list of DocumentSummary instance with matching criteria.
+    """Returns document summary information.
 
     :param str project: Project code.
     :param str type: Document type.
     :param str version: Document version (latest | all).
     :param str institute: Institute code.
+    :param str model: Model code.
+    :param str experiment: Experiment code.
 
-    :returns: First DocumentSummary instance with matching document.
-    :rtype: db.models.DocumentSummary
+    :returns: List of matching documents.
+    :rtype: db.models.Document
 
     """
     # Format params.
@@ -200,25 +201,27 @@ def get_document_summaries(
         experiment = experiment.upper()
 
     # Set query.
-    qry = session.query(DocumentSummary).join(Document)
+    qry = session.query(Document)
 
     # Set mandatory params.
     qry = text_filter(qry, Document.project, project)
+    qry = qry.filter(Document.short_name != u"")
+
     if type != constants.DOCUMENT_TYPE_ALL:
         qry = text_filter(qry, Document.type, type)
     if version == constants.DOCUMENT_VERSION_LATEST:
         qry = qry.filter(Document.is_latest == True)
     if experiment:
-        qry = text_filter(qry, DocumentSummary.experiment, experiment)
+        qry = text_filter(qry, Document.experiment, experiment)
     if institute:
         qry = text_filter(qry, Document.institute, institute)
     if model:
-        qry = text_filter(qry, DocumentSummary.model, model)
+        qry = text_filter(qry, Document.model, model)
 
     # Apply query limit.
     qry = qry.limit(session.QUERY_LIMIT)
 
-    return sort(DocumentSummary, qry.all())
+    return sort(Document, qry.all())
 
 
 def get_document_projects():
@@ -273,15 +276,6 @@ def _delete_document_relation(document_id, typeof):
     delete_by_facet(typeof, typeof.document_id == document_id)
 
 
-def delete_document_summaries(document_id):
-    """Deletes a list of DocumentSummary instances filtered by their Document ID.
-
-    :param int document_id: ID of a Document instance.
-
-    """
-    _delete_document_relation(document_id, DocumentSummary)
-
-
 def delete_document_external_ids(document_id):
     """Deletes a list of DocumentExternalID instances filtered by their Document ID.
 
@@ -318,7 +312,6 @@ def delete_document(document_id):
     delete_document_drs(document_id)
     delete_document_external_ids(document_id)
     delete_document_sub_project(document_id)
-    delete_document_summaries(document_id)
     delete_by_id(Document, document_id)
 
 
@@ -384,27 +377,29 @@ def get_document_type_count(project, typeof):
     return 0 if not len(counts) else counts[0][0]
 
 
-def _get_summary_fieldset(field):
-    """Returns set of unique document summary field values.
+def get_models():
+    """Returns set of unique document summary model names.
 
     """
-    qry = session.query(Document.project, field)
-    qry = qry.join(DocumentSummary)
-    qry = qry.filter(field != 'None')
+    qry = session.query(
+        Document.project,
+        Document.model
+        )
+    qry = qry.filter(Document.model != 'None')
     qry = qry.distinct()
 
     return qry.all()
 
 
-def get_summary_model_set():
-    """Returns set of unique document summary model names.
-
-    """
-    return _get_summary_fieldset(DocumentSummary.model)
-
-
-def get_summary_eperiment_set():
+def get_experiments():
     """Returns set of unique document summary experiment names.
 
     """
-    return _get_summary_fieldset(DocumentSummary.experiment)
+    qry = session.query(
+        Document.project,
+        Document.experiment
+        )
+    qry = qry.filter(Document.experiment != 'None')
+    qry = qry.distinct()
+
+    return qry.all()

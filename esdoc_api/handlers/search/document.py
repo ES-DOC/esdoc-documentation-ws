@@ -130,8 +130,6 @@ class DocumentSearchRequestHandler(tornado.web.RequestHandler):
         self.docs = [d for d in self.sub_handler.do_search(self)
                      if d is not None]
 
-        print self.docs
-
 
     def _read_docs_from_archive(self):
         """Reads documents from pyesdoc archive.

@@ -19,7 +19,6 @@ from esdoc_api.db.ingest import set_is_latest
 from esdoc_api.db.ingest import set_external_id
 from esdoc_api.db.ingest import set_primary
 from esdoc_api.db.ingest import set_sub_project
-from esdoc_api.db.ingest import set_summary
 from esdoc_api.db.ingest import validate
 from esdoc_api.utils import config
 from esdoc_api.utils import runtime as rt
@@ -171,7 +170,6 @@ def _process(ctx):
         set_primary.execute,
         set_is_latest.execute,
         set_sub_project.execute,
-        set_summary.execute,
         set_drs.execute,
         set_external_id.execute,
         _rename_document,

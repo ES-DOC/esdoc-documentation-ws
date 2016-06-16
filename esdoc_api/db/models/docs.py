@@ -19,10 +19,8 @@ from sqlalchemy import DateTime
 from sqlalchemy import Integer
 from sqlalchemy import Unicode
 from sqlalchemy import UniqueConstraint
-from sqlalchemy.orm import relationship
 
 from esdoc_api.db.models.utils import Entity
-from esdoc_api.db.models.utils import EntityConvertor
 
 
 
@@ -44,11 +42,8 @@ class Document(Entity):
         {'schema' : _DOMAIN_PARTITION}
     )
 
-    # Relationships.
-    ExternalIDs = relationship("DocumentExternalID", backref="Document")
-    Summaries = relationship("DocumentSummary", backref="Document", lazy='joined')
-
     # Field set.
+    # .. core fields
     project = Column(Unicode(63))
     source = Column(Unicode(255))
     institute = Column(Unicode(63))
@@ -58,6 +53,22 @@ class Document(Entity):
     version = Column(Integer, nullable=False, default=1)
     ingest_date = Column(DateTime, default=datetime.datetime.now())
     is_latest = Column(Boolean, nullable=False, default=False)
+    # .. summary fields
+    language = Column(Unicode(2))
+    short_name = Column(Unicode(1023))
+    long_name = Column(Unicode(1023))
+    description = Column(Unicode(1023))
+    field_01 = Column(Unicode(1023))
+    field_02 = Column(Unicode(1023))
+    field_03 = Column(Unicode(1023))
+    field_04 = Column(Unicode(1023))
+    field_05 = Column(Unicode(1023))
+    field_06 = Column(Unicode(1023))
+    field_07 = Column(Unicode(1023))
+    field_08 = Column(Unicode(1023))
+    # .. inter-document fields
+    model = Column(Unicode(1023))
+    experiment = Column(Unicode(1023))
 
 
     def __init__(self):
@@ -69,23 +80,12 @@ class Document(Entity):
         self.as_obj = None
 
 
-    @property
-    def summary(self):
-        """Gets top summary from associated collection.
-
-        """
-        if self.Summaries is not None or len(self.Summaries) > 0:
-            return self.Summaries[0]
-        else:
-            return None
-
-
     @classmethod
     def get_default_sort_key(cls):
         """Gets default sort key.
 
         """
-        return lambda instance: instance.uid + str(instance.version)
+        return lambda instance: instance.short_name if instance.short_name else instance.uid + str(instance.version)
 
 
 class DocumentDRS(Entity):
@@ -116,41 +116,6 @@ class DocumentDRS(Entity):
     key_08 = Column(Unicode(63))
 
 
-    def clone(self):
-        """Returns a cloned instance.
-
-        """
-        result = DocumentDRS()
-
-        result.document_id = self.document_id
-        result.key_01 = self.key_01
-        result.key_02 = self.key_02
-        result.key_03 = self.key_03
-        result.key_04 = self.key_04
-        result.key_05 = self.key_05
-        result.key_06 = self.key_06
-        result.key_07 = self.key_07
-        result.key_08 = self.key_08
-        result.path = self.path
-        result.project = self.project
-
-        return result
-
-
-    def reset_path(self):
-        """Resets drs path based upon value of keys.
-
-        """
-        path = ''
-        for i in range(8):
-            key = getattr(self, "key_0" + str(i + 1))
-            if key is not None:
-                if i > 0:
-                    path += _DRS_SPLIT
-                path += key.upper()
-        self.path = path
-
-
     @classmethod
     def get_default_sort_key(cls):
         """
@@ -179,54 +144,6 @@ class DocumentExternalID(Entity):
     external_id = Column(Unicode(255), nullable=False)
 
 
-class DocumentSummary(Entity):
-    """Encapsulates document summary information.
-
-    """
-    # SQLAlchemy directives.
-    __tablename__ = 'tbl_document_summary'
-    __table_args__ = (
-        UniqueConstraint('document_id' ,'language'),
-        {'schema' : _DOMAIN_PARTITION}
-    )
-
-    # Foreign keys.
-    document_id = Column(Integer,
-                         ForeignKey('docs.tbl_document.id'), nullable=False)
-
-    # Field set.
-    language = Column(Unicode(2))
-    short_name = Column(Unicode(1023))
-    long_name = Column(Unicode(1023))
-    description = Column(Unicode(1023))
-    field_01 = Column(Unicode(1023))
-    field_02 = Column(Unicode(1023))
-    field_03 = Column(Unicode(1023))
-    field_04 = Column(Unicode(1023))
-    field_05 = Column(Unicode(1023))
-    field_06 = Column(Unicode(1023))
-    field_07 = Column(Unicode(1023))
-    field_08 = Column(Unicode(1023))
-    model = Column(Unicode(1023))
-    experiment = Column(Unicode(1023))
-
-
-    def format_dict(self, as_dict, key_formatter=None, json_formatting=False):
-        """Formats a dictionary representation.
-
-        """
-        as_dict['document'] = \
-            EntityConvertor.to_dict(self.Document, key_formatter, json_formatting)
-
-
-    @classmethod
-    def get_default_sort_key(cls):
-        """
-        Gets default sort key.
-        """
-        return lambda instance: instance.short_name
-
-
 class DocumentSubProject(Entity):
     """Set of document sub-project references.
 
@@ -241,5 +158,8 @@ class DocumentSubProject(Entity):
     # Foreign keys.
     document_id = Column(Integer,
                          ForeignKey('docs.tbl_document.id'), nullable=False)
+
+    # Field set.
     project = Column(Unicode(63), nullable=False)
     sub_project = Column(Unicode(63), nullable=False)
+

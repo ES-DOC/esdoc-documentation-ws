@@ -16,7 +16,6 @@ from esdoc_api.db.models.docs import Document
 from esdoc_api.db.models.docs import DocumentDRS
 from esdoc_api.db.models.docs import DocumentExternalID
 from esdoc_api.db.models.docs import DocumentSubProject
-from esdoc_api.db.models.docs import DocumentSummary
 from esdoc_api.db.models.facets import Node
 from esdoc_api.db.models.facets import NodeField
 from esdoc_api.db.models.facets import NODE_TYPES
@@ -46,7 +45,6 @@ SUPPORTED_TYPES = (
     DocumentDRS,
     DocumentExternalID,
     DocumentSubProject,
-    DocumentSummary,
     # ... facets
     Node,
     NodeField,

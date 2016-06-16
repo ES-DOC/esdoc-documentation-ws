@@ -52,16 +52,14 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """Sets output data to be returned to client.
 
         """
-        print db.dao.get_institutes()
-
         self.output_encoding = 'json'
         self.output = {
-            'projects' : [convert.dict_keys_to_camel_case(dt) for dt in constants.PROJECTS],
-            'models' : db.dao.get_summary_model_set(),
-            'experiments' : db.dao.get_summary_eperiment_set(),
+            'projects' : constants.PROJECTS,
+            'models' : db.dao.get_models(),
+            'experiments' : db.dao.get_experiments(),
             'institutes': db.dao.get_institutes(),
             'instituteCounts' : db.dao.get_project_institute_counts(),
-            'documentTypes' : [convert.dict_keys_to_camel_case(dt) for dt in constants.DOCUMENT_TYPES],
+            'documentTypes' : constants.DOCUMENT_TYPES,
             'documentTypeCounts' : db.dao.get_project_document_type_counts()
         }
 
