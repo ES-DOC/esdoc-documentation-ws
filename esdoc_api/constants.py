@@ -18,6 +18,9 @@ DOCUMENT_TYPE_ALL = '*'
 # Set of document types loaded from file system.
 DOCUMENT_TYPES = get_data('document_types')
 
+# Map of document types to keys.
+MAPPED_DOCUMENT_TYPES = {i['key'].upper(): i for i in DOCUMENT_TYPES}
+
 # Document version related constants.
 DOCUMENT_VERSION_ALL = '*'
 DOCUMENT_VERSION_LATEST = 'latest'

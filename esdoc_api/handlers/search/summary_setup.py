@@ -16,14 +16,7 @@ from esdoc_api import constants
 from esdoc_api import db
 from esdoc_api import utils
 from esdoc_api.utils import config
-from esdoc_api.utils import convert
 
-
-
-
-def _get_params():
-    """Returns url parameter specification."""
-    return dict()
 
 
 class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
@@ -45,7 +38,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         db.session.start(config.db)
 
         # Parse incoming url parameters.
-        utils.up.parse(self, _get_params())
+        utils.up.parse(self)
 
 
     def _set_output(self):

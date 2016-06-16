@@ -52,7 +52,9 @@ def _get_params():
 
 
 def _get_collection(mtype):
-    """Helper function to load collection from db."""
+    """Helper function to load collection from db.
+
+    """
     return db.models.to_dict_for_json(db.dao.get_all(mtype))
 
 
@@ -100,7 +102,7 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
         self.output = {
             'count': len(self.data),
             'project': self.project,
-            'results': db.models.to_dict_for_json(self.data),
+            'results': self.data,
             'timestamp': self.timestamp,
             'total': self.total
         }

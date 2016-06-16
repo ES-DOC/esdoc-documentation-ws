@@ -87,7 +87,7 @@ def _parse_param(handler, name, info):
     info['value'] = value
 
 
-def parse(handler, params, apply_whitelist=True):
+def parse(handler, params=dict(), apply_whitelist=True):
     """Parses incoming request url.
 
     :param tornado.web.RequestHAndler handler: A request handler.

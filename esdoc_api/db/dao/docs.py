@@ -173,7 +173,7 @@ def get_documents_by_external_id(project, external_id):
 
 def get_document_summaries(
     project,
-    type,
+    typeof,
     version,
     institute=None,
     model=None,
@@ -182,7 +182,7 @@ def get_document_summaries(
     """Returns document summary information.
 
     :param str project: Project code.
-    :param str type: Document type.
+    :param str typeof: Document type.
     :param str version: Document version (latest | all).
     :param str institute: Institute code.
     :param str model: Model code.
@@ -194,21 +194,46 @@ def get_document_summaries(
     """
     # Format params.
     version = version.lower()
-    type = type.upper()
+    typeof = typeof.upper()
     if model:
         model = model.upper()
     if experiment:
         experiment = experiment.upper()
 
     # Set query.
-    qry = session.query(Document)
+    qry = session.query(
+        Document.description,
+        Document.experiment,
+        Document.field_01,
+        Document.field_02,
+        Document.field_03,
+        Document.field_04,
+        Document.field_05,
+        Document.field_06,
+        Document.field_07,
+        Document.field_08,
+        Document.id,
+        Document.ingest_date,
+        Document.institute,
+        Document.is_latest,
+        Document.language,
+        Document.long_name,
+        Document.model,
+        Document.name,
+        Document.project,
+        Document.short_name,
+        Document.source,
+        Document.type,
+        Document.uid,
+        Document.version
+        )
 
     # Set mandatory params.
     qry = text_filter(qry, Document.project, project)
     qry = qry.filter(Document.short_name != u"")
 
-    if type != constants.DOCUMENT_TYPE_ALL:
-        qry = text_filter(qry, Document.type, type)
+    if typeof != constants.DOCUMENT_TYPE_ALL:
+        qry = text_filter(qry, Document.type, typeof)
     if version == constants.DOCUMENT_VERSION_LATEST:
         qry = qry.filter(Document.is_latest == True)
     if experiment:
@@ -219,7 +244,12 @@ def get_document_summaries(
         qry = text_filter(qry, Document.model, model)
 
     # Apply query limit.
-    qry = qry.limit(session.QUERY_LIMIT)
+    try:
+        load_all = constants.MAPPED_DOCUMENT_TYPES[typeof]['loadAll']
+    except AttributeError:
+        load_all = False
+    if not load_all:
+        qry = qry.limit(session.QUERY_LIMIT)
 
     return sort(Document, qry.all())
 
