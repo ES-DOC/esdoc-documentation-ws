@@ -48,6 +48,8 @@ def execute(ctx):
     instance.language = pyesdoc.DEFAULT_LANGUAGE
     instance.name = unicode(ctx.doc.ext.display_name)
     instance.project = ctx.doc.meta.project.strip().lower()
+    if ctx.doc.meta.sub_projects:
+        instance.sub_projects = ",".join([i.lower() for i in sorted(ctx.doc.meta.sub_projects)])
     instance.source = unicode(ctx.doc.meta.source_key)
     instance.type = unicode(ctx.doc.meta.type)
     instance.uid = unicode(ctx.doc.meta.id)
@@ -80,4 +82,6 @@ def execute(ctx):
         raise StopIteration("Document already ingested")
     else:
         ctx.primary = instance
+
+
 

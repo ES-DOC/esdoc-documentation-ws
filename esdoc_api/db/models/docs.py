@@ -45,6 +45,7 @@ class Document(Entity):
     # Field set.
     # .. core fields
     project = Column(Unicode(63))
+    sub_projects = Column(Unicode)
     source = Column(Unicode(255))
     institute = Column(Unicode(63))
     type = Column(Unicode(255), nullable=False)
