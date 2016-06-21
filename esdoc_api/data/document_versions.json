@@ -1,0 +1,12 @@
+{
+    "documentVersions": [
+        {
+            "key": "*",
+            "label": "*"
+        },
+        {
+            "key": "latest",
+            "label": "Latest"
+        }
+    ]
+}

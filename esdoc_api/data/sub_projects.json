@@ -1,0 +1,94 @@
+{
+	"subProjects": [
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "DECK",
+			"key": "DECK"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "ScenarioMIP",
+			"key": "ScenarioMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "AerChemMIP",
+			"key": "AerChemMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "C4MIP",
+			"key": "C4MIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "CFMIP",
+			"key": "CFMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "DAMIP",
+			"key": "DAMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "DCPP",
+			"key": "DCPP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "FAFMIP",
+			"key": "FAFMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "GeoMIP",
+			"key": "GeoMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "GMMIP",
+			"key": "GMMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "HighResMIP",
+			"key": "HighResMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "ISMIP6",
+			"key": "ISMIP6"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "LS3MIP",
+			"key": "LS3MIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "LUMIP",
+			"key": "LUMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "OMIP",
+			"key": "OMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "PMIP",
+			"key": "PMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "RFMIP",
+			"key": "RFMIP"
+		},
+		{
+			"project": "CMIP6-DRAFT",
+			"label": "VolMIP",
+			"key": "VolMIP"
+		}
+	]
+}
