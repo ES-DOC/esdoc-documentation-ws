@@ -50,6 +50,25 @@ def get_document(uid, version, project=None):
     return qry.all() if version == constants.DOCUMENT_VERSION_ALL else qry.first()
 
 
+def get_document_counts():
+    """Returns document counts.
+
+    :returns: List of counts over document types.
+    :rtype: list
+
+    """
+    qry = session.query(sa.func.count(Document.institute),
+                        Document.project,
+                        Document.institute,
+                        Document.type)
+    qry = qry.group_by(Document.project)
+    qry = qry.group_by(Document.institute)
+    qry = qry.group_by(Document.type)
+    qry = qry.order_by(Document.type.desc())
+
+    return qry.all()
+
+
 def get_document_by_name(
     project,
     typeof,
@@ -175,6 +194,7 @@ def get_document_summaries(
     project,
     typeof,
     version,
+    sub_project=None,
     institute=None,
     model=None,
     experiment=None
@@ -184,6 +204,7 @@ def get_document_summaries(
     :param str project: Project code.
     :param str typeof: Document type.
     :param str version: Document version (latest | all).
+    :param str sub_project: Sub-project code.
     :param str institute: Institute code.
     :param str model: Model code.
     :param str experiment: Experiment code.
@@ -225,7 +246,8 @@ def get_document_summaries(
         Document.source,
         Document.type,
         Document.uid,
-        Document.version
+        Document.version,
+        Document.sub_projects
         )
 
     # Set mandatory params.
@@ -242,6 +264,8 @@ def get_document_summaries(
         qry = text_filter(qry, Document.institute, institute)
     if model:
         qry = text_filter(qry, Document.model, model)
+    if sub_project:
+        qry = like_filter(qry, Document.sub_projects, "<{}>".format(sub_project.lower()))
 
     # Apply query limit.
     try:
@@ -252,48 +276,6 @@ def get_document_summaries(
         qry = qry.limit(session.QUERY_LIMIT)
 
     return sort(Document, qry.all())
-
-
-def get_document_projects():
-    """Returns set of distinct document project associations.
-
-    """
-    qry = session.query(
-        DocumentSubProject.project,
-        DocumentSubProject.sub_project
-        )
-    qry = qry.distinct()
-
-    return qry.all()
-
-
-def get_institutes():
-    """Returns institute counts grouped by project.
-
-    :returns: List of counts over a project's institutes.
-    :rtype: list
-
-    """
-    qry = session.query(Document.institute)
-    qry = qry.distinct()
-
-    return sorted([i[0] for i in qry.all() if i[0]])
-
-
-def get_project_institute_counts():
-    """Returns institute counts grouped by project.
-
-    :returns: List of counts over a project's institutes.
-    :rtype: list
-
-    """
-    qry = session.query(sa.func.count(Document.institute),
-                        Document.project,
-                        Document.institute)
-    qry = qry.group_by(Document.project)
-    qry = qry.group_by(Document.institute)
-
-    return qry.all()
 
 
 def _delete_document_relation(document_id, typeof):
@@ -350,86 +332,3 @@ def delete_all_documents():
 
     """
     delete_by_type(Document, delete_document)
-
-
-def get_project_document_type_counts():
-    """Returns document type counts grouped by project.
-
-    :returns: List of counts over a project's document types.
-    :rtype: list
-
-    """
-    qry = session.query(sa.func.count(Document.type),
-                        Document.project,
-                        Document.type)
-    qry = qry.group_by(Document.project)
-    qry = qry.group_by(Document.type)
-
-    return qry.all()
-
-
-def get_document_counts():
-    """Returns document counts.
-
-    :returns: List of counts over document types.
-    :rtype: list
-
-    """
-    qry = session.query(sa.func.count(Document.institute),
-                        Document.project,
-                        Document.institute,
-                        Document.type)
-    qry = qry.group_by(Document.project)
-    qry = qry.group_by(Document.institute)
-    qry = qry.group_by(Document.type)
-    qry = qry.order_by(Document.type.desc())
-
-    return qry.all()
-
-
-def get_document_type_count(project, typeof):
-    """Returns count over a project's document type.
-
-    :param str typeof: Document type.
-    :param str project: Project code.
-
-    :returns: List of counts over a project's document types.
-    :rtype: list
-
-    """
-    qry = session.query(sa.func.count(Document.type))
-    qry = text_filter(qry, Document.project, project)
-    qry = text_filter(qry, Document.type, typeof)
-    qry = qry.group_by(Document.type)
-
-    counts = qry.all()
-
-    return 0 if not len(counts) else counts[0][0]
-
-
-def get_models():
-    """Returns set of unique document summary model names.
-
-    """
-    qry = session.query(
-        Document.project,
-        Document.model
-        )
-    qry = qry.filter(Document.model != 'None')
-    qry = qry.distinct()
-
-    return qry.all()
-
-
-def get_experiments():
-    """Returns set of unique document summary experiment names.
-
-    """
-    qry = session.query(
-        Document.project,
-        Document.experiment
-        )
-    qry = qry.filter(Document.experiment != 'None')
-    qry = qry.distinct()
-
-    return qry.all()
