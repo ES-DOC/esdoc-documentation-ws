@@ -47,6 +47,10 @@ def _get_params():
         'project': {
             'required': True,
             'value_formatter': lambda v: v.lower(),
+        },
+        'subProject': {
+            'required': False,
+            'value_formatter': lambda v: v.lower(),
         }
     }
 
@@ -84,9 +88,10 @@ class SummarySearchRequestHandler(tornado.web.RequestHandler):
             self.project,
             self.document_type,
             self.document_version,
-            self.institute,
-            self.model if self.model else None,
-            self.experiment if self.experiment else None
+            sub_project=self.sub_project,
+            institute=self.institute,
+            model=self.model if self.model else None,
+            experiment=self.experiment if self.experiment else None
             )
 
 

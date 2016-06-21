@@ -47,12 +47,23 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """
         self.output_encoding = 'json'
         self.output = {
-            'projects' : constants.PROJECTS,
+            'project' : db.dao.get_projects(),
+            'documentType' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_document_types()],
+            'documentVersion' : constants.DOCUMENT_VERSION,
+            'institute' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_institutes()],
+            'model' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_models()],
+            'experiment' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_experiments()],
+            'subProject' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_sub_projects()],
+            'cv': {
+                'documentTypes' : constants.DOCUMENT_TYPES,
+            },
+            'documentTypes' : constants.DOCUMENT_TYPES,
+            'projects' : constants.PROJECT,
+            'subProjects' : constants.SUB_PROJECT,
             'models' : db.dao.get_models(),
             'experiments' : db.dao.get_experiments(),
-            'institutes': db.dao.get_institutes(),
+            'institutes': [i[1] for i in db.dao.get_institutes()],
             'instituteCounts' : db.dao.get_project_institute_counts(),
-            'documentTypes' : constants.DOCUMENT_TYPES,
             'documentTypeCounts' : db.dao.get_project_document_type_counts()
         }
 

@@ -49,7 +49,7 @@ def execute(ctx):
     instance.name = unicode(ctx.doc.ext.display_name)
     instance.project = ctx.doc.meta.project.strip().lower()
     if ctx.doc.meta.sub_projects:
-        instance.sub_projects = ",".join([i.lower() for i in sorted(ctx.doc.meta.sub_projects)])
+        instance.sub_projects = ",".join([u"<{}>".format(i.lower()) for i in sorted(ctx.doc.meta.sub_projects)])
     instance.source = unicode(ctx.doc.meta.source_key)
     instance.type = unicode(ctx.doc.meta.type)
     instance.uid = unicode(ctx.doc.meta.id)

@@ -29,8 +29,12 @@ DOCUMENT_VERSIONS = [
     DOCUMENT_VERSION_LATEST
     ]
 
-# Set of institutes loaded from file system.
-PROJECTS = get_data('projects')
+# Set of projects loaded from file system.
+PROJECT = get_data('projects')
 
-# Set of institutes loaded from file system.
-INSTITUTES = get_data('institutes')
+# Set of sub-projects loaded from file system.
+SUB_PROJECT = get_data('sub_projects')
+
+# Set of document versions loaded from file system.
+DOCUMENT_VERSION = get_data('document_versions')
+

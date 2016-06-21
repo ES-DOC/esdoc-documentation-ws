@@ -60,7 +60,7 @@ def _get_default_params():
         },
         'project': {
             'required': True,
-            'whitelist' : [p['name'].lower() for p in constants.PROJECTS],
+            'whitelist' : [p['name'].lower() for p in constants.PROJECT],
             'value_formatter': lambda v: v.lower()
         },
         'searchType': {

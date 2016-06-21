@@ -26,7 +26,7 @@ class _ProcessingContextInfo(object):
 def _init(ctx):
     """Initializes processing context."""
     ctx.institutes = dao.get_institutes()
-    ctx.projects = constants.PROJECTS
+    ctx.projects = constants.PROJECT
 
 
 def _index(ctx):
