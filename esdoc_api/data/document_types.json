@@ -1,128 +1,128 @@
 {
     "documentTypes": [
         {
-            "customSearchFilters": [],
             "displayName": "Data",
+            "searchColumns": [],
             "isPdfTarget": false,
-            "isSearchTarget": false,
             "key": "cim.1.data.DataObject",
             "label": "Data",
             "loadAll": false,
             "ontology": "cim.1"
         },
         {
-            "customSearchFilters": [
-                "institute",
-                "model",
-                "experiment"
-            ],
             "displayName": "Simulation",
             "isPdfTarget": false,
-            "isSearchTarget": true,
             "key": "cim.1.misc.DocumentSet",
             "label": "Simulation",
             "loadAll": false,
-            "ontology": "cim.1"
+            "ontology": "cim.1",
+            "search": {
+                "columns": [
+                    "institute", "model", "experiment"
+                ],
+                "filters": [
+                    "experiment", "institute", "model"
+                ]
+            }
         },
         {
-            "customSearchFilters": [],
             "displayName": "Ensemble",
             "isPdfTarget": false,
-            "isSearchTarget": false,
             "key": "cim.1.activity.Ensemble",
             "label": "Ensemble",
             "loadAll": false,
             "ontology": "cim.1"
         },
         {
-            "customSearchFilters": [],
             "displayName": "Grid Spec",
             "isPdfTarget": false,
-            "isSearchTarget": false,
             "key": "cim.1.grids.GridSpec",
             "label": "Grid Spec",
             "loadAll": false,
             "ontology": "cim.1"
         },
         {
-            "customSearchFilters": [],
             "displayName": "Model",
             "isPdfTarget": false,
-            "isSearchTarget": true,
             "key": "cim.1.software.ModelComponent",
             "label": "Model",
             "loadAll": true,
-            "ontology": "cim.1"
+            "ontology": "cim.1",
+            "search": {
+                "columns": [
+                    "institute"
+                ]
+            }
         },
         {
-            "customSearchFilters": [],
             "displayName": "Experiment",
             "isPdfTarget": false,
-            "isSearchTarget": true,
             "key": "cim.1.activity.NumericalExperiment",
             "label": "Experiment",
             "loadAll": true,
-            "ontology": "cim.1"
+            "ontology": "cim.1",
+            "search": {}
         },
         {
-            "customSearchFilters": [],
             "displayName": "Platform",
             "isPdfTarget": false,
-            "isSearchTarget": true,
             "key": "cim.1.shared.Platform",
             "label": "Platform",
             "loadAll": true,
-            "ontology": "cim.1"
+            "ontology": "cim.1",
+            "search": {
+                "columns": [
+                    "institute"
+                ]
+            }
         },
         {
-            "customSearchFilters": [],
             "displayName": "Quality",
             "isPdfTarget": false,
-            "isSearchTarget": false,
             "key": "cim.1.quality.CimQuality",
             "label": "Quality",
             "loadAll": false,
             "ontology": "cim.1"
         },
         {
-            "customSearchFilters": [],
             "displayName": "Simulation",
             "isPdfTarget": false,
-            "isSearchTarget": false,
             "key": "cim.1.activity.SimulationComposite",
             "label": "Simulation",
             "loadAll": false,
             "ontology": "cim.1"
         },
         {
-            "customSearchFilters": [],
             "displayName": "Simulation",
             "isPdfTarget": false,
-            "isSearchTarget": false,
             "key": "cim.1.activity.SimulationRun",
             "label": "Simulation",
             "loadAll": false,
             "ontology": "cim.1"
         },
         {
-            "customSearchFilters": [],
             "displayName": "Statistical Model",
             "isPdfTarget": false,
-            "isSearchTarget": false,
             "key": "cim.1.activity.StatisticalModelComponent",
             "label": "Statistical Model",
             "loadAll": false,
             "ontology": "cim.1"
         },
         {
-            "customSearchFilters": [],
             "displayName": "Experiment",
             "isPdfTarget": true,
-            "isSearchTarget": true,
             "key": "cim.2.designing.NumericalExperiment",
             "label": "Experiment",
             "loadAll": true,
-            "ontology": "cim.2"
+            "ontology": "cim.2",
+            "search": {
+                "columns": [
+                    "subProject"
+                ],
+                "filters": [
+                    "subProject"
+                ]
+            }
         }
     ]
 }
