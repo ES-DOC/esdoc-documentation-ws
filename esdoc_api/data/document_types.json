@@ -117,7 +117,7 @@
             "ontology": "cim.2",
             "search": {
                 "columns": [
-                    "subProject"
+                    "subProject", "alternativeName"
                 ],
                 "filters": [
                     "subProject"

@@ -54,6 +54,7 @@ class Document(Entity):
     version = Column(Integer, nullable=False, default=1)
     ingest_date = Column(DateTime, default=datetime.datetime.now())
     is_latest = Column(Boolean, nullable=False, default=False)
+
     # .. summary fields
     language = Column(Unicode(2))
     short_name = Column(Unicode(1023))
@@ -67,6 +68,7 @@ class Document(Entity):
     field_06 = Column(Unicode(1023))
     field_07 = Column(Unicode(1023))
     field_08 = Column(Unicode(1023))
+
     # .. inter-document fields
     model = Column(Unicode(1023))
     experiment = Column(Unicode(1023))
