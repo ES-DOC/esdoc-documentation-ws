@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from esdoc_api import db, config
+from esdoc_api import config
+from esdoc_api import db
 
 
 

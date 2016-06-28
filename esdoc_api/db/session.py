@@ -82,17 +82,12 @@ def create_repo():
     """Creates a repo.
 
     """
-    from esdoc_api.db.init import execute as seed_db
-
     # Create schemas.
     for p in models.PARTITIONS:
         _State.sa_engine.execute(CreateSchema(p))
 
     # Create tables.
     models.metadata.create_all(_State.sa_engine)
-
-    # Seed tables.
-    seed_db()
 
 
 def do_ingest():
