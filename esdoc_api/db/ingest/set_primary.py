@@ -55,6 +55,11 @@ def execute(ctx):
     instance.uid = unicode(ctx.doc.meta.id)
     instance.version = ctx.doc.meta.version
 
+    # Set alternative name.
+    if hasattr(ctx.doc, "alternative_names"):
+        if ctx.doc.alternative_names:
+            instance.alternative_name = ctx.doc.alternative_names[0]
+
     # Set summary fields.
     fields = [f for f in ctx.doc.ext.summary_fields if f is not None]
     for index, field in enumerate(fields):

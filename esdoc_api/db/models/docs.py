@@ -58,6 +58,7 @@ class Document(Entity):
     # .. summary fields
     language = Column(Unicode(2))
     short_name = Column(Unicode(1023))
+    alternative_name = Column(Unicode(255))
     long_name = Column(Unicode(1023))
     description = Column(Unicode(1023))
     field_01 = Column(Unicode(1023))

@@ -247,7 +247,8 @@ def get_document_summaries(
         Document.type,
         Document.uid,
         Document.version,
-        Document.sub_projects
+        Document.sub_projects,
+        Document.alternative_name
         )
 
     # Set mandatory params.
