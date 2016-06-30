@@ -110,7 +110,7 @@
         },
         {
             "displayName": "Experiment",
-            "isPdfTarget": true,
+            "isPdfTarget": false,
             "key": "cim.2.designing.NumericalExperiment",
             "label": "Experiment",
             "loadAll": true,
