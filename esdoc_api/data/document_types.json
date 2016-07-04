@@ -125,10 +125,10 @@
             }
         },
         {
-            "displayName": "Sub-MIP",
+            "displayName": "MIP",
             "isPdfTarget": false,
             "key": "cim.2.designing.Project",
-            "label": "Sub-MIP",
+            "label": "MIP",
             "loadAll": true,
             "ontology": "cim.2",
             "search": {
