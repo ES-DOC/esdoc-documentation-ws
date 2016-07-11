@@ -11,11 +11,9 @@
 """
 import inspect
 
-from esdoc_api.utils import (
-    config,
-    convert,
-    runtime as rt
-    )
+from esdoc_api.utils import config
+from esdoc_api.utils import convert
+from esdoc_api.utils import runtime as rt
 
 
 
