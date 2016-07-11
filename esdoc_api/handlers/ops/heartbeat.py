@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: handlers.ops.heartbeat.py
+.. module:: handlers.heartbeat.py
    :license: GPL/CeCIL
-   :platform: Unix, Windows
-   :synopsis: Operations heartbeat request handler.
+   :platform: Unix
+   :synopsis: ES-DOC - heartbeat endpoint.
 
-.. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
 
 
 """
-import datetime
+import datetime as dt
 
-import tornado
-
-from esdoc_api import utils
+from esdoc_api.utils.http import HTTPRequestHandler
 
 
 
-class HeartbeatRequestHandler(tornado.web.RequestHandler):
+class HeartbeatRequestHandler(HTTPRequestHandler):
     """Operations heartbeat request handler.
 
     """
@@ -26,8 +24,14 @@ class HeartbeatRequestHandler(tornado.web.RequestHandler):
         """HTTP GET handler.
 
         """
-        self.output_encoding = 'json'
-        self.output = {
-            "message": "ES-DOC web service API is operational @ {}".format(datetime.datetime.now())
-        }
-        utils.h.invoke(self)
+        def _set_output():
+            """Sets response to be returned to client.
+
+            """
+            self.output = {
+                "message": "ES-DOC web service is operational @ {}".format(dt.datetime.now()),
+                "status": 0
+            }
+
+        # Invoke tasks.
+        self.invoke(None, _set_output)

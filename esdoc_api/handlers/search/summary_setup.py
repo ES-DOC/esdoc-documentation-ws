@@ -10,16 +10,15 @@
 
 
 """
-import tornado
-
 from esdoc_api import constants
 from esdoc_api import db
-from esdoc_api import utils
 from esdoc_api.utils import config
+from esdoc_api.utils.http import HTTPRequestHandler
+from esdoc_api.utils.http import HTTP_HEADER_Access_Control_Allow_Origin
 
 
 
-class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
+class SummarySearchSetupRequestHandler(HTTPRequestHandler):
     """Document summary search setup request handler.
 
     """
@@ -27,7 +26,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """Set HTTP headers at the beginning of the request.
 
         """
-        self.set_header(utils.h.HTTP_HEADER_Access_Control_Allow_Origin, "*")
+        self.set_header(HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
     def prepare(self):
@@ -37,15 +36,11 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         # Start db session.
         db.session.start(config.db)
 
-        # Parse incoming url parameters.
-        utils.up.parse(self)
-
 
     def _set_output(self):
         """Sets output data to be returned to client.
 
         """
-        self.output_encoding = 'json'
         self.output = {
             'project' : db.dao.get_projects(),
             'documentType' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_document_types()],
@@ -56,15 +51,7 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
             'subProject' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_sub_projects()],
             'cv': {
                 'documentTypes' : constants.DOCUMENT_TYPES,
-            },
-            'documentTypes' : constants.DOCUMENT_TYPES,
-            'projects' : constants.PROJECT,
-            'subProjects' : constants.SUB_PROJECT,
-            'models' : db.dao.get_models(),
-            'experiments' : db.dao.get_experiments(),
-            'institutes': [i[1] for i in db.dao.get_institutes()],
-            'instituteCounts' : db.dao.get_project_institute_counts(),
-            'documentTypeCounts' : db.dao.get_project_document_type_counts()
+            }
         }
 
 
@@ -72,4 +59,4 @@ class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
         """HTTP GET handler.
 
         """
-        utils.h.invoke(self, self._set_output)
+        self.invoke(None, self._set_output)

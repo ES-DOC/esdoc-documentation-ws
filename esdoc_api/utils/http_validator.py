@@ -10,6 +10,7 @@
 
 """
 import uuid
+from collections import Sequence
 
 import cerberus
 
@@ -46,13 +47,11 @@ class _RequestQueryParamsValidator(cerberus.Validator):
     """An HTTP request query params validator that extends the cerberus library.
 
     """
-    def __init__(self, request, schema):
+    def __init__(self, schema):
         """Instance initializer.
 
         """
         super(_RequestQueryParamsValidator, self).__init__(schema)
-
-        self.query_arguments = request.query_arguments
 
 
     def _validate_type_uuid(self, field, value):
@@ -65,11 +64,10 @@ class _RequestQueryParamsValidator(cerberus.Validator):
             self._error(field, cerberus.errors.ERROR_BAD_TYPE.format('uuid'))
 
 
-    def validate(self):
-        """Validates request parameters against schema.
-
-        """
-        return super(_RequestQueryParamsValidator, self).validate(self.query_arguments)
+    def _validate_allowed_case_insensitive(self, allowed_values, field, value):
+            """ {'type': 'list'} """
+            value = [v.lower() for v in value]
+            super(_RequestQueryParamsValidator, self)._validate_allowed(allowed_values, field, value)
 
 
 def _log(handler, error):
@@ -85,15 +83,12 @@ def is_request_valid(handler, schema):
     """Returns a flag indicating whether an HTTP request is considered to be valid.
 
     """
-    # Set validator.
-    if isinstance(schema, str):
-        validator = _RequestBodyValidator
-    else:
-        validator = _RequestQueryParamsValidator
-    validator = validator(handler.request, schema)
-
     # Validate request.
-    validator.validate()
+    if isinstance(schema, str):
+        validator = _RequestBodyValidator(handler.request, schema)
+    else:
+        validator = _RequestQueryParamsValidator(schema)
+        validator.validate(handler.request.query_arguments)
 
     # HTTP 400 if request is invalid.
     if validator.errors:

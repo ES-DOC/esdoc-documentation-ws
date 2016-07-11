@@ -15,7 +15,9 @@ from esdoc_api import db
 
 
 def get_url_params():
-    """Returns url parameter specification."""
+    """Returns url parameter specification.
+
+    """
     return {
         'institute': {
             'required' : False,

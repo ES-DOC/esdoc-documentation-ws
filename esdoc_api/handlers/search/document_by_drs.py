@@ -21,7 +21,9 @@ _DRS_SEPERATOR = '/'
 
 
 def _get_drs_keys(project, drs_path):
-    """Returns drs keys defined in a path."""
+    """Returns drs keys defined in a path.
+
+    """
     def is_valid(key):
         return len(key) and key.upper() != project.upper()
 
@@ -29,7 +31,9 @@ def _get_drs_keys(project, drs_path):
 
 
 def get_url_params():
-    """Returns url parameter specification."""
+    """Returns url parameter specification.
+
+    """
     return {
         'drsPath': {
             'required': True,

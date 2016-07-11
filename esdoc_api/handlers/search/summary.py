@@ -10,115 +10,162 @@
 
 
 """
-import tornado
-
 from esdoc_api import constants
 from esdoc_api import db
-from esdoc_api import utils
+from esdoc_api.db.dao import get_document_summaries
+from esdoc_api.db.dao import get_document_type_count
 from esdoc_api.utils import config
+from esdoc_api.utils.http import HTTPRequestHandler
+from esdoc_api.utils.http import HTTP_HEADER_Access_Control_Allow_Origin
 
 
 
-def _get_params():
-    """Returns url parameter specification."""
-    return {
-        'timestamp': {
-            'required': True
-        },
-        'documentType': {
-            'required': True,
-            'whitelist' : [dt['key'].lower() for dt in constants.DOCUMENT_TYPES],
-            'value_formatter': lambda v: v.lower()
-        },
-        'documentVersion': {
-            'required': True,
-            'whitelist': lambda: constants.DOCUMENT_VERSIONS
-        },
-        'experiment': {
-            'required': False
-        },
-        'institute': {
-            'required': False,
-            'value_formatter': lambda v: v.lower()
-        },
-        'model': {
-            'required': False
-        },
-        'project': {
-            'required': True,
-            'value_formatter': lambda v: v.lower(),
-        },
-        'subProject': {
-            'required': False,
-            'value_formatter': lambda v: v.lower(),
-        }
+# Query parameter names.
+_PARAM_TIMESTAMP = 'timestamp'
+_PARAM_DOCUMENT_TYPE = 'documentType'
+_PARAM_DOCUMENT_VERSION = 'documentVersion'
+_PARAM_EXPERIMENT = 'experiment'
+_PARAM_INSTITUTE = 'institute'
+_PARAM_MODEL = 'model'
+_PARAM_PROJECT = 'project'
+_PARAM_SUB_PROJECT = 'subProject'
+
+# Query parameter validation schema.
+_REQUEST_VALIDATION_SCHEMA = {
+    _PARAM_TIMESTAMP: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_DOCUMENT_TYPE: {
+        'allowed_case_insensitive': [i['key'].lower() for i in constants.DOCUMENT_TYPES],
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_DOCUMENT_VERSION: {
+        'allowed': constants.DOCUMENT_VERSIONS,
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_EXPERIMENT: {
+        'required': False,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_INSTITUTE: {
+        'required': False,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_MODEL: {
+        'required': False,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_PROJECT: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_SUB_PROJECT: {
+        'required': False,
+        'type': 'list', 'items': [{'type': 'string'}]
     }
+}
 
 
-def _get_collection(mtype):
-    """Helper function to load collection from db.
-
-    """
-    return db.models.to_dict_for_json(db.dao.get_all(mtype))
-
-
-class SummarySearchRequestHandler(tornado.web.RequestHandler):
+class SummarySearchRequestHandler(HTTPRequestHandler):
     """Document summary search request handler.
 
     """
+    def __init__(self, application, request, **kwargs):
+        """Instance constructor.
+
+        """
+        super(SummarySearchRequestHandler, self).__init__(application, request, **kwargs)
+
+        self.data = []
+        self.total = 0
+
+        self.timestamp = None
+        self.document_type = None
+        self.document_version = None
+        self.experiment = None
+        self.institute = None
+        self.model = None
+        self.project = None
+        self.sub_project = None
+
+
     def set_default_headers(self):
-        """Set HTTP headers at the beginning of the request."""
-        self.set_header(utils.h.HTTP_HEADER_Access_Control_Allow_Origin, "*")
+        """Set HTTP headers at the beginning of the request.
 
-
-    def prepare(self):
-        """Prepare handler state for processing."""
-        # Start db session.
-        db.session.start(config.db)
-
-
-    def _parse_params(self):
-        """Parses incoming url parameters."""
-        utils.up.parse(self, _get_params())
-
-
-    def _set_data(self):
-        """Sets data returned from db."""
-        self.data = db.dao.get_document_summaries(
-            self.project,
-            self.document_type,
-            self.document_version,
-            sub_project=self.sub_project,
-            institute=self.institute,
-            model=self.model if self.model else None,
-            experiment=self.experiment if self.experiment else None
-            )
-
-
-    def _set_total(self):
-        """Sets total of all records returnable from db."""
-        self.total = \
-            db.dao.get_document_type_count(self.project, self.document_type)
-
-
-    def _set_output(self):
-        """Sets output data to be returned to client."""
-        self.output_encoding = 'json'
-        self.output = {
-            'count': len(self.data),
-            'project': self.project,
-            'results': self.data,
-            'timestamp': self.timestamp,
-            'total': self.total
-        }
-
+        """
+        self.set_header(HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
     def get(self):
-        """HTTP GET handler."""
-        utils.h.invoke(self, (
-            self._parse_params,
-            self._set_data,
-            self._set_total,
-            self._set_output
-            ))
+        """HTTP GET handler.
+
+        """
+        def _decode_request():
+            """Decodes request.
+
+            """
+            self.timestamp = self.get_argument(_PARAM_TIMESTAMP)
+            self.document_type = self.get_argument(_PARAM_DOCUMENT_TYPE)
+            self.document_version = self.get_argument(_PARAM_DOCUMENT_VERSION)
+            self.experiment = self.get_argument(_PARAM_EXPERIMENT, None)
+            self.institute = self.get_argument(_PARAM_INSTITUTE, None)
+            self.model = self.get_argument(_PARAM_MODEL, None)
+            self.project = self.get_argument(_PARAM_PROJECT)
+            self.sub_project = self.get_argument(_PARAM_SUB_PROJECT, None)
+
+
+        def _format_params():
+            """Formats request.
+
+            """
+            self.document_type = self.document_type.lower()
+            if self.institute:
+                self.institute = self.institute.lower()
+            if self.project:
+                self.project = self.project.lower()
+            if self.sub_project:
+                self.sub_project = self.sub_project.lower()
+
+
+        def _set_data():
+            """Pulls data from db.
+
+            """
+            # TODO- context manager
+            db.session.start(config.db)
+
+            self.data = get_document_summaries(
+                self.project,
+                self.document_type,
+                self.document_version,
+                sub_project=self.sub_project,
+                institute=self.institute,
+                model=self.model or None,
+                experiment=self.experiment or None
+                )
+            self.total = get_document_type_count(self.project, self.document_type)
+
+
+        def _set_output():
+            """Sets output data to be returned to client.
+
+            """
+            self.output = {
+                'count': len(self.data),
+                'project': self.project,
+                'results': self.data,
+                'timestamp': self.timestamp,
+                'total': self.total
+            }
+
+
+        self.invoke(_REQUEST_VALIDATION_SCHEMA, [
+            _decode_request,
+            _format_params,
+            _set_data,
+            _set_output
+            ]
+            )

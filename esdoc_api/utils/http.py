@@ -60,5 +60,5 @@ class HTTPRequestHandler(tornado.web.RequestHandler):
         logger.log_web(msg)
 
         # Validate & process request.
-        if is_request_valid(self, schema):
+        if schema is None or is_request_valid(self, schema):
             process_request(self, taskset, error_taskset)
