@@ -73,25 +73,6 @@ class SummarySearchRequestHandler(HTTPRequestHandler):
     """Document summary search request handler.
 
     """
-    def __init__(self, application, request, **kwargs):
-        """Instance constructor.
-
-        """
-        super(SummarySearchRequestHandler, self).__init__(application, request, **kwargs)
-
-        self.data = []
-        self.total = 0
-
-        self.timestamp = None
-        self.document_type = None
-        self.document_version = None
-        self.experiment = None
-        self.institute = None
-        self.model = None
-        self.project = None
-        self.sub_project = None
-
-
     def set_default_headers(self):
         """Set HTTP headers at the beginning of the request.
 

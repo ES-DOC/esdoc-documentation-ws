@@ -29,34 +29,46 @@ class SummarySearchSetupRequestHandler(HTTPRequestHandler):
         self.set_header(HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
-    def prepare(self):
-        """Prepare handler state for processing.
-
-        """
-        # Start db session.
-        db.session.start(config.db)
-
-
-    def _set_output(self):
-        """Sets output data to be returned to client.
-
-        """
-        self.output = {
-            'project' : db.dao.get_projects(),
-            'documentType' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_document_types()],
-            'documentVersion' : constants.DOCUMENT_VERSION,
-            'institute' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_institutes()],
-            'model' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_models()],
-            'experiment' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_experiments()],
-            'subProject' : ["{}:{}".format(i[0], i[1]) for i in db.dao.get_sub_projects()],
-            'cv': {
-                'documentTypes' : constants.DOCUMENT_TYPES,
-            }
-        }
-
-
     def get(self):
         """HTTP GET handler.
 
         """
-        self.invoke(None, self._set_output)
+
+        def _set_data():
+            """Pulls data from db.
+
+            """
+            # TODO- context manager
+            db.session.start(config.db)
+
+            self.document_types = db.dao.get_document_types()
+            self.experiments = db.dao.get_experiments()
+            self.institutes = db.dao.get_institutes()
+            self.models = db.dao.get_models()
+            self.projects = db.dao.get_projects()
+            self.sub_projects = db.dao.get_sub_projects()
+
+
+        def _set_output():
+            """Sets output data to be returned to client.
+
+            """
+            self.output = {
+                'project' : self.projects,
+                'documentType' : ["{}:{}".format(i[0], i[1]) for i in self.document_types],
+                'documentVersion' : constants.DOCUMENT_VERSION,
+                'institute' : ["{}:{}".format(i[0], i[1]) for i in self.institutes],
+                'model' : ["{}:{}".format(i[0], i[1]) for i in self.models],
+                'experiment' : ["{}:{}".format(i[0], i[1]) for i in self.experiments],
+                'subProject' : ["{}:{}".format(i[0], i[1]) for i in self.sub_projects],
+                'cv': {
+                    'documentTypes' : constants.DOCUMENT_TYPES,
+                }
+            }
+
+
+        self.invoke(None, [
+            _set_data,
+            _set_output
+            ]
+            )
