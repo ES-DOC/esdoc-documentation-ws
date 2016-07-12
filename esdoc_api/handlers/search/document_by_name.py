@@ -14,34 +14,47 @@ from esdoc_api import db
 
 
 
-def get_url_params():
-    """Returns url parameter specification.
+# Query parameter names.
+_PARAM_INSTITUTE = 'institute'
+_PARAM_NAME = 'name'
+_PARAM_TYPE = 'type'
+
+# Query parameter validation schema.
+REQUEST_VALIDATION_SCHEMA = {
+    _PARAM_INSTITUTE: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_NAME: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_TYPE: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    }
+}
+
+
+def decode_request(handler):
+    """Decodes request parameters.
 
     """
-    return {
-        'institute': {
-            'required' : False,
-            'value_formatter' : lambda k: k.lower()
-        },
-        'name': {
-            'required' : True,
-        },
-        'type': {
-            'required' : True,
-        }
-    }
+    handler.institute = handler.get_argument(_PARAM_INSTITUTE)
+    handler.name = handler.get_argument(_PARAM_NAME)
+    handler.type = handler.get_argument(_PARAM_TYPE)
 
 
-def do_search(criteria):
+def do_search(handler):
     """Executes document search against db.
 
-    :param object: Search criteria.
+    :param handler: Request handler.
 
     :returns: Search result.
-    :rtype: db.models.Document | None
+    :rtype: db.models.Document
 
     """
-    yield db.dao.get_document_by_name(criteria.project,
-                                      criteria.type,
-                                      criteria.name,
-                                      criteria.institute)
+    yield db.dao.get_document_by_name(handler.project,
+                                      handler.type,
+                                      handler.name,
+                                      handler.institute)

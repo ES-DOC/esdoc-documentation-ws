@@ -14,7 +14,8 @@ import tornado
 
 import pyesdoc
 
-from esdoc_api import db, utils
+from esdoc_api import db
+from esdoc_api import utils
 from esdoc_api.utils import config
 
 
@@ -25,6 +26,10 @@ _CONTENT_TYPE_JSON = [
     "application/json; charset=UTF-8"
 ]
 
+# HTTP header - Content-Type.
+_HTTP_HEADER_CONTENT_TYPE = "Content-Type"
+
+
 
 class DocumentCreateRequestHandler(tornado.web.RequestHandler):
     """Publishing create document request handler.
@@ -34,8 +39,12 @@ class DocumentCreateRequestHandler(tornado.web.RequestHandler):
         """Validates request headers.
 
         """
-        utils.h.validate_http_content_type(self, _CONTENT_TYPE_JSON)
+        if _HTTP_HEADER_CONTENT_TYPE not in self.request.headers:
+            raise ValueError("Content-Type HTTP header is required")
 
+        header = self.request.headers[_HTTP_HEADER_CONTENT_TYPE]
+        if not header in [_CONTENT_TYPE_JSON]:
+            raise ValueError("Content-Type is unsupported")
 
     def _validate_request_payload(self):
         """Validates request payload.

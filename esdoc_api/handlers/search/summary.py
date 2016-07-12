@@ -37,7 +37,7 @@ _REQUEST_VALIDATION_SCHEMA = {
         'type': 'list', 'items': [{'type': 'string'}]
     },
     _PARAM_DOCUMENT_TYPE: {
-        'allowed_case_insensitive': [i['key'].lower() for i in constants.DOCUMENT_TYPES],
+        'allowed_case_insensitive': [i['key'] for i in constants.DOCUMENT_TYPES],
         'required': True,
         'type': 'list', 'items': [{'type': 'string'}]
     },
@@ -99,7 +99,7 @@ class SummarySearchRequestHandler(HTTPRequestHandler):
 
 
         def _format_params():
-            """Formats request.
+            """Formats request parameters.
 
             """
             self.document_type = self.document_type.lower()

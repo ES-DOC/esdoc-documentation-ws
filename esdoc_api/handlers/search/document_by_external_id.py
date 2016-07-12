@@ -14,46 +14,62 @@ from esdoc_api import utils
 
 
 
-def get_url_params():
-    """Returns url parameter specification.
+# Query parameter names.
+_PARAM_EXTERNAL_ID = 'externalID'
+_PARAM_EXTERNAL_TYPE = 'externalType'
+
+# Query parameter validation schema.
+REQUEST_VALIDATION_SCHEMA = {
+    _PARAM_EXTERNAL_ID: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_EXTERNAL_TYPE: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    }
+}
+
+
+def decode_request(handler):
+    """Decodes request parameters.
 
     """
-    return {
-        'externalID': {
-            'required' : True,
-        },
-        'externalType': {
-            'required' : True,
-        }
-    }
+    handler.external_id = handler.get_argument(_PARAM_EXTERNAL_ID)
+    handler.external_type = handler.get_argument(_PARAM_EXTERNAL_TYPE)
 
 
-def parse_url_params(params):
-    """Parses url request params.
+def validate_params(handler):
+    """Validates url request params.
 
-    :param object: Search criteria.
+    :param handler: Request handler.
 
     """
     # Validate that an external id handler exists.
-    handler = utils.external_id.get(params.project, params.external_type)
+    handler = utils.external_id.get(handler.project, handler.external_type)
     if not handler:
         raise ValueError("External ID type is unsupported.")
 
     # Validate external id.
-    if not handler.is_valid(params.external_id):
+    if not handler.is_valid(handler.external_id):
         raise ValueError("Request parameter externalID: is invalid.")
 
 
-def do_search(criteria):
+def do_search(handler):
     """Executes document search against db.
 
-    :param object: Search criteria.
+    :param handler: Request handler.
 
     :returns: Search result.
-    :rtype: db.models.Document | None
+    :rtype: db.models.Document
 
     """
-    handler = utils.external_id.get(criteria.project, criteria.external_type)
-    external_id = handler.get_parsed(criteria.external_id)
-    for doc in handler.do_search(criteria.project, external_id):
+    # Set search manager.
+    manager = utils.external_id.get(handler.project, handler.external_type)
+
+    # Set parsed external id.
+    external_id = manager.get_parsed(handler.external_id)
+
+    # Yield search results.
+    for doc in manager.do_search(handler.project, external_id):
         yield doc

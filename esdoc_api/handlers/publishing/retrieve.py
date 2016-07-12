@@ -14,7 +14,8 @@ import tornado
 
 import pyesdoc
 
-from esdoc_api import db, utils
+from esdoc_api import db
+from esdoc_api import utils
 from esdoc_api.utils import config
 
 

@@ -65,9 +65,12 @@ class _RequestQueryParamsValidator(cerberus.Validator):
 
 
     def _validate_allowed_case_insensitive(self, allowed_values, field, value):
-            """ {'type': 'list'} """
-            value = [v.lower() for v in value]
-            super(_RequestQueryParamsValidator, self)._validate_allowed(allowed_values, field, value)
+        """Enables validation for `allowed_case_insensitive` schema attribute.
+
+        """
+        value = [i.lower() for i in value]
+        allowed = [i.lower() for i in allowed_values]
+        super(_RequestQueryParamsValidator, self)._validate_allowed(allowed, field, value)
 
 
 def _log(handler, error):
@@ -79,7 +82,7 @@ def _log(handler, error):
     logger.log_web_security(msg)
 
 
-def is_request_valid(handler, schema):
+def is_request_valid(handler, schema, options={}):
     """Returns a flag indicating whether an HTTP request is considered to be valid.
 
     """
@@ -88,6 +91,7 @@ def is_request_valid(handler, schema):
         validator = _RequestBodyValidator(handler.request, schema)
     else:
         validator = _RequestQueryParamsValidator(schema)
+        validator.allow_unknown = options.get('allow_unknown', False)
         validator.validate(handler.request.query_arguments)
 
     # HTTP 400 if request is invalid.
