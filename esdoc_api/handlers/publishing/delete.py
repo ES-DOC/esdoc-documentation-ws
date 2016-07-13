@@ -10,67 +10,80 @@
 
 
 """
-import tornado
-
 import pyesdoc
 
 from esdoc_api import db
-from esdoc_api import utils
 from esdoc_api.utils import config
+from esdoc_api.utils.http import HTTPRequestHandler
 
 
 
-def _get_params():
-    """Returns query parameter validation specification."""
-    return {
-        'document_id': {
-            'required': True,
-            'value_formatter': lambda v : v.lower()
-        },
-        'document_version': {
-            'required' : True,
-            'value_formatter': lambda v : v.lower()
-        }
+# Query parameter names.
+_PARAM_DOCUMENT_ID = 'id'
+_PARAM_DOCUMENT_VERSION = 'version'
+
+
+# Query parameter validation schema.
+_REQUEST_VALIDATION_SCHEMA = {
+    _PARAM_DOCUMENT_ID: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_DOCUMENT_VERSION: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
     }
+}
 
 
-class DocumentDeleteRequestHandler(tornado.web.RequestHandler):
+class DocumentDeleteRequestHandler(HTTPRequestHandler):
     """Publishing delete document request handler.
 
     """
-    def _parse_request_params(self):
-        """Parses url query parameters.
-
-        """
-        utils.up.parse(self, _get_params())
-
-
-    def _delete_from_archive(self):
-    	"""Deletes document from archive.
-
-    	"""
-    	pyesdoc.archive.delete(self.document_id,
-                               self.document_version)
-
-
-    def _delete_from_db(self):
-        """Deletes document from database.
-
-        """
-        db.session.start(config.db)
-        try:
-            db.ingest.undo(self.document_id, self.document_version)
-            db.session.commit()
-        finally:
-            db.session.end()
-
-
     def delete(self):
         """HTTP DELETE handler.
 
         """
-        utils.h.invoke(self, (
-            self._parse_request_params,
-            self._delete_from_archive,
-            self._delete_from_db
-            ))
+        def _decode_request():
+            """Decodes request.
+
+            """
+            self.document_id = self.get_argument(_PARAM_DOCUMENT_ID)
+            self.document_version = self.get_argument(_PARAM_DOCUMENT_VERSION)
+
+
+        def _format_params():
+            """Formats request parameters.
+
+            """
+            self.document_id = self.document_id.lower()
+            self.document_version = self.document_version.lower()
+
+
+        def _delete_from_archive():
+            """Deletes document from archive.
+
+            """
+            pyesdoc.archive.delete(self.document_id,
+                                   self.document_version)
+
+
+        def _delete_from_db(self):
+            """Deletes document from database.
+
+            """
+            db.session.start(config.db)
+            try:
+                db.ingest.undo(self.document_id, self.document_version)
+                db.session.commit()
+            finally:
+                db.session.end()
+
+
+        self.invoke(_REQUEST_VALIDATION_SCHEMA, [
+            _decode_request,
+            _format_params,
+            _delete_from_archive,
+            _delete_from_db
+            ]
+            )

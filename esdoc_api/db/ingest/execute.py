@@ -203,7 +203,7 @@ def _process(ctx):
     _invoke(ctx, tasks, error_tasks)
 
 
-def main():
+def execute():
     """Ingests files from archive.
 
     """
