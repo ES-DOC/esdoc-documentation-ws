@@ -76,20 +76,6 @@ _WRITERS = {
 }
 
 
-def _write(handler, data, encoding='json'):
-    """Writes HTTP response data.
-
-    """
-    # Log begin.
-    logger.log(handler, "response writing begins --> {}".format(handler))
-
-    # Write.
-    _WRITERS[encoding](handler, data)
-
-    # Log end.
-    logger.log(handler, "response writing ends --> {}".format(handler))
-
-
 def write_error(handler, error):
     """Writes processing error to response stream.
 
@@ -103,20 +89,36 @@ def _write_success(handler):
     """Writes processing success to response stream.
 
     """
+    # Exit if overriden.
+    if handler.get_status() != 200:
+        return
+
+    # Set output encoding.
     try:
         encoding = handler.output_encoding
     except AttributeError:
         encoding = 'json'
 
+    # Set output.
     try:
-        data = handler.output
+        output = handler.output
     except AttributeError:
-        data = {} if encoding == 'json' else unicode()
+        output = {} if encoding == 'json' else unicode()
 
-    if encoding == 'json' and 'status' not in data:
-        data['status'] = 0
+    # Set JSON response status.
+    if encoding == 'json' and \
+       isinstance(output, dict) and \
+       'status' not in output:
+        output['status'] = 0
 
-    _write(handler, data, encoding)
+    # Log begin.
+    logger.log(handler, "response writing begins --> {}".format(handler))
+
+    # Write.
+    _WRITERS[encoding](handler, output)
+
+    # Log end.
+    logger.log(handler, "response writing ends --> {}".format(handler))
 
 
 def _get_tasks(tasks, defaults):

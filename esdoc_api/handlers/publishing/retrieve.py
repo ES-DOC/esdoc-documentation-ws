@@ -10,80 +10,89 @@
 
 
 """
-import tornado
-
 import pyesdoc
 
 from esdoc_api import db
-from esdoc_api import utils
 from esdoc_api.utils import config
+from esdoc_api.utils.http import HTTPRequestHandler
 
 
 
-def _get_params():
-    """Returns query parameter validation specification."""
-    return {
-        'encoding': {
-            'required': True,
-            'whitelist': pyesdoc.ENCODINGS_ALL,
-            'value_formatter': lambda v : v.lower()
-        },
-        'document_id': {
-            'required': True,
-            'value_formatter': lambda v : v.lower()
-        },
-        'document_version': {
-            'required' : True,
-            'value_formatter': lambda v : v.lower()
-        }
+# Query parameter names.
+_PARAM_ENCODING = 'encoding'
+_PARAM_DOCUMENT_ID = 'id'
+_PARAM_DOCUMENT_VERSION = 'version'
+
+
+# Query parameter validation schema.
+_REQUEST_VALIDATION_SCHEMA = {
+    _PARAM_DOCUMENT_ID: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_DOCUMENT_VERSION: {
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
+    },
+    _PARAM_ENCODING: {
+        'allowed_case_insensitive': pyesdoc.ENCODINGS_ALL,
+        'required': True,
+        'type': 'list', 'items': [{'type': 'string'}]
     }
+}
 
 
-class DocumentRetrieveRequestHandler(tornado.web.RequestHandler):
+class DocumentRetrieveRequestHandler(HTTPRequestHandler):
     """Publishing retrieve document request handler.
 
     """
-    def prepare(self):
-        """Prepare handler state for processing.
-
-        """
-        # Start db session.
-        db.session.start(config.db)
-
-
-    def _parse_request_params(self):
-        """Parses url query parameters.
-
-        """
-        utils.up.parse(self, _get_params())
-
-
-    def _read_from_archive(self):
-        """Loads document from archive.
-
-        """
-        self.doc = pyesdoc.archive.read(self.document_id,
-                                        self.document_version,
-                                        False)
-
-
-    def _set_response(self):
-        """Sets response.
-
-        """
-        if self.doc:
-            self.output_encoding = self.encoding
-            self.output = pyesdoc.encode(self.doc, self.encoding)
-        else:
-            self.set_status(404)
-
-
     def get(self):
         """HTTP GET handler.
 
         """
-        utils.h.invoke(self, (
-            self._parse_request_params,
-            self._read_from_archive,
-            self._set_response
-            ))
+        def _decode_request():
+            """Decodes request.
+
+            """
+            self.document_id = self.get_argument(_PARAM_DOCUMENT_ID)
+            self.document_version = self.get_argument(_PARAM_DOCUMENT_VERSION)
+            self.encoding = self.get_argument(_PARAM_ENCODING)
+
+
+        def _format_params():
+            """Formats request parameters.
+
+            """
+            self.document_id = self.document_id.lower()
+            self.document_version = self.document_version.lower()
+            self.encoding = self.encoding.lower()
+
+
+        def _set_data():
+            """Pulls data from db.
+
+            """
+            db.session.start(config.db)
+            self.doc = pyesdoc.archive.read(self.document_id,
+                                            self.document_version,
+                                            False)
+
+
+        def _set_output():
+            """Sets output data to be returned to client.
+
+            """
+            if self.doc is None:
+                self.set_status(404)
+            else:
+                self.output_encoding = self.encoding
+                self.output = pyesdoc.encode(self.doc, self.encoding)
+
+
+        self.invoke(_REQUEST_VALIDATION_SCHEMA, [
+            _decode_request,
+            _format_params,
+            _set_data,
+            _set_output
+            ]
+            )
