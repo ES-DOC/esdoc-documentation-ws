@@ -12,15 +12,12 @@
 import datetime
 import json
 
-from sqlalchemy import (
-    Column,
-    ForeignKey,
-    Integer,
-    MetaData
-    )
+from sqlalchemy import Column
+from sqlalchemy import Integer
+from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
-from esdoc_api.utils import convert
+from esdoc_api.utils.convertor import to_camel_case
 
 
 
@@ -178,7 +175,7 @@ class EntityConvertor(object):
 
         """
         return cls.to_dict(target,
-                           key_formatter=convert.str_to_camel_case,
+                           key_formatter=to_camel_case,
                            json_formatting=True)
 
 
@@ -187,7 +184,7 @@ class EntityConvertor(object):
         """Returns a json representation.
 
         """
-        as_dict = cls.to_dict(target, convert.str_to_camel_case)
+        as_dict = cls.to_dict(target, to_camel_case)
 
         return unicode(JSONEncoder().encode(as_dict))
 

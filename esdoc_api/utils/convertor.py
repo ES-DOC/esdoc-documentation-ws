@@ -176,6 +176,7 @@ def to_camel_case(target, separator=_DEFAULT_SEPARATOR):
         elif len(text):
             result += text[0].lower()
             result += text[1:]
+
     return result
 
 
@@ -227,3 +228,24 @@ def now_to_timestamp(offset=0):
     ts = time.strftime('%Y%m%d%H%M%S', localtime) + milliseconds
 
     return int(ts) + offset
+
+
+class _JSONEncoder(json.JSONEncoder):
+    """Extends json encoder so as to handle extended types.
+
+    """
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.isoformat().replace('T', ' ')
+        elif isinstance(obj, datetime.date):
+            return obj.isoformat()
+        elif isinstance(obj, datetime.time):
+            return obj.isoformat()
+        elif isinstance(obj, uuid.UUID):
+            return str(obj)
+        else:
+            raise TypeError(repr(obj) + " is not JSON serializable")
+
+
+# Expose encoder for use elsewhere.
+JSONEncoder  = _JSONEncoder

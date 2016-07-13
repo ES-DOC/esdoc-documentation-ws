@@ -17,13 +17,13 @@ import pyesdoc
 
 from esdoc_api import handlers
 from esdoc_api.utils import config
-from esdoc_api.utils import convert
-from esdoc_api.utils.runtime import log_api as log
+from esdoc_api.utils import convertor
+from esdoc_api.utils.logger import log_web as log
 
 
 
 # Ensure that tornado will encode json correctly (i.e. handle dates/UUID's).
-json._default_encoder = convert.JSONEncoder()
+json._default_encoder = convertor.JSONEncoder()
 
 
 def _get_endpoints():

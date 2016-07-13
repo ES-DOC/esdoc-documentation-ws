@@ -9,12 +9,11 @@
 
 """
 # -*- coding: utf-8 -*-
-from esdoc_api.db.index import execute_cmip5
-from esdoc_api.db.index import execute_core
 from esdoc_api.db import dao
 from esdoc_api.db import models
-from esdoc_api.db import session
-from esdoc_api.utils import runtime as rt
+from esdoc_api.db.index import execute_cmip5
+from esdoc_api.db.index import execute_core
+from esdoc_api.utils import logger
 
 
 
@@ -25,7 +24,7 @@ _MODEL_TYPES = (
     )
 
 # Set of indexers keyed by project.
-_indexers = {
+_INDEXERS = {
     'cmip5': execute_cmip5
 }
 
@@ -34,7 +33,7 @@ def _log(msg):
     """Writes a log message.
 
     """
-    rt.log("INDEXING :: {0} ...".format(msg))
+    logger.log("INDEXING :: {0} ...".format(msg))
 
 
 def _log_stats():
@@ -66,7 +65,7 @@ def do(reset=False):
         _reset()
 
     _log("building new facets")
-    for indexer in [execute_core] + _indexers.values():
+    for indexer in [execute_core] + _INDEXERS.values():
         indexer.execute()
 
     _log("logging stats")

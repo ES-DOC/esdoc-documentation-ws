@@ -11,7 +11,7 @@
 """
 import os
 
-from esdoc_api.utils import convert
+from esdoc_api.utils import convertor
 
 
 
@@ -21,6 +21,6 @@ def get_data(typeof, key_formatter=None):
 	"""
 	fpath = os.path.join(os.path.dirname(__file__), typeof)
 	fpath = "{}.json".format(fpath)
-	data = convert.json_file_to_dict(fpath, key_formatter)
+	data = convertor.json_file_to_dict(fpath, key_formatter)
 
-	return data[convert.str_to_camel_case(typeof)]
+	return data[convertor.to_camel_case(typeof)]

@@ -11,7 +11,7 @@
 """
 import os
 
-from esdoc_api.utils.convert import json_file_to_namedtuple
+from esdoc_api.utils.convertor import json_file_to_namedtuple
 
 
 

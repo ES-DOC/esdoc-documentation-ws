@@ -28,7 +28,6 @@ from esdoc_api.db.models.facets import NODE_TYPE_MODEL_COMPONENT_PROPERTY
 from esdoc_api.db.models.facets import NODE_TYPE_MODEL_COMPONENT_PROPERTY_VALUE
 from esdoc_api.db.models.facets import NODE_TYPE_MODEL_PROPERTY
 from esdoc_api.db.models.facets import NODE_TYPE_MODEL_PROPERTY_VALUE
-from esdoc_api.utils import runtime as rt
 
 
 
@@ -57,6 +56,41 @@ to_json = EntityConvertor.to_json
 to_string = EntityConvertor.to_string
 
 
+def _assert_iter(collection, msg=None):
+    """Asserts that an item is a an iterable.
+
+    :param collection: A collection that should be iterable.
+    :type collection: iterable
+
+    :param msg: Error message to output if assertion fails.
+    :type msg: str or None
+
+    """
+    try:
+        iter(collection)
+    except TypeError:
+        raise Exception("Collection is not iterable." if msg is None else msg)
+
+
+def _assert_iter_item(collection, item, msg=None):
+    """Asserts that an item is a member of passed collection.
+
+    :param collection: A collection that should contain the specified item.
+    :type collection: iterable
+
+    :param item: An item that should be a collection member.
+    :type item: object
+
+    :param msg: Error message to output if assertion fails.
+    :type msg: str or None
+
+    """
+    _assert_iter(collection)
+    if not item in collection:
+        msg = "Item not found within collection :: {0}.".format(item)
+        raise Exception(msg)
+
+
 # Runtime support functions.
 def assert_type(mtype):
     """Asserts that passed model type is supported.
@@ -69,7 +103,7 @@ def assert_type(mtype):
         """Returns error message."""
         return "Unsupported model type ({0}).".format(mtype.__class__.__name__)
 
-    rt.assert_iter_item(SUPPORTED_TYPES, mtype, get_msg)
+    _assert_iter_item(SUPPORTED_TYPES, mtype, get_msg)
 
 
 def assert_instance(instance):

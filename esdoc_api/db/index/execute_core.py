@@ -13,7 +13,7 @@ from esdoc_api import constants
 from esdoc_api.db import dao
 from esdoc_api.db import models
 from esdoc_api.db import utils
-from esdoc_api.utils import runtime as rt
+from esdoc_api.utils import logger
 
 
 
@@ -47,5 +47,5 @@ def execute():
         (_init, "initializing context"),
         (_index, "building indexes"),
         ):
-        rt.log("INDEXING :: CORE :: {0}".format(msg))
+        logger.log("INDEXING :: CORE :: {0}".format(msg))
         func(ctx)

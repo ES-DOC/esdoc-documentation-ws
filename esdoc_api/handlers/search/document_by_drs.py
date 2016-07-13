@@ -51,7 +51,7 @@ def validate_params(handler):
     :param object: Search criteria.
 
     """
-    if len(handler.drs_path.split(_DRS_SEPERATOR)) ==  1:
+    if len(handler.drs_path.split(_DRS_SEPERATOR)) == 1:
         raise ValueError("A DRS path must contain at least one element")
     if len(handler.drs_path.split(_DRS_SEPERATOR)) > _MAX_DRS_KEYS:
         msg = "A DRS path must consist of a maximum {0} keys"
@@ -62,10 +62,8 @@ def _get_drs_keys(project, drs_path):
     """Returns drs keys defined in a path.
 
     """
-    def is_valid(key):
-        return len(key) and key.upper() != project.upper()
-
-    return filter(is_valid, drs_path.split(_DRS_SEPERATOR))
+    return [i for i in drs_path.split(_DRS_SEPERATOR)
+            if len(i) and i.upper() != project.upper()]
 
 
 def do_search(handler):

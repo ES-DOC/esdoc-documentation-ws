@@ -21,7 +21,7 @@ from esdoc_api.db.ingest import set_primary
 from esdoc_api.db.ingest import set_sub_project
 from esdoc_api.db.ingest import validate
 from esdoc_api.utils import config
-from esdoc_api.utils import runtime as rt
+from esdoc_api.utils import logger
 
 
 
@@ -92,6 +92,13 @@ def _set_document(ctx):
     ctx.doc = ctx.file.get_document()
 
 
+def _log(msg):
+    """Writes a log message.
+
+    """
+    logger.log("INDEXING :: {0} ...".format(msg))
+
+
 def _log_error(ctx):
     """Write processing error message to standard output.
 
@@ -102,7 +109,7 @@ def _log_error(ctx):
 
     msg = "INGEST ERROR :: {0} :: {1} :: {2}"
     msg = msg.format(ctx, type(ctx.error), ctx.error)
-    rt.log(msg)
+    logger.log(msg)
 
 
 def _write_error(ctx):
@@ -160,6 +167,19 @@ def _yield_documents(cfg):
                 break
 
 
+def _invoke(ctx, tasks, error_tasks):
+    """Invokes a set of actions.
+
+    """
+    try:
+        for task in tasks:
+            task(ctx)
+    except Exception as exc:
+        ctx.error = exc
+        for task in error_tasks:
+            task(ctx)
+
+
 def _process(ctx):
     """Ingests a document.
 
@@ -180,7 +200,7 @@ def _process(ctx):
         _write_error
         )
 
-    rt.invoke(ctx, tasks, error_tasks)
+    _invoke(ctx, tasks, error_tasks)
 
 
 def main():

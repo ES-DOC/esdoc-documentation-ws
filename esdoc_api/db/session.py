@@ -19,22 +19,6 @@ from esdoc_api.db import models
 
 
 
-# Module exports.
-__all__ = [
-    'assert_is_live',
-    'commit',
-    'create_repo',
-    'do_ingest',
-    'delete',
-    'end',
-    'insert',
-    'query',
-    'QUERY_LIMIT',
-    'rollback',
-    'start',
-]
-
-
 # Default query limit to apply.
 QUERY_LIMIT = 200
 

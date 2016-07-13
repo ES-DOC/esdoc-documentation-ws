@@ -13,7 +13,7 @@ from esdoc_api.db import dao
 from esdoc_api.db import utils
 from esdoc_api.db.index.cim_v1.model_component.indexer import index as index_model
 from esdoc_api.db.index.cim_v1.numerical_experiment.indexer import index as index_experiment
-from esdoc_api.utils import runtime as rt
+from esdoc_api.utils import logger
 
 
 
@@ -107,5 +107,5 @@ def execute():
         (_load_docs, "loading documents"),
         (_index, "building indexes"),
         ):
-        rt.log("INDEXING :: {0} :: {1}".format(_PROJECT.upper(), msg))
+        logger.log("INDEXING :: {0} :: {1}".format(_PROJECT.upper(), msg))
         func(ctx)

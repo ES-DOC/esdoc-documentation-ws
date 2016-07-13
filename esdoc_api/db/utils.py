@@ -16,7 +16,7 @@ import pyesdoc
 from esdoc_api.db import dao
 from esdoc_api.db import models
 from esdoc_api.db import session
-from esdoc_api.utils import runtime as rt
+from esdoc_api.utils import logger
 
 
 
@@ -64,7 +64,7 @@ def create_node(type_of, field, project='cmip5', sort_text=None):
         session.rollback()
         node = dao.get_node(project, type_of, field)
     else:
-        rt.log("INDEXING :: CORE :: created node {0}".format(node))
+        logger.log("INDEXING :: CORE :: created node {0}".format(node))
 
     # Set sort value (if necessary).
     if sort_text is not None:
@@ -88,7 +88,7 @@ def create_node_field(text):
         session.rollback()
         field = dao.get_node_field(text)
     else:
-        rt.log("INDEXING :: CORE :: created field {0}".format(field))
+        logger.log("INDEXING :: CORE :: created field {0}".format(field))
 
     return field
 
@@ -124,7 +124,7 @@ def create_node_combination(type_of, nodeset, project='cmip5'):
         session.rollback()
         combo = dao.get_node_combination(project, type_of, vector)
     else:
-        rt.log("INDEXING :: CORE :: created combination {0}".format(combo))
+        logger.log("INDEXING :: CORE :: created combination {0}".format(combo))
 
     return combo
 

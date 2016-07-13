@@ -12,8 +12,8 @@ import inspect
 
 import sqlalchemy as sa
 
-from esdoc_api.db import models, session
-from esdoc_api.utils import runtime as rt
+from esdoc_api.db import models
+from esdoc_api.db import session
 
 
 
@@ -189,6 +189,18 @@ def get_count(etype, efilter=None):
     return qry.count()
 
 
+def _is_iterable(target):
+    """Returns a flag indicating whether passed variable is iterable.
+
+    """
+    try:
+        iter(target)
+    except TypeError:
+        return False
+    else:
+        return True
+
+
 def insert(target):
     """Marks target instance(s) for insertion.
 
@@ -196,7 +208,7 @@ def insert(target):
     :type target: Sub-class of db.models.Entity or list
 
     """
-    if rt.is_iterable(target):
+    if _is_iterable(target):
         models.assert_iter(target)
         for target in target:
             session.insert(target)
@@ -212,7 +224,7 @@ def delete(target):
     :type target: Sub-class of db.models.Entity or list
 
     """
-    if rt.is_iterable(target):
+    if _is_iterable(target):
         models.assert_iter(target)
         for target in target:
             session.delete(target)
