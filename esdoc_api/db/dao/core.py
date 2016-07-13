@@ -12,7 +12,6 @@ import inspect
 
 import sqlalchemy as sa
 
-from esdoc_api.db import models
 from esdoc_api.db import session
 
 
@@ -41,50 +40,7 @@ def sort(etype, collection):
     :rtype: list
 
     """
-    # Defensive programming.
-    models.assert_type(etype)
-
     return [] if collection is None else etype.get_sorted(collection)
-
-
-def _get_active(etype, is_active_state):
-    """Gets instances filtered by their IsActive state.
-
-    :param etype: A supported entity type.
-    :param bool is_active_state: Entity IsActive field value.
-
-    :returns: Entity collection.
-    :rtype: list
-
-    """
-    # Defensive programming.
-    models.assert_type(etype)
-
-    return get_by_facet(etype, etype.IsActive == is_active_state, get_iterable=True)
-
-
-def get_active(etype):
-    """Gets all active instances.
-
-    :param class etype: A supported entity type.
-
-    :returns: Active entity collection.
-    :rtype: list
-
-    """
-    return _get_active(etype, True)
-
-
-def get_inactive(etype):
-    """Gets all inactive instances.
-
-    :param class etype: A supported entity type.
-
-    :returns: Inactive entity collection.
-    :rtype: list
-
-    """
-    return _get_active(etype, False)
 
 
 def get_all(etype):
@@ -116,9 +72,6 @@ def get_by_facet(
     :rtype: Sub-class of db.models.Entity
 
     """
-    # Defensive programming.
-    models.assert_type(etype)
-
     qry = session.query(etype)
     if efilter is not None:
         if inspect.isfunction(efilter):
@@ -143,64 +96,6 @@ def get_by_facet(
         return qry.all()
 
 
-def get_by_id(etype, eid):
-    """Gets entity instance by id.
-
-    :param etype: A supported entity type.
-    :param int id: ID of entity.
-
-    :returns: Entity with matching ID.
-    :rtype: Sub-class of db.models.Entity
-
-    """
-    return get_by_facet(etype, etype.id == eid)
-
-
-def get_by_name(etype, name):
-    """Gets an entity instance by it's name.
-
-    :param class etype: A supported entity type.
-    :param str name: Name of entity.
-
-    :returns: Entity with matching name.
-    :rtype: Sub-class of db.models.Entity
-
-    """
-    return get_by_facet(etype, sa.func.upper(etype.name) == name.upper())
-
-
-def get_count(etype, efilter=None):
-    """Gets count of entity instances.
-
-    :param class etype: A supported entity type.
-    :param function efilter: A filter function to be applied.
-
-    :returns: Entity collection count.
-    :rtype: int
-
-    """
-    # Defensive programming.
-    models.assert_type(etype)
-
-    qry = session.query(etype)
-    if efilter:
-        qry = qry.filter(efilter)
-
-    return qry.count()
-
-
-def _is_iterable(target):
-    """Returns a flag indicating whether passed variable is iterable.
-
-    """
-    try:
-        iter(target)
-    except TypeError:
-        return False
-    else:
-        return True
-
-
 def insert(target):
     """Marks target instance(s) for insertion.
 
@@ -208,12 +103,12 @@ def insert(target):
     :type target: Sub-class of db.models.Entity or list
 
     """
-    if _is_iterable(target):
-        models.assert_iter(target)
-        for target in target:
-            session.insert(target)
-    else:
-        models.assert_instance(target)
+    try:
+        iter(target)
+    except TypeError:
+        target = [target]
+
+    for target in target:
         session.insert(target)
 
 
@@ -224,12 +119,12 @@ def delete(target):
     :type target: Sub-class of db.models.Entity or list
 
     """
-    if _is_iterable(target):
-        models.assert_iter(target)
-        for target in target:
-            session.delete(target)
-    else:
-        models.assert_instance(target)
+    try:
+        iter(target)
+    except TypeError:
+        target = [target]
+
+    for target in target:
         session.delete(target)
 
 
@@ -240,9 +135,6 @@ def delete_by_type(etype, callback=None):
     :param function callback: Pointer to a function that will perform callback.
 
     """
-    # Defensive programming.
-    models.assert_type(etype)
-
     if callback is None:
         delete_by_facet(etype, etype.id > 0)
     else:
@@ -257,9 +149,6 @@ def delete_by_facet(etype, efilter):
     :param expression|func efilter: Filter to apply.
 
     """
-    # Defensive programming.
-    models.assert_type(etype)
-
     qry = session.query(etype)
     if inspect.isfunction(efilter):
         efilter(qry)

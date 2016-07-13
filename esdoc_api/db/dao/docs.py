@@ -8,13 +8,10 @@
 
 
 """
-import sqlalchemy as sa
-
 import pyesdoc
 
 from esdoc_api import constants
 from esdoc_api.db import session
-from esdoc_api.db.dao.core import delete_by_type
 from esdoc_api.db.dao.core import delete_by_id
 from esdoc_api.db.dao.core import delete_by_facet
 from esdoc_api.db.dao.core import like_filter
@@ -48,25 +45,6 @@ def get_document(uid, version, project=None):
         qry = qry.filter(Document.version == int(version))
 
     return qry.all() if version == constants.DOCUMENT_VERSION_ALL else qry.first()
-
-
-def get_document_counts():
-    """Returns document counts.
-
-    :returns: List of counts over document types.
-    :rtype: list
-
-    """
-    qry = session.query(sa.func.count(Document.institute),
-                        Document.project,
-                        Document.institute,
-                        Document.type)
-    qry = qry.group_by(Document.project)
-    qry = qry.group_by(Document.institute)
-    qry = qry.group_by(Document.type)
-    qry = qry.order_by(Document.type.desc())
-
-    return qry.all()
 
 
 def get_document_by_name(
@@ -326,10 +304,3 @@ def delete_document(document_id):
     delete_document_external_ids(document_id)
     delete_document_sub_project(document_id)
     delete_by_id(Document, document_id)
-
-
-def delete_all_documents():
-    """Deletes all documents.
-
-    """
-    delete_by_type(Document, delete_document)

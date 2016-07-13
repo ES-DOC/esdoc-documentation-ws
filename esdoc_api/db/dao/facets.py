@@ -156,18 +156,3 @@ def get_node_combination(project, type_of, vector):
     qry = qry.filter(NodeCombination.combination == vector)
 
     return qry.first()
-
-
-def get_node_combination_set(project):
-    """Returns a facet combination set.
-
-    :param str project: Project with which a facet combination set is associated.
-
-    :returns: A facet combination set.
-    :rtype: list
-
-    """
-    qry = session.query(NodeCombination)
-    qry = qry.filter(NodeCombination.project == project)
-
-    return qry.all()

@@ -19,38 +19,6 @@ from esdoc_api.db.models import DocumentSubProject
 
 
 
-def get_project_institute_counts():
-    """Returns institute counts grouped by project.
-
-    :returns: List of counts over a project's institutes.
-    :rtype: list
-
-    """
-    qry = session.query(sa.func.count(Document.institute),
-                        Document.project,
-                        Document.institute)
-    qry = qry.group_by(Document.project)
-    qry = qry.group_by(Document.institute)
-
-    return qry.all()
-
-
-def get_project_document_type_counts():
-    """Returns document type counts grouped by project.
-
-    :returns: List of counts over a project's document types.
-    :rtype: list
-
-    """
-    qry = session.query(sa.func.count(Document.type),
-                        Document.project,
-                        Document.type)
-    qry = qry.group_by(Document.project)
-    qry = qry.group_by(Document.type)
-
-    return qry.all()
-
-
 def get_document_type_count(project, typeof):
     """Returns count over a project's document type.
 
