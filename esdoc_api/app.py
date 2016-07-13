@@ -37,13 +37,12 @@ def _get_endpoints():
         (r'/2/document/search', handlers.search.DocumentSearchRequestHandler),
         (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
         (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),
-        (r'/', handlers.ops.HeartbeatRequestHandler),
-        (r'/heartbeat', handlers.ops.HeartbeatRequestHandler),
+        (r'/', handlers.ops.HeartbeatRequestHandler)
     }
 
     log("Endpoint to handler mappings:")
-    for url, handler in endpoints:
-        log("{0} ---> {1}".format(url, handler))
+    for url, handler in sorted(endpoints, key=lambda i: i[0]):
+        log("{0} ---> {1}".format(url, str(handler).split(".")[-1][0:-2]))
 
     return endpoints
 

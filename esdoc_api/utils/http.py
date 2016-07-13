@@ -13,9 +13,9 @@ import json
 
 import tornado
 
-from esdoc_api.utils import logger
 from esdoc_api.utils.convertor import to_namedtuple
 from esdoc_api.utils.http_invoker import execute as process_request
+from esdoc_api.utils.http_logger import log
 from esdoc_api.utils.http_validator import is_request_valid
 
 
@@ -28,6 +28,13 @@ class HTTPRequestHandler(tornado.web.RequestHandler):
     """A web service request handler.
 
     """
+    def __str__(self):
+        """Instance string representation.
+
+        """
+        return str(self.__class__).split(".")[-1][0:-2]
+
+
     def decode_json_body(self, as_namedtuple=True):
         """Decodes request body JSON string.
 
@@ -55,9 +62,7 @@ class HTTPRequestHandler(tornado.web.RequestHandler):
 
         """
         # Log all requests.
-        msg = "[{0}]: executing --> {1}"
-        msg = msg.format(id(self), self)
-        logger.log_web(msg)
+        log(self, "executing")
 
         # Validate & process request.
         if schema is None or is_request_valid(self, schema):

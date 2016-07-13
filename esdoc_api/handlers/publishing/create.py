@@ -10,13 +10,12 @@
 
 
 """
-import tornado
-
 import pyesdoc
 
 from esdoc_api import db
-from esdoc_api import utils
+from esdoc_api.exceptions import API_Exception
 from esdoc_api.utils import config
+from esdoc_api.utils.http import HTTPRequestHandler
 
 
 
@@ -31,76 +30,71 @@ _HTTP_HEADER_CONTENT_TYPE = "Content-Type"
 
 
 
-class DocumentCreateRequestHandler(tornado.web.RequestHandler):
+class DocumentCreateRequestHandler(HTTPRequestHandler):
     """Publishing create document request handler.
 
     """
-    def _validate_request_headers(self):
-        """Validates request headers.
-
-        """
-        if _HTTP_HEADER_CONTENT_TYPE not in self.request.headers:
-            raise ValueError("Content-Type HTTP header is required")
-
-        header = self.request.headers[_HTTP_HEADER_CONTENT_TYPE]
-        if not header in [_CONTENT_TYPE_JSON]:
-            raise ValueError("Content-Type is unsupported")
-
-    def _validate_request_payload(self):
-        """Validates request payload.
-
-        """
-        # Decode document.
-        doc = pyesdoc.decode(self.request.body, 'json')
-        if not doc:
-            raise utils.h.API_Exception("Document could not be decoded.")
-
-        # Minimally validate document.
-        if not pyesdoc.is_valid(doc):
-        	raise utils.h.API_Exception("Document is invalid.")
-
-        # Validate document version.
-        if doc.meta.version <= 0:
-        	raise utils.h.API_Exception("Document version is invalid.")
-
-        # Validation passed therefore cache decoded payload.
-        self.doc = doc
-
-
-    def _validate_publication_status(self):
-    	"""Validates whether document has not already been published.
-
-        """
-    	if pyesdoc.archive.exists(self.doc.meta.id, self.doc.meta.version):
-        	raise utils.h.API_Exception("Document already published.")
-
-
-    def _write_to_archive(self):
-    	"""Archives document.
-
-        """
-        pyesdoc.archive.write(self.doc)
-
-
-    def _write_to_db(self):
-        """Uploads document to db.
-
-        """
-        db.session.start(config.db)
-        try:
-            db.ingest.ingest_doc(self.doc)
-        finally:
-            db.session.end()
-
-
     def post(self):
         """HTTP POST handler.
 
         """
-        utils.h.invoke(self, (
-            self._validate_request_headers,
-            self._validate_request_payload,
-            self._validate_publication_status,
-            self._write_to_archive,
-            self._write_to_db
-            ))
+        def _validate_request_headers():
+            """Validates request headers.
+
+            """
+            if _HTTP_HEADER_CONTENT_TYPE not in self.request.headers:
+                raise ValueError("Content-Type HTTP header is required")
+
+            header = self.request.headers[_HTTP_HEADER_CONTENT_TYPE]
+            if not header in _CONTENT_TYPE_JSON:
+                raise ValueError("Content-Type is unsupported")
+
+
+        def _validate_request_payload():
+            """Validates request payload.
+
+            """
+            # Decode document.
+            doc = pyesdoc.decode(self.request.body, 'json')
+            if not doc:
+                raise API_Exception("Document could not be decoded.")
+
+            # Minimally validate document.
+            if not pyesdoc.is_valid(doc):
+                raise API_Exception("Document is invalid.")
+
+            # Validate document version.
+            if doc.meta.version <= 0:
+                raise API_Exception("Document version is invalid.")
+
+            # Validation passed therefore cache decoded payload.
+            self.doc = doc
+
+
+        def _validate_publication_status():
+            """Validates whether document has not already been published.
+
+            """
+            if pyesdoc.archive.exists(self.doc.meta.id, self.doc.meta.version):
+                raise API_Exception("Document already published.")
+
+
+        def _ingest():
+            """Ingest document.
+
+            """
+            db.session.start(config.db)
+            try:
+                db.ingest.execute(self.doc)
+            finally:
+                db.session.end()
+
+
+        self.invoke(None, [
+            _validate_request_headers,
+            _validate_request_payload,
+            _validate_publication_status,
+            _ingest
+            ]
+            )
+

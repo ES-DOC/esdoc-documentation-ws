@@ -112,13 +112,13 @@ def _write_success(handler):
         output['status'] = 0
 
     # Log begin.
-    logger.log(handler, "response writing begins --> {}".format(handler))
+    logger.log(handler, "{} --> response writing begins".format(handler))
 
     # Write.
     _WRITERS[encoding](handler, output)
 
     # Log end.
-    logger.log(handler, "response writing ends --> {}".format(handler))
+    logger.log(handler, "{} --> response writing ends".format(handler))
 
 
 def _get_tasks(tasks, defaults):

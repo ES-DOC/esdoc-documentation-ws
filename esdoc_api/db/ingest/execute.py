@@ -50,6 +50,7 @@ class _DocumentProcessingInfo(object):
         """Object constructor.
 
         """
+        self.doc = None
         self.file = file_
         self.error = None
         self.index = index
@@ -59,9 +60,20 @@ class _DocumentProcessingInfo(object):
         """Object representation.
 
         """
-        return "Processing ID = {0} :: File = {1}".format(
-            self.index,
-            self.file.path)
+        if self.file:
+            return "Processing ID = {} :: File = {}".format(
+                self.index,
+                self.file.path
+                )
+        elif self.doc:
+            return "Processing ID = {} :: Doc = {}::{}".format(
+                self.index,
+                self.doc.meta.id,
+                self.doc.meta.version,
+                )
+        else:
+            return "Processing ID = {}".format(self.index)
+
 
     @property
     def folder(self):
@@ -85,10 +97,24 @@ class _DocumentProcessingInfo(object):
         return self.file.source
 
 
+def _write_to_archive(ctx):
+    """Archives document.
+
+    """
+    if ctx.doc is None:
+        return
+
+    folder = pyesdoc.archive.get_folder(ctx.doc.meta.project, ctx.doc.meta.source, True)
+    fpath = pyesdoc.write(ctx.doc, folder.path)
+
+
 def _set_document(ctx):
     """Sets document to be processed.
 
     """
+    if ctx.doc is not None:
+        return
+
     ctx.doc = ctx.file.get_document()
 
 
@@ -160,9 +186,9 @@ def _yield_documents(cfg):
     yielded = 0
     for project in cfg.projects.split(","):
         project = project.strip().lower()
-        for file_ in archive.yield_files(project, "*", None):
+        for fwrapper in archive.yield_files(project, "*", None):
             yielded += 1
-            yield _DocumentProcessingInfo(file_, yielded)
+            yield _DocumentProcessingInfo(fwrapper, yielded)
             if cfg.throttle and cfg.throttle == yielded:
                 break
 
@@ -185,6 +211,7 @@ def _process(ctx):
 
     """
     tasks = (
+        _write_to_archive,
         _set_document,
         validate.execute,
         set_primary.execute,
@@ -203,8 +230,8 @@ def _process(ctx):
     _invoke(ctx, tasks, error_tasks)
 
 
-def execute():
-    """Ingests files from archive.
+def _process_all():
+    """Ingests all files from archive.
 
     """
     archive.init()
@@ -215,3 +242,15 @@ def execute():
     else:
         for ctx in _yield_documents(config.ingestion):
             _process(ctx)
+
+
+def execute(doc=None):
+    """Ingests from archive.
+
+    """
+    if doc is None:
+        _process_all()
+    else:
+        ctx = _DocumentProcessingInfo(None, 1)
+        ctx.doc = doc
+        _process(ctx)
