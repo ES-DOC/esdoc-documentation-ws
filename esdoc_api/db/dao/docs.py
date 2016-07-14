@@ -201,31 +201,14 @@ def get_document_summaries(
 
     # Set query.
     qry = session.query(
-        Document.description,
         Document.experiment,
-        Document.field_01,
-        Document.field_02,
-        Document.field_03,
-        Document.field_04,
-        Document.field_05,
-        Document.field_06,
-        Document.field_07,
-        Document.field_08,
-        Document.id,
-        Document.ingest_date,
         Document.institute,
-        Document.is_latest,
-        Document.language,
         Document.long_name,
         Document.model,
         Document.name,
-        Document.project,
         Document.short_name,
-        Document.source,
-        Document.type,
         Document.uid,
         Document.version,
-        Document.sub_projects,
         Document.alternative_name
         )
 

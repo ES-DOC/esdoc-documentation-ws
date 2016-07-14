@@ -21,7 +21,7 @@ import pyesdoc.ontologies.cim as cim
 from . import test_utils as tu
 
 
-# Cache of published document.
+# Document cache.
 _DOCS = []
 
 # Set of target urls.
@@ -37,17 +37,19 @@ def _get_test_document():
 	"""Returns a test document.
 
 	"""
-	doc = pyesdoc.create(cim.v2.NumericalExperiment, project="test-project", source="unit-test")
+	doc = pyesdoc.create(
+		cim.v2.NumericalExperiment, project="test-project", source="unit-test")
 	doc.canonical_name = "anexp"
 	doc.name = "an experiment"
-	doc.long_name = "another bloody experiment"
+	doc.long_name = "yet another experiment"
 	doc.rationale = "to state the bleeding obvious"
 	doc.meta.id = unicode(doc.meta.id)
 	doc.meta.version += 1
-	doc.required_period = pyesdoc.create(cim.v2.TemporalConstraint, project="test-project", source="unit-test")
+	doc.required_period = pyesdoc.create(
+		cim.v2.TemporalConstraint, project="test-project", source="unit-test")
 	doc.required_period.is_conformance_requested = False
 	doc.required_period.meta.id = unicode(doc.required_period.meta.id)
-	doc.required_period.name = "too bloody long"
+	doc.required_period.name = "too long"
 
 	_DOCS.append(doc)
 
@@ -70,25 +72,22 @@ def test_publish():
 	print response
 
 
-
 def test_retrieve():
 	"""Tests retrieving a previously published document.
 
 	"""
-	tu.assert_str("XXX", "XXX")
+	pass
 
 
 def test_republish():
 	"""Tests republishing a document.
 
 	"""
-	tu.assert_str("XXX", "XXX")
+	pass
 
 
 def test_unpublish():
 	"""Tests unpublishing a document.
 
 	"""
-	tu.assert_str("XXX", "XXX")
-
-
+	pass
