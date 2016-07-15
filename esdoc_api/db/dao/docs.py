@@ -68,7 +68,7 @@ def get_document_by_name(
     """
     qry = session.query(Document)
     qry = text_filter(qry, Document.project, project)
-    qry = text_filter(qry, Document.type, typeof)
+    qry = text_filter(qry, Document.typeof, typeof)
     qry = text_filter(qry, Document.name, name)
     if institute:
         qry = text_filter(qry, Document.institute, institute)
@@ -91,7 +91,7 @@ def get_document_by_type(project, typeof, latest_only=True):
     """
     qry = session.query(Document)
     qry = text_filter(qry, Document.project, project)
-    qry = text_filter(qry, Document.type, typeof)
+    qry = text_filter(qry, Document.typeof, typeof)
     if latest_only == True:
         qry = qry.filter(Document.is_latest == True)
 
@@ -216,7 +216,7 @@ def get_document_summaries(
     qry = text_filter(qry, Document.project, project)
     qry = qry.filter(Document.canonical_name != u"")
     if typeof != constants.DOCUMENT_TYPE_ALL:
-        qry = text_filter(qry, Document.type, typeof)
+        qry = text_filter(qry, Document.typeof, typeof)
     if version == constants.DOCUMENT_VERSION_LATEST:
         qry = qry.filter(Document.is_latest == True)
     if experiment:

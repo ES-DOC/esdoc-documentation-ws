@@ -29,10 +29,10 @@ def get_document_type_count(project, typeof):
     :rtype: list
 
     """
-    qry = session.query(sa.func.count(Document.type))
+    qry = session.query(sa.func.count(Document.typeof))
     qry = text_filter(qry, Document.project, project)
-    qry = text_filter(qry, Document.type, typeof)
-    qry = qry.group_by(Document.type)
+    qry = text_filter(qry, Document.typeof, typeof)
+    qry = qry.group_by(Document.typeof)
 
     counts = qry.all()
 
@@ -48,10 +48,10 @@ def get_document_types():
     """
     qry = session.query(
         Document.project,
-        Document.type
+        Document.typeof
         )
-    qry = qry.filter(Document.type != 'None')
-    qry = qry.filter(Document.type is not None)
+    qry = qry.filter(Document.typeof != 'None')
+    qry = qry.filter(Document.typeof is not None)
     qry = qry.distinct()
 
     return qry.all()

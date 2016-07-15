@@ -42,7 +42,7 @@ def decode_request(handler):
     """
     handler.institute = handler.get_argument(_PARAM_INSTITUTE)
     handler.name = handler.get_argument(_PARAM_NAME)
-    handler.type = handler.get_argument(_PARAM_TYPE)
+    handler.typeof = handler.get_argument(_PARAM_TYPE)
 
 
 def do_search(handler):
@@ -55,6 +55,6 @@ def do_search(handler):
 
     """
     yield db.dao.get_document_by_name(handler.project,
-                                      handler.type,
+                                      handler.typeof,
                                       handler.name,
                                       handler.institute)

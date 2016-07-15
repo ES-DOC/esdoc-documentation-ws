@@ -47,19 +47,17 @@ class Document(Entity):
     project = Column(Unicode(63))
     sub_projects = Column(Unicode)
     institute = Column(Unicode(63))
-    type = Column(Unicode(255), nullable=False)
-    name = Column(Unicode(255), nullable=False)
+    typeof = Column(Unicode(255), nullable=False)
     uid = Column(Unicode(63), nullable=False, default=uuid.uuid4())
     version = Column(Integer, nullable=False, default=1)
     ingest_date = Column(DateTime, default=datetime.datetime.now())
     is_latest = Column(Boolean, nullable=False, default=False)
-
     # .. summary fields
+    name = Column(Unicode(255), nullable=False)
     canonical_name = Column(Unicode(1023))
     alternative_name = Column(Unicode(255))
     long_name = Column(Unicode(1023))
     description = Column(Unicode(1023))
-
     # .. inter-document fields
     model = Column(Unicode(1023))
     experiment = Column(Unicode(1023))
@@ -156,4 +154,3 @@ class DocumentSubProject(Entity):
     # Field set.
     project = Column(Unicode(63), nullable=False)
     sub_project = Column(Unicode(63), nullable=False)
-
