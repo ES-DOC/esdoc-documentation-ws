@@ -236,7 +236,6 @@ def _process_all():
     """
     archive.init()
     archive.delete_error_files()
-    print config.ingestion
     if config.ingestion.parallelize:
         pool = Pool()
         pool.map(_process, _yield_documents(config.ingestion))

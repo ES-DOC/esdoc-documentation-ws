@@ -125,9 +125,6 @@ def json_file_to_namedtuple(fpath, key_convertor=None):
     :rtype: namedtuple
 
     """
-    as_dict = json_file_to_dict(fpath, key_convertor)
-    print as_dict
-    print to_namedtuple(as_dict)
     return to_namedtuple(json_file_to_dict(fpath, key_convertor))
 
 
