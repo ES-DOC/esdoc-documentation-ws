@@ -52,8 +52,7 @@ def to_dict(data, key_convertor=None):
 
     # Dictionaries.
     elif isinstance(data, collections.Mapping):
-        return {k if key_convertor is None else key_convertor(k):
-                to_dict(v, key_convertor) for k, v in data.iteritems()}
+        return {key_convertor(k) if key_convertor else k: to_dict(v, key_convertor) for k, v in data.iteritems()}
 
     # Collections.
     elif isinstance(data, collections.Iterable):
@@ -79,6 +78,9 @@ def to_namedtuple(obj, key_convertor=None):
 
     """
     obj = to_dict(obj, key_convertor)
+    for k, v in obj.iteritems():
+        if isinstance(v, dict):
+            obj[k] = to_namedtuple(v, key_convertor)
     kls = collections.namedtuple('_Class', obj.keys())
 
     return kls(**obj)
@@ -123,6 +125,9 @@ def json_file_to_namedtuple(fpath, key_convertor=None):
     :rtype: namedtuple
 
     """
+    as_dict = json_file_to_dict(fpath, key_convertor)
+    print as_dict
+    print to_namedtuple(as_dict)
     return to_namedtuple(json_file_to_dict(fpath, key_convertor))
 
 

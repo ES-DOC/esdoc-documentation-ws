@@ -18,7 +18,7 @@ from esdoc_api.db.models import Document
 from esdoc_api.db.models import DocumentDRS
 from esdoc_api.db.models import DocumentExternalID
 from esdoc_api.db.models import DocumentSubProject
-from esdoc_api.utils import runtime as rt
+from esdoc_api.utils import logger
 
 
 # Define command line options.
@@ -82,9 +82,8 @@ def _main(project_code, source):
     try:
         _execute(project_code, source)
     except Exception as err:
-    	print err
         session.rollback()
-        rt.log_db_error(err)
+        logger.log_db_error(err)
     else:
         session.commit()
     finally:
