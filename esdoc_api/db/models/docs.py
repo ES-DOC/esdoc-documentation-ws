@@ -46,7 +46,6 @@ class Document(Entity):
     # .. core fields
     project = Column(Unicode(63))
     sub_projects = Column(Unicode)
-    source = Column(Unicode(255))
     institute = Column(Unicode(63))
     type = Column(Unicode(255), nullable=False)
     name = Column(Unicode(255), nullable=False)
@@ -56,19 +55,10 @@ class Document(Entity):
     is_latest = Column(Boolean, nullable=False, default=False)
 
     # .. summary fields
-    language = Column(Unicode(2))
-    short_name = Column(Unicode(1023))
+    canonical_name = Column(Unicode(1023))
     alternative_name = Column(Unicode(255))
     long_name = Column(Unicode(1023))
     description = Column(Unicode(1023))
-    field_01 = Column(Unicode(1023))
-    field_02 = Column(Unicode(1023))
-    field_03 = Column(Unicode(1023))
-    field_04 = Column(Unicode(1023))
-    field_05 = Column(Unicode(1023))
-    field_06 = Column(Unicode(1023))
-    field_07 = Column(Unicode(1023))
-    field_08 = Column(Unicode(1023))
 
     # .. inter-document fields
     model = Column(Unicode(1023))
@@ -89,7 +79,7 @@ class Document(Entity):
         """Gets default sort key.
 
         """
-        return lambda instance: instance.short_name if instance.short_name else instance.uid + str(instance.version)
+        return lambda instance: instance.canonical_name if instance.canonical_name else instance.uid + str(instance.version)
 
 
 class DocumentDRS(Entity):

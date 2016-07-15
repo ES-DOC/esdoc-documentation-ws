@@ -45,18 +45,19 @@ def execute(ctx):
     instance = models.Document()
     instance.description = str_to_unicode(ctx.doc.ext.description)
     instance.institute = ctx.doc.meta.institute
-    instance.language = pyesdoc.DEFAULT_LANGUAGE
     instance.name = unicode(ctx.doc.ext.display_name)
     instance.project = ctx.doc.meta.project.strip().lower()
     if ctx.doc.meta.sub_projects:
         instance.sub_projects = ",".join([u"<{}>".format(i.lower()) for i in sorted(ctx.doc.meta.sub_projects)])
-    instance.source = unicode(ctx.doc.meta.source_key)
     instance.type = unicode(ctx.doc.meta.type)
     instance.uid = unicode(ctx.doc.meta.id)
     instance.version = ctx.doc.meta.version
 
     # Set alternative name.
-    if hasattr(ctx.doc, "alternative_names"):
+    if hasattr(ctx.doc, "alternative_name"):
+        if ctx.doc.alternative_name:
+            instance.alternative_name = ctx.doc.alternative_name
+    elif hasattr(ctx.doc, "alternative_names"):
         if ctx.doc.alternative_names:
             instance.alternative_name = ctx.doc.alternative_names[0]
 
@@ -68,8 +69,6 @@ def execute(ctx):
             instance.short_name = field
         elif index == 1:
             instance.long_name = field
-        else:
-            setattr(instance, 'field_0' + str(index - 1), field)
 
     # Set other fields.
     try:

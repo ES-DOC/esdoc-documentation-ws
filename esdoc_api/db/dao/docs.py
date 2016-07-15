@@ -206,16 +206,15 @@ def get_document_summaries(
         Document.long_name,
         Document.model,
         Document.name,
-        Document.short_name,
+        Document.canonical_name,
         Document.uid,
         Document.version,
         Document.alternative_name
         )
 
-    # Set mandatory params.
+    # Set filters.
     qry = text_filter(qry, Document.project, project)
-    qry = qry.filter(Document.short_name != u"")
-
+    qry = qry.filter(Document.canonical_name != u"")
     if typeof != constants.DOCUMENT_TYPE_ALL:
         qry = text_filter(qry, Document.type, typeof)
     if version == constants.DOCUMENT_VERSION_LATEST:

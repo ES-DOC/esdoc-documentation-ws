@@ -26,7 +26,9 @@ from esdoc_api.db.models import (
 
 
 class _ProcessingContextInfo(object):
-    """Encapsulates contextual information used during mapping."""
+    """Encapsulates contextual information used during mapping.
+
+    """
     def __init__(self, project, m):
         self.project = project
         self.m, self.c_list = reduce_model(m)
@@ -35,37 +37,49 @@ class _ProcessingContextInfo(object):
 
 
 def _create_node(ctx, key, typeof, fieldset):
-    """Creates & caches a node."""
+    """Creates & caches a node.
+
+    """
     ctx.nodes[key] = \
         utils.create_node(typeof, fieldset, ctx.project)
 
 
 def _set_model_node(ctx):
-    """Set model nodes."""
+    """Set model nodes.
+
+    """
     fieldset = _get_model_fieldset(ctx)
     _create_node(ctx, ctx.m, NODE_TYPE_MODEL, fieldset)
 
 
 def _set_component_node(ctx):
-    """Set component nodes."""
+    """Set component nodes.
+
+    """
     fieldset = _get_component_fieldset(ctx)
     _create_node(ctx, ctx.c, NODE_TYPE_MODEL_COMPONENT, fieldset)
 
 
 def _set_property_node(ctx):
-    """Set property node."""
+    """Set property node.
+
+    """
     fieldset = _get_property_fieldset(ctx)
     _create_node(ctx, ctx.p, NODE_TYPE_MODEL_COMPONENT_PROPERTY, fieldset)
 
 
 def _set_value_node(ctx):
-    """Set value node."""
+    """Set value node.
+
+    """
     fieldset = _get_value_fieldset(ctx)
     _create_node(ctx, ctx.v, NODE_TYPE_MODEL_COMPONENT_PROPERTY_VALUE, fieldset)
 
 
 def _get_model_fieldset(ctx):
-    """Returns model fields."""
+    """Returns model fields.
+
+    """
     fieldset = []
     if ctx.m.meta.institute is not None:
         fieldset.append(utils.create_node_field(ctx.m.meta.institute.upper()))
@@ -75,7 +89,9 @@ def _get_model_fieldset(ctx):
 
 
 def _get_component_fieldset(ctx):
-    """Returns model component fields."""
+    """Returns model component fields.
+
+    """
     fieldset = []
     if ctx.c.ext.depth > 1:
         fieldset.append(ctx.nodes[ctx.c.ext.parent])
@@ -85,7 +101,9 @@ def _get_component_fieldset(ctx):
 
 
 def _get_property_fieldset(ctx):
-    """Returns model component property fields."""
+    """Returns model component property fields.
+
+    """
     fieldset = []
     if ctx.p.ext.parent:
         fieldset.append(ctx.nodes[ctx.p.ext.parent])
@@ -95,7 +113,9 @@ def _get_property_fieldset(ctx):
 
 
 def _get_value_fieldset(ctx):
-    """Returns model component property value fields."""
+    """Returns model component property value fields.
+
+    """
     return (
         ctx.nodes[ctx.m],
         ctx.nodes[ctx.c],
@@ -105,7 +125,9 @@ def _get_value_fieldset(ctx):
 
 
 def _create_node_combination(ctx, typeof, nodeset):
-    """Creates & caches a node combination."""
+    """Creates & caches a node combination.
+
+    """
     if nodeset not in ctx.combinations:
         ctx.combinations[nodeset] = \
             utils.create_node_combination(typeof, nodeset, ctx.project)
@@ -114,7 +136,9 @@ def _create_node_combination(ctx, typeof, nodeset):
 
 
 def _get_hierarchy(ctx, item):
-    """Helper function to return hierarchy."""
+    """Helper function to return hierarchy.
+
+    """
     hierarchy = []
     while item:
         hierarchy.append(ctx.nodes[item])
@@ -124,21 +148,27 @@ def _get_hierarchy(ctx, item):
 
 
 def _set_component_combination(ctx):
-    """Set component combination."""
+    """Set component combination.
+
+    """
     nodeset = _get_hierarchy(ctx, ctx.c)
     ctx.combinations[ctx.c] = \
         _create_node_combination(ctx, NODE_COMBINATION_03, nodeset)
 
 
 def _set_property_combination(ctx):
-    """Set property combination."""
+    """Set property combination.
+
+    """
     nodeset = _get_hierarchy(ctx, ctx.p)
     ctx.combinations[ctx.p] = \
         _create_node_combination(ctx, NODE_COMBINATION_04, nodeset)
 
 
 def _set_value_combination(ctx):
-    """Set value combination."""
+    """Set value combination.
+
+    """
     nodeset = (
         ctx.nodes[ctx.m],
         ctx.combinations[ctx.c],
