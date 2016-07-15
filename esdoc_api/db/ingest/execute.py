@@ -104,10 +104,7 @@ def _write_to_archive(ctx):
     if ctx.doc is None:
         return
 
-    folder = pyesdoc.archive.get_folder(ctx.doc.meta.project, ctx.doc.meta.source, True)
-    fpath = pyesdoc.write(ctx.doc, folder.path)
-
-    
+    ctx.file = pyesdoc.archive.write(ctx.doc)
 
 
 def _set_document(ctx):

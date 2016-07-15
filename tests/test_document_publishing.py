@@ -10,7 +10,6 @@
 .. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
 
 """
-import nose
 import os
 
 import requests

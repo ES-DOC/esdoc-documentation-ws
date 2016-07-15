@@ -191,7 +191,9 @@ class DocumentSearchRequestHandler(HTTPRequestHandler):
             if self.encoding != pyesdoc.ENCODING_JSON:
                 self.docs = pyesdoc.encode(self.docs, self.encoding)
             else:
+                print self.docs
                 self.docs = pyesdoc.encode(self.docs, pyesdoc.ENCODING_DICT)
+                print self.docs
 
 
         def _set_output():

@@ -35,6 +35,11 @@
             "label": "ES-FDL",
             "name": "ES-FDL",
             "url": "https://earthsystemcog.org/projects/es-fdl"
+        },
+        {
+            "description": "Test project used during unit tests",
+            "label": "TEST-PROJECT",
+            "name": "TEST-PROJECT"
         }
     ]
 }
