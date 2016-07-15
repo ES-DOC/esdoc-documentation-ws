@@ -67,8 +67,8 @@ class DocumentCreateRequestHandler(HTTPRequestHandler):
             if doc.meta.version <= 0:
                 raise API_Exception("Document version is invalid.")
 
-            # Validation passed therefore cache decoded payload.
-            self.doc = doc
+            # Validation passed therefore cache decoded & extended payload.
+            self.doc = pyesdoc.extend(doc)
 
 
         def _validate_publication_status():

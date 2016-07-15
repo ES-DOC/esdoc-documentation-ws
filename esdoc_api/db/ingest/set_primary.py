@@ -49,7 +49,7 @@ def execute(ctx):
     instance.project = ctx.doc.meta.project.strip().lower()
     if ctx.doc.meta.sub_projects:
         instance.sub_projects = ",".join([u"<{}>".format(i.lower()) for i in sorted(ctx.doc.meta.sub_projects)])
-    instance.type = unicode(ctx.doc.meta.type)
+    instance.typeof = unicode(ctx.doc.meta.type)
     instance.uid = unicode(ctx.doc.meta.id)
     instance.version = ctx.doc.meta.version
 
@@ -61,14 +61,16 @@ def execute(ctx):
         if ctx.doc.alternative_names:
             instance.alternative_name = ctx.doc.alternative_names[0]
 
-    # Set summary fields.
-    fields = [f for f in ctx.doc.ext.summary_fields if f is not None]
-    for index, field in enumerate(fields):
-        field = unicode(field)
-        if index == 0:
-            instance.short_name = field
-        elif index == 1:
-            instance.long_name = field
+    # Set short/long names.
+    fields = [unicode(f) for f in ctx.doc.ext.summary_fields if f is not None]
+    try:
+        instance.canonical_name = fields[0]
+    except IndexError:
+        pass
+    try:
+        instance.long_name = fields[1]
+    except IndexError:
+        pass
 
     # Set other fields.
     try:
@@ -83,6 +85,7 @@ def execute(ctx):
         session.insert(instance)
     except sqlalchemy.exc.IntegrityError:
         session.rollback()
+        print instance.uid, instance.version, instance.typeof
         raise StopIteration("Document already ingested")
     else:
         ctx.primary = instance
