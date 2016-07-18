@@ -34,6 +34,7 @@ def _get_endpoints():
         (r'/2/document/create', handlers.publishing.DocumentCreateRequestHandler),
         (r'/2/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
         (r'/2/document/retrieve', handlers.publishing.DocumentRetrieveRequestHandler),
+        (r'/2/document/update', handlers.publishing.DocumentUpdateRequestHandler),
         (r'/2/document/search', handlers.search.DocumentSearchRequestHandler),
         (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
         (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),

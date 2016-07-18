@@ -43,19 +43,22 @@ def init(test, description, mod=None, suffix=None):
     :param module mod: The associated document test module.
 
     """
-    desc = "ES-DOC :: WS :: Test {0}"
+    desc = "ES-DOC :: WS :: Test {}"
     if mod is not None and suffix is not None:
-        desc += " - {1} ({2})"
+        desc += " - {} ({})"
         if hasattr(mod, "DOC_TYPE_KEY"):
             desc = desc.format(description, mod.DOC_TYPE_KEY, suffix)
         else:
             desc = desc.format(description, mod.__name__, suffix)
     elif mod is not None:
-        desc += " - {1}"
+        desc += " - {}"
         if hasattr(mod, "DOC_TYPE_KEY"):
             desc = desc.format(description, mod.DOC_TYPE_KEY)
         else:
             desc = desc.format(description, mod.__name__)
+    elif suffix is not None:
+        desc += " ({})"
+        desc = desc.format(description, suffix)
     else:
         desc = desc.format(description)
     test.description = desc
