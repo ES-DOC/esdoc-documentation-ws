@@ -31,14 +31,14 @@ def _get_endpoints():
 
     """
     endpoints = {
+        (r'/', handlers.ops.HeartbeatRequestHandler),
         (r'/2/document/create', handlers.publishing.DocumentCreateRequestHandler),
         (r'/2/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
         (r'/2/document/retrieve', handlers.publishing.DocumentRetrieveRequestHandler),
         (r'/2/document/update', handlers.publishing.DocumentUpdateRequestHandler),
         (r'/2/document/search', handlers.search.DocumentSearchRequestHandler),
         (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
-        (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),
-        (r'/', handlers.ops.HeartbeatRequestHandler)
+        (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler)
     }
 
     log("Endpoint to handler mappings:")

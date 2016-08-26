@@ -10,11 +10,11 @@
 
 
 """
-from esdoc_api import constants
 from esdoc_api import db
 from esdoc_api.db.dao import get_document_summaries
 from esdoc_api.db.dao import get_document_type_count
 from esdoc_api.utils import config
+from esdoc_api.utils import constants
 from esdoc_api.utils.http import HTTPRequestHandler
 from esdoc_api.utils.http import HTTP_HEADER_Access_Control_Allow_Origin
 

@@ -12,13 +12,13 @@
 """
 import pyesdoc
 
-from esdoc_api import constants
 from esdoc_api import db
 from esdoc_api.handlers.search import document_by_drs
 from esdoc_api.handlers.search import document_by_external_id
 from esdoc_api.handlers.search import document_by_id
 from esdoc_api.handlers.search import document_by_name
 from esdoc_api.utils import config
+from esdoc_api.utils import constants
 from esdoc_api.utils.http import HTTPRequestHandler
 from esdoc_api.utils.http import HTTP_HEADER_Access_Control_Allow_Origin
 

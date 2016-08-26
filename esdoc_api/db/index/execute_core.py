@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: esdoc_api.db.index.execute_core.py
 
@@ -8,11 +9,10 @@
 .. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
 
 """
-# -*- coding: utf-8 -*-
-from esdoc_api import constants
 from esdoc_api.db import dao
 from esdoc_api.db import models
 from esdoc_api.db import utils
+from esdoc_api.utils import constants
 from esdoc_api.utils import logger
 
 

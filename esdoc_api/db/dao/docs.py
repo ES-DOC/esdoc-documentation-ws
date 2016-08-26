@@ -10,7 +10,6 @@
 """
 import pyesdoc
 
-from esdoc_api import constants
 from esdoc_api.db import session
 from esdoc_api.db.dao.core import delete_by_id
 from esdoc_api.db.dao.core import delete_by_facet
@@ -21,6 +20,7 @@ from esdoc_api.db.models import Document
 from esdoc_api.db.models import DocumentDRS
 from esdoc_api.db.models import DocumentExternalID
 from esdoc_api.db.models import DocumentSubProject
+from esdoc_api.utils import constants
 
 
 

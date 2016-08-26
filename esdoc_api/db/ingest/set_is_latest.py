@@ -8,10 +8,9 @@
 
 
 """
-from esdoc_api import constants
 from esdoc_api.db import dao
-from esdoc_api.db import models
 from esdoc_api.db import session
+from esdoc_api.utils import constants
 
 
 

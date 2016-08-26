@@ -13,8 +13,8 @@
 import pyesdoc
 
 from esdoc_api import db
-from esdoc_api.exceptions import API_Exception
 from esdoc_api.utils import config
+from esdoc_api.utils import exceptions
 from esdoc_api.utils.http import HTTPRequestHandler
 
 
@@ -57,15 +57,15 @@ class DocumentCreateRequestHandler(HTTPRequestHandler):
             # Decode document.
             doc = pyesdoc.decode(self.request.body, 'json')
             if not doc:
-                raise API_Exception("Document could not be decoded.")
+                raise exceptions.API_Exception("Document could not be decoded.")
 
             # Minimally validate document.
             if not pyesdoc.is_valid(doc):
-                raise API_Exception("Document is invalid.")
+                raise exceptions.API_Exception("Document is invalid.")
 
             # Validate document version.
             if doc.meta.version <= 0:
-                raise API_Exception("Document version is invalid.")
+                raise exceptions.API_Exception("Document version is invalid.")
 
             # Validation passed therefore cache decoded & extended payload.
             self.doc = pyesdoc.extend(doc)
@@ -76,7 +76,7 @@ class DocumentCreateRequestHandler(HTTPRequestHandler):
 
             """
             if pyesdoc.archive.exists(self.doc.meta.id, self.doc.meta.version):
-                raise API_Exception("Document already published.")
+                raise exceptions.API_Exception("Document already published.")
 
 
         def _ingest():
