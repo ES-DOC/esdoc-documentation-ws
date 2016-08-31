@@ -12,6 +12,12 @@ from esdoc_api.data import get_data
 
 
 
+# HTTP CORS header.
+HTTP_HEADER_Access_Control_Allow_Origin = "Access-Control-Allow-Origin"
+
+# Default endpoint.
+DEFAULT_ENDPOINT = r'/2/ops/heartbeat'
+
 # Token used to indicate that all document types are in scope.
 DOCUMENT_TYPE_ALL = '*'
 

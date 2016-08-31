@@ -12,11 +12,14 @@
 """
 import datetime as dt
 
-from esdoc_api.utils.http import HTTPRequestHandler
+import tornado
+
+import esdoc_api
+from esdoc_api.utils1.http import process_request
 
 
 
-class HeartbeatRequestHandler(HTTPRequestHandler):
+class HeartbeatRequestHandler(tornado.web.RequestHandler):
     """Operations heartbeat request handler.
 
     """
@@ -30,8 +33,8 @@ class HeartbeatRequestHandler(HTTPRequestHandler):
             """
             self.output = {
                 "message": "ES-DOC web service is operational @ {}".format(dt.datetime.now()),
-                "status": 0
+                "version": esdoc_api.__version__
             }
 
-        # Invoke tasks.
-        self.invoke(None, _set_output)
+        # Process request.
+        process_request(self, _set_output)

@@ -10,66 +10,31 @@
 
 
 """
+import tornado
+
 from esdoc_api import db
 from esdoc_api.db.dao import get_document_summaries
 from esdoc_api.db.dao import get_document_type_count
 from esdoc_api.utils import config
 from esdoc_api.utils import constants
-from esdoc_api.utils.http import HTTPRequestHandler
-from esdoc_api.utils.http import HTTP_HEADER_Access_Control_Allow_Origin
+from esdoc_api.utils1.http import process_request
 
 
 
 # Query parameter names.
-_PARAM_TIMESTAMP = 'timestamp'
-_PARAM_DOCUMENT_TYPE = 'documentType'
-_PARAM_DOCUMENT_VERSION = 'documentVersion'
+_PARAM_DOCUMENT_TYPE = 'document_type'
+_PARAM_DOCUMENT_VERSION = 'document_version'
 _PARAM_EXPERIMENT = 'experiment'
 _PARAM_INSTITUTE = 'institute'
 _PARAM_MODEL = 'model'
 _PARAM_PROJECT = 'project'
-_PARAM_SUB_PROJECT = 'subProject'
-
-# Query parameter validation schema.
-_REQUEST_VALIDATION_SCHEMA = {
-    _PARAM_TIMESTAMP: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_DOCUMENT_TYPE: {
-        'allowed_case_insensitive': [i['key'] for i in constants.DOCUMENT_TYPES],
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_DOCUMENT_VERSION: {
-        'allowed': constants.DOCUMENT_VERSIONS,
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_EXPERIMENT: {
-        'required': False,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_INSTITUTE: {
-        'required': False,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_MODEL: {
-        'required': False,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_PROJECT: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_SUB_PROJECT: {
-        'required': False,
-        'type': 'list', 'items': [{'type': 'string'}]
-    }
-}
+_PARAM_SUB_PROJECT = 'sub_project'
 
 
-class SummarySearchRequestHandler(HTTPRequestHandler):
+
+
+
+class SummarySearchRequestHandler(tornado.web.RequestHandler):
     """Document summary search request handler.
 
     """
@@ -77,38 +42,30 @@ class SummarySearchRequestHandler(HTTPRequestHandler):
         """Set HTTP headers at the beginning of the request.
 
         """
-        self.set_header(HTTP_HEADER_Access_Control_Allow_Origin, "*")
+        self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
     def get(self):
         """HTTP GET handler.
 
         """
-        def _decode_request():
-            """Decodes request.
+        def _set_criteria():
+            """Sets search criteria.
 
             """
-            self.timestamp = self.get_argument(_PARAM_TIMESTAMP)
-            self.document_type = self.get_argument(_PARAM_DOCUMENT_TYPE)
-            self.document_version = self.get_argument(_PARAM_DOCUMENT_VERSION)
-            self.experiment = self.get_argument(_PARAM_EXPERIMENT, None)
-            self.institute = self.get_argument(_PARAM_INSTITUTE, None)
-            self.model = self.get_argument(_PARAM_MODEL, None)
-            self.project = self.get_argument(_PARAM_PROJECT)
-            self.sub_project = self.get_argument(_PARAM_SUB_PROJECT, None)
-
-
-        def _format_params():
-            """Formats request parameters.
-
-            """
-            self.document_type = self.document_type.lower()
-            if self.institute:
-                self.institute = self.institute.lower()
-            if self.project:
-                self.project = self.project.lower()
-            if self.sub_project:
-                self.sub_project = self.sub_project.lower()
+            for param in {
+                _PARAM_DOCUMENT_TYPE,
+                _PARAM_DOCUMENT_VERSION,
+                _PARAM_EXPERIMENT,
+                _PARAM_INSTITUTE,
+                _PARAM_MODEL,
+                _PARAM_PROJECT,
+                _PARAM_SUB_PROJECT
+            }:
+                if self.get_argument(param, None) in {None, "*"}:
+                    setattr(self, param, None)
+                else:
+                    setattr(self, param, self.get_argument(param))
 
 
         def _set_data():
@@ -118,14 +75,14 @@ class SummarySearchRequestHandler(HTTPRequestHandler):
             # TODO- context manager
             db.session.start(config.db)
 
-            self.data = get_document_summaries(
+            self.summaries = get_document_summaries(
                 self.project,
                 self.document_type,
                 self.document_version,
                 sub_project=self.sub_project,
                 institute=self.institute,
-                model=self.model or None,
-                experiment=self.experiment or None
+                model=self.model,
+                experiment=self.experiment
                 )
             self.total = get_document_type_count(self.project, self.document_type)
 
@@ -135,18 +92,16 @@ class SummarySearchRequestHandler(HTTPRequestHandler):
 
             """
             self.output = {
-                'count': len(self.data),
+                'count': len(self.summaries),
                 'project': self.project,
-                'results': self.data,
-                'timestamp': self.timestamp,
+                'results': self.summaries,
                 'total': self.total
             }
 
 
-        self.invoke(_REQUEST_VALIDATION_SCHEMA, [
-            _decode_request,
-            _format_params,
+        # Process request.
+        process_request(self, [
+            _set_criteria,
             _set_data,
             _set_output
-            ]
-            )
+            ])

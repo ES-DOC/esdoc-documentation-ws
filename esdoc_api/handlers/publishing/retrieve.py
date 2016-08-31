@@ -10,39 +10,22 @@
 
 
 """
+import tornado
+
 import pyesdoc
 
-from esdoc_api import db
-from esdoc_api.utils import config
-from esdoc_api.utils.http import HTTPRequestHandler
+from esdoc_api.utils1.http import process_request
 
 
 
 # Query parameter names.
+_PARAM_DOCUMENT_ID = 'document_id'
+_PARAM_DOCUMENT_VERSION = 'document_version'
 _PARAM_ENCODING = 'encoding'
-_PARAM_DOCUMENT_ID = 'id'
-_PARAM_DOCUMENT_VERSION = 'version'
 
 
-# Query parameter validation schema.
-_REQUEST_VALIDATION_SCHEMA = {
-    _PARAM_DOCUMENT_ID: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_DOCUMENT_VERSION: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_ENCODING: {
-        'allowed_case_insensitive': pyesdoc.ENCODINGS_ALL,
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    }
-}
 
-
-class DocumentRetrieveRequestHandler(HTTPRequestHandler):
+class DocumentRetrieveRequestHandler(tornado.web.RequestHandler):
     """Publishing retrieve document request handler.
 
     """
@@ -50,29 +33,22 @@ class DocumentRetrieveRequestHandler(HTTPRequestHandler):
         """HTTP GET handler.
 
         """
-        def _decode_request():
-            """Decodes request.
+        def _set_criteria():
+            """Sets search criteria.
 
             """
-            self.document_id = self.get_argument(_PARAM_DOCUMENT_ID)
-            self.document_version = self.get_argument(_PARAM_DOCUMENT_VERSION)
-            self.encoding = self.get_argument(_PARAM_ENCODING)
-
-
-        def _format_params():
-            """Formats request parameters.
-
-            """
-            self.document_id = self.document_id.lower()
-            self.document_version = self.document_version.lower()
-            self.encoding = self.encoding.lower()
+            for param in {
+                _PARAM_DOCUMENT_ID,
+                _PARAM_DOCUMENT_VERSION,
+                _PARAM_ENCODING
+            }:
+                setattr(self, param, self.get_argument(param).lower())
 
 
         def _set_data():
             """Pulls data from db.
 
             """
-            db.session.start(config.db)
             self.doc = pyesdoc.archive.read(self.document_id,
                                             self.document_version,
                                             False)
@@ -89,10 +65,9 @@ class DocumentRetrieveRequestHandler(HTTPRequestHandler):
                 self.output = pyesdoc.encode(self.doc, self.encoding)
 
 
-        self.invoke(_REQUEST_VALIDATION_SCHEMA, [
-            _decode_request,
-            _format_params,
+        # Process request.
+        process_request(self, [
+            _set_criteria,
             _set_data,
             _set_output
-            ]
-            )
+            ])

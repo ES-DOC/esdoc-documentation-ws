@@ -10,15 +10,16 @@
 
 
 """
+import tornado
+
 from esdoc_api import db
 from esdoc_api.utils import config
 from esdoc_api.utils import constants
-from esdoc_api.utils.http import HTTPRequestHandler
-from esdoc_api.utils.http import HTTP_HEADER_Access_Control_Allow_Origin
+from esdoc_api.utils1.http import process_request
 
 
 
-class SummarySearchSetupRequestHandler(HTTPRequestHandler):
+class SummarySearchSetupRequestHandler(tornado.web.RequestHandler):
     """Document summary search setup request handler.
 
     """
@@ -26,7 +27,7 @@ class SummarySearchSetupRequestHandler(HTTPRequestHandler):
         """Set HTTP headers at the beginning of the request.
 
         """
-        self.set_header(HTTP_HEADER_Access_Control_Allow_Origin, "*")
+        self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
     def get(self):
@@ -67,8 +68,8 @@ class SummarySearchSetupRequestHandler(HTTPRequestHandler):
             }
 
 
-        self.invoke(None, [
+        # Process request.
+        process_request(self, [
             _set_data,
             _set_output
-            ]
-            )
+            ])

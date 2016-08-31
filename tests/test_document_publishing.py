@@ -28,9 +28,9 @@ _URL = os.getenv("ESDOC_API")
 _URL_POST = "{}/2/document/create".format(_URL)
 _URL_PUT = "{}/2/document/update".format(_URL)
 _URL_GET = "{}/2/document/retrieve".format(_URL)
-_URL_GET_PARAMS = "?encoding={}&id={}&version={}"
+_URL_GET_PARAMS = "?encoding={}&document_id={}&document_version={}"
 _URL_DELETE = "{}/2/document/delete".format(_URL)
-_URL_DELETE_PARAMS = "?id={}&version={}"
+_URL_DELETE_PARAMS = "?document_id={}&document_version={}"
 
 
 def _set_test_document():
