@@ -36,9 +36,4 @@ def get_schema(typeof, request):
 	"""Gets a schema from cache.
 
 	"""
-	store = _store[typeof]
-
-	if request.query_arguments:
-		print "TODO: resolve schema using query args as well as path", typeof, request.path, request.query_arguments
-
-	return store[request.path]
+	return _store[typeof][request.path]

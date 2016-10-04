@@ -9,7 +9,7 @@
 
 
 """
-import arrow
+import datetime as dt
 
 
 
@@ -37,7 +37,7 @@ def _get_formatted_message(msg, module, level):
         return _NULL_MSG
 
     return "{} [{}] :: ES-DOC > {} : {}".format(
-        unicode(arrow.get())[0:-13],
+        dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
         level,
         module,
         unicode(msg).strip()

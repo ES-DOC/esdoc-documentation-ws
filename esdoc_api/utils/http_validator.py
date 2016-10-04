@@ -70,7 +70,6 @@ def _validate_request_params(handler):
 
     # Validate request parameters.
     else:
-        print dict(handler.request.query_arguments)
         _validate(handler, handler.request.query_arguments, schema)
 
 

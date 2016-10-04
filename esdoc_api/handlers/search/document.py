@@ -46,8 +46,6 @@ def parse_params(handler, params):
         else:
             setattr(handler, to_underscore_case(param), formatter(handler.get_argument(param)))
 
-        print param, to_underscore_case(param)
-
 
 def set_output(handler, docs):
     """Sets response output derived from a document search.
