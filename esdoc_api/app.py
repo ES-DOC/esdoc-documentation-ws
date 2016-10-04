@@ -31,28 +31,20 @@ def _get_app_endpoints():
     """Returns map of application endpoints to handlers.
 
     """
-    endpoints = {
+    return {
         (r'/', handlers.ops.HeartbeatRequestHandler),
+        (r'/2/fiu/resolve/([a-z0-9]+)', handlers.fiu.ResolveRequestHandler),
         (r'/2/document/create', handlers.publishing.DocumentCreateRequestHandler),
         (r'/2/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
         (r'/2/document/retrieve', handlers.publishing.DocumentRetrieveRequestHandler),
         (r'/2/document/update', handlers.publishing.DocumentUpdateRequestHandler),
-
-        (r'/2/document/search', handlers.search.DocumentSearchRequestHandler),
-        (r'/2/document/search-drs', handlers.search.DocumentSearchRequestHandler),
-        (r'/2/document/search-externalid', handlers.search.DocumentSearchRequestHandler),
-        (r'/2/document/search-id', handlers.search.DocumentSearchRequestHandler),
-        (r'/2/document/search-name', handlers.search.DocumentSearchRequestHandler),
-
+        (r'/2/document/search-drs', handlers.search.DocumentByDRSSearchRequestHandler),
+        (r'/2/document/search-externalid', handlers.search.DocumentByExternalIDSearchRequestHandler),
+        (r'/2/document/search-id', handlers.search.DocumentByIDSearchRequestHandler),
+        (r'/2/document/search-name', handlers.search.DocumentByNameSearchRequestHandler),
         (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
         (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler)
     }
-
-    log("Endpoint to handler mappings:")
-    for url, handler in sorted(endpoints, key=lambda i: i[0]):
-        log("{0} ---> {1}".format(url, str(handler).split(".")[-1][0:-2]))
-
-    return endpoints
 
 
 def _get_app_settings():
@@ -80,11 +72,13 @@ def _get_app():
     # Initialise JSON schemas.
     schemas.init([i[0] for i in endpoints])
 
+    # Convert endpoints to tornado URLSpec instances.
+    endpoints = [tornado.web.url(i[0], i[1]) for i in endpoints]
+
     # Return app instance.
     return tornado.web.Application(endpoints,
                                    debug=(config.mode == 'dev'),
                                    **_get_app_settings())
-
 
 
 def run():

@@ -2,36 +2,50 @@
     "$schema": "http://json-schema.org/schema#",
     "additionalProperties": false,
     "properties": {
-        "document_id": {
+        "client": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
-        "document_version": {
+        "drsPath": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
         "encoding": {
             "items": {
-                "minItems": 1,
+                "enum": [
+                    "html",
+                    "json",
+                    "xml"
+                ],
                 "maxItems": 1,
+                "minItems": 1,
+                "type": "string"
+            },
+            "type": "array"
+        },
+        "project": {
+            "items": {
+                "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         }
     },
     "required": [
-        "document_id",
-        "document_version",
-        "encoding"
+        "client",
+        "drsPath",
+        "encoding",
+        "project"
     ],
-    "title": "ES-DOC API JSON schema: endpoint = 2/document/retrieve",
+    "title": "ES-DOC API JSON schema: endpoint = 2/document/search-drs",
     "type": "object"
 }

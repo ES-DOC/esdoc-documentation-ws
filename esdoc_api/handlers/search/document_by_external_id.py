@@ -4,72 +4,86 @@
 .. module:: handlers.search.document_by_external_id.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Document by external ID search request handler.
+   :synopsis: Document search by external id request handler.
 
 .. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
 
 
 """
+import tornado
+
+from esdoc_api import db
 from esdoc_api import utils
+from esdoc_api.utils import config
+from esdoc_api.utils import constants
+from esdoc_api.utils.http import process_request
+from esdoc_api.handlers.search.document import set_output
+from esdoc_api.handlers.search.document import parse_params
 
 
 
-# Query parameter names.
-_PARAM_EXTERNAL_ID = 'externalID'
-_PARAM_EXTERNAL_TYPE = 'externalType'
-
-# Query parameter validation schema.
-REQUEST_VALIDATION_SCHEMA = {
-    _PARAM_EXTERNAL_ID: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_EXTERNAL_TYPE: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    }
+# Query parameters.
+_PARAMS = {
+    'externalID',
+    'externalType'
 }
 
+# Maximum number of DRS keys allowed ina path declaration.
+_MAX_DRS_KEYS = 8
 
-def decode_request(handler):
-    """Decodes request parameters.
-
-    """
-    handler.external_id = handler.get_argument(_PARAM_EXTERNAL_ID)
-    handler.external_type = handler.get_argument(_PARAM_EXTERNAL_TYPE)
+# Seperator used to delineate DRS keys.
+_DRS_SEPERATOR = '/'
 
 
-def validate_params(handler):
-    """Validates url request params.
-
-    :param handler: Request handler.
+class DocumentByExternalIDSearchRequestHandler(tornado.web.RequestHandler):
+    """Document by external id search request handler.
 
     """
-    # Validate that an external id handler exists.
-    handler = utils.external_id.get(handler.project, handler.external_type)
-    if not handler:
-        raise ValueError("External ID type is unsupported.")
+    def set_default_headers(self):
+        """Set HTTP headers at the beginning of the request.
 
-    # Validate external id.
-    if not handler.is_valid(handler.external_id):
-        raise ValueError("Request parameter externalID: is invalid.")
+        """
+        self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
-def do_search(handler):
-    """Executes document search against db.
+    def get(self):
+        """HTTP GET handler.
 
-    :param handler: Request handler.
+        """
+        def _validate_criteria():
+            """Validates url request params.
 
-    :returns: Search result.
-    :rtype: db.models.Document
+            """
+            # Set search manager.
+            self.handler = utils.external_id.get(self.project, self.external_type)
+            if not self.handler:
+                raise ValueError("External ID type is unsupported.")
 
-    """
-    # Set search manager.
-    manager = utils.external_id.get(handler.project, handler.external_type)
+            # Validate external id.
+            if not self.handler.is_valid(self.external_id):
+                raise ValueError("Request parameter externalID: is invalid.")
 
-    # Set parsed external id.
-    external_id = manager.get_parsed(handler.external_id)
 
-    # Yield search results.
-    for doc in manager.do_search(handler.project, external_id):
-        yield doc
+        def _set_external_id():
+            """Sets parsed external identifier.
+
+            """
+            self.external_id = self.handler.get_parsed(self.external_id)
+
+
+        def _set_data():
+            """Pulls data from db.
+
+            """
+            db.session.start(config.db)
+            self.docs = self.handler.do_search(self.project, self.external_id)
+
+
+        # Process request.
+        process_request(self, [
+            lambda: parse_params(self, _PARAMS),
+            _validate_criteria,
+            _set_external_id,
+            _set_data,
+            lambda: set_output(self, self.docs)
+            ])

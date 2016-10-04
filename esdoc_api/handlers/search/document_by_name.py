@@ -4,57 +4,60 @@
 .. module:: handlers.search.document_by_name.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Document by name search request handler.
+   :synopsis: Document search by name request handler.
 
 .. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
 
 
 """
+import tornado
+
 from esdoc_api import db
+from esdoc_api.utils import config
+from esdoc_api.utils import constants
+from esdoc_api.utils.http import process_request
+from esdoc_api.handlers.search.document import set_output
+from esdoc_api.handlers.search.document import parse_params
 
 
 
-# Query parameter names.
-_PARAM_INSTITUTE = 'institute'
-_PARAM_NAME = 'name'
-_PARAM_TYPE = 'type'
-
-# Query parameter validation schema.
-REQUEST_VALIDATION_SCHEMA = {
-    _PARAM_INSTITUTE: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_NAME: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_TYPE: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
+# Query parameters.
+_PARAMS = {
+    'institute',
+    'name',
+    'type'
     }
-}
 
 
-def decode_request(handler):
-    """Decodes request parameters.
-
-    """
-    handler.institute = handler.get_argument(_PARAM_INSTITUTE)
-    handler.name = handler.get_argument(_PARAM_NAME)
-    handler.typeof = handler.get_argument(_PARAM_TYPE)
-
-
-def do_search(handler):
-    """Executes document search against db.
-
-    :param handler: Request handler.
-
-    :returns: Search result.
-    :rtype: db.models.Document
+class DocumentByNameSearchRequestHandler(tornado.web.RequestHandler):
+    """Document by name search request handler.
 
     """
-    yield db.dao.get_document_by_name(handler.project,
-                                      handler.typeof,
-                                      handler.name,
-                                      handler.institute)
+    def set_default_headers(self):
+        """Set HTTP headers at the beginning of the request.
+
+        """
+        self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Origin, "*")
+
+
+    def get(self):
+        """HTTP GET handler.
+
+        """
+        def _set_data():
+            """Pulls data from db.
+
+            """
+            db.session.start(config.db)
+            self.docs = db.dao.get_document_by_name(self.project,
+                                                    self.type,
+                                                    self.name,
+                                                    self.institute)
+
+
+        # Process request.
+        process_request(self, [
+            lambda: parse_params(self, _PARAMS),
+            _set_data,
+            lambda: set_output(self, self.docs)
+            ])

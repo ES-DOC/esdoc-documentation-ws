@@ -17,7 +17,7 @@ from esdoc_api.db.dao import get_document_summaries
 from esdoc_api.db.dao import get_document_type_count
 from esdoc_api.utils import config
 from esdoc_api.utils import constants
-from esdoc_api.utils1.http import process_request
+from esdoc_api.utils.http import process_request
 
 
 

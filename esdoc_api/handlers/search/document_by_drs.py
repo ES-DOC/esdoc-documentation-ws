@@ -4,24 +4,26 @@
 .. module:: handlers.search.document_by_drs.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Document by DRS search request handler.
+   :synopsis: Document search by DRS request handler.
 
 .. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
 
 
 """
+import tornado
+
 from esdoc_api import db
+from esdoc_api.utils import config
+from esdoc_api.utils import constants
+from esdoc_api.utils.http import process_request
+from esdoc_api.handlers.search.document import set_output
+from esdoc_api.handlers.search.document import parse_params
 
 
-# Query parameter names.
-_PARAM_DRS_PATH = 'drsPath'
 
-# Query parameter validation schema.
-REQUEST_VALIDATION_SCHEMA = {
-    _PARAM_DRS_PATH: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    }
+# Query parameters.
+_PARAMS = {
+    ('drsPath', lambda v: v.upper())
 }
 
 # Maximum number of DRS keys allowed ina path declaration.
@@ -31,62 +33,66 @@ _MAX_DRS_KEYS = 8
 _DRS_SEPERATOR = '/'
 
 
-def decode_request(handler):
-    """Decodes request parameters.
+class DocumentByDRSSearchRequestHandler(tornado.web.RequestHandler):
+    """Document by DRS search request handler.
 
     """
-    handler.drs_path = handler.get_argument(_PARAM_DRS_PATH)
+    def set_default_headers(self):
+        """Set HTTP headers at the beginning of the request.
+
+        """
+        self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
-def format_params(handler):
-    """Formats request parameters.
+    def get(self):
+        """HTTP GET handler.
 
-    """
-    handler.drs_path = handler.drs_path.upper()
+        """
+        def _validate_criteria():
+            """Validates url request params.
 
-
-def validate_params(handler):
-    """Validates url request params.
-
-    :param object: Search criteria.
-
-    """
-    if len(handler.drs_path.split(_DRS_SEPERATOR)) == 1:
-        raise ValueError("A DRS path must contain at least one element")
-    if len(handler.drs_path.split(_DRS_SEPERATOR)) > _MAX_DRS_KEYS:
-        msg = "A DRS path must consist of a maximum {0} keys"
-        raise ValueError(msg.format(_MAX_DRS_KEYS))
+            """
+            if len(self.drs_path.split(_DRS_SEPERATOR)) == 1:
+                raise ValueError("A DRS path must contain at least one element")
+            if len(self.drs_path.split(_DRS_SEPERATOR)) > _MAX_DRS_KEYS:
+                msg = "A DRS path must consist of a maximum {0} keys"
+                raise ValueError(msg.format(_MAX_DRS_KEYS))
 
 
-def _get_drs_keys(project, drs_path):
-    """Returns drs keys defined in a path.
+        def _set_drs_keys():
+            """Sets the DRS keys to be used to search db.
 
-    """
-    return [i for i in drs_path.split(_DRS_SEPERATOR)
-            if len(i) and i.upper() != project.upper()]
+            """
+            self.drs_keys = [i for i in self.drs_path.split(_DRS_SEPERATOR)
+                             if len(i) and i.upper() != self.project.upper()]
 
 
-def do_search(handler):
-    """Executes document search against db.
+        def _set_data():
+            """Pulls data from db.
 
-    :param handler: Request handler.
+            """
+            db.session.start(config.db)
+            self.docs = db.dao.get_document_by_drs_keys(
+              self.project,
+              self.drs_keys[0] if len(self.drs_keys) > 0 else None,
+              self.drs_keys[1] if len(self.drs_keys) > 1 else None,
+              self.drs_keys[2] if len(self.drs_keys) > 2 else None,
+              self.drs_keys[3] if len(self.drs_keys) > 3 else None,
+              self.drs_keys[4] if len(self.drs_keys) > 4 else None,
+              self.drs_keys[5] if len(self.drs_keys) > 5 else None,
+              self.drs_keys[6] if len(self.drs_keys) > 6 else None,
+              self.drs_keys[7] if len(self.drs_keys) > 7 else None
+              )
 
-    :returns: Search result.
-    :rtype: db.models.Document
 
-    """
-    # Set DRS keys.
-    keys = _get_drs_keys(handler.project, handler.drs_path)
+        # Process request.
+        process_request(self, [
+            lambda: parse_params(self, _PARAMS),
+            _validate_criteria,
+            _set_drs_keys,
+            _set_data,
+            lambda: set_output(self, self.docs)
+            ])
 
-    # Yield search results.
-    yield db.dao.get_document_by_drs_keys(
-      handler.project,
-      keys[0] if len(keys) > 0 else None,
-      keys[1] if len(keys) > 1 else None,
-      keys[2] if len(keys) > 2 else None,
-      keys[3] if len(keys) > 3 else None,
-      keys[4] if len(keys) > 4 else None,
-      keys[5] if len(keys) > 5 else None,
-      keys[6] if len(keys) > 6 else None,
-      keys[7] if len(keys) > 7 else None
-      )
+
+

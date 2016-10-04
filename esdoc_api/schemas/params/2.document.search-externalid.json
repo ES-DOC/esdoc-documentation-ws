@@ -2,68 +2,64 @@
     "$schema": "http://json-schema.org/schema#",
     "additionalProperties": false,
     "properties": {
-        "document_type": {
+        "client": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
-        "document_version": {
+        "externalID": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
-        "experiment": {
+        "externalType": {
             "items": {
-                "minItems": 1,
+                "enum": [
+                    "dataset",
+                    "file",
+                    "simulation"
+                ],
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
-        "institute": {
+        "encoding": {
             "items": {
-                "minItems": 1,
+                "enum": [
+                    "html",
+                    "json",
+                    "xml"
+                ],
                 "maxItems": 1,
-                "type": "string"
-            },
-            "type": "array"
-        },
-        "model": {
-            "items": {
                 "minItems": 1,
-                "maxItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
         "project": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
-                "type": "string"
-            },
-            "type": "array"
-        },
-        "sub_project": {
-            "items": {
                 "minItems": 1,
-                "maxItems": 1,
                 "type": "string"
             },
             "type": "array"
         }
     },
     "required": [
-        "document_type",
-        "document_version",
+        "client",
+        "externalID",
+        "externalType",
+        "encoding",
         "project"
     ],
-    "title": "ES-DOC API JSON schema: endpoint = 2/summary/search",
+    "title": "ES-DOC API JSON schema: endpoint = 2/document/search-externalid",
     "type": "object"
 }

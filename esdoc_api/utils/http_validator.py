@@ -9,95 +9,90 @@
 
 
 """
-import uuid
-from collections import Sequence
+import json
 
-import cerberus
+import jsonschema
 
-from esdoc_api.utils import logger
-
-
-
-# Invalid request HTTP response code.
-_HTTP_RESPONSE_BAD_REQUEST = 400
+from esdoc_api.utils import exceptions
+from esdoc_api.schemas import get_schema
 
 
 
-class _RequestBodyValidator(object):
-    """An HTTP request body validator.
+def validate_request(handler):
+    """Validates request against mapped JSON schemas.
 
-    """
-    def __init__(self, request, schema):
-        """Instance initializer.
+    :param tornado.web.RequestHandler handler: An HTTP request handler.
 
-        """
-        self.request = request
-        self.schema = schema
-
-
-    def validate(self):
-        """Validates the request body.
-
-        """
-        # TODO implement using jsonschema ?
-        return []
-
-
-class _RequestQueryParamsValidator(cerberus.Validator):
-    """An HTTP request query params validator that extends the cerberus library.
+    :raises: exceptions.SecurityError, exceptions.InvalidJSONSchemaError
 
     """
-    def __init__(self, schema):
-        """Instance initializer.
-
-        """
-        super(_RequestQueryParamsValidator, self).__init__(schema)
+    _validate_request_headers(handler)
+    _validate_request_params(handler)
+    _validate_request_body(handler)
 
 
-    def _validate_type_uuid(self, field, value):
-        """Enables validation for `uuid` schema attribute.
-
-        """
-        try:
-            uuid.UUID(value)
-        except ValueError:
-            self._error(field, cerberus.errors.ERROR_BAD_TYPE.format('uuid'))
-
-
-    def _validate_allowed_case_insensitive(self, allowed_values, field, value):
-        """Enables validation for `allowed_case_insensitive` schema attribute.
-
-        """
-        value = [i.lower() for i in value]
-        allowed = [i.lower() for i in allowed_values]
-        super(_RequestQueryParamsValidator, self)._validate_allowed(allowed, field, value)
-
-
-def _log(handler, error):
-    """Logs a security related response.
+def _validate(handler, data, schema):
+    """Validates data against a JSON schema.
 
     """
-    msg = "[{0}]: --> security --> {1} --> {2}"
-    msg = msg.format(id(handler), handler, error)
-    logger.log_web_security(msg)
+    try:
+        jsonschema.validate(data, schema)
+    except jsonschema.exceptions.ValidationError as json_errors:
+        raise exceptions.InvalidJSONSchemaError(json_errors)
 
 
-def is_request_valid(handler, schema, options={}):
-    """Returns a flag indicating whether an HTTP request is considered to be valid.
+def _validate_request_headers(handler):
+    """Validates request headers against a JSON schema.
 
     """
-    # Validate request.
-    if isinstance(schema, str):
-        validator = _RequestBodyValidator(handler.request, schema)
+    # Map request to schema.
+    schema = get_schema('headers', handler.request)
+
+    # Null case - escape.
+    if schema is None:
+        return
+
+    # Validate request headers.
+    _validate(handler, dict(handler.request.headers), schema)
+
+
+def _validate_request_params(handler):
+    """Validates request parameters against a JSON schema.
+
+    """
+    # Map request to schema.
+    schema = get_schema('params', handler.request)
+
+    # Null case.
+    if schema is None:
+        if handler.request.query_arguments:
+            raise exceptions.SecurityError("Unexpected request url parameters.")
+
+    # Validate request parameters.
     else:
-        validator = _RequestQueryParamsValidator(schema)
-        validator.allow_unknown = options.get('allow_unknown', False)
-        validator.validate(handler.request.query_arguments)
+        print dict(handler.request.query_arguments)
+        _validate(handler, handler.request.query_arguments, schema)
 
-    # HTTP 400 if request is invalid.
-    if validator.errors:
-        _log(handler, "Invalid request :: {}".format(validator.errors))
-        handler.clear()
-        handler.send_error(_HTTP_RESPONSE_BAD_REQUEST)
 
-    return len(validator.errors) == 0
+def _validate_request_body(handler):
+    """Validates request body against a JSON schema.
+
+    """
+    # Map request to schema.
+    schema = get_schema('body', handler.request)
+
+    # Null case.
+    if schema is None:
+        if handler.request.body:
+            raise exceptions.SecurityError("Unexpected request body.")
+
+    # Validate request data.
+    else:
+        # ... decode request data.
+        data = json.loads(handler.request.body)
+
+        # ... validate request data against schema.
+        _validate(handler, data, schema)
+
+        # ... append valid data to request.
+        handler.request.data = data

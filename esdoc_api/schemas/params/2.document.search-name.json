@@ -2,68 +2,67 @@
     "$schema": "http://json-schema.org/schema#",
     "additionalProperties": false,
     "properties": {
-        "document_type": {
+        "client": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
-        "document_version": {
+        "encoding": {
             "items": {
-                "minItems": 1,
+                "enum": [
+                    "html",
+                    "json",
+                    "xml"
+                ],
                 "maxItems": 1,
-                "type": "string"
-            },
-            "type": "array"
-        },
-        "experiment": {
-            "items": {
                 "minItems": 1,
-                "maxItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
         "institute": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 0,
                 "type": "string"
             },
             "type": "array"
         },
-        "model": {
+        "name": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
         "project": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         },
-        "sub_project": {
+        "type": {
             "items": {
-                "minItems": 1,
                 "maxItems": 1,
+                "minItems": 1,
                 "type": "string"
             },
             "type": "array"
         }
     },
     "required": [
-        "document_type",
-        "document_version",
-        "project"
+        "client",
+        "encoding",
+        "name",
+        "project",
+        "type"
     ],
-    "title": "ES-DOC API JSON schema: endpoint = 2/summary/search",
+    "title": "ES-DOC API JSON schema: endpoint = 2/document/search-name",
     "type": "object"
 }

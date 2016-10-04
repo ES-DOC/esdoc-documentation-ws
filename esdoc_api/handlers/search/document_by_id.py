@@ -4,58 +4,56 @@
 .. module:: handlers.search.document_by_id.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
-   :synopsis: Document by id search request handler.
+   :synopsis: Document search by id request handler.
 
 .. moduleauthor:: Mark Conway-Greenslade (formerly Morgan) <momipsl@ipsl.jussieu.fr>
 
 
 """
+import tornado
+
 from esdoc_api import db
+from esdoc_api.utils import config
+from esdoc_api.utils import constants
+from esdoc_api.utils.http import process_request
+from esdoc_api.handlers.search.document import set_output
+from esdoc_api.handlers.search.document import parse_params
 
 
 
-# Query parameter names.
-_PARAM_DOCUMENT_ID = 'id'
-_PARAM_DOCUMENT_VERSION = 'version'
-
-# Query parameter validation schema.
-REQUEST_VALIDATION_SCHEMA = {
-    _PARAM_DOCUMENT_ID: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    },
-    _PARAM_DOCUMENT_VERSION: {
-        'required': True,
-        'type': 'list', 'items': [{'type': 'string'}]
-    }
+# Query parameters.
+_PARAMS = {
+    ('id', lambda v: v.lower()),
+    ('version', lambda v: v.lower()),
 }
 
 
-def decode_request(handler):
-    """Decodes request parameters.
+class DocumentByIDSearchRequestHandler(tornado.web.RequestHandler):
+    """Document by id search request handler.
 
     """
-    handler.id = handler.get_argument(_PARAM_DOCUMENT_ID)
-    handler.version = handler.get_argument(_PARAM_DOCUMENT_VERSION)
+    def set_default_headers(self):
+        """Set HTTP headers at the beginning of the request.
+
+        """
+        self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Origin, "*")
 
 
-def format_params(handler):
-    """Formats request parameters.
+    def get(self):
+        """HTTP GET handler.
 
-    """
-    handler.id = handler.id.lower()
-    handler.version = handler.version.lower()
+        """
+        def _set_data():
+            """Pulls data from db.
+
+            """
+            db.session.start(config.db)
+            self.docs = db.dao.get_document(self.id, self.version, self.project)
 
 
-def do_search(handler):
-    """Executes document search against db.
-
-    :param handler: Request handler.
-
-    :returns: Search result.
-    :rtype: db.models.Document
-
-    """
-    yield db.dao.get_document(handler.id,
-                              handler.version,
-                              handler.project)
+        # Process request.
+        process_request(self, [
+            lambda: parse_params(self, _PARAMS),
+            _set_data,
+            lambda: set_output(self, self.docs)
+            ])

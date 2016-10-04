@@ -14,7 +14,7 @@ import tornado
 
 import pyesdoc
 
-from esdoc_api.utils1.http import process_request
+from esdoc_api.utils.http import process_request
 
 
 

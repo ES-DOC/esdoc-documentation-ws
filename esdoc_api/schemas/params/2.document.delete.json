@@ -23,6 +23,6 @@
         "document_id",
         "document_version"
     ],
-    "title": "ES-DOC errata JSON schema: endpoint = 2/document/delete",
+    "title": "ES-DOC API JSON schema: endpoint = 2/document/delete",
     "type": "object"
 }

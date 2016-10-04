@@ -10,9 +10,7 @@
 
 
 """
-from esdoc_api.handlers import (
-	ops,
-	publishing,
-	search
-	)
-
+from esdoc_api.handlers import fiu
+from esdoc_api.handlers import ops
+from esdoc_api.handlers import publishing
+from esdoc_api.handlers import search
