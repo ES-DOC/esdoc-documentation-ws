@@ -41,10 +41,6 @@
         },
         "version": {
             "items": {
-                "enum": [
-                    "*",
-                    "latest"
-                ],
                 "maxItems": 1,
                 "minItems": 1,
                 "type": "string"

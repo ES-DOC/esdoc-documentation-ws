@@ -192,7 +192,8 @@ def get_document_summaries(
 
     """
     # Format params.
-    version = version.lower()
+    if version:
+        version = version.lower()
     typeof = typeof.upper()
     if model:
         model = model.upper()
