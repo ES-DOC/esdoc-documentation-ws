@@ -34,16 +34,18 @@ def _get_app_endpoints():
     return {
         (r'/', handlers.ops.HeartbeatRequestHandler),
         (r'/2/fiu/resolve/([a-z0-9]+)', handlers.fiu.ResolveRequestHandler),
+
         (r'/2/document/create', handlers.publishing.DocumentCreateRequestHandler),
         (r'/2/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
         (r'/2/document/retrieve', handlers.publishing.DocumentRetrieveRequestHandler),
         (r'/2/document/update', handlers.publishing.DocumentUpdateRequestHandler),
+
         (r'/2/document/search-drs', handlers.search.DocumentByDRSSearchRequestHandler),
         (r'/2/document/search-externalid', handlers.search.DocumentByExternalIDSearchRequestHandler),
         (r'/2/document/search-id', handlers.search.DocumentByIDSearchRequestHandler),
         (r'/2/document/search-name', handlers.search.DocumentByNameSearchRequestHandler),
         (r'/2/summary/search', handlers.search.SummarySearchRequestHandler),
-        (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler)
+        (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler),
     }
 
 

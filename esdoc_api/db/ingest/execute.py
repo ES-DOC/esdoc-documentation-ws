@@ -105,7 +105,6 @@ def _write_to_archive(ctx):
         return
 
     ctx.file = pyesdoc.archive.write(ctx.doc)
-    print ctx.file
 
 
 def _set_document(ctx):
