@@ -2,7 +2,6 @@
     "documentTypes": [
         {
             "displayName": "Data",
-            "searchColumns": [],
             "isPdfTarget": false,
             "key": "cim.1.data.DataObject",
             "label": "Data",
