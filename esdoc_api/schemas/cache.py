@@ -27,7 +27,7 @@ def init(endpoints):
 	:param dict endpoints: Map of application endpoints.
 
 	"""
-	for endpoint in endpoints:
+	for endpoint in [i for i in endpoints if not bool(i.find("(") + 1)]:
 		for typeof in {'body', 'params', 'headers'}:
 			_store[typeof][endpoint] = loader.load(typeof, endpoint)
 

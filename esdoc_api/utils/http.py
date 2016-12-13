@@ -42,7 +42,7 @@ def _log(handler, msg, is_error=False):
         logger.log_web(msg)
 
 
-def _log_error(handler, error):
+def log_error(handler, error):
     """Logs an error response.
 
     """
@@ -209,7 +209,7 @@ def process_request(handler, tasks, error_tasks=None):
     error_tasks = _get_tasks(
         [],
         error_tasks or [],
-        [_log_error, write_error]
+        [log_error, write_error]
         )
 
     # Invoke tasksets:
