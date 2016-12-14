@@ -57,6 +57,11 @@ def _get_app_endpoints():
             r'/({0})/(.*)'.format(project),
             handlers.rewrite.SearchURLRewriteRequestHandler
             ))
+    for project in handlers.rewrite.viewer_url.PROJECT_DOC_TYPES:
+        result.add((
+            r'/({0})'.format(project),
+            handlers.rewrite.SearchURLRewriteRequestHandler
+            ))
 
     return result
 

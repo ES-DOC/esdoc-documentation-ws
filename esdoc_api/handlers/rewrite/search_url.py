@@ -50,7 +50,8 @@ _SEARCH_URL = {
 }
 
 # Viewer URL query parameters.
-_URL_QUERY_PARAMS = "/?project={}&documentType={}&client={}"
+_URL_QUERY_PARAMS_1 = "/?project={}&documentType={}&client={}"
+_URL_QUERY_PARAMS_2 = "/?project={}&client={}"
 
 # Query parameter names.
 _PARAM_CLIENT_ID = 'client'
@@ -60,28 +61,41 @@ class SearchURLRewriteRequestHandler(tornado.web.RequestHandler):
     """Rewrites search URL requests.
 
     """
-    def get(self, project, doc_type):
+    def get(self, project, doc_type=None):
         """HTTP GET handler.
 
         """
         # Reformat inputs.
         project = unicode(project).strip().lower()
-        doc_type = unicode(doc_type).strip().lower()
+        if doc_type:
+            doc_type = unicode(doc_type).strip().lower()
         client = self.get_query_argument(_PARAM_CLIENT_ID, "esdoc-url-rewrite")
 
         # Escape if invalid.
-        if project not in PROJECT_DOC_TYPES or doc_type not in PROJECT_DOC_TYPES[project]:
-            err = ValueError("Unsupported project / document-type")
+        if project not in PROJECT_DOC_TYPES:
+            err = ValueError("Unsupported project")
+            log_error(self, err)
+            write_error(self, err)
+            return
+
+        if doc_type is not None and doc_type not in PROJECT_DOC_TYPES[project]:
+            err = ValueError("Unsupported project document-type")
             log_error(self, err)
             write_error(self, err)
             return
 
         # Set viewer URL params.
-        url_params = _URL_QUERY_PARAMS.format(
-            project,
-            PROJECT_DOC_TYPES[project][doc_type],
-            client
-            )
+        if doc_type is not None:
+            url_params = _URL_QUERY_PARAMS_1.format(
+                project,
+                PROJECT_DOC_TYPES[project][doc_type],
+                client
+                )
+        else:
+            url_params = _URL_QUERY_PARAMS_2.format(
+                project,
+                client
+                )
 
         # Set mode.
         if 'localhost' in self.request.host:
