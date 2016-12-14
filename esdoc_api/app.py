@@ -47,21 +47,20 @@ def _get_app_endpoints():
     }
 
     # Add set of viewer URL rewrites.
-    for project in handlers.rewrite.viewer_url.PROJECT_DOC_TYPES:
-        result.add((
-            r'/({0})/(.*)/(.*)'.format(project),
-            handlers.rewrite.ViewerURLRewriteRequestHandler
-            ))
-    for project in handlers.rewrite.viewer_url.PROJECT_DOC_TYPES:
-        result.add((
-            r'/({0})/(.*)'.format(project),
-            handlers.rewrite.SearchURLRewriteRequestHandler
-            ))
-    for project in handlers.rewrite.viewer_url.PROJECT_DOC_TYPES:
+    for project, doc_types in handlers.rewrite.documentation_url.DOC_TYPES.items():
         result.add((
             r'/({0})'.format(project),
-            handlers.rewrite.SearchURLRewriteRequestHandler
+            handlers.rewrite.DocumentationURLRewriteRequestHandler
             ))
+        for doc_type in doc_types:
+            result.add((
+                r'/({0})/({1})'.format(project, doc_type),
+                handlers.rewrite.DocumentationURLRewriteRequestHandler
+                ))
+            result.add((
+                r'/({0})/({1})/(.*)'.format(project, doc_type),
+                handlers.rewrite.DocumentationURLRewriteRequestHandler
+                ))
 
     return result
 
