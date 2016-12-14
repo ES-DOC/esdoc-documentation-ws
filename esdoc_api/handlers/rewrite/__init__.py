@@ -11,3 +11,4 @@
 
 """
 from esdoc_api.handlers.rewrite.viewer_url import ViewerURLRewriteRequestHandler
+from esdoc_api.handlers.rewrite.search_url import SearchURLRewriteRequestHandler
