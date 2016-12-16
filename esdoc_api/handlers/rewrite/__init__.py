@@ -11,3 +11,4 @@
 
 """
 from esdoc_api.handlers.rewrite.documentation_url import DocumentationURLRewriteRequestHandler
+from esdoc_api.handlers.rewrite.further_info_url import FurtherInfoURLRewriteRequestHandler
