@@ -12,4 +12,3 @@
 from esdoc_api.db import dao
 from esdoc_api.db import ingest
 from esdoc_api.db import models
-from esdoc_api.db import utils
