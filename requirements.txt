@@ -1,4 +1,3 @@
-pyesdoc
 SQLAlchemy
 argparse
 backports.ssl-match-hostname
