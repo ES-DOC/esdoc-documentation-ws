@@ -16,7 +16,7 @@ from esdoc_api.utils.convertor import json_file_to_namedtuple
 
 
 # Default configuration file path.
-_CONFIG_FPATH = "ops/config/api.conf"
+_CONFIG_FPATH = "ops/config/ws.conf"
 
 # Configuration data.
 data = None
