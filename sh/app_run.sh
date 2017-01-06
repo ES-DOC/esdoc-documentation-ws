@@ -6,7 +6,7 @@ source $ESDOC_WS_HOME/sh/utils.sh
 # Main entry point.
 main()
 {
-    log "WEB-SERVICE : running ..."
+    log "running ..."
 
     activate_venv
 	python $ESDOC_WS_HOME/sh/app_run.py

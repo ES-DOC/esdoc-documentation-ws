@@ -11,16 +11,18 @@ log()
 			do
 				declare tabs+='\t'
 			done
-	    	echo -e $now" [INFO] :: ESDOC_WS > "$tabs$1
+	    	echo -e $now" [INFO] :: ESDOC-WS > "$tabs$1
 	    else
-	    	echo -e $now" [INFO] :: ESDOC_WS > "$1
+	    	echo -e $now" [INFO] :: ESDOC-WS > "$1
 	    fi
 	else
-	    echo -e $now" [INFO] :: ESDOC_WS > "
+	    echo -e $now" [INFO] :: ESDOC-WS > "
 	fi
 }
 
 activate_venv()
 {
-	source $ESDOC_WS_HOME/venv/bin/activate
+	export PYTHONPATH=$PYTHONPATH:$ESDOC_WS_HOME
+	export PYTHONPATH=$PYTHONPATH:$ESDOC_WS_HOME/ops/esdoc-py-client
+	source $ESDOC_WS_HOME/ops/venv/bin/activate
 }

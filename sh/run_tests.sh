@@ -6,12 +6,12 @@ source $ESDOC_WS_HOME/sh/utils.sh
 # Main entry point.
 main()
 {
-    log "ESDOC_WS-TESTS : running ..."
+    log "TESTS : running ..."
 
     activate_venv
     nosetests -v -s $ESDOC_WS_HOME/tests
 
-    log "ESDOC_WS-TESTS : complete ..."
+    log "TESTS : complete ..."
 }
 
 # Invoke entry point.

@@ -15,13 +15,10 @@ chmod a+x $ESDOC_WS_HOME/sh/*.sh
 # SECTION: ALIASES
 # ###############################################################
 
-# Configuration related commands.
-alias esdoc-ws-config-init=$ESDOC_WS_HOME/sh/config_init.sh
-alias esdoc-ws-config-update=$ESDOC_WS_HOME/sh/config_update.sh
-
-# Virtual environment related commands.
-alias esdoc-ws-venv-init=$ESDOC_WS_HOME/sh/venv_init.sh
-alias esdoc-ws-venv-update=$ESDOC_WS_HOME/sh/venv_update.sh
+# Install / update.
+alias esdoc-ws-install=$ESDOC_WS_HOME/sh/install.sh
+alias esdoc-ws-update=$ESDOC_WS_HOME/sh/update.sh
+alias esdoc-ws-update-config=$ESDOC_WS_HOME/sh/update_config.sh
 
 # Logs commands.
 alias esdoc-ws-logs-reset=$ESDOC_WS_HOME/sh/logs_reset.sh
@@ -53,4 +50,5 @@ alias esdoc-ws-tests=$ESDOC_WS_HOME/sh/run_tests.sh
 mkdir -p $ESDOC_WS_HOME/ops
 mkdir -p $ESDOC_WS_HOME/ops/config
 mkdir -p $ESDOC_WS_HOME/ops/daemon
+mkdir -p $ESDOC_WS_HOME/ops/libs
 mkdir -p $ESDOC_WS_HOME/ops/logs

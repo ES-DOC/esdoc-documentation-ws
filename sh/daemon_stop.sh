@@ -9,7 +9,7 @@ main()
 	supervisorctl -c $ESDOC_WS_HOME/ops/config/supervisord.conf stop all
 	supervisorctl -c $ESDOC_WS_HOME/ops/config/supervisord.conf shutdown
 
-	log "WEB : killed web-service daemon"
+	log "killed web-service daemon"
 }
 
 # Invoke entry point.

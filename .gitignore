@@ -25,3 +25,4 @@ esdoc_api-ws.conf
 esdoc_api-supervisord.conf
 /ops
 /pyesdoc
+/archive

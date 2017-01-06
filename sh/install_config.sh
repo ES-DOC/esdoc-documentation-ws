@@ -10,7 +10,7 @@ main()
 	cp $ESDOC_WS_HOME/templates/template-supervisord.conf $ESDOC_WS_HOME/ops/config/supervisord.conf
 	cp $ESDOC_WS_HOME/templates/template-ws.conf $ESDOC_WS_HOME/ops/config/ws.conf
 
-	log "WEB : configuration files updated"
+	log "configuration files initialized"
 }
 
 # Invoke entry point.

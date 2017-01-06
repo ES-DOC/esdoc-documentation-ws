@@ -8,7 +8,7 @@ main()
 {
 	rm $ESDOC_WS_HOME/ops/logs/*.log
 
-	log "WEB-SERVICE : logs reset"
+	log "logs reset"
 }
 
 # Invoke entry point.

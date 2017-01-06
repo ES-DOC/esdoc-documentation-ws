@@ -11,7 +11,7 @@ main()
     pip install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/requirements.txt
     deactivate
 
-    log "SH : virtual environment updated"
+    log "virtual environment updated"
 }
 
 # Invoke entry point.
