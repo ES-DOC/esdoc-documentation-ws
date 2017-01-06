@@ -1,0 +1,55 @@
+# ###############################################################
+# SECTION: SETUP
+# ###############################################################
+
+# Set home path
+export ESDOC_WS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Extend python path.
+export PYTHONPATH=$PYTHONPATH:$ESDOC_WS_HOME
+
+# Ensure shell scripts are executable.
+chmod a+x $ESDOC_WS_HOME/sh/*.sh
+
+# ###############################################################
+# SECTION: ALIASES
+# ###############################################################
+
+# Configuration related commands.
+alias esdoc-ws-config-init=$ESDOC_WS_HOME/sh/config_init.sh
+alias esdoc-ws-config-update=$ESDOC_WS_HOME/sh/config_update.sh
+
+# Virtual environment related commands.
+alias esdoc-ws-venv-init=$ESDOC_WS_HOME/sh/venv_init.sh
+alias esdoc-ws-venv-update=$ESDOC_WS_HOME/sh/venv_update.sh
+
+# Logs commands.
+alias esdoc-ws-logs-reset=$ESDOC_WS_HOME/sh/logs_reset.sh
+
+# Web-service commands.
+alias esdoc-ws=$ESDOC_WS_HOME/sh/app_run.sh
+alias esdoc-ws-daemon=$ESDOC_WS_HOME/sh/daemon_start.sh
+alias esdoc-ws-daemon-stop=$ESDOC_WS_HOME/sh/daemon_stop.sh
+alias esdoc-ws-daemon-reload='esdoc-ws-daemon-stop && esdoc-ws-daemon-start'
+alias esdoc-ws-daemon-status=$ESDOC_WS_HOME/sh/daemon_status.sh
+
+# Database commands.
+alias esdoc-ws-db-setup=$ESDOC_WS_HOME/sh/db_setup.sh
+alias esdoc-ws-db-install=$ESDOC_WS_HOME/sh/db_install.sh
+alias esdoc-ws-db-uninstall=$ESDOC_WS_HOME/sh/db_uninstall.sh
+alias esdoc-ws-db-reset=$ESDOC_WS_HOME/sh/db_reset.sh
+
+alias esdoc-ws-db-ingest=$ESDOC_WS_HOME/sh/db_ingest.sh
+alias esdoc-ws-db-vacuum=$ESDOC_WS_HOME/sh/db_vacuum.sh
+
+# Test related commands.
+alias esdoc-ws-tests=$ESDOC_WS_HOME/sh/run_tests.sh
+
+# ###############################################################
+# SECTION: Initialise file system
+# ###############################################################
+
+mkdir -p $ESDOC_WS_HOME/ops
+mkdir -p $ESDOC_WS_HOME/ops/config
+mkdir -p $ESDOC_WS_HOME/ops/daemon
+mkdir -p $ESDOC_WS_HOME/ops/logs

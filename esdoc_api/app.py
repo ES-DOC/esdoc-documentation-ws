@@ -45,29 +45,6 @@ def _get_app_endpoints():
         (r'/2/summary/search/setup', handlers.search.SummarySearchSetupRequestHandler)
     }
 
-    # Add set of further info URL rewrites.
-    for project in handlers.rewrite.documentation_url.DOC_TYPES:
-        result.add((
-            r'/fiu/({0})/(.*)'.format(project),
-            handlers.rewrite.FurtherInfoURLRewriteRequestHandler
-            ))
-
-    # Add set of documentation URL rewrites.
-    for project, doc_types in handlers.rewrite.documentation_url.DOC_TYPES.items():
-        result.add((
-            r'/({0})'.format(project),
-            handlers.rewrite.DocumentationURLRewriteRequestHandler
-            ))
-        for doc_type in doc_types:
-            result.add((
-                r'/({0})/({1})'.format(project, doc_type),
-                handlers.rewrite.DocumentationURLRewriteRequestHandler
-                ))
-            result.add((
-                r'/({0})/({1})/(.*)'.format(project, doc_type),
-                handlers.rewrite.DocumentationURLRewriteRequestHandler
-                ))
-
     return result
 
 
