@@ -39,6 +39,7 @@ alias esdoc-ws-db-install=$ESDOC_WS_HOME/sh/db_install.sh
 alias esdoc-ws-db-uninstall=$ESDOC_WS_HOME/sh/db_uninstall.sh
 alias esdoc-ws-db-reset=$ESDOC_WS_HOME/sh/db_reset.sh
 
+alias esdoc-ws-db-flush=$ESDOC_WS_HOME/sh/db_flush.sh
 alias esdoc-ws-db-ingest=$ESDOC_WS_HOME/sh/db_ingest.sh
 alias esdoc-ws-db-vacuum=$ESDOC_WS_HOME/sh/db_vacuum.sh
 
