@@ -23,6 +23,6 @@ log()
 activate_venv()
 {
 	export PYTHONPATH=$PYTHONPATH:$ESDOC_WS_HOME
-	export PYTHONPATH=$PYTHONPATH:$ESDOC_WS_HOME/ops/esdoc-py-client
+	export PYTHONPATH=$PYTHONPATH:$ESDOC_WS_HOME/ops/libs/esdoc-py-client
 	source $ESDOC_WS_HOME/ops/venv/bin/activate
 }
