@@ -7,8 +7,8 @@ source $ESDOC_WS_HOME/sh/utils.sh
 main()
 {
 	log "DB : resetting ..."
-	source $ESDOC_DIR_BASH/api/db_uninstall.sh
-	source $ESDOC_DIR_BASH/api/db_install.sh
+	source $ESDOC_WS_HOME/sh/db_uninstall.sh
+	source $ESDOC_WS_HOME/sh/db_install.sh
 	log "DB : reset"
 }
 

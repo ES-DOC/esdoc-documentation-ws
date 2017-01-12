@@ -8,7 +8,7 @@ main()
 {
     log "running ..."
 
-    activate_venv
+    source $ESDOC_WS_HOME/sh/activate_venv.sh
 	python $ESDOC_WS_HOME/sh/app_run.py
 }
 

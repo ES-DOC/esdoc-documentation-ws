@@ -8,12 +8,12 @@ main()
 {
     log "installing virtual environment ..."
 
-    pip install --upgrade pip
-    pip install --upgrade virtualenv
+    $ESDOC_WS_PIP install --upgrade pip
+    $ESDOC_WS_PIP install --upgrade virtualenv
     virtualenv $ESDOC_WS_HOME/ops/venv
-    activate_venv
-    pip install --upgrade pip
-    pip install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/requirements.txt
+    source $ESDOC_WS_HOME/sh/activate_venv.sh
+    $ESDOC_WS_PIP install --upgrade pip
+    $ESDOC_WS_PIP install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements.txt
     deactivate
 }
 

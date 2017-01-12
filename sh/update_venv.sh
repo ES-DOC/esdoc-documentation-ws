@@ -6,11 +6,10 @@ source $ESDOC_WS_HOME/sh/utils.sh
 # Main entry point.
 main()
 {
-	activate_venv
-    pip install --upgrade pip
-    pip install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/requirements.txt
+	source $ESDOC_WS_HOME/sh/activate_venv.sh
+    $ESDOC_WS_PIP install --upgrade pip
+    $ESDOC_WS_PIP install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements.txt
     deactivate
-
     log "virtual environment updated"
 }
 

@@ -22,7 +22,7 @@ _db_create()
 _db_grant_permissions()
 {
 	log "DB : granting database permissions"
-	psql -U esdoc_db_admin -d esdoc_api -a -f $ESDOC_DIR_BASH/api/db_grant_permissions.sql
+	psql -U esdoc_db_admin -d esdoc_api -a -f $ESDOC_WS_HOME/db_permissions.sql
 }
 
 # Seed db.
@@ -30,7 +30,7 @@ _db_setup()
 {
 	log "DB : seeding database"
 
-    activate_venv api
+    source $ESDOC_WS_HOME/sh/activate_venv.sh
     python $ESDOC_HOME/bash/api/db_install.py
 }
 

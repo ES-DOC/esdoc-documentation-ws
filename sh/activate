@@ -1,27 +1,38 @@
 # ###############################################################
-# SECTION: SETUP
+# STANDARD-SECTION: SETUP
 # ###############################################################
 
 # Set home path
 export ESDOC_WS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export ESDOC_WS_HOME="$( cd "$( dirname "${ESDOC_WS_HOME[0]}" )" && pwd )"
 
-# Extend python path.
-export PYTHONPATH=$PYTHONPATH:$ESDOC_WS_HOME
+# Set pip
+export ESDOC_WS_PIP=pip
+
+# ###############################################################
+# STANDARD-SECTION: OPERATIONS
+# ###############################################################
 
 # Ensure shell scripts are executable.
 chmod a+x $ESDOC_WS_HOME/sh/*.sh
 
+# Ensure ops directories exist
+mkdir -p $ESDOC_WS_HOME/ops
+mkdir -p $ESDOC_WS_HOME/ops/config
+mkdir -p $ESDOC_WS_HOME/ops/daemon
+mkdir -p $ESDOC_WS_HOME/ops/libs
+mkdir -p $ESDOC_WS_HOME/ops/logs
+
 # ###############################################################
-# SECTION: ALIASES
+# STANDARD-SECTION: ALIASES
 # ###############################################################
 
 # Install / update.
 alias esdoc-ws-install=$ESDOC_WS_HOME/sh/install.sh
 alias esdoc-ws-update=$ESDOC_WS_HOME/sh/update.sh
-alias esdoc-ws-update-config=$ESDOC_WS_HOME/sh/update_config.sh
 
 # Logs commands.
-alias esdoc-ws-logs-reset=$ESDOC_WS_HOME/sh/logs_reset.sh
+alias esdoc-ws-reset-logs=$ESDOC_WS_HOME/sh/reset_logs.sh
 
 # Web-service commands.
 alias esdoc-ws=$ESDOC_WS_HOME/sh/app_run.sh
@@ -35,20 +46,18 @@ alias esdoc-ws-db-setup=$ESDOC_WS_HOME/sh/db_setup.sh
 alias esdoc-ws-db-install=$ESDOC_WS_HOME/sh/db_install.sh
 alias esdoc-ws-db-uninstall=$ESDOC_WS_HOME/sh/db_uninstall.sh
 alias esdoc-ws-db-reset=$ESDOC_WS_HOME/sh/db_reset.sh
-
-alias esdoc-ws-db-flush=$ESDOC_WS_HOME/sh/db_flush.sh
-alias esdoc-ws-db-ingest=$ESDOC_WS_HOME/sh/db_ingest.sh
 alias esdoc-ws-db-vacuum=$ESDOC_WS_HOME/sh/db_vacuum.sh
 
 # Test related commands.
 alias esdoc-ws-tests=$ESDOC_WS_HOME/sh/run_tests.sh
 
 # ###############################################################
-# SECTION: Initialise file system
+# CUSTOM-SECTION
 # ###############################################################
 
-mkdir -p $ESDOC_WS_HOME/ops
-mkdir -p $ESDOC_WS_HOME/ops/config
-mkdir -p $ESDOC_WS_HOME/ops/daemon
-mkdir -p $ESDOC_WS_HOME/ops/libs
-mkdir -p $ESDOC_WS_HOME/ops/logs
+# Custom aliases.
+alias esdoc-ws-db-flush=$ESDOC_WS_HOME/sh/custom/db_flush.sh
+alias esdoc-ws-db-ingest=$ESDOC_WS_HOME/sh/custom/db_ingest.sh
+
+# Ensure custom shell scripts are executable.
+chmod a+x $ESDOC_WS_HOME/sh/custom/*.sh
