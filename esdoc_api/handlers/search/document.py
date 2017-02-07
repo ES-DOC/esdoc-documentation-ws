@@ -24,7 +24,7 @@ _DEFAULT_PARAMS = {
 }
 
 # Default document encoding.
-_DEFAULT_ENCODING = pyesdoc.ENCODING_JSON
+_DEFAULT_ENCODING = pyesdoc.constants.ENCODING_JSON
 
 # Set of child document types to be reloaded from archive.
 _CHILD_DOC_RELOAD_TYPES = tuple({
@@ -125,7 +125,7 @@ def _set_docs_for_output(ctx):
 
     """
     # HTML documents require a sorted merge.
-    if ctx.encoding == pyesdoc.ENCODING_HTML:
+    if ctx.encoding == pyesdoc.constants.ENCODING_HTML:
         ctx.docs = ctx.docs + ctx.child_docs
         ctx.docs = sorted(ctx.docs, key=lambda d: d.meta.sort_key)
 
@@ -134,7 +134,7 @@ def _encode_docs(ctx):
     """Encodes documents loaded from pyesdoc archive.
 
     """
-    if ctx.encoding != pyesdoc.ENCODING_JSON:
+    if ctx.encoding != pyesdoc.constants.ENCODING_JSON:
         ctx.docs = pyesdoc.encode(ctx.docs, ctx.encoding)
     else:
         ctx.docs = pyesdoc.encode(ctx.docs, pyesdoc.ENCODING_DICT)
@@ -152,7 +152,7 @@ def _set_output(ctx):
         ctx.handler.output = None
 
     # Multiple html documents - already wrapped by pyesdoc.
-    elif ctx.encoding == pyesdoc.ENCODING_HTML:
+    elif ctx.encoding == pyesdoc.constants.ENCODING_HTML:
         ctx.handler.output = "<div>{0}</div>".format(ctx.docs[0])
         # ctx.handler.output = "<div>{0}</div>".format(ctx.docs)
 
@@ -161,13 +161,13 @@ def _set_output(ctx):
         ctx.handler.output = ctx.docs[0]
 
     # Multiple json documents - create wrapper.
-    elif ctx.encoding == pyesdoc.ENCODING_JSON:
+    elif ctx.encoding == pyesdoc.constants.ENCODING_JSON:
         ctx.handler.output = {
             'documents': ctx.docs
         }
 
     # Multiple xml documents - create wrapper.
-    elif ctx.encoding == pyesdoc.ENCODING_XML:
+    elif ctx.encoding == pyesdoc.constants.ENCODING_XML:
         ctx.handler.output = "<documents>{0}</documents>".format("".join(ctx.docs))
 
 

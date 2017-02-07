@@ -42,7 +42,7 @@ def _2_document_retrieve_params(schema):
 
 	"""
 	schema['properties']['encoding']['items']['enum'] = \
-		list(pyesdoc.ENCODINGS_ALL)
+		list(pyesdoc.constants.ENCODINGS_ALL)
 
 
 def _2_summary_search_params(schema):

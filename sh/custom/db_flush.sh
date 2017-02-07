@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import utils.
-source $ESDOC_WS_HOME/bash/utils.sh
+source $ESDOC_WS_HOME/sh/utils.sh
 
 # Main entry point.
 main()
