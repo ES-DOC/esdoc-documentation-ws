@@ -38,7 +38,7 @@ alias esdoc-ws-reset-logs=$ESDOC_WS_HOME/sh/reset_logs.sh
 alias esdoc-ws=$ESDOC_WS_HOME/sh/app_run.sh
 alias esdoc-ws-daemon=$ESDOC_WS_HOME/sh/daemon_start.sh
 alias esdoc-ws-daemon-stop=$ESDOC_WS_HOME/sh/daemon_stop.sh
-alias esdoc-ws-daemon-reload='esdoc-ws-daemon-stop && esdoc-ws-daemon-start'
+alias esdoc-ws-daemon-reload=$ESDOC_WS_HOME/sh/daemon_reload.sh
 alias esdoc-ws-daemon-status=$ESDOC_WS_HOME/sh/daemon_status.sh
 
 # Database commands.
