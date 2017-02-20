@@ -42,22 +42,13 @@ alias esdoc-ws-daemon-reload=$ESDOC_WS_HOME/sh/daemon_reload.sh
 alias esdoc-ws-daemon-status=$ESDOC_WS_HOME/sh/daemon_status.sh
 
 # Database commands.
-alias esdoc-ws-db-setup=$ESDOC_WS_HOME/sh/db_setup.sh
+alias esdoc-ws-db-flush=$ESDOC_WS_HOME/sh/db_flush.sh
+alias esdoc-ws-db-ingest=$ESDOC_WS_HOME/sh/db_ingest.sh
 alias esdoc-ws-db-install=$ESDOC_WS_HOME/sh/db_install.sh
-alias esdoc-ws-db-uninstall=$ESDOC_WS_HOME/sh/db_uninstall.sh
 alias esdoc-ws-db-reset=$ESDOC_WS_HOME/sh/db_reset.sh
+alias esdoc-ws-db-setup=$ESDOC_WS_HOME/sh/db_setup.sh
+alias esdoc-ws-db-uninstall=$ESDOC_WS_HOME/sh/db_uninstall.sh
 alias esdoc-ws-db-vacuum=$ESDOC_WS_HOME/sh/db_vacuum.sh
 
 # Test related commands.
 alias esdoc-ws-tests=$ESDOC_WS_HOME/sh/run_tests.sh
-
-# ###############################################################
-# CUSTOM-SECTION
-# ###############################################################
-
-# Custom aliases.
-alias esdoc-ws-db-flush=$ESDOC_WS_HOME/sh/custom/db_flush.sh
-alias esdoc-ws-db-ingest=$ESDOC_WS_HOME/sh/custom/db_ingest.sh
-
-# Ensure custom shell scripts are executable.
-chmod a+x $ESDOC_WS_HOME/sh/custom/*.sh

@@ -10,7 +10,6 @@ main()
     $ESDOC_WS_PIP install --upgrade pip
     $ESDOC_WS_PIP install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements.txt
     deactivate
-    log "virtual environment updated"
 }
 
 # Invoke entry point.
