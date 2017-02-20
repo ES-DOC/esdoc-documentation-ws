@@ -10,7 +10,6 @@ main()
 
 	cd $ESDOC_WS_HOME
 	git pull
-    source $ESDOC_WS_HOME/sh/update_libs.sh
 	source $ESDOC_WS_HOME/sh/update_venv.sh
 
     log "update complete"

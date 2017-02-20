@@ -20,7 +20,6 @@ chmod a+x $ESDOC_WS_HOME/sh/*.sh
 mkdir -p $ESDOC_WS_HOME/ops
 mkdir -p $ESDOC_WS_HOME/ops/config
 mkdir -p $ESDOC_WS_HOME/ops/daemon
-mkdir -p $ESDOC_WS_HOME/ops/libs
 mkdir -p $ESDOC_WS_HOME/ops/logs
 
 # ###############################################################

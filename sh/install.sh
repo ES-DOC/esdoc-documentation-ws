@@ -10,7 +10,6 @@ main()
 
 	source $ESDOC_WS_HOME/sh/install_config.sh
 	source $ESDOC_WS_HOME/sh/install_venv.sh
-	source $ESDOC_WS_HOME/sh/install_libs.sh
 
     log "install complete"
 }
