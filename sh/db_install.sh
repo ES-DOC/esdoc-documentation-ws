@@ -25,13 +25,12 @@ _db_grant_permissions()
 	psql -U esdoc_db_admin -d esdoc_api -a -f $ESDOC_WS_HOME/db_permissions.sql
 }
 
-# Seed db.
+# Setup db.
 _db_setup()
 {
-	log "DB : seeding database"
+	log "DB : setting up database"
 
-    source $ESDOC_WS_HOME/sh/activate_venv.sh
-    python $ESDOC_HOME/bash/api/db_install.py
+    source $ESDOC_WS_HOME/sh/db_setup.sh
 }
 
 # Main entry point.
