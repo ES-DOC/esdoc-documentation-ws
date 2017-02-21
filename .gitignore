@@ -26,3 +26,4 @@ esdoc_api-supervisord.conf
 /ops
 /pyesdoc
 /archive
+/resources/db
