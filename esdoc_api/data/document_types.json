@@ -135,6 +135,55 @@
                     "name"
                 ]
             }
+        },
+        {
+            "displayName": "Simulation",
+            "isPdfTarget": false,
+            "key": "cim.2.data.Simulation",
+            "label": "Simulation",
+            "loadAll": false,
+            "ontology": "cim.2",
+            "search": {
+                "columns": [
+                    "institute", "model", "experiment"
+                ],
+                "filters": [
+                    "experiment", "institute", "model"
+                ]
+            }
+        },
+        {
+            "displayName": "Machine",
+            "isPdfTarget": false,
+            "key": "cim.2.platform.Machine",
+            "label": "Machine",
+            "loadAll": false,
+            "ontology": "cim.2",
+            "search": {
+                "columns": [
+                    "institute"
+                ],
+                "filters": [
+                    "institute"
+                ]
+            }
+        },
+        {
+            "displayName": "Performance",
+            "isPdfTarget": false,
+            "key": "cim.2.platform.Performance",
+            "label": "Performance",
+            "loadAll": false,
+            "ontology": "cim.2",
+            "search": {
+                "columns": [
+                    "institute"
+                ],
+                "filters": [
+                    "institute"
+                ]
+            }
         }
+
     ]
 }

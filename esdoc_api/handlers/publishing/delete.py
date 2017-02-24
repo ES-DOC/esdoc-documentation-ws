@@ -37,28 +37,28 @@ class DocumentDeleteRequestHandler(tornado.web.RequestHandler):
             """Sets search criteria.
 
             """
-            for param in {
-                _PARAM_DOCUMENT_ID,
-                _PARAM_DOCUMENT_VERSION
-            }:
-                setattr(self, param, self.get_argument(param).lower())
+            self.doc_id = self.get_argument(_PARAM_DOCUMENT_ID).lower()
+            self.doc_version = self.get_argument(_PARAM_DOCUMENT_VERSION).lower()
 
 
         def _delete_from_archive():
             """Deletes document from archive.
 
             """
-            pyesdoc.archive.delete(self.document_id,
-                                   self.document_version)
+            pyesdoc.archive.delete(self.doc_id, self.doc_version)
 
 
         def _delete_from_db(self):
             """Deletes document from database.
 
             """
+            # TODO switch to context manager
+            # with db.session.start():
+            #     db.ingest.undo(self.doc_id, self.doc_version)
+
             db.session.start(config.db)
             try:
-                db.ingest.undo(self.document_id, self.document_version)
+                db.ingest.undo(self.doc_id, self.doc_version)
                 db.session.commit()
             finally:
                 db.session.end()

@@ -108,7 +108,7 @@ def get_document_by_drs_keys(
     key_06=None,
     key_07=None,
     key_08=None,
-    latest_only = True
+    latest_only=True
     ):
     """Retrieves a single document by it's drs keys.
 
@@ -240,50 +240,12 @@ def get_document_summaries(
     return sort(Document, qry.all())
 
 
-def _delete_document_relation(document_id, typeof):
-    """Deletes all document relations of passed type.
-
-    :param int document_id: ID of a Document instance.
-    :param class typeof: Type of relation.
-
-    """
-    delete_by_facet(typeof, typeof.document_id == document_id)
-
-
-def delete_document_external_ids(document_id):
-    """Deletes a list of DocumentExternalID instances filtered by their Document ID.
-
-    :param int document_id: ID of a Document instance.
-
-    """
-    _delete_document_relation(document_id, DocumentExternalID)
-
-
-def delete_document_drs(document_id):
-    """Deletes a list of DocumentDRS instances filtered by their Document ID.
-
-    :param int document_id: ID of a Document instance.
-
-    """
-    _delete_document_relation(document_id, DocumentDRS)
-
-
-def delete_document_sub_project(document_id):
-    """Deletes a list of DocumentSubProject instances filtered by their Document ID.
-
-    :param int document_id: ID of a Document instance.
-
-    """
-    _delete_document_relation(document_id, DocumentSubProject)
-
-
 def delete_document(document_id):
     """Deletes a document.
 
     :param int document_id: ID of a Document instance.
 
     """
-    delete_document_drs(document_id)
-    delete_document_external_ids(document_id)
-    delete_document_sub_project(document_id)
+    for typeof in {DocumentDRS, DocumentExternalID, DocumentSubProject}:
+        delete_by_facet(typeof, typeof.document_id == document_id)
     delete_by_id(Document, document_id)
