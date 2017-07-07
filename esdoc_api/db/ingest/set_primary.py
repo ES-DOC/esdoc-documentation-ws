@@ -62,7 +62,7 @@ def execute(ctx):
             instance.alternative_name = ctx.doc.alternative_names[0]
 
     # Set short/long names.
-    fields = [unicode(f) for f in ctx.doc.ext.summary_fields if f is not None]
+    fields = [f for f in ctx.doc.ext.summary_fields if f is not None]
     try:
         instance.canonical_name = fields[0]
     except IndexError:
@@ -89,6 +89,4 @@ def execute(ctx):
         raise StopIteration("Document already ingested")
     else:
         ctx.primary = instance
-
-
 
