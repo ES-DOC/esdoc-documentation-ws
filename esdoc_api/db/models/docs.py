@@ -53,9 +53,9 @@ class Document(Entity):
     ingest_date = Column(DateTime, default=datetime.datetime.now())
     is_latest = Column(Boolean, nullable=False, default=False)
     # .. summary fields
-    name = Column(Unicode(255), nullable=False)
+    name = Column(Unicode(1023), nullable=False)
     canonical_name = Column(Unicode(1023))
-    alternative_name = Column(Unicode(255))
+    alternative_name = Column(Unicode(1023))
     long_name = Column(Unicode(1023))
     description = Column(Unicode(1023))
     # .. inter-document fields
