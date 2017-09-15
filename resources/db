@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.3.1
 -- Dumped by pg_dump version 9.3.1
--- Started on 2017-09-15 16:01:40 CEST
+-- Started on 2017-09-15 16:08:02 CEST
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -5816,7 +5816,7 @@ COPY tbl_document_sub_project (id, document_id, sub_project, project) FROM stdin
 SELECT pg_catalog.setval('tbl_document_sub_project_id_seq', 81556, true);
 
 
--- Completed on 2017-09-15 16:01:41 CEST
+-- Completed on 2017-09-15 16:08:02 CEST
 
 --
 -- PostgreSQL database dump complete
