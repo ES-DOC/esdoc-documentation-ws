@@ -38,7 +38,7 @@ class Document(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document'
     __table_args__ = (
-        UniqueConstraint('project' ,'uid', 'version'),
+        # UniqueConstraint('project' ,'uid', 'version'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
@@ -87,7 +87,7 @@ class DocumentDRS(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_drs'
     __table_args__ = (
-        UniqueConstraint('project' ,'document_id', 'path'),
+        # UniqueConstraint('project' ,'document_id', 'path'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
@@ -123,7 +123,7 @@ class DocumentExternalID(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_external_id'
     __table_args__ = (
-        UniqueConstraint('project' ,'document_id', 'external_id'),
+        # UniqueConstraint('project' ,'document_id', 'external_id'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
@@ -143,7 +143,7 @@ class DocumentSubProject(Entity):
     # SQLAlchemy directives.
     __tablename__ = 'tbl_document_sub_project'
     __table_args__ = (
-        UniqueConstraint('document_id', 'project', 'sub_project'),
+        # UniqueConstraint('document_id', 'project', 'sub_project'),
         {'schema' : _DOMAIN_PARTITION}
     )
 
