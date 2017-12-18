@@ -20,7 +20,7 @@ __title__ = 'es-doc web service'
 __version__ = '0.9.8.1.0'
 __author__ = 'ES-DOC'
 __license__ = 'GPL'
-__copyright__ = 'Copyright 2016: IPSL'
+__copyright__ = 'Copyright 2018: IPSL'
 
 from esdoc_api.app import run, stop
 from esdoc_api.utils.config import data as config
