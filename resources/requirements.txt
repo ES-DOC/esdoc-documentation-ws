@@ -7,7 +7,7 @@ feedparser
 lxml
 meld3
 nose
-psycopg2
+psycopg2-binary
 pytz
 requests
 six
