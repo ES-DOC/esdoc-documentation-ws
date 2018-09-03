@@ -7,22 +7,22 @@ source $ESDOC_WS_HOME/sh/utils.sh
 _db_create_users()
 {
 	log "DB : creating database users"
-	createuser -U postgres -d -s esdoc_db_admin
-	createuser -U esdoc_db_admin -D -S -R esdoc_db_user
+	createuser -U $ESDOC_API_DB_SYSTEM_USER -d -s esdoc_api_db_admin
+	createuser -U esdoc_api_db_admin -D -S -R esdoc_api_db_user
 }
 
 # Create db.
 _db_create()
 {
 	log "DB : creating database"
-	createdb -U esdoc_db_admin -e -O esdoc_db_admin -T template0 esdoc_api
+	createdb -U esdoc_api_db_admin -e -O esdoc_api_db_admin -T template0 esdoc_api
 }
 
 # Grant db permissions.
 _db_grant_permissions()
 {
 	log "DB : granting database permissions"
-	psql -U esdoc_db_admin -d esdoc_api -a -f $ESDOC_WS_HOME/db_permissions.sql
+	psql -U esdoc_api_db_admin -d esdoc_api -a -f $ESDOC_WS_HOME/sh/db_permissions.sql
 }
 
 # Setup db.
