@@ -137,6 +137,19 @@
             }
         },
         {
+            "displayName": "Model",
+            "isPdfTarget": false,
+            "key": "cim.2.science.Model",
+            "label": "Model",
+            "loadAll": true,
+            "ontology": "cim.2",
+            "search": {
+                "columns": [
+                    "institute"
+                ]
+            }
+        },
+        {
             "displayName": "Simulation",
             "isPdfTarget": false,
             "key": "cim.2.data.Simulation",
