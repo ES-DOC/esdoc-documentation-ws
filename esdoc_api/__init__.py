@@ -17,7 +17,7 @@
 
 """
 __title__ = 'es-doc web service'
-__version__ = '0.11.0.0.0'
+__version__ = '0.12.0.0.0'
 __author__ = 'ES-DOC'
 __license__ = 'GPL'
 __copyright__ = 'Copyright 2018: IPSL'
