@@ -91,7 +91,7 @@ def run():
     # Run web-service.
     app = _get_app()
     app.listen(config.port)
-    log("Ready")
+    log("Running @ port {}".format(config.port))
     tornado.ioloop.IOLoop.instance().start()
 
 
