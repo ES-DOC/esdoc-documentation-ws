@@ -6375,63 +6375,63 @@ ALTER TABLE ONLY docs.tbl_document_sub_project
 -- Name: SCHEMA docs; Type: ACL; Schema: -; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT USAGE ON SCHEMA docs TO esdoc_api_db_user;
+GRANT USAGE ON SCHEMA docs TO prod_ws_documentation_wsuser;
 
 
 --
 -- Name: TABLE tbl_document; Type: ACL; Schema: docs; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE docs.tbl_document TO esdoc_api_db_user;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE docs.tbl_document TO prod_ws_documentation_wsuser;
 
 
 --
 -- Name: TABLE tbl_document_drs; Type: ACL; Schema: docs; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE docs.tbl_document_drs TO esdoc_api_db_user;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE docs.tbl_document_drs TO prod_ws_documentation_wsuser;
 
 
 --
 -- Name: SEQUENCE tbl_document_drs_id_seq; Type: ACL; Schema: docs; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT SELECT,USAGE ON SEQUENCE docs.tbl_document_drs_id_seq TO esdoc_api_db_user;
+GRANT SELECT,USAGE ON SEQUENCE docs.tbl_document_drs_id_seq TO prod_ws_documentation_wsuser;
 
 
 --
 -- Name: TABLE tbl_document_external_id; Type: ACL; Schema: docs; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE docs.tbl_document_external_id TO esdoc_api_db_user;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE docs.tbl_document_external_id TO prod_ws_documentation_wsuser;
 
 
 --
 -- Name: SEQUENCE tbl_document_external_id_id_seq; Type: ACL; Schema: docs; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT SELECT,USAGE ON SEQUENCE docs.tbl_document_external_id_id_seq TO esdoc_api_db_user;
+GRANT SELECT,USAGE ON SEQUENCE docs.tbl_document_external_id_id_seq TO prod_ws_documentation_wsuser;
 
 
 --
 -- Name: SEQUENCE tbl_document_id_seq; Type: ACL; Schema: docs; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT SELECT,USAGE ON SEQUENCE docs.tbl_document_id_seq TO esdoc_api_db_user;
+GRANT SELECT,USAGE ON SEQUENCE docs.tbl_document_id_seq TO prod_ws_documentation_wsuser;
 
 
 --
 -- Name: TABLE tbl_document_sub_project; Type: ACL; Schema: docs; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE docs.tbl_document_sub_project TO esdoc_api_db_user;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE docs.tbl_document_sub_project TO prod_ws_documentation_wsuser;
 
 
 --
 -- Name: SEQUENCE tbl_document_sub_project_id_seq; Type: ACL; Schema: docs; Owner: prod_ws_documentation_dbowner
 --
 
-GRANT SELECT,USAGE ON SEQUENCE docs.tbl_document_sub_project_id_seq TO esdoc_api_db_user;
+GRANT SELECT,USAGE ON SEQUENCE docs.tbl_document_sub_project_id_seq TO prod_ws_documentation_wsuser;
 
 
 --
