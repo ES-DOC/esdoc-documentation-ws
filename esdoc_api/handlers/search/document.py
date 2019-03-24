@@ -137,7 +137,7 @@ def _encode_docs(ctx):
     if ctx.encoding != pyesdoc.constants.ENCODING_JSON:
         ctx.docs = pyesdoc.encode(ctx.docs, ctx.encoding)
     else:
-        ctx.docs = pyesdoc.encode(ctx.docs, pyesdoc.ENCODING_DICT)
+        ctx.docs = pyesdoc.encode(ctx.docs, pyesdoc.constants.ENCODING_DICT)
 
 
 def _set_output(ctx):
@@ -183,4 +183,3 @@ class _ProcessingContext(object):
         self.docs = docs
         self.encoding = handler.encoding
         self.handler = handler
-
