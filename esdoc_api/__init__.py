@@ -17,10 +17,10 @@
 
 """
 __title__ = 'es-doc web service'
-__version__ = '0.13.1.0'
+__version__ = '1.0.0.0'
 __author__ = 'ES-DOC'
 __license__ = 'GPL'
-__copyright__ = 'Copyright 2018: IPSL'
+__copyright__ = 'Copyright 2019: IPSL'
 
 from esdoc_api.app import run, stop
 from esdoc_api.utils.config import data as config
