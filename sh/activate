@@ -9,9 +9,6 @@ export ESDOC_WS_HOME="$( cd "$( dirname "${ESDOC_WS_HOME[0]}" )" && pwd )"
 # Set python path
 export PYTHONPATH=$ESDOC_WS_HOME:$PYTHONPATH
 
-# Set pip
-export ESDOC_WS_PIP=pip
-
 # ###############################################################
 # STANDARD-SECTION: OPERATIONS
 # ###############################################################

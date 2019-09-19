@@ -37,7 +37,7 @@ def _main():
             pass
 
         # Simple log to stdout.
-        print err
+        print(err)
 
     # Signal exit.
     finally:

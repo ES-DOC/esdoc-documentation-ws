@@ -7,9 +7,9 @@ source $ESDOC_WS_HOME/sh/utils.sh
 main()
 {
 	source $ESDOC_WS_HOME/sh/activate_venv.sh
-    $ESDOC_WS_PIP install --upgrade pip
-    $ESDOC_WS_PIP install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements.txt
-    $ESDOC_WS_PIP install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements-pyesdoc.txt
+    pip2 install --upgrade pip
+    pip2 install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements.txt
+    pip2 install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements-pyesdoc.txt
     deactivate
 }
 
