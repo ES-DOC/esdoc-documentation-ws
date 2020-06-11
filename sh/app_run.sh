@@ -8,8 +8,8 @@ main()
 {
     log "running ..."
 
-    source $ESDOC_WS_HOME/sh/activate_venv.sh
-	python $ESDOC_WS_HOME/sh/app_run.py
+    pushd $ESDOC_WS_HOME
+	pipenv run python $ESDOC_WS_HOME/sh/app_run.py
 }
 
 # Invoke entry point.

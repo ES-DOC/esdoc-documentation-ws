@@ -8,8 +8,7 @@ main()
 {
     log "update starts ..."
 
-	cd $ESDOC_WS_HOME
-	git pull
+	source $ESDOC_WS_HOME/sh/update_src.sh
 	source $ESDOC_WS_HOME/sh/update_venv.sh
 
     log "update complete"

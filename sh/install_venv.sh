@@ -8,13 +8,11 @@ main()
 {
     log "installing virtual environment ..."
 
-    pip2 install --upgrade pip
-    pip2 install --upgrade virtualenv
-    virtualenv $ESDOC_WS_HOME/ops/venv
-    source $ESDOC_WS_HOME/sh/activate_venv.sh
-    pip2 install --upgrade pip
-    pip2 install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements.txt
-    deactivate
+    pyenv local 2.7.17
+    pip install --upgrade pip
+    pip install --upgrade pipenv
+    pushd $ESDOC_WS_HOME
+    pipenv install -r $ESDOC_WS_HOME/requirements.txt    
 }
 
 # Invoke entry point.

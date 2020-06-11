@@ -8,7 +8,7 @@ main()
 {
 	log "DB : truncating ..."
 
-    source $ESDOC_WS_HOME/sh/activate_venv.sh
+    pushd $ESDOC_WS_HOME
 	psql -U $1 -d esdoc_api -a -f $ESDOC_WS_HOME/db_truncate.sql
 
 	log "DB : truncated"

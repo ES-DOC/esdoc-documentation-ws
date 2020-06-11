@@ -8,8 +8,8 @@ main()
 {
     log "DB: ingesting from pyesdoc archive ..."
 
-    source $ESDOC_WS_HOME/sh/activate_venv.sh
-    python $ESDOC_WS_HOME/sh/db_ingest.py
+    pushd $ESDOC_WS_HOME
+    pipenv run python $ESDOC_WS_HOME/sh/db_ingest.py
 
     log "DB: ingested from pyesdoc archive"
 }

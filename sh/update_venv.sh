@@ -6,10 +6,8 @@ source $ESDOC_WS_HOME/sh/utils.sh
 # Main entry point.
 main()
 {
-	source $ESDOC_WS_HOME/sh/activate_venv.sh
-    pip2 install --upgrade pip
-    pip2 install --upgrade --no-cache-dir -I -r $ESDOC_WS_HOME/resources/requirements.txt
-    deactivate
+    pushd $ESDOC_WS_HOME
+    pipenv install -r $ESDOC_WS_HOME/requirements.txt
 }
 
 # Invoke entry point.

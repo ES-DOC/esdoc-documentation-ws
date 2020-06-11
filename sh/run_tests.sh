@@ -8,7 +8,7 @@ main()
 {
     log "TESTS : running ..."
 
-    source $ESDOC_WS_HOME/sh/activate_venv.sh
+    pushd $ESDOC_WS_HOME
     nosetests -v -s $ESDOC_WS_HOME/tests
 
     log "TESTS : complete ..."
