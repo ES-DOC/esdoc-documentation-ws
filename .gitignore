@@ -27,3 +27,4 @@ esdoc_api-supervisord.conf
 /pyesdoc
 /archive
 /resources/db
+*.lock

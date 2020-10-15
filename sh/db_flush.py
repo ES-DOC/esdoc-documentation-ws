@@ -41,7 +41,7 @@ _parser.add_argument(
 def _execute(project, source):
     """Executes document deletion.
 
-    """
+    """    
     # Format input params.
     project = unicode(project).strip().lower()
     if source is not None:
