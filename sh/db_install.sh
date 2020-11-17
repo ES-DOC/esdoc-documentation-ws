@@ -15,7 +15,7 @@ _db_create_users()
 _db_create()
 {
 	log "DB : creating database"
-	createdb -U esdoc_api_db_admin -e -O esdoc_api_db_admin -T template0 esdoc_api
+	createdb -U esdoc_api_db_admin -e -O esdoc_api_db_admin -T template1 esdoc_api
 }
 
 # Grant db permissions.
