@@ -16,6 +16,8 @@ _install_venv()
 {
     log "installing virtual environment ..."
 
+	pushd $ESDOC_WS_HOME
+
     # Update pip / pipenv to latest versions.
     pip install --upgrade pip
     pip install --upgrade pipenv
