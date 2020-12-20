@@ -12,7 +12,7 @@ install_config()
 	log "configuration files initialized"
 }
 
-_install_venv()
+install_venv()
 {
     log "installing virtual environment ..."
 
@@ -32,8 +32,8 @@ main()
 {
     log "install starts ..."
 
-    _install_config
-    _install_venv
+    install_config
+    install_venv
 
     log "install complete"
 }
