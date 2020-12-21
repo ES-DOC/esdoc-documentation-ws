@@ -14,17 +14,18 @@ install_config()
 
 install_venv()
 {
-    log "installing virtual environment ..."
-
 	pushd $ESDOC_WS_HOME
+
+    log "installing virtual environment ..."
 
     # Update pip / pipenv to latest versions.
     pip install --upgrade pip
     pip install --upgrade pipenv
 
 	# Install venv using pipenv.
-    pushd $ESDOC_WS_HOME
     pipenv install -r $ESDOC_WS_HOME/requirements.txt    
+
+    popd
 }
 
 # Main entry point.
