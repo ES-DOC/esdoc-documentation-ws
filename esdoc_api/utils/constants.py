@@ -14,6 +14,8 @@ from esdoc_api.data import get_data
 
 # HTTP CORS header.
 HTTP_HEADER_Access_Control_Allow_Origin = "Access-Control-Allow-Origin"
+HTTP_HEADER_Access_Control_Allow_Headers = "Access-Control-Allow-Headers"
+HTTP_HEADER_Access_Control_Allow_Methods = "Access-Control-Allow-Methods"
 
 # Default endpoint.
 DEFAULT_ENDPOINT = r'/2/ops/heartbeat'

@@ -42,6 +42,8 @@ class DocumentByDRSSearchRequestHandler(tornado.web.RequestHandler):
 
         """
         self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Origin, "*")
+        self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Headers, "x-requested-with")
+        self.set_header(constants.HTTP_HEADER_Access_Control_Allow_Methods, 'POST, GET, OPTIONS')
 
 
     def get(self):
@@ -95,4 +97,9 @@ class DocumentByDRSSearchRequestHandler(tornado.web.RequestHandler):
             ])
 
 
+    def options(self, *args):
+        """HTTP OPTIONS handler.
 
+        """        
+        self.set_status(204)
+        self.finish()

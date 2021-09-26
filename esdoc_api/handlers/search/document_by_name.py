@@ -61,3 +61,11 @@ class DocumentByNameSearchRequestHandler(tornado.web.RequestHandler):
             _set_data,
             lambda: set_output(self, self.docs)
             ])
+
+
+    def options(self, *args):
+        """HTTP OPTIONS handler.
+
+        """        
+        self.set_status(204)
+        self.finish()
