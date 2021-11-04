@@ -33,10 +33,10 @@ def _get_app_endpoints():
     """
     result = {
         (r'/', handlers.ops.HeartbeatRequestHandler),
-        (r'/2/document/create', handlers.publishing.DocumentCreateRequestHandler),
-        (r'/2/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
+        # (r'/2/document/create', handlers.publishing.DocumentCreateRequestHandler),
+        # (r'/2/document/delete', handlers.publishing.DocumentDeleteRequestHandler),
         (r'/2/document/retrieve', handlers.publishing.DocumentRetrieveRequestHandler),
-        (r'/2/document/update', handlers.publishing.DocumentUpdateRequestHandler),
+        # (r'/2/document/update', handlers.publishing.DocumentUpdateRequestHandler),
         (r'/2/document/search-drs', handlers.search.DocumentByDRSSearchRequestHandler),
         (r'/2/document/search-externalid', handlers.search.DocumentByExternalIDSearchRequestHandler),
         (r'/2/document/search-id', handlers.search.DocumentByIDSearchRequestHandler),

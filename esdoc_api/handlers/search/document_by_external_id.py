@@ -28,11 +28,6 @@ _PARAMS = {
     'externalType'
 }
 
-# Maximum number of DRS keys allowed ina path declaration.
-_MAX_DRS_KEYS = 8
-
-# Seperator used to delineate DRS keys.
-_DRS_SEPERATOR = '/'
 
 
 class DocumentByExternalIDSearchRequestHandler(tornado.web.RequestHandler):
