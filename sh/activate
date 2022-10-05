@@ -51,3 +51,36 @@ alias esdoc-ws-db-vacuum=$ESDOC_WS_HOME/sh/db_vacuum.sh
 
 # Test related commands.
 alias esdoc-ws-tests=$ESDOC_WS_HOME/sh/run_tests.sh
+
+# ###############################################################
+# STANDARD-SECTION: ALIASES
+# ###############################################################
+
+# Install / update.
+alias documentation-ws-install=$ESDOC_WS_HOME/sh/install.sh
+alias documentation-ws-update=$ESDOC_WS_HOME/sh/update.sh
+
+# Logs commands.
+alias documentation-ws-reset-logs=$ESDOC_WS_HOME/sh/reset_logs.sh
+
+# Web-service commands.
+alias documentation-ws=$ESDOC_WS_HOME/sh/app_run.sh
+alias documentation-ws-daemon=$ESDOC_WS_HOME/sh/daemon_start.sh
+alias documentation-ws-daemon-reload=$ESDOC_WS_HOME/sh/daemon_reload.sh
+alias documentation-ws-daemon-status=$ESDOC_WS_HOME/sh/daemon_status.sh
+alias documentation-ws-daemon-stop=$ESDOC_WS_HOME/sh/daemon_stop.sh
+
+# Database commands.
+alias documentation-ws-db-backup=$ESDOC_WS_HOME/sh/db_backup.sh
+alias documentation-ws-db-flush=$ESDOC_WS_HOME/sh/db_flush.sh
+alias documentation-ws-db-ingest=$ESDOC_WS_HOME/sh/db_ingest.sh
+alias documentation-ws-db-install=$ESDOC_WS_HOME/sh/db_install.sh
+alias documentation-ws-db-reset=$ESDOC_WS_HOME/sh/db_reset.sh
+alias documentation-ws-db-restore=$ESDOC_WS_HOME/sh/db_restore.sh
+alias documentation-ws-db-setup=$ESDOC_WS_HOME/sh/db_setup.sh
+alias documentation-ws-db-truncate=$ESDOC_WS_HOME/sh/db_truncate.sh
+alias documentation-ws-db-uninstall=$ESDOC_WS_HOME/sh/db_uninstall.sh
+alias documentation-ws-db-vacuum=$ESDOC_WS_HOME/sh/db_vacuum.sh
+
+# Test related commands.
+alias documentation-ws-tests=$ESDOC_WS_HOME/sh/run_tests.sh
