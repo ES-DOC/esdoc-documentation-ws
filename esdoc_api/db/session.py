@@ -68,7 +68,10 @@ def create_repo():
     """
     # Create schemas.
     for p in models.PARTITIONS:
-        _State.sa_engine.execute(CreateSchema(p))
+        try:
+            _State.sa_engine.execute(CreateSchema(p))
+        except:
+            pass
 
     # Create tables.
     models.metadata.create_all(_State.sa_engine)
