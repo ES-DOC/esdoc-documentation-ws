@@ -43,9 +43,9 @@ def _execute(project, source):
 
     """    
     # Format input params.
-    project = unicode(project).strip().lower()
+    project = str(project).strip().lower()
     if source is not None:
-        source = unicode(source).strip().lower()
+        source = str(source).strip().lower()
         if len(source) == 0:
             source = None
 
