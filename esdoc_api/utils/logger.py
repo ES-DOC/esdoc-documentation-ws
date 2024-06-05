@@ -40,7 +40,7 @@ def _get_formatted_message(msg, module, level):
         dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
         level,
         module,
-        unicode(msg).strip()
+        str(msg).strip()
         )
 
 
@@ -53,7 +53,7 @@ def log(msg=None, module=_DEFAULT_MODULE, level=LOG_LEVEL_INFO):
 
     """
     # TODO use structlog rather than printing to stdout
-    print(_get_formatted_message(msg, module, level))
+    print((_get_formatted_message(msg, module, level)))
 
 
 def log_error(err, module=_DEFAULT_MODULE):
