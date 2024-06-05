@@ -17,7 +17,7 @@ import requests
 import pyesdoc
 import pyesdoc.ontologies.cim as cim
 
-import test_utils as tu
+from . import test_utils as tu
 
 
 # Cached test document.
@@ -45,12 +45,12 @@ def _set_test_document():
 	_DOC.name = "an experiment"
 	_DOC.long_name = "yet another experiment"
 	_DOC.rationale = "to state the bleeding obvious"
-	_DOC.meta.id = unicode(_DOC.meta.id)
+	_DOC.meta.id = str(_DOC.meta.id)
 	_DOC.meta.version += 1
 	_DOC.required_period = pyesdoc.create(
 		cim.v2.TemporalConstraint, project="test-project", source="unit-test")
 	_DOC.required_period.is_conformance_requested = False
-	_DOC.required_period.meta.id = unicode(_DOC.required_period.meta.id)
+	_DOC.required_period.meta.id = str(_DOC.required_period.meta.id)
 	_DOC.required_period.name = "too long"
 
 	pyesdoc.extend(_DOC)
