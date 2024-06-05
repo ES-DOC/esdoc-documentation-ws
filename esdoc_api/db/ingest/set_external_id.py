@@ -26,7 +26,7 @@ def execute(ctx):
     	return
 
     # Pick up first external id.
-    external_id = unicode(ctx.doc.meta.external_ids[0].value).upper()
+    external_id = str(ctx.doc.meta.external_ids[0].value).upper()
 
     # Insert.
     idx = models.DocumentExternalID()

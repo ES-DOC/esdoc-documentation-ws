@@ -38,7 +38,7 @@ def get_document(uid, version, project=None):
     qry = session.query(Document)
     if project:
         qry = text_filter(qry, Document.project, project)
-    qry = qry.filter(Document.uid == unicode(uid))
+    qry = qry.filter(Document.uid == str(uid))
     if version is None or version in constants.DOCUMENT_VERSIONS:
         qry = qry.order_by(Document.version.desc())
     else:
@@ -215,7 +215,7 @@ def get_document_summaries(
 
     # Set filters.
     qry = text_filter(qry, Document.project, project)
-    qry = qry.filter(Document.canonical_name != u"")
+    qry = qry.filter(Document.canonical_name != "")
     if typeof != constants.DOCUMENT_TYPE_ALL:
         qry = text_filter(qry, Document.typeof, typeof)
     if version == constants.DOCUMENT_VERSION_LATEST:

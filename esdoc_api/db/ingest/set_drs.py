@@ -27,7 +27,7 @@ def execute(ctx):
     # Instantiate.
     idx = models.DocumentDRS()
     idx.document_id = ctx.primary.id
-    idx.path = unicode(ctx.doc.meta.drs_path)
+    idx.path = str(ctx.doc.meta.drs_path)
     idx.project = ctx.primary.project
 
     # Set keys.
@@ -35,7 +35,7 @@ def execute(ctx):
         if index > 7:
             break
         elif key is not None:
-            key = unicode(key).upper()
+            key = str(key).upper()
             setattr(idx, "key_0" + str(index + 1), key)
 
     # Insert.
