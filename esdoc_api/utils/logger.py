@@ -14,7 +14,7 @@ import datetime as dt
 
 
 # Set of logging levels.
-LOG_LEVEL_DEBUG = 'DUBUG'
+LOG_LEVEL_DEBUG = 'DEBUG'
 LOG_LEVEL_INFO = 'INFO'
 LOG_LEVEL_WARNING = 'WARNING'
 LOG_LEVEL_ERROR = 'ERROR'
@@ -53,7 +53,7 @@ def log(msg=None, module=_DEFAULT_MODULE, level=LOG_LEVEL_INFO):
 
     """
     # TODO use structlog rather than printing to stdout
-    print((_get_formatted_message(msg, module, level)))
+    print(_get_formatted_message(msg, module, level))
 
 
 def log_error(err, module=_DEFAULT_MODULE):
