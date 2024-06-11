@@ -53,7 +53,7 @@ def to_dict(data, key_convertor=None):
 
     # Dictionaries.
     elif isinstance(data, collections.Mapping):
-        return {key_convertor(k) if key_convertor else k: to_dict(v, key_convertor) for k, v in list(data.items())}
+        return {key_convertor(k) if key_convertor else k: to_dict(v, key_convertor) for k, v in data.items()}
 
     # Collections.
     elif isinstance(data, collections.Iterable):
@@ -79,7 +79,7 @@ def to_namedtuple(obj, key_convertor=None):
 
     """
     obj = to_dict(obj, key_convertor)
-    for k, v in list(obj.items()):
+    for k, v in obj.items():
         if isinstance(v, dict):
             obj[k] = to_namedtuple(v, key_convertor)
     kls = collections.namedtuple('_Class', list(obj.keys()))
