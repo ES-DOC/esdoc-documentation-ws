@@ -3,8 +3,6 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
-[dev-packages]
-
 [packages]
 SQLAlchemy = "*"
 argparse = "*"
@@ -22,11 +20,12 @@ six = "*"
 supervisor = "*"
 toolz = "*"
 tornado = "*"
-wsgiref = "*"
 arrow = "*"
 jsonschema = "*"
 pyesdoc = "*"
 singledispatch = "*"
 
 [requires]
-python_version = "2.7.18"
+python_version = "3.9"
+
+[dev-packages]

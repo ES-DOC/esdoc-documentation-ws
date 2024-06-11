@@ -14,7 +14,7 @@ import datetime as dt
 
 
 # Set of logging levels.
-LOG_LEVEL_DEBUG = 'DUBUG'
+LOG_LEVEL_DEBUG = 'DEBUG'
 LOG_LEVEL_INFO = 'INFO'
 LOG_LEVEL_WARNING = 'WARNING'
 LOG_LEVEL_ERROR = 'ERROR'
@@ -40,7 +40,7 @@ def _get_formatted_message(msg, module, level):
         dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
         level,
         module,
-        unicode(msg).strip()
+        str(msg).strip()
         )
 
 

@@ -24,9 +24,9 @@ def parse_cim_1_misc_documentset(instance, doc):
 
     """
     if doc.model:
-        instance.model = unicode(doc.model.short_name)
+        instance.model = str(doc.model.short_name)
     if doc.experiment:
-        instance.experiment = unicode(doc.experiment.short_name)
+        instance.experiment = str(doc.experiment.short_name)
 
 
 # Set of summary field parsers.
@@ -45,12 +45,12 @@ def execute(ctx):
     instance = models.Document()
     instance.description = str_to_unicode(ctx.doc.ext.description)
     instance.institute = ctx.doc.meta.institute
-    instance.name = unicode(ctx.doc.ext.display_name)
+    instance.name = str(ctx.doc.ext.display_name)
     instance.project = ctx.doc.meta.project.strip().lower()
     if ctx.doc.meta.sub_projects:
-        instance.sub_projects = ",".join([u"<{}>".format(i.lower()) for i in sorted(ctx.doc.meta.sub_projects)])
-    instance.typeof = unicode(ctx.doc.meta.type)
-    instance.uid = unicode(ctx.doc.meta.id)
+        instance.sub_projects = ",".join(["<{}>".format(i.lower()) for i in sorted(ctx.doc.meta.sub_projects)])
+    instance.typeof = str(ctx.doc.meta.type)
+    instance.uid = str(ctx.doc.meta.id)
     instance.version = ctx.doc.meta.version
 
     # Set alternative name.
@@ -85,7 +85,7 @@ def execute(ctx):
         session.insert(instance)
     except sqlalchemy.exc.IntegrityError:
         session.rollback()
-        print instance.uid, instance.version, instance.typeof
+        print(instance.uid, instance.version, instance.typeof)
         raise StopIteration("Document already ingested")
     else:
         ctx.primary = instance

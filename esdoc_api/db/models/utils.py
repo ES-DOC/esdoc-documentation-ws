@@ -44,7 +44,7 @@ class BaseEntity(object):
         """Debugging representation.
 
         """
-        return unicode(self.as_dict())
+        return str(self.as_dict())
 
 
     def as_dict(self):
@@ -186,7 +186,7 @@ class EntityConvertor(object):
         """
         as_dict = cls.to_dict(target, to_camel_case)
 
-        return unicode(JSONEncoder().encode(as_dict))
+        return str(JSONEncoder().encode(as_dict))
 
 
     @classmethod

@@ -94,7 +94,7 @@ def create(connection):
 
     """
     # Set engine.
-    sa_engine = create_engine(unicode(connection), echo=False)
+    sa_engine = create_engine(str(connection), echo=False)
 
     # Set session.
     sa_session = sessionmaker(bind=sa_engine)()
@@ -121,7 +121,7 @@ def start(connection=None):
         if isinstance(connection, Engine):
             _State.sa_engine = connection
         else:
-            _State.sa_engine = create_engine(unicode(connection), echo=False)
+            _State.sa_engine = create_engine(str(connection), echo=False)
 
         # Set session.
         _State.sa_session = sessionmaker(bind=_State.sa_engine)()
@@ -207,5 +207,5 @@ def raw_query(*args):
 
 
 def log():
-    print _State.sa_engine
+    print(_State.sa_engine)
 

@@ -20,7 +20,7 @@ def text_filter(qry, field, key):
     """Applies a text based filter expression.
 
     """
-    return qry.filter(sa.func.upper(field) == unicode(key).strip().upper())
+    return qry.filter(sa.func.upper(field) == str(key).strip().upper())
 
 
 def like_filter(qry, field, expression):

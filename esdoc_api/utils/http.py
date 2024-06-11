@@ -133,7 +133,7 @@ def write_error(handler, error):
 
     """
     handler.clear()
-    reason = unicode(error) if _can_return_debug_info(handler) else None
+    reason = str(error) if _can_return_debug_info(handler) else None
     if isinstance(error, exceptions.RequestValidationException):
         response_code = _HTTP_RESPONSE_INVALID_REQUEST_ERROR
     else:
@@ -153,7 +153,7 @@ def _write_success(handler):
     try:
         data = handler.output
     except AttributeError:
-        data = unicode()
+        data = str()
         encoding = None
 
     _write(handler, data, encoding)

@@ -49,7 +49,7 @@ def _2_summary_search_params(schema):
 	"""Extends a JSON schema used to validate an HTTP operatino.
 
 	"""
-	print "TODO: ensure document type enum validation is case insenstive"
+	print("TODO: ensure document type enum validation is case insenstive")
 	schema['properties']['document_type']['items']['enum'] = \
 		[i['key'] for i in constants.DOCUMENT_TYPES]
 	schema['properties']['document_version']['items']['enum'] = \
